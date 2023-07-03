@@ -1,0 +1,21 @@
+.mat-toolbar{
+    background-color: white;
+}
+
+
+.spacer{
+    flex: 1 1 auto;
+}
+
+.logo{
+    height: 2.3rem;
+}
+
+@media only screen and (max-width: 767px) {
+ 
+
+    
+    .logo{
+      height: 1.6rem;
+  }
+  }

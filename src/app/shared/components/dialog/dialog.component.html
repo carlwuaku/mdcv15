@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{ config.title | translate }}</h1>
+
+<div class="dialog-container">
+    <div *ngIf="config.icon" class="dialog-icon">
+        <mat-icon inline>{{ config.icon | translate }}</mat-icon>
+    </div>
+    <div class="wrap-text">
+        <div mat-dialog-content [innerHTML]="config.message | translate"></div>
+    </div>
+</div>
+
+
+<mat-dialog-actions *ngIf="!config.closeOnTimer" align="end">
+    <button mat-flat-button color="primary" type="button" [mat-dialog-close]="true" cdkFocusInitial>
+        {{ config.primaryButton || "OK" | translate }}
+    </button>
+    <button *ngIf="config.secondaryButton" mat-flat-button color="secondary" type="button" [mat-dialog-close]="false">
+        {{ config.secondaryButton | translate }}
+    </button>
+</mat-dialog-actions>

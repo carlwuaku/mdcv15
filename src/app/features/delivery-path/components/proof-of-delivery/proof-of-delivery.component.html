@@ -1,0 +1,46 @@
+<button mat-flat-button color="primary" type="button" (click)="loadData(); gaEvent()" *ngIf="!(getImages$ | async | isInProgress)">
+    <mat-icon>photo_library</mat-icon> View Proof of {{type}}
+</button>
+
+
+<ng-container *ngIf="(getImages$ | async | isInProgress)">
+    <div class="card center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="getImages$ | async | isSuccess">
+    <div class="vertical-padding-1" *ngIf="(getImages$ | async | successValue)!.length < 1; else showCarousel">
+        <b>No images found</b>
+    </div>
+    <ng-template #showCarousel>
+        <p-galleria [(visible)]="visible" [value]="(getImages$ | async | successValue)!" 
+        [fullScreen]="true" [responsiveOptions]="responsiveOptions" 
+        [containerStyle]="{ 'max-width': '90%' }" 
+        [showThumbnails]="false" 
+        [showItemNavigators]="true">
+            <ng-template pTemplate="item" let-item>
+                <img src="data:image/jpg;base64,{{ item.data }}" style="width: 90%; display: block;" alt="image" />
+            </ng-template>
+            
+            <ng-template pTemplate="thumbnail" let-item>
+                <div class="grid grid-nogutter justify-content-center">
+                    <img src="data:image/jpg;base64,{{ item.data }}" height="50px" style="display: block;" alt="image"/>
+                </div>
+            </ng-template>
+        </p-galleria>
+
+
+    </ng-template>
+
+</ng-container>
+<ng-container *ngIf="getImages$ | async | isFailure">
+    <div class="error border-1 surface-border border-round m-2 text-center">
+        Error fetching images.
+        <button mat-flat-button color="primary" type="button" (click)="loadData()">
+            <mat-icon>photo_library</mat-icon> Try Again
+        </button>
+
+    </div>
+</ng-container>
+

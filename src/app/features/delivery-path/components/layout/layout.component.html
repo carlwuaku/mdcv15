@@ -1,0 +1,43 @@
+<div class="bg-white pad-top-1rem" *ngIf="hireDetails">
+  <div class="section section-1">{{ machineCode }}</div>
+  <div class="section section-2">
+    <span class="item-description">{{ hireDetails.orderDetail.description }}</span>
+    <span class="hire-order-div">
+      Hire order number: {{ hireDetails.orderDetail.hireOrderNumber }}/{{hireDetails.orderDetail.hireOrderMob}}
+    </span>
+  </div>
+  <div class="hire-status">
+    <app-status></app-status>
+  </div>
+</div>
+
+<div *ngIf="hireDetails">
+  <mat-accordion multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="panel-border">
+        <mat-panel-title>
+          Tracking history
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-tracking-history></app-tracking-history>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="panel-border">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Order detail
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-order-details></app-order-details>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="panel-border">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Need help?
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-need-help></app-need-help>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,59 @@
+<div class="status-icon" [ngSwitch]="iconName">
+    <i *ngSwitchCase="DeliveryStatus.AWAITING_PRE_HIRE_INSPECTION">
+        <img class="icon" matTooltip="Awaiting pre-hire inspection" src="./assets/images/being-prepared.svg"
+            alt="Awaiting pre-hire inspection" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.PRE_HIRE_CHECKS_COMPLETE">
+        <img class="icon" matTooltip="Pre-hire checks complete" src="./assets/images/pre-hire-complete.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.READY_FOR_DESPATCH">
+        <img class="icon" matTooltip="Delivery today" src="./assets/images/pre-hire-complete.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.ON_ITS_WAY">
+        <img class="icon" matTooltip="On its way" src="./assets/images/on-its-way.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.YOU_ARE_OUR_NEXT_DELIVERY">
+        <img class="icon" matTooltip="You are the next delivery" src="./assets/images/next-delivery.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.DELIVERY_TODAY">
+        <img class="icon" matTooltip="Delivery today" src="./assets/images/delivery-today.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.DELIVERED">
+        <img class="icon" matTooltip="Delivered" src="./assets/images/delivered.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.ORDER_CANCELLED">
+        <img class="icon" matTooltip="Order cancelled" src="./assets/images/problem-encountered.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.DELIVERY_FAILED">
+        <img class="icon" matTooltip="Delivery failed" src="./assets/images/unsuccessful.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="DeliveryStatus.DELIVERY_LEG_EXPIRED">
+        <mat-icon>contact_support</mat-icon>
+    </i>
+    <i *ngSwitchCase="CollectionStatus.COLLECTED">
+        <img class="icon" matTooltip="Collected" src="./assets/images/collected.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="CollectionStatus.SCHEDULING_COLLECTION">
+        <img class="icon" matTooltip="scheduling collection" src="./assets/images/scheduling-collection.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="CollectionStatus.COLLECTION_SCHEDULED">
+        <img class="icon" matTooltip="Collection scheduled" src="./assets/images/collection-scheduled.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="CollectionStatus.COLLECTION_FAILED">
+        <img class="icon" matTooltip="Collection failed" src="./assets/images/unsuccessful.svg" alt="" />
+    </i>
+    <i *ngSwitchCase="CollectionStatus.COLLECTION_LEG_EXPIRED">
+        <mat-icon>contact_support</mat-icon>
+    </i>
+</div>
+
+<div class="status-msg" *ngIf="!showIconName; else noProblem">
+    <span [class]="colourClass">{{ problemMessage }}, please call us</span>
+    <br>
+    <a [class]="colourClass" class="phone-link" mat-button type="button"
+        (click)="gaEvent('Contact', 'Call support', 'Phone link', 'Problem encountered', 1)"
+        href="tel:{{phone}}">{{phone}}
+        <mat-icon>call</mat-icon>
+    </a>
+</div>
+<ng-template #noProblem><span class="status-msg" [class]="colourClass">{{ iconName }}</span></ng-template>

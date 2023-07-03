@@ -1,0 +1,53 @@
+<ng-container *ngIf="apiResponse$ | async | isSuccess">
+    <div class="order-container">
+        <div class="movement-details">
+            <div>
+                <span class="order-label">Order placed: </span>
+                <span class="order-value">{{ orderDetail.orderPlaced | lvisUTCDate | loxamDate :'short' }}</span>
+                <br />
+                <br />
+            </div>
+            <div>
+                <span class="order-label">Hire order number: </span>
+                <span class="order-value">{{ orderDetail.hireOrderNumber }}/{{ orderDetail.hireOrderMob }}</span>
+            </div>
+            <div>
+                <span class="order-label">Hire period: </span>
+                <span class="order-value">{{ orderDetail.hirePeriodFrom | lvisUTCDate | loxamDate :'short' }}<b> to </b>{{
+                    orderDetail.hirePeriodTo | lvisUTCDate | loxamDate :'short' }}</span>
+                <br />
+                <br />
+            </div>
+            <div>
+                <span class="order-label">Arriving: </span>
+                <span class="order-value">{{ orderDetail.arrivingDate | lvisUTCDate | loxamDate :'short' }}</span>
+            </div>
+            <div *ngIf="movementType === 'Delivery'; else collectionType">
+                <span class="order-label">Delivery type: </span>
+                <span class="order-value">{{ orderDetail.deliveryType }}</span>
+                <br />
+                <br />
+            </div>
+            <ng-template #collectionType><br /></ng-template>
+            <div>
+                <span class="order-label">{{ movementLabel }} </span>
+                <br />
+                <span class="order-value">{{ orderDetail.deliveryTo.fullAddress }}</span>
+                <br />
+                <span class="order-value">{{ orderDetail.deliveryTo.town }}</span>
+                <br />
+                <span class="order-value">{{ orderDetail.deliveryTo.postCode }}</span>
+                <br />
+                <br />
+            </div>
+            <div>
+                <span class="order-label">Description: </span>
+                <span class="order-value">{{ orderDetail.description }}</span>
+            </div>
+            <div>
+                <span class="order-label">Model: </span>
+                <span class="order-value">{{ orderDetail.itemCode }}</span>
+            </div>
+        </div>
+    </div>
+</ng-container>

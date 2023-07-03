@@ -1,0 +1,26 @@
+.flex-column{
+    display: flex;
+    flex-direction: column;
+
+}
+.map-container{
+    flex-grow: 1;
+}
+
+.stopsLeft{
+    height: 3rem;
+    margin: 0 auto;
+    background-color: #e7f0ff;
+    border: thin black solid;
+    border-radius: 0.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    width: 80%;
+    max-width: 350px;
+}
+.move-up{
+    position: relative;
+    top: -4rem;
+}

@@ -1,0 +1,61 @@
+<app-navbar></app-navbar>
+
+<div *ngIf="validationState === UrlValidationStates.Valid">
+    <ng-container *ngIf="(apiResponse$ | async | isInProgress)">
+        <div class="center">
+            <mat-spinner></mat-spinner>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="apiResponse$ | async | isSuccess">
+        <app-layout></app-layout>
+
+    </ng-container>
+    <div *ngIf="apiResponse$ | async | isFailure" class="text-center  error">
+        <div>
+            <mat-icon class="error-header-icon">sync_problem</mat-icon>
+
+        </div>
+        <p class="error-heading">{{"Server unable to respond" | translate }}</p>
+        <p class="error-text">{{" An error was encountered while fetching the data." | translate }}<br>
+            {{"Please check your connection and try again." | translate}}
+        </p>
+        <div class="btn-wrapper">
+            <button class="full-width-button" appRefreshPage mat-flat-button color="accent">{{"Try again" |
+                translate}}</button>
+            <button class="full-width-button" mat-stroked-button (click)="showDialog()">{{"Get help" |
+                translate}}</button>
+        </div>
+
+        <p-dialog header="Get help" [modal]="true" [(visible)]="getHelpVisible" [style]="{width: '50vw'}">
+            <div class="error">
+                <div>
+                    We're sorry, we've been unable to track your hire. For more information,
+                    please contact our Operational Admin team and reference your hire order number: {{hireOrderId$ |
+                    async}}/{{mobId$ | async}}.
+                </div>
+
+                <a class="link" mat-stroked-button type="button"
+                    (click)="gaEvent('Contact', 'Email support from error page', 'Email link', 'Need help', 1)"
+                    href="mailto:opadmin@nationwideplatforms.co.uk">opadmin@nationwideplatforms.co.uk
+                    <mat-icon>email</mat-icon>
+                </a>
+
+                <a class="link" mat-stroked-button type="button"
+                    (click)="gaEvent('Contact2', 'Call support from error page', 'Phone link', 'Problem encountered', 1)"
+                    href="tel:+443452669330">003452669330
+                    <mat-icon>call</mat-icon>
+                </a>
+            </div>
+        </p-dialog>
+    </div>
+</div>
+<div class="text-center  error" *ngIf="validationState === UrlValidationStates.Invalid">
+    <h1>{{"Welcome!" | translate}}</h1>
+    <p class="">{{"This is the Nationwide Platforms hire tracking app to monitor delivery and collection of machines." | translate}}<br>
+        {{"Use the links in your hire confirmation emails to track your order." | translate}}
+    </p>
+</div>
+
+<div class="text-center " *ngIf="validationState === UrlValidationStates.Running">
+    <mat-icon>ellipsis</mat-icon>
+</div>

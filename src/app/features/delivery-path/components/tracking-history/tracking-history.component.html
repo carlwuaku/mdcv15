@@ -1,0 +1,8 @@
+<div *ngIf="defaultMessage === ''; else noList">
+    <app-timeline [list]="list"></app-timeline>
+</div>
+<ng-template #noList>
+    <div class="defaultMessage">
+        {{ defaultMessage | translate }}
+    </div>
+</ng-template>

@@ -1,0 +1,27 @@
+<app-navbar></app-navbar>
+<div class="flex-column">
+    <div class="map-container">
+        <google-map [options]="mapOptions" width="100%">
+            <map-marker *ngFor="let marker of markers" [position]="marker.position!" [title]="marker.title!"
+                [icon]="marker.icon!"></map-marker>
+            <map-directions-renderer *ngIf="(directionsResult$ | async) as directionsResults"
+                [directions]="directionsResults" [options]="directionsRendererOptions"></map-directions-renderer>
+        </google-map>
+    </div>
+
+    <div class="move-up">
+        <div class="stopsLeft text-center">
+            <a href="tel:+"></a>
+            <div *ngIf="stopsMessage; else noMessage">
+                {{ stopsMessage }}
+            </div>
+            <ng-template #noMessage>You have <b class="text-red">&nbsp; {{stopsLeft}} &nbsp;</b> stops left></ng-template>
+        </div>
+        <div class="btn-wrapper">
+            <button *ngIf="showContactDriver" (click)="contactDriver()" class="full-width-button btn-bottom-margin" color="primary" mat-flat-button>Contact
+                driver</button>
+            <button class="full-width-button btn-bottom-margin"  mat-flat-button
+                appPreviousUrl>Close</button>
+        </div>
+    </div>
+</div>

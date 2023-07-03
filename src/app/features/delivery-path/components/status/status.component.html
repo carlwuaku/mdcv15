@@ -1,0 +1,77 @@
+<div class="vertical-padding-1">
+    <app-status-icon></app-status-icon> <!-- [iconName]=hireDetails.currentStatus.status -->
+
+    <div class="movement-container" *ngIf="apiResponse$ | async | isSuccess">
+        <div class="movement-details" [ngClass]="{
+            showViewMapButton: showViewMapButton,
+            showPoDButton: showPoDButton}">
+
+            <!-- This works for collection states also -->
+            <app-proof-of-delivery *ngIf="showPoDButton"></app-proof-of-delivery>
+
+            <div>
+                <a [routerLink]="['/track/map']" queryParamsHandling="preserve" *ngIf="showViewMapButton"
+                    mat-flat-button color="primary" type="button"
+                    (click)="gaEvent('Map', 'View map', 'Map button', 'View location on map', 1) ">
+                    <mat-icon>location_on</mat-icon> View Map
+                </a>
+            </div>
+
+            <div *ngIf="showArriving">
+                <span class="movement-label">Arriving: </span>
+                <span>{{ hireDetails.orderDetail.arrivingDate | lvisUTCDate | loxamDate :'short' }}</span>
+            </div>
+
+            <div *ngIf="showDeliveredAt">
+                <span class="movement-label">Arrived: </span>
+                <span>{{ hireDetails.deliveredAt| lvisUTCDate | loxamDate :'short' }}</span>
+            </div>
+            <div *ngIf="showDeliveryType">
+                <span class="movement-label">{{"Delivery type: " | translate}}</span>
+                <span>{{ hireDetails.orderDetail.deliveryType }}</span>
+            </div>
+            <div *ngIf="showETA">
+                <span class="movement-label">ETA: </span>
+                <span>{{ hireDetails.orderDetail.arrivingStartTime  | lvisUTCDate  | loxamDate:'shortTime' }} <b>to</b>
+                    {{ hireDetails.orderDetail.arrivingEndTime | lvisUTCDate  | loxamDate:'shortTime' }}</span>
+            </div>
+            <div *ngIf="showDeliveredAt">
+                <span class="movement-label">Delivered at: </span>
+                <span>{{ hireDetails.deliveredAt  | loxamDate :'shortTime' }}</span>
+            </div>
+            <div *ngIf="showCollectionScheduled">
+                <span class="movement-label">Collection scheduled for: </span>
+                <span>{{ hireDetails.orderDetail.collectionScheduledDate | lvisUTCDate | loxamDate :'short' }}</span>
+            </div>
+            <div *ngIf="showETC">
+                <span class="movement-label">Estimated collection time: </span>
+                <span>{{ hireDetails.orderDetail.arrivingStartTime  | lvisUTCDate | loxamDate:'shortTime' }} <b>to</b>
+                    {{ hireDetails.orderDetail.arrivingEndTime  | lvisUTCDate | loxamDate:'shortTime' }}</span>
+            </div>
+            <div *ngIf="showCollectedAt">
+                <div>
+                    <span class="movement-label">Driver arrived: </span>
+                    <span>{{ hireDetails.orderDetail.collectedAt | lvisUTCDate | loxamDate :'short' }}</span>
+                </div>
+                <div>
+                    <span class="movement-label">Collected at: </span>
+                    <span>{{ hireDetails.orderDetail.collectedAt | loxamDate:'shortTime' }}</span>
+                </div>
+            </div>
+            <div *ngIf="showSchedulingCollection">
+                <span>We will collect as soon as possible</span>
+                <br>
+                <span>Off-hire date: {{hireDetails.orderDetail.hirePeriodTo | lvisUTCDate | loxamDate :'short'  }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showShareButton">
+        <button class="share-button"  mat-button type="button"
+            (click)="gaEvent('Share', 'Share url', 'Share button', 'Copy the url to share', 1)"
+            [clipboardCopy]="clipURL()" (copied)="notify($event,'share')">
+            <img class="button-svg-icon" src="./assets/images/share-dark.svg" alt="Share url" />
+            Share
+        </button>
+    </div>
+</div>

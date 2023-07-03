@@ -1,0 +1,207 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/md-light-indigo/theme.css";
+
+.container {
+  max-width: 1200px;
+  margin: 16px auto;
+  box-shadow:
+    0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.p-dialog {
+  width: 90%;
+}
+
+.carousel-image {
+  width: 90%;
+  max-height: 45vh;
+}
+
+@media only screen and (min-width: 768px) {
+  .p-dialog {
+    width: 50%;
+  }
+}
+
+.loxam-image {
+  width: 100%;
+  max-width: 200px;
+}
+
+html,
+body {
+  height: 100%;
+  color: #424242;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+
+@media only screen and (max-width: 767px) {
+  .container {
+    width: 90%;
+  }
+
+  .logo {
+    height: 1.6rem;
+  }
+}
+
+/* For tablet devices */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    width: 70%;
+  }
+}
+
+/* For desktop devices */
+@media only screen and (min-width: 1024px) {
+  .container {
+    width: 50%;
+  }
+
+  .p-dialog {
+    width: 50%;
+  }
+
+  .carousel-image {
+    width: 50%;
+    max-height: 45vh;
+  }
+}
+
+.vertical-padding-1 {
+  padding: 1rem 0rem;
+}
+
+//remove curves so it aligns with the rest of the page
+.mat-accordion .mat-expansion-panel:first-of-type {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+.button-svg-icon {
+  vertical-align: middle;
+  width: 2rem;
+}
+
+.pad-top-1rem {
+  padding-top: 1rem;
+}
+
+.full-width-button {
+  width: 100%;
+}
+
+.flex-row {
+  display: flex;
+  row-gap: 1rem;
+}
+
+.row-gap-1 {
+  gap: 1%
+}
+
+.text-red {
+  color: red
+}
+
+.btn-bottom-margin {
+  margin-bottom: 1rem;
+}
+
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: #0096fb;
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+.grey-button {
+  background-color: #f4f5f5;
+  color: #424242;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.error {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  background-color: white;
+}
+
+.error-heading {
+  font-size: 2rem;
+  color: red;
+  line-height: normal;
+}
+
+.error-header-icon {
+  height: 70px !important;
+  font-size: 70px !important;
+  width: 70px !important;
+}
+
+.btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 80%;
+  gap: 10px;
+  align-items: center;
+
+}
+
+button {
+  max-width: 350px;
+}
+
+
+
+@media only screen and (min-width: 768px) {
+  .btn-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.flex-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.p-galleria-item{
+  min-height: 75vh !important;
+}
+
+.p-galleria-mask {
+  --maskbg: #6c757d !important;
+}
+
+
+.wrap-text{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-word;
+  
+  word-break: break-word;
+}

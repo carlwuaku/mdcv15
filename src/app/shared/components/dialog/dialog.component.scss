@@ -1,0 +1,24 @@
+.mat-dialog-title {
+    margin: 0px;
+}
+
+.mat-dialog-actions {
+    justify-content: center;
+}
+
+.mat-dialog-actions button {
+    margin: 3.2rem 1.6rem 1.6rem 1.6rem;
+}
+
+.dialog-container {
+    display: flex;
+}
+
+.dialog-icon {
+    font-size: 250%;
+    padding-right: 1.6rem;
+}
+
+:host ::ng-deep .timer>.mat-dialog-actions {
+    min-height: 0px !important;
+}
