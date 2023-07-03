@@ -13,6 +13,8 @@ import { RefreshPageDirective } from './directives/refresh-page.directive';
 import { AssetImageComponent } from './components/asset-image/asset-image.component';
 import { LvisUTCDatePipe } from './pipes/date/lvis-utc-date.pipe';
 import { ApiCountComponent } from './components/api-count/api-count.component';
+import { LoadingComponent } from './components/loading/loading.component';
+import { LogoComponent } from './components/logo/logo.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { ApiCountComponent } from './components/api-count/api-count.component';
     RefreshPageDirective,
     AssetImageComponent,
     LvisUTCDatePipe,
-    ApiCountComponent
+    ApiCountComponent,
+    LoadingComponent,
+    LogoComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
