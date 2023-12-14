@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
 
 const modules = [
   MatDialogModule,
@@ -17,7 +18,8 @@ const modules = [
   MatButtonModule,
   MatExpansionModule,
   MatSnackBarModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatMenuModule
 ];
 @NgModule({
   declarations: [],

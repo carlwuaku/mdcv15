@@ -1,11 +1,22 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { LoginComponent } from './pages/login/login.component';
+import { LogoutComponent } from './pages/logout/logout.component';
+import { SharedModule } from '../shared/shared.module';
+
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    DashboardComponent,
+    LoginComponent,
+    LogoutComponent
+  ],
   imports: [
-    CommonModule
-  ]
+    CommonModule,
+    SharedModule
+  ],
+  exports:[LoginComponent]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

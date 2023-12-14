@@ -2,20 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
+import { DateService } from '../../date/date.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private dateService: DateService) { }
 
   public constructURL(url: string, doNotEncode?: boolean): string {
     if (doNotEncode) {
-      return `${environment.appSettings.api.host}${environment.appSettings.api.namespace}${url}`;
+      return `${environment.host}${url}`;
     }
     return encodeURI(
-      `${environment.appSettings.api.host}${environment.appSettings.api.namespace}${url}`
+      `${environment.host}${url}`
     );
   }
 
@@ -48,12 +49,30 @@ export class HttpService {
 
   public get<T>(url: string, doNotEncode?: boolean): Observable<T> {
     const headers = this.getHeaders();
+    if (url.indexOf("?") == -1) {
+      url += "?ts=" + this.dateService.getToday("timestamp")
+    }
+    else {
+      url += "&ts=" + this.dateService.getToday("timestamp")
+    }
 
     return this.httpClient.get<T>(this.constructURL(url, doNotEncode), { headers: headers }).pipe(
       map(data => {
         return data;
       })
     );
+  }
+
+  public post<T>(url: string, data: FormData): Observable<T> {
+    return this.httpClient.post<T>(this.constructURL(url), data)
+  }
+
+  public delete<T>(url: string, data: FormData): Observable<T> {
+    const options = {
+      body: data
+    };
+
+    return this.httpClient.delete<T>(this.constructURL(url), options);
   }
   
 }

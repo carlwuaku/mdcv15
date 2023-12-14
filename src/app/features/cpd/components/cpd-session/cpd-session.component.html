@@ -1,0 +1,115 @@
+<div class="card">
+    <div class="card-header">
+        <button mat-raised-button color="primary"  *ngIf="can_create" (click)=" start()"> <mat-icon>add</mat-icon>Add Session</button>
+    </div>
+    <div class="card-body">
+        <app-loading *ngIf="is_loading">
+        </app-loading>
+
+        <div *ngIf="is_loaded">
+            <div class="list-group">
+                <div class="list-group-item" *ngFor="let obj of objects; let i = index">
+                    <i class="feather icon-map-pin"></i> <b>{{obj.venue}} ({{obj.region}}) </b> <br>
+                    <i class="feather icon-calendar"></i> <b>{{obj.date}}</b> <br>
+                    <i class="feather icon-clock"></i> <b>{{obj.start_time}}</b>
+                    to: <b>{{obj.end_time}}</b><br>
+                    <button mat-raised-button color="primary" class=" btn-sm" 
+                    (click)="select(obj)"
+                        *ngIf="!dateIsBefore(obj.date) && can_add_attendance; else no_attendance">
+                        Take attendance</button>
+                    <ng-template #no_attendance><span class="text-danger">Attendance cannot be taken before date</span>
+                    </ng-template>
+                    <button mat-raised-button color="primary" class="btn-sm" title="edit session details" (click)="edit(obj)">
+                        <mat-icon>edit</mat-icon> </button>
+                    <button mat-raised-button color="error" class="btn-sm" title="delete session" (click)="delete(obj)">
+                        <mat-icon>remove</mat-icon> </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="" *ngIf="error">
+            Unable to connect to server. Please check your connection. <a class="btn btn-primary"
+                (click)="getSession()">Try Again</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div *ngIf="can_create" class="modal fade" id="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" *ngIf="session.id == null">Add session </h3>
+                <h3 class="modal-title" *ngIf="session.id != null">Edit session</h3>
+            </div>
+            <div class="modal-body">
+
+
+                <form #n="ngForm" ngNativeValidate (ngSubmit)="submit()">
+
+                    <table class="table table-striped table-bordered">
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label>Venue*</label>
+
+                                </td>
+                                <td><input id='venue' required [(ngModel)]="session.venue" type='text' name='venue'
+                                        maxlength='50'></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Date*</label>
+                                </td>
+                                <td>
+                                    <input id='date' required [(ngModel)]="session.date" type='date' name='date'>
+                                    <span class='help-inline'></span>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Start time</label>
+                                </td>
+                                <td>
+
+                                    <input id='start_time' type='time' [(ngModel)]="session.start_time"
+                                        name='start_time' />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>End time</label>
+                                </td>
+                                <td>
+
+                                    <input id='end_time' type='time' [(ngModel)]="session.end_time" name='end_time' />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Region</label>
+                                </td>
+                                <td>
+                                    <!-- <app-select-region [required]="'no'" [region]="session.region"
+                                        (onFinish)="regionSelected($event)"></app-select-region> -->
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <input type="submit" name="submit" value="Submit" class="btn btn-primary">
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning waves-effect" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>

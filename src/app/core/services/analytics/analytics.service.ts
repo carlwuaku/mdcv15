@@ -28,8 +28,8 @@ export class AnalyticsService {
       console.info("[AS] Using dev-env analytics ID")
       this.trackingId = "UA-6345280-1";
     } else {
-      if (environment.appSettings.googleAnalyticsTrackingId != null) {
-        this.trackingId = environment.appSettings.googleAnalyticsTrackingId;
+      if (environment.googleAnalyticsTrackingId != null) {
+        this.trackingId = environment.googleAnalyticsTrackingId;
       }
     }
   }

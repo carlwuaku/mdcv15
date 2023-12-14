@@ -1,0 +1,6 @@
+<span *ngIf="field == 'picture' || type == 'custom'; else text">
+    <img height="80" src="{{value}}" alt="none">
+</span>
+
+
+<ng-template #text> {{value}} </ng-template>

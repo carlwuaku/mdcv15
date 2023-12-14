@@ -1,0 +1,110 @@
+<div class="content">
+    <div class="row">
+        <div class="col-12">
+            <h4>Add new CPD event</h4>
+
+
+            <h5 *ngIf="!can_create">Not permitted</h5>
+
+            <div class="card">
+                <div class="card-block">
+                    <div class="col-md-6 justify-content-center">
+                        <form #n="ngForm" ngNativeValidate (ngSubmit)="submit()">
+
+                            <div class="flex-column gap8">
+                                <i> All fields are required
+                                </i>
+                                <div class="flex-column">
+                                    <label>Select Organizer</label>
+                                    <div>
+                                        If a facility is not in the list, <button
+                                            class="btn btn-sm btn-primary waves-effect"
+                                            (click)="startAddFacility()">click
+                                            here</button> to add it
+                                    </div>
+                                    <app-select-object [timestamp]="selectFacilityTimestamp" [initialValue]="facility_id" (selectionChanged)="setFacility($event)" [url]="cpdFacilitiesUrl"></app-select-object>
+                                </div>
+                                <div class="flex-column">
+                                    <label>Topic</label>
+
+                                    <textarea required name="topic" [(ngModel)]="cpd.topic" rows="4"
+                                        cols="30"></textarea>
+
+                                </div>
+
+
+
+
+                                <div class="flex-column">
+
+                                    <label>Event Duration</label>
+
+                                    From
+                                    <p-dropdown name="start_month" [options]="months" [(ngModel)]="cpd.start_month" optionValue="id"
+                                        optionLabel="name"></p-dropdown>
+
+
+                                    to
+                                    <p-dropdown name="end_month" [options]="months" [(ngModel)]="cpd.end_month" optionValue="id"
+                                        optionLabel="name"></p-dropdown>
+
+
+
+                                </div>
+                                <div class="flex-column">
+                                    <label>Year</label>
+                                    <input  pInputText name="year" type="number" required [(ngModel)]="year">
+                                </div>
+
+
+
+                                <div class="flex-column">
+                                    <label>Credits</label>
+                                    <input pInputText [(ngModel)]="cpd.credits" name="credits" required type="number">
+
+                                </div>
+                                <div class="flex-column">
+                                    <label>Category</label>
+
+                                    <p-dropdown  name='category' [options]="categories" [(ngModel)]="cpd.category"></p-dropdown>
+
+
+
+                                </div>
+                                <div class="flex-column">
+                                    <label>Available Online</label>
+
+
+                                    <select required [(ngModel)]="cpd.online" name='online'>
+
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+
+
+                                </div>
+                                <div class="flex-column">
+                                    <label>URL</label>
+
+                                    <input pInputText [(ngModel)]="cpd.url" name="url" size="40" type="url">
+
+                                </div>
+                                <button pButton pRipple  type="submit" [loading]="loading">Submit
+                                    </button>
+
+
+                            </div>
+
+
+
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,12 @@
+export const LOCAL_USER_KEY = "mdc_staff_current_user";
+export const LOCAL_USER_ID = "mdc_staff_user_id";
+export const LOGIN_FLASH_MESSSAGE = "login_flash_message";
+export const API_ADMIN_PATH = 'api_admin';
+export const API_REPORT_PATH = 'api_report';
+export const API_CPD_PATH = 'api_cpd';
+export const API_DOCTOR_PATH = 'api_doctor';
+export const API_INTERN_PATH = 'api_intern';
+export const API_ACCOUNTS_PATH = 'api_accounts';
+export const API_PA_PATH = 'api_physician_assistant';
+export const API_PATH = 'api';
+export const API_TEMPLATES_PATH = 'templates';

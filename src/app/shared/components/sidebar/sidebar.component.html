@@ -1,0 +1,62 @@
+<aside class="main-sidebar sidebar-light-purple elevation-4">
+    <!-- Brand Logo -->
+    <a [routerLink]="['/dashboard']" class="brand-link">
+        <app-asset-image [height]="'30'" [name]="'mdc_logo.png'"></app-asset-image>
+
+        <span class="brand-text font-weight-light">MDC</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+       
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                 with font-awesome or any other icon font library -->
+
+                <li *ngFor="let m of menu_items" class="nav-item" [ngClass]="{'has-treeview': m.has_children }">
+                    <!-- if has_children = false -->
+                    <a *ngIf="!m.has_children; else children" routerLink="{{m.url}}" class="nav-link "
+                        [ngClass]="{'active': current_url == m.url}">
+                        <i class="nav-icon {{m.icon}}"></i>
+                        <p>{{m.title}}</p>
+                    </a>
+                    <ng-template #children>
+                        <a href="#" class="nav-link " [ngClass]="{'active': m.active_children}">
+                            <i class="nav-icon {{m.icon}}"></i>
+                            <p>
+                                {{m.title}}
+                                <i class="right fa fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li *ngFor="let ch of m.children" class="nav-item">
+                                <a routerLink="{{ch.url}}" class="nav-link submenu"
+                                    [ngClass]="{'active': current_url == ch.url}">
+                                    <p>
+                                        {{ch.title}}
+                                    </p>
+                                </a>
+                            </li>
+
+
+                        </ul>
+
+                    </ng-template>
+
+
+                </li>
+
+
+
+
+
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

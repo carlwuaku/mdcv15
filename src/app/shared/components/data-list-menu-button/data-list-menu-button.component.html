@@ -1,0 +1,24 @@
+<button mat-raised-button color="primary" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <mat-icon>expand_more</mat-icon> Menu
+</button>
+<mat-menu #menu="matMenu">
+    <ng-container *ngFor="let action of actions">
+        <ng-container [ngTemplateOutlet]="action.type === 'button' ? buttonTemplate : linkTemplate"
+            [ngTemplateOutletContext]="{ action: action }">
+        </ng-container>
+    </ng-container>
+</mat-menu>
+
+<ng-template #buttonTemplate let-action="action">
+    <button (click)="action.onClick()" mat-menu-item>
+        <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
+        <span>{{ action.label }}</span>
+    </button>
+</ng-template>
+
+<ng-template #linkTemplate let-action="action">
+    <a routerLink="/{{action.link}}" mat-menu-item>
+        <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
+        <span>{{ action.label }}</span>
+    </a>
+</ng-template>

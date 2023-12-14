@@ -1,3 +1,16 @@
-<div class="container">
-  <router-outlet></router-outlet>
+<div *ngIf="isLoggedIn; else login " class="wrapper">
+  <app-navbar></app-navbar>
+  <div class="main"></div>
+  <app-sidebar></app-sidebar>
+  <div class="content-wrapper">
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
 </div>
+  <p-toast></p-toast>
+ 
+<ng-template #login>
+      <app-login></app-login>
+</ng-template>

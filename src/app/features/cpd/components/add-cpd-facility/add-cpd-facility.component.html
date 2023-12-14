@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>CPD organizer</h1>
+<div mat-dialog-content>
+    <form #n="ngForm" ngNativeValidate (ngSubmit)="submit()">
+        <div class="flex-column gap8">
+
+            <div class="flex-column">
+
+                <label>Organizer Name</label><br>
+                <input name="name" [(ngModel)]="name" required placeholder=" facility name" name="name">
+            </div>
+
+            <div class="flex-column">
+
+                <label>Location</label><br>
+                <input type="text" [(ngModel)]="location" required placeholder="location" name="location">
+
+            </div>
+            <div class="flex-column">
+
+                <label>Phone</label><br>
+                <input type="text" [(ngModel)]="phone" required name="phone">
+            </div>
+
+            <div class="flex-column">
+
+                <label>Email</label><br>
+                <input type="email" [(ngModel)]="email" required name="email">
+            </div>
+
+        </div>
+        <div mat-dialog-actions>
+            <button mat-button color="error" (click)="closeDialog()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit">Save</button>
+
+        </div>
+    </form>
+</div>

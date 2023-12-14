@@ -15,6 +15,17 @@ import { LvisUTCDatePipe } from './pipes/date/lvis-utc-date.pipe';
 import { ApiCountComponent } from './components/api-count/api-count.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { LogoComponent } from './components/logo/logo.component';
+import { LoadDataListComponent } from './components/load-data-list/load-data-list.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { ExportTableComponent } from './components/export-table/export-table.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
+import { JsonDisplayComponent } from './components/json-display/json-display.component';
+import { ArrayLinksComponent } from './components/array-links/array-links.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { PrepMessagingComponent } from './components/prep-messaging/prep-messaging.component';
+import { LinkNameComponent } from './components/link-name/link-name.component';
+import { SelectObjectComponent } from './components/select-object/select-object.component';
+import { DataListMenuButtonComponent } from './components/data-list-menu-button/data-list-menu-button.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +39,25 @@ import { LogoComponent } from './components/logo/logo.component';
     LvisUTCDatePipe,
     ApiCountComponent,
     LoadingComponent,
-    LogoComponent
+    LogoComponent,
+    LoadDataListComponent,
+    ExportTableComponent,
+    PaginationComponent,
+    JsonDisplayComponent,
+    ArrayLinksComponent,
+    SidebarComponent,
+    PrepMessagingComponent,
+    LinkNameComponent,
+    SelectObjectComponent,
+    DataListMenuButtonComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
     RemoteDataModule,
     TranslateModule,
     DialogModule,
-    MaterialComponentsModule
+    MaterialComponentsModule,
+    AgGridModule
   ],
   exports: [
     PrimeNgUiComponentsModule,
@@ -48,7 +70,19 @@ import { LogoComponent } from './components/logo/logo.component';
     PreviousUrlDirective,
     RefreshPageDirective,
     AssetImageComponent,
-    LvisUTCDatePipe
+    LvisUTCDatePipe,
+    AgGridModule,
+    ExportTableComponent,
+    PaginationComponent,
+    JsonDisplayComponent,
+    ArrayLinksComponent,
+    LoadingComponent,
+    LogoComponent,
+    SidebarComponent,
+    ApiCountComponent,
+    PrepMessagingComponent,
+    LoadDataListComponent,
+    SelectObjectComponent
   ],
   providers: [
     ClipboardCopyDirective
