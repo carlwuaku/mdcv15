@@ -1,5 +1,6 @@
 export const LOCAL_USER_KEY = "mdc_staff_current_user";
 export const LOCAL_USER_ID = "mdc_staff_user_id";
+export const LOCAL_USER_TOKEN = "mdc_staff_user_token";
 export const LOGIN_FLASH_MESSSAGE = "login_flash_message";
 export const API_ADMIN_PATH = 'api_admin';
 export const API_REPORT_PATH = 'api_report';

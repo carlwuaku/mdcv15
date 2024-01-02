@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -9,20 +9,24 @@ import { JsonDisplayComponent } from '../json-display/json-display.component';
 import { ArrayLinksComponent } from '../array-links/array-links.component';
 import { LinkNameComponent } from '../link-name/link-name.component';
 import { DataListMenuButtonComponent } from '../data-list-menu-button/data-list-menu-button.component';
+import { Pager } from './Pager.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import {MatSort, Sort} from '@angular/material/sort';
+import { DataActionsButton } from './data-actions-button.interface';
 
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
   styleUrls: ['./load-data-list.component.scss']
 })
-export class LoadDataListComponent {
+export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   @ViewChild('itemsGrid') agGrid!: AgGridAngular;
   gridApi!: GridApi;
   frameworkComponents: any;
   defaultColDef: { resizable: boolean; } = { resizable: true };
   @Input() getRowHeight: (params: any) => any  = function (params) {
     return 35;
-  };;
+  };
 
   is_loading = false;
   // pagination things
@@ -38,11 +42,11 @@ export class LoadDataListComponent {
   error: boolean = false;
   error_message: string = "";
   @Input() module = "admin"
-  objects: any[] = []
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   selectedItems: any[] = []
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
-  @Input() columnDefs: any[] = []
+  @Input() columnLabels?: {[key:string]: string};
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
 
   @Input() image_keys = ['picture', 'qr_code']
@@ -52,6 +56,10 @@ export class LoadDataListComponent {
   @Input() exclusion_keys = ['id', 'created_by', 'modified_on', 'deleted',
     'deleted_by', 'password_hash', 'last_ip']
   show_table: boolean = false;
+  displayedColumns: string[] = [];
+  @ViewChild(MatSort) sort!: MatSort;
+  @Input() actions: DataActionsButton[] = [];
+
   constructor(private dbService: HttpService,
     private notify: NotifyService) {
     this.frameworkComponents = {
@@ -60,6 +68,7 @@ export class LoadDataListComponent {
       LinkNameComponent,
       DataListMenuButtonComponent
     }
+
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -67,7 +76,11 @@ export class LoadDataListComponent {
   }
 
   ngOnInit(): void {
-    // this.getData();
+
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -96,20 +109,18 @@ export class LoadDataListComponent {
     const extra = `offset=${this.offset}&limit=${this.limit}`;
     const url = this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
 
-    this.dbService.get<any>(url).pipe(takeUntil(this.destroy$))
+    this.dbService.get<{data:any[], pager: Pager, columnLabels:any, displayColumns: string[]}>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data: any) => {
-          //console.log(data.records);
-          if (data.status === "1") {
-            this.objects = data.data;
+        next: (data) => {
+            this.dataSource = new MatTableDataSource(data.data);
             this.error = false;
-            this.total_rows = data.total;
-            this.prepData();
-          }
-          else {
-            this.error = true;
-            this.error_message = data.message;
-          }
+            this.total_rows = data.pager.total;
+            this.displayedColumns = ['#', "actions",...data.displayColumns];
+            this.columnLabels = data.columnLabels
+            console.log(this.columnLabels)
+            this.show_table = true;
+            // this.prepData();
+
         },
         error: (err) => {
           this.loading = false;
@@ -118,6 +129,14 @@ export class LoadDataListComponent {
           this.loading = false;
         }
       });
+  }
+
+  getColumnLabel(column:string):string{
+    if(this.columnLabels && this.columnLabels[column]){
+    return this.columnLabels[column];
+  }
+  const fullName = column.replace(/[-_]/g, ' ');
+    return fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
   }
 
   setSelected(args: any) {
@@ -132,62 +151,67 @@ export class LoadDataListComponent {
   }
 
   /**
-   * called when selection is made 
+   * called when selection is made
    */
   onSelectionChanged(params: SelectionChangedEvent) {
     var selectedRows = this.gridApi.getSelectedRows();
     this.onSelect.emit(selectedRows)
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+   }
+
   prepData() {
 
     this.show_table = false;
-    if (!this.columnDefs) {
-      this.columnDefs = [
-        {
-          headerName: '#',
-          valueGetter: "node.rowIndex + 1",
-          width: 60,
-          checkboxSelection: true,
-          headerCheckboxSelection: true
-        }
-      ];
+    // if (!this.columnDefs) {
+      // this.columnDefs = [
+      //   {
+      //     headerName: '#',
+      //     valueGetter: "node.rowIndex + 1",
+      //     width: 60,
+      //     checkboxSelection: true,
+      //     headerCheckboxSelection: true
+      //   }
+      // ];
       // console.log(this.objects)
-      if (this.objects.length > 0) {
-        //extract the keys
-        console.log(this.objects[0])
-        let keys = extractKeys(this.objects[0], this.exclusion_keys);
-        keys.forEach(key => {
-          let label = getLabelFromKey(key);
-          if (this.image_keys.indexOf(key) == -1) {
+      // if (this.objects.length > 0) {
+      //   //extract the keys
+      //   console.log(this.objects[0])
+      //   let keys = extractKeys(this.objects[0], this.exclusion_keys);
+      //   keys.forEach(key => {
+      //     let label = getLabelFromKey(key);
+      //     if (this.image_keys.indexOf(key) == -1) {
 
-            this.columnDefs.push(
-              { headerName: label, field: key, sortable: true, filter: true },
+      //       this.columnDefs.push(
+      //         { headerName: label, field: key, sortable: true, filter: true },
 
-            )
-            this.getRowHeight = function (params) {
-              return 85;
-            };
-          }
-          else {
-            this.columnDefs.push(
-              {
-                headerName: label, field: key,
-                cellRenderer: "JsonDisplayComponent",
+      //       )
+      //       this.getRowHeight = function (params) {
+      //         return 85;
+      //       };
+      //     }
+      //     else {
+      //       this.columnDefs.push(
+      //         {
+      //           headerName: label, field: key,
+      //           cellRenderer: "JsonDisplayComponent",
 
-                cellRendererParams: {
-                  type: 'custom',
-                  field_type: 'ignore',
-                  field_to_use: 'picture',
-                  is_image: true
-                },
-              },
-            )
-          }
+      //           cellRendererParams: {
+      //             type: 'custom',
+      //             field_type: 'ignore',
+      //             field_to_use: 'picture',
+      //             is_image: true
+      //           },
+      //         },
+      //       )
+      //     }
 
-        });
-      }
-    }
+      //   });
+      // }
+    // }
     this.show_table = true;
   }
 }

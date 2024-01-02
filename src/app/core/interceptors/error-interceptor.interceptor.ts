@@ -24,7 +24,7 @@ export class ErrorInterceptorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         //display a toast with the error message
         this.notify.failNotification(error.message)
-        return throwError(() => new Error(error.message));
+        return throwError(() => error);
 
       })
     );

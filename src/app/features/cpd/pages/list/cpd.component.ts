@@ -13,8 +13,8 @@ import { API_CPD_PATH } from 'src/app/shared/utils/constants';
 })
 export class CpdComponent implements OnInit {
   //permissions
-  can_edit: boolean = true;
-  can_delete: boolean = true;
+  can_edit: boolean = false;
+  can_delete: boolean = false;
 
   base_url: string = `${API_CPD_PATH}/getCpds`;
   year: any
@@ -43,8 +43,8 @@ export class CpdComponent implements OnInit {
     },
 
     {
-      headerName: 'Topic', 
-      sortable: true, cellClass: 'bordered', 
+      headerName: 'Topic',
+      sortable: true, cellClass: 'bordered',
       cellRenderer: 'LinkNameComponent',
       cellRendererParams: (params: ICellRendererParams) => ({
         link: `cpd/details/${params.data.id}`,
@@ -91,11 +91,11 @@ export class CpdComponent implements OnInit {
 
   constructor(private dbService: HttpService, private dateService: DateService,
     private notify: NotifyService, private authService: AuthService) {
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Content.Edit") == -1) {
-      this.can_edit = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
+      this.can_edit = true;
     }
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Content.Delete") == -1) {
-      this.can_delete = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Content.Delete")) {
+      this.can_delete = true;
     }
     var date = new Date();
     this.year = date.getFullYear().toString();

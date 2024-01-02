@@ -47,14 +47,29 @@ export class ErrorInterceptorService implements HttpInterceptor {
           // client-side error
           errorMessage = `Connection Error: ${error.error.message}`;
 
-        } else {
+        }
+        else if(typeof(error.error) === "string"){
+          errorMessage = `${error.error}`;
+        }
+        else if(typeof(error.error) === "object"){
+          if('message' in error.error){
+            errorMessage = error.error.message;
+          }
+          else{
+            errorMessage = JSON.stringify( error.error)
+          }
+
+        }
+
+        else {
           // server-side error
-          errorMessage = `Server Error Code: ${error.status}\nMessage: ${error.message}`;
-         
+
+          errorMessage = `Server Error Code: ${error.status}\n Message: ${error.message}`;
+
         }
         this.notify.failNotification(errorMessage)
 
-        return throwError(() => new Error(errorMessage));
+        return throwError(() => error);
       })
     );
   }

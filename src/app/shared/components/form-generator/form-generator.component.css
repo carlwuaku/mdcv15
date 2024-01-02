@@ -1,0 +1,13 @@
+.vertical{
+    flex-direction: column;
+}
+
+.flex{
+    display: flex;
+    gap: 8px; 
+}
+
+.horizontal{
+    flex-direction: row;
+    
+}

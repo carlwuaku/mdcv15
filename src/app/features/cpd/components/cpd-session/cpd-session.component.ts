@@ -18,8 +18,8 @@ export class CpdSessionComponent implements OnInit {
   @Input() cpd!: CpdObject;
 
 
-  can_create: boolean = true;
-  can_add_attendance: boolean = true;
+  can_create: boolean = false;
+  can_add_attendance: boolean = false;
 
   objects: CpdSessionObject[] = [];
   is_loading: boolean = false;
@@ -29,11 +29,11 @@ export class CpdSessionComponent implements OnInit {
 
   constructor(private dbService: HttpService, private dateService: DateService,
     private notify: NotifyService, private authService: AuthService) {
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Facilities.Manage") == -1) {
-      this.can_create = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Facilities.Manage")) {
+      this.can_create = true;
     }
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Attendance.Create") == -1) {
-      this.can_add_attendance = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Attendance.Create")) {
+      this.can_add_attendance = true;
       //this.goBack();
     }
   }

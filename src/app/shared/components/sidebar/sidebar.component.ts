@@ -281,35 +281,35 @@ export class SidebarComponent {
       children: [
         {
           title: "New User",
-          url: "/add_user"
+          url: "/admin/add_user"
         },
         {
           title: "View Users",
-          url: "/users"
+          url: "/admin/users"
         },
         {
           title: "Manage Roles",
-          url: "/roles"
+          url: "/admin/roles"
         },
         {
           title: "Permissions",
-          url: "/permission_matrix"
+          url: "/admin/permission_matrix"
         },
         {
           title: "System Settings",
-          url: "/settings"
+          url: "/admin/settings"
         },
         {
           title: "Flags",
-          url: "/flags"
+          url: "/admin/flags"
         },
         {
           title: "Activities",
-          url: "/view_activities"
+          url: "/admin/view_activities"
         },
         {
           title: "Logs",
-          url: "/logs"
+          url: "/admin/logs"
         }
       ]
     }

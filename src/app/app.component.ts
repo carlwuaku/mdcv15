@@ -5,6 +5,8 @@ import { AnalyticsService } from "./core/services/analytics/analytics.service";
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './core/auth/auth.service';
+import { HttpService } from './core/services/http/http.service';
+import { API_PATH } from './shared/utils/constants';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +21,20 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private analyticsService: AnalyticsService,
-  private authService: AuthService) {
+  private authService: AuthService,
+  private dbService: HttpService) {
     this.isLoggedIn = this.authService.checkLogin("")
   }
 
   ngOnInit(): void {
+    this.dbService.get<{data: string}>(API_PATH+'/app-name').subscribe({
+      next :(response) =>{
+        this.title = response.data
+      },
+      error(err) {
+        console.log(err)
+      },
+    })
     // this.analyticsService.startGoogleAnalytics();
 
     // this.router.events.subscribe((item) => {

@@ -24,3 +24,7 @@ export function replace_underscore(str:string, sub:string):string {
     return str.replace(/_/g, sub);
 }
 
+export function goBackHome(){
+    window.location.assign('/')
+}
+

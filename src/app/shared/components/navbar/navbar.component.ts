@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MenuItem } from 'primeng/api/menuitem';
 import { AuthService } from 'src/app/core/auth/auth.service';
 
@@ -10,8 +11,8 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 export class NavbarComponent {
   @Input() showBackButton:boolean = false;
   items: MenuItem[] = [];
-  constructor(private authService: AuthService) {
-    
+  constructor(public authService: AuthService, private route: ActivatedRoute) {
+
   }
   logout() {
     this.authService.logout();

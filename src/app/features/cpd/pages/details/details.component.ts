@@ -19,8 +19,8 @@ import { take } from 'rxjs';
 })
 export class DetailsComponent implements OnInit {
   id: string;
-  can_view: boolean = true;
-  can_edit: boolean = true;
+  can_view: boolean = false;
+  can_edit: boolean = false;
   can_delete: boolean = true;
   error: boolean = false
   is_loading: boolean = true;
@@ -55,13 +55,13 @@ export class DetailsComponent implements OnInit {
     private notify: NotifyService, private router: Router
     , private authService: AuthService, ar: ActivatedRoute, private titleService: TitleService) {
     this.id = ar.snapshot.params['id'];
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Attendance.Create") == -1) {
-      this.can_edit = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Attendance.Create")) {
+      this.can_edit = true;
       //this.goBack();
     }
 
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Attendance.Delete") == -1) {
-      this.can_delete = false;
+    if (this.authService.currentUser?.permissions.includes("Cpd.Attendance.Delete")) {
+      this.can_delete = true;
       //this.goBack();
     }
     this.titleService.setTitle("CPD");

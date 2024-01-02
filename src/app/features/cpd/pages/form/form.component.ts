@@ -12,6 +12,7 @@ import { API_CPD_PATH } from 'src/app/shared/utils/constants';
 import { AddCpdFacilityComponent } from '../../components/add-cpd-facility/add-cpd-facility.component';
 import { CpdFacilityObject } from '../../models/cpd_facility_model';
 import { CpdObject } from '../../models/cpd_model';
+import { goBackHome } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-form',
@@ -47,7 +48,7 @@ export class FormComponent {
   };
   selected_facility!:CpdFacilityObject;
   facility_id!: string;
- 
+
 
   can_view: boolean = true;
   can_create: boolean = true;
@@ -75,9 +76,9 @@ export class FormComponent {
   private router:Router) {
     //do the permissions
     this.titleService.setTitle("New CPD");
-    if (this.authService.currentUser.permissions.indexOf("Cpd.Content.Create") == -1) {
+    if (!this.authService.currentUser?.permissions.includes("Cpd.Content.Create")) {
       this.notify.notPermitted();
-      this.goBack();
+      goBackHome();
     }
 
     const date = new Date();
@@ -126,11 +127,9 @@ export class FormComponent {
     this.selected_facility = args
   }
 
-  
 
-  goBack() {
-    window.history.back();
-  }
+
+
 
   submit() {
 

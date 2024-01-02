@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { catchError, take } from 'rxjs';
-import { API_ADMIN_PATH, LOCAL_USER_ID, LOCAL_USER_KEY, LOGIN_FLASH_MESSSAGE } from 'src/app/shared/utils/constants';
+import { API_ADMIN_PATH, API_PATH, LOCAL_USER_ID, LOCAL_USER_KEY, LOCAL_USER_TOKEN, LOGIN_FLASH_MESSSAGE } from 'src/app/shared/utils/constants';
 import { AuthService } from '../../auth/auth.service';
-import { IUser } from '../../models/user.model';
+import { IUser, User } from '../../models/user.model';
 import { HttpService } from '../../services/http/http.service';
 
 @Component({
@@ -42,26 +42,19 @@ export class LoginComponent implements OnInit {
     this.error = false;
 
     let data = new FormData();
-    data.append('username', this.username);
+    data.append('email', this.username);
     data.append('password', this.password);
-    this.dbService.post<any>(`${API_ADMIN_PATH}/login`, data)
+    data.append('device_name','admin portal');
+    this.dbService.post<{token: string, user: User}>(`${API_PATH}/mobile_login`, data)
       .pipe(take(1))
-      .subscribe({next: (data:any) => {
-      if (data.status === "1") {
-        this.authService.currentUser = data.user_data;
-
-        this.authService.setCookie(LOCAL_USER_ID, data.user_data.id);
-
-        localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(data.user_data));
+      .subscribe({next: (response) => {
+        localStorage.setItem(LOCAL_USER_TOKEN, response.token);
+        this.authService.currentUser = response.user;
         window.location.assign('/');
-      }
-      else {
-        this.error = true;
-        this.loading = false;
-        this.error_message = "Wrong combination. Try again";
-      }
       },
       error: (err) => {
+        this.error = true;
+        this.error_message = err.error.message
         this.loading = false;
       },});
   }
@@ -72,7 +65,7 @@ export class LoginComponent implements OnInit {
 
   forgotPassword() {
     let input = window.prompt("Enter your username. If you have forgotten your username please contact the Registration Unit for assistance");
-    
+
     if (input) {
       const reg = input.trim();
       let data = new FormData();

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   name: "dev",
-  host: "http://localhost/mdcserver/",
+  host: "http://localhost:8080/",
   routeTracing: false,
   googleAnalyticsTrackingId: ""
 

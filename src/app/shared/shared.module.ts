@@ -26,6 +26,7 @@ import { PrepMessagingComponent } from './components/prep-messaging/prep-messagi
 import { LinkNameComponent } from './components/link-name/link-name.component';
 import { SelectObjectComponent } from './components/select-object/select-object.component';
 import { DataListMenuButtonComponent } from './components/data-list-menu-button/data-list-menu-button.component';
+import { FormGeneratorComponent } from './components/form-generator/form-generator.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DataListMenuButtonComponent } from './components/data-list-menu-button/
     PrepMessagingComponent,
     LinkNameComponent,
     SelectObjectComponent,
-    DataListMenuButtonComponent
+    DataListMenuButtonComponent,
+    FormGeneratorComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -82,7 +84,8 @@ import { DataListMenuButtonComponent } from './components/data-list-menu-button/
     ApiCountComponent,
     PrepMessagingComponent,
     LoadDataListComponent,
-    SelectObjectComponent
+    SelectObjectComponent,
+    FormGeneratorComponent
   ],
   providers: [
     ClipboardCopyDirective

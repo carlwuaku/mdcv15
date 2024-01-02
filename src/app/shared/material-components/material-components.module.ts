@@ -9,6 +9,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 const modules = [
   MatDialogModule,
@@ -19,7 +21,9 @@ const modules = [
   MatExpansionModule,
   MatSnackBarModule,
   MatProgressSpinnerModule,
-  MatMenuModule
+  MatMenuModule,
+  MatTableModule,
+  MatSortModule
 ];
 @NgModule({
   declarations: [],

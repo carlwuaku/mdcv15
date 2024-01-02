@@ -36,11 +36,11 @@
 
 
 
-    <!-- <li class="nav-item">
-                  <a [routerLink]="['/change_password']" class="nav-link submenu" role="button">
-                    <i class="fa fa-edit"></i> Change Your Password 
-                  </a>
-                </li> -->
+    <li class="nav-item">
+      <a [routerLink]="['/change_password']" class="nav-link submenu" role="button">
+        <i class="fa fa-edit"></i> {{authService.currentUser?.username}}
+      </a>
+    </li>
     <li class="nav-item">
       <a (click)="logout()" class="nav-link submenu " role="button">
         Logout <i class="fa fa-power-off"></i>

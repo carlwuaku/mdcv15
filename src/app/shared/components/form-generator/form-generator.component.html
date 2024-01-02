@@ -1,0 +1,37 @@
+<button *ngIf="enableShowHideButton" class="btn btn-sm btn-primary" (click)="showOrHide()">{{show ? 'Hide' : 'Show'}} {{showHideButtonTitle}}</button>
+<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? submit() : generateFilterUrl()">
+    <div class=" ">
+        <div class="row">
+            <ng-container *ngFor="let field of fields; let i = index">
+                <div class="col-md-{{12 / numOfRows}}">
+                    <label>{{field.label}} <span *ngIf="field.required">*</span></label><br>
+                    <ng-container [ngSwitch]="field.type">
+                        <div *ngSwitchCase="'radio'">
+                            <span *ngFor="let option of field.options">
+                                <input type="radio" [value]="option.value" [(ngModel)]="field.value"
+                                    name="{{field.label}}" />
+                                {{option.key}}</span>
+                        </div>
+
+                        <select  class="form-control" [required]="field.required" *ngSwitchCase="'select'" [(ngModel)]="field.value"
+                            name="{{field.label}}">
+                            <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
+                        </select>
+
+                        <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
+                            [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
+                            [type]="field.apiType!" [initialValue]="field.value"
+                            (selectionChanged)="setFieldValue($event, field)" >
+                        </app-select-object>
+
+                        <input  class="form-control" *ngSwitchDefault [required]="field.required" type="{{field.type}}"
+                            [(ngModel)]="field.value" name="{{field.label}}" />
+                    </ng-container>
+                </div>
+                <!-- Start a new row if index is a multiple of numOfRows or it's the last iteration -->
+                <div *ngIf="(i + 1) % numOfRows === 0 || i === fields.length - 1" class="w-100"></div>
+            </ng-container>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary">{{submitButtonText}}</button>
+</form>

@@ -45,25 +45,25 @@ export class HttpService {
     return result;
   }
 
-  
+
 
   public get<T>(url: string, doNotEncode?: boolean): Observable<T> {
     const headers = this.getHeaders();
-    if (url.indexOf("?") == -1) {
-      url += "?ts=" + this.dateService.getToday("timestamp")
-    }
-    else {
-      url += "&ts=" + this.dateService.getToday("timestamp")
-    }
+    // if (url.indexOf("?") == -1) {
+    //   url += "?ts=" + this.dateService.getToday("timestamp")
+    // }
+    // else {
+    //   url += "&ts=" + this.dateService.getToday("timestamp")
+    // }
 
-    return this.httpClient.get<T>(this.constructURL(url, doNotEncode), { headers: headers }).pipe(
+    return this.httpClient.get<T>(this.constructURL(url), { headers: headers}).pipe(
       map(data => {
         return data;
       })
     );
   }
 
-  public post<T>(url: string, data: FormData): Observable<T> {
+  public post<T>(url: string, data: any): Observable<T> {
     return this.httpClient.post<T>(this.constructURL(url), data)
   }
 
@@ -74,5 +74,5 @@ export class HttpService {
 
     return this.httpClient.delete<T>(this.constructURL(url), options);
   }
-  
+
 }

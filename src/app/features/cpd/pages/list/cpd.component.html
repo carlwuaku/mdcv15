@@ -2,16 +2,16 @@
     <h4>LIST OF CPD EVENTS <small><button [routerLink]="['/cpd/add']" mat-raised-button color="primary"><mat-icon>add</mat-icon> Add a new CPD event </button> </small> </h4>
     <div class="card">
         <div class="card-header">
-            
+
             <!-- <a class="btn btn-primary" (click)="sms()">sms</a> -->
             <form class="" ngNativeValidate #n="ngForm" (ngSubmit)="setUrl()">
                 <label>Select year</label> <input required type="number" name="year" value="" [(ngModel)]="year">
                 <button mat-raised-button color="primary" type="submit">Query</button>
             </form>
-    
+
         </div>
         <div class="card-body">
-        <app-load-data-list [getRowHeight]="rowHeight" [columnDefs]="columnDefs" [url]="url"></app-load-data-list>
+        <app-load-data-list [getRowHeight]="rowHeight" [url]="url"></app-load-data-list>
         </div>
     </div>
 </div>
