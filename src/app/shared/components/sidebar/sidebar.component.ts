@@ -281,7 +281,7 @@ export class SidebarComponent {
       children: [
         {
           title: "New User",
-          url: "/admin/add_user"
+          url: "/admin/userForm"
         },
         {
           title: "View Users",

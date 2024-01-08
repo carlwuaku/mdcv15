@@ -1,10 +1,11 @@
 <button *ngIf="enableShowHideButton" class="btn btn-sm btn-primary" (click)="showOrHide()">{{show ? 'Hide' : 'Show'}} {{showHideButtonTitle}}</button>
-<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? submit() : generateFilterUrl()">
+<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? submit() : generateFilterUrl()" class="flex-col gap4">
     <div class=" ">
         <div class="row">
             <ng-container *ngFor="let field of fields; let i = index">
                 <div class="col-md-{{12 / numOfRows}}">
                     <label>{{field.label}} <span *ngIf="field.required">*</span></label><br>
+                    <span class="text-muted">{{field.hint}}</span> <br>
                     <ng-container [ngSwitch]="field.type">
                         <div *ngSwitchCase="'radio'">
                             <span *ngFor="let option of field.options">

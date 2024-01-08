@@ -12,6 +12,8 @@ export class User {
     picture: string;
     active: string;
     phone: string;
+    deleted_at: string |null;
+    status: string;
 
     constructor(data?:IUser) {
         this.id = data?.id || "";
@@ -26,7 +28,9 @@ export class User {
         this.position = data?.position || "";
         this.picture = data?.picture || "";
         this.active = data?.active || "";
-        this.phone = data?.phone || ""
+        this.phone = data?.phone || "";
+        this.deleted_at = "";
+        this.status = "";
     }
 }
 

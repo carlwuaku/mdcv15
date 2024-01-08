@@ -67,7 +67,16 @@ export class HttpService {
     return this.httpClient.post<T>(this.constructURL(url), data)
   }
 
-  public delete<T>(url: string, data: FormData): Observable<T> {
+  public put<T>(url: string, data: any): Observable<T> {
+    if (data instanceof FormData) {
+      const object:{[key:string]:any} = {};
+      data.forEach((value, key) => object[key] = value);
+      data = object;
+    }
+    return this.httpClient.put<T>(this.constructURL(url), data)
+  }
+
+  public delete<T>(url: string, data?: FormData): Observable<T> {
     const options = {
       body: data
     };

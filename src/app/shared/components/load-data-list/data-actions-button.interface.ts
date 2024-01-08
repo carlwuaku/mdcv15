@@ -1,8 +1,9 @@
 export interface DataActionsButton
   {
     label: string,
-    onClick?: Function,
+    onClick?: Function | void,
     icon?: string,
     type: "button" | "link",
-    link?:string
+    link?:string,
+    linkProp?: string
   }

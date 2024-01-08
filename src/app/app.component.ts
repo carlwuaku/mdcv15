@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './core/auth/auth.service';
 import { HttpService } from './core/services/http/http.service';
 import { API_PATH } from './shared/utils/constants';
-
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,8 +22,13 @@ export class AppComponent implements OnInit {
     private router: Router,
     private analyticsService: AnalyticsService,
   private authService: AuthService,
-  private dbService: HttpService) {
+  private dbService: HttpService,
+  private ar: ActivatedRoute) {
     this.isLoggedIn = this.authService.checkLogin("")
+    this.ar.data.subscribe(data => {
+      console.log(data['title']); // Logs 'some title'
+      this.title = data['title']
+    });
   }
 
   ngOnInit(): void {

@@ -1,2 +1,9 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
+.mini-card{
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+align-items: center;
+}
+

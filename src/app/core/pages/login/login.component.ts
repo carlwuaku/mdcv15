@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     data.append('email', this.username);
     data.append('password', this.password);
     data.append('device_name','admin portal');
-    this.dbService.post<{token: string, user: User}>(`${API_PATH}/mobile_login`, data)
+    this.dbService.post<{token: string, user: User}>(`${API_PATH}/mobile-login`, data)
       .pipe(take(1))
       .subscribe({next: (response) => {
         localStorage.setItem(LOCAL_USER_TOKEN, response.token);

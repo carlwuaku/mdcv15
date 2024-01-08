@@ -14,9 +14,10 @@ export class FormGeneratorComponent implements OnInit {
   @Input() fields: IFormGenerator[] = [];
   @Input() extraData: {key:string, value:any}[] = []
   @Input() url: string = "";
-  @Input() module: string = "";
   @Input() id: string | undefined | null;
+
   @Output() onSubmit = new EventEmitter();
+
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
   @Input() formType: "submit" | "filter" = "submit";
@@ -24,11 +25,12 @@ export class FormGeneratorComponent implements OnInit {
   @Input() enableShowHideButton: boolean = false;
   @Input() formClass: string = "vertical";
   @Input() showHideButtonTitle: string = "form";
+
   @Output() emitFields = new EventEmitter();
   @Input() numOfRows: number = 3;
   @Input() validationRules:any = {}
   constructor(private notify: NotifyService,
-    private dbService: HttpService, private authService:AuthService) { }
+    private dbService: HttpService) { }
 
   ngOnInit(): void {
     //if an id was provided, get the existing object
@@ -70,36 +72,31 @@ export class FormGeneratorComponent implements OnInit {
     this.notify.showLoading();
     const data = new FormData();
     this.fields.forEach(field => {
+      if(field.value)
       data.append(field.name, field.value)
     });
     this.extraData.forEach(item => {
       data.append(item.key, item.value)
-    })
+    });
+    let dbCall = this.dbService.post<any>(this.url, data)
     if (this.id) {
       data.append("id", this.id)
+     dbCall = this.dbService.put<any>(this.url, data);
     }
 
 
-    this.dbService.post<any>(this.url, data).subscribe({
+    dbCall.subscribe({
       next: data => {
-      // console.log(data);
-      this.notify.hideLoading();
-      if (data.status === '1') {
         this.notify.successNotification('Submitted successfully');
         this.onSubmit.emit(true)
-      }
-      else {
-        this.notify.failNotification(data.message);
-        this.onSubmit.emit(false)
 
-      }
 
     },
     error: error => {
       this.notify.hideLoading();
-      this.notify.noConnectionNotification();
+      // this.notify.noConnectionNotification();
 
-      // console.log(error);
+      console.log(error);
 
     }
   });

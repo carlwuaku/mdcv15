@@ -30,19 +30,20 @@ export class SelectObjectComponent implements OnInit, OnChanges{
 
 
   constructor(private dbService: HttpService, private dateService:DateService) {
-    
+
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.getData();
+    // this.getData();
   }
   ngOnInit(): void {
+    this.getData()
   }
 
 
 
   getData() {
     this.loading = true;
-    
+
     this.dbService.get<any>(this.url).pipe(take(1))
       .subscribe({
         next: (data: any) => {
@@ -54,7 +55,7 @@ export class SelectObjectComponent implements OnInit, OnChanges{
           }
           this.isLoaded = true;
             this.error = false;
-          
+
         },
         error: (err) => {
           this.error = true;
@@ -68,11 +69,14 @@ export class SelectObjectComponent implements OnInit, OnChanges{
   }
 
   selectionMade() {
-    if (this.selectedItem) {
-      const selected = this.objects.find((value) => value[this.keyProperty] === this.selectedItem);
-      this.selectionChanged.emit(selected);
-    }
-    
+    // if (this.selectedItem) {
+    //   console.log(this.selectedItem)
+    //   const selected = this.objects.find((value) => value[this.keyProperty] === this.selectedItem);
+
+    // }
+    console.log(this.selectedItem)
+    this.selectionChanged.emit(this.selectedItem);
+
   }
 
 

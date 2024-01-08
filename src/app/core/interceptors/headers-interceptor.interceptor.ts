@@ -21,7 +21,6 @@ export class HeadersInterceptorInterceptor implements HttpInterceptor {
     }
     let headers: HttpHeaders = request.headers;
     const token = localStorage.getItem(LOCAL_USER_TOKEN);
-    console.log(token)
     if(token){
      headers = headers.set('Authorization', `Bearer ${token}`)
     }

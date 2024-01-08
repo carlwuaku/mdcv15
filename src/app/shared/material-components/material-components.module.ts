@@ -11,7 +11,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-
+import { MatSelectModule } from '@angular/material/select'
 const modules = [
   MatDialogModule,
   MatCardModule,
@@ -23,7 +23,8 @@ const modules = [
   MatProgressSpinnerModule,
   MatMenuModule,
   MatTableModule,
-  MatSortModule
+  MatSortModule,
+  MatSelectModule
 ];
 @NgModule({
   declarations: [],

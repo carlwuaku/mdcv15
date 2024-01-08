@@ -3,14 +3,17 @@
   <div class="main"></div>
   <app-sidebar></app-sidebar>
   <div class="content-wrapper">
-    <div class="container">
+    <section class="content">
+      <div class="container flex-col gap4">
+        <h4>{{title}}</h4>
       <router-outlet></router-outlet>
     </div>
+    </section>
   </div>
 
 </div>
   <p-toast></p-toast>
- 
+
 <ng-template #login>
       <app-login></app-login>
 </ng-template>
