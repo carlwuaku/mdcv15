@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { DateService } from 'src/app/core/date/date.service';
+import { Component, EventEmitter } from '@angular/core';
 import { User } from 'src/app/core/models/user.model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
+import { getToday } from 'src/app/shared/utils/dates';
 
 @Component({
   selector: 'app-users',
@@ -11,8 +11,12 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 })
 export class UsersComponent {
 
-  constructor(private dbService: HttpService, private dateService: DateService) { }
-
+  constructor(private dbService: HttpService) {
+    this.updateTimestampEvent.subscribe(() => {
+      this.updateTimestamp();
+    });
+  }
+  updateTimestampEvent: EventEmitter<void> = new EventEmitter();
   columnDefs = [
     {
       headerName: '#',
@@ -47,7 +51,7 @@ export class UsersComponent {
         return;
       }
       this.dbService.put("admin/users/" + user.id + "/activate", { "active": 1 }).subscribe({
-        next: response => { this.ts = this.dateService.getToday("timestamp_string"); },
+        next: response => { this.updateTimestamp(); },
         error: error => { }
       })
     }
@@ -58,7 +62,7 @@ export class UsersComponent {
       }
       this.dbService.delete("admin/users/" + user.id).subscribe({
         next: data => {
-          this.ts = this.dateService.getToday("timestamp_string");
+          this.updateTimestamp();
         },
         error: error => {
 
@@ -70,13 +74,12 @@ export class UsersComponent {
       const reason = window.prompt("Please state a reason for deactivating this user");
       const data = reason ? { "reason": reason } : {}
       this.dbService.put(`admin/users/${user.id}/deactivate`, data).subscribe({
-        next: response => { this.ts = this.dateService.getToday("timestamp_string"); },
+        next: response => { this.updateTimestamp(); },
         error: error => { }
       })
     }
     const actions: DataActionsButton[] = [
-      { label: "Edit", type: "link", link: `admin/userForm/`, linkProp: 'id' },
-      { label: "Delete", type: "button", onClick: (user: User) => { deleteUser(user) } },
+
     ];
     if (user.status !== null) {
       actions.push(
@@ -85,6 +88,7 @@ export class UsersComponent {
     }
     else {
       actions.push(
+        { label: "Edit", type: "link", link: `admin/userForm/`, linkProp: 'id' },
         {
           label: "Deactivate Account", type: "button", onClick: (user: User) => { deactivate(user) }
         }
@@ -92,6 +96,10 @@ export class UsersComponent {
       )
     }
     return actions;
+  }
+
+  updateTimestamp(){
+    this.ts = getToday("timestamp_string");
   }
 
   setSelectedItems(users: User[]) { }
