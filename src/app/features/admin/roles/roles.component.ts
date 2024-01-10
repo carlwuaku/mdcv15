@@ -3,6 +3,8 @@ import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { Role } from '../models/roles.model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
+import { getToday } from 'src/app/shared/utils/dates';
+import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
   selector: 'app-roles',
@@ -11,38 +13,12 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 })
 export class RolesComponent {
 
-  constructor(private dbService: HttpService, public dateService: DateService){}
+  constructor(private dbService: HttpService, private notify:NotifyService){}
   baseUrl: string = "admin/roles";
   url: string = "admin/roles?withDeleted=yes";
   ts: string = "";
 
-  getActions(role: Role): DataActionsButton[] {
-
-    const self = this;
-    const activate = (role: Role) => {
-      if (!window.confirm('Are you sure you want to re-activate this role?')) {
-        return;
-      }
-      this.dbService.put("admin/roles/" + role.role_id + "/restore", { }).subscribe({
-        next: response => { self.ts = this.dateService.getToday("timestamp_string"); },
-        error: error => { }
-      })
-    }
-
-    const deleteRole = (role: Role) => {
-      if (!window.confirm('Are you sure you want to deactivate this role? This will prevent the role from receiving new users, but will not affect existing users. You will be able to restore it')) {
-        return;
-      }
-      this.dbService.delete("admin/roles/" + role.role_id).subscribe({
-        next: data => {
-          this.ts = this.dateService.getToday("timestamp_string");
-        },
-        error: error => {
-
-        }
-      })
-    }
-
+  getActions = (role: Role): DataActionsButton[]=> {
 
     const actions: DataActionsButton[] = [
 
@@ -50,17 +26,44 @@ export class RolesComponent {
 
     if (role.deleted_at !== null) {
       actions.push(
-        { label: "Activate", type: "button", onClick: (role: Role) => { activate(role) } }
+        { label: "Activate", type: "button", onClick: (role: Role) => this.activate(role) }
       )
     }
     else {
       actions.push(
         { label: "Edit details", type: "link", link: `admin/role-form/`, linkProp: 'role_id' },
         { label: "Edit permissions", type: "link", link: `admin/role-permissions/`, linkProp: 'role_id' },
-        { label: "Deactivate", type: "button", onClick: (role: Role) => { deleteRole(role) } }
+        { label: "Deactivate", type: "button", onClick: (role: Role) => this.deleteRole(role)}
       )
     }
     return actions;
+  }
+
+  activate(role: Role){
+    if (!window.confirm('Are you sure you want to re-activate this role?')) {
+      return;
+    }
+    this.dbService.put<{message:string}>("admin/roles/" + role.role_id + "/restore", { }).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+         this.updateTimestamp(); },
+      error: error => {  }
+    })
+  }
+
+  deleteRole (role: Role) {
+    if (!window.confirm('Are you sure you want to deactivate this role? This will prevent the role from receiving new users, but will not affect existing users. You will be able to restore it')) {
+      return;
+    }
+    this.dbService.delete<{message:string}>("admin/roles/" + role.role_id).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+         this.updateTimestamp(); },
+      error: error => {  }
+    })
+  }
+  updateTimestamp(){
+    this.ts = getToday("timestamp_string");
   }
 
   setSelectedItems(users: Role[]) { }
