@@ -5,8 +5,8 @@
 
 
   <div class="mini-card">
-    <em>{{selectedItems.length}} Selected:</em>
-    <!-- <app-export-table [objects]="objects"></app-export-table> -->
+    <em>{{selection.selected.length}} Selected:</em>
+    <app-export-table [objects]="selection.selected"></app-export-table>
     <button (click)="getData()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reload </button>
 
   </div>
@@ -18,12 +18,36 @@
 
     </form>
   </div>
-
+  <div class="alert alert-info" role="alert">
+    Click on a column header to sort the table. <br>
+    To export the data, e.g. to excel format, select the rows you would like to export. Use the top checkbox to select all
+  </div>
 
   <div class="table-responsive">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  matSort>
-      <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{getColumnLabel(column)}} </th>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+     <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
+
+          <span [ngSwitch]="column">
+            <span *ngSwitchCase="'select'">
+              <th mat-header-cell *matHeaderCellDef >
+              <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+              </mat-checkbox>
+              </th>
+            </span>
+            <span *ngSwitchCase="'#'"><th mat-header-cell *matHeaderCellDef >#</th> </span>
+            <span *ngSwitchCase="'actions'"><th mat-header-cell *matHeaderCellDef >Actions</th> </span>
+            <span *ngSwitchDefault>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{getColumnLabel(column)}}
+              </th>
+            </span>
+
+
+          </span>
+
+
         <td mat-cell *matCellDef="let element; let i = index;">
           <span [ngSwitch]="column">
             <span *ngSwitchCase="'#'">{{i + 1}}</span>
@@ -54,6 +78,12 @@
                   <span>{{ action.label }}</span>
                 </a>
               </ng-template>
+            </span>
+
+            <span *ngSwitchCase="'select'">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+                [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
+              </mat-checkbox>
             </span>
 
             <span *ngSwitchDefault>

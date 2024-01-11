@@ -13,6 +13,7 @@ import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSelectModule } from '@angular/material/select';
 import {MatListModule} from '@angular/material/list';
+import {MatCheckboxModule} from '@angular/material/checkbox'
 const modules = [
   MatDialogModule,
   MatCardModule,
@@ -26,7 +27,8 @@ const modules = [
   MatTableModule,
   MatSortModule,
   MatSelectModule,
-  MatListModule
+  MatListModule,
+  MatCheckboxModule
 ];
 @NgModule({
   declarations: [],

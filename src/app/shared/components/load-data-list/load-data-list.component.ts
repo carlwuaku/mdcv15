@@ -6,6 +6,7 @@ import { Pager } from './Pager.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-load-data-list',
@@ -46,6 +47,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   // @Input() actions: DataActionsButton[] = [];
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
   @Input() searchParam = "";
+  selection = new SelectionModel<any>(true, []);
   constructor(private dbService: HttpService,
     private notify: NotifyService) {
 
@@ -57,7 +59,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnInit(): void {
-
+    this.selection.changed.subscribe((data) => {
+      console.log(data.source.selected);
+      this.onSelect.emit(data.source.selected)
+    })
   }
 
   ngAfterViewInit() {
@@ -98,6 +103,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
 
+
+
   getData() {
     this.loading = true;
     this.showTable = false;
@@ -117,10 +124,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
           this.error = false;
           this.totalRows = data.total;
-          this.displayedColumns = ['#', "actions", ...data.displayColumns];
+          this.displayedColumns = ['#','select', "actions", ...data.displayColumns];
           this.columnLabels = data.columnLabels
           this.showTable = true;
-
+          this.dataSource.sort = this.sort;
         },
         error: (err) => {
           this.loading = false;
@@ -150,6 +157,31 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
 
