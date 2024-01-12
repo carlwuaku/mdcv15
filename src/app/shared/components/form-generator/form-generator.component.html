@@ -19,6 +19,9 @@
                             <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
                         </select>
 
+                        <textarea  class="form-control" [required]="field.required" *ngSwitchCase="'textarea'" [(ngModel)]="field.value"
+                            name="{{field.label}}"></textarea>
+
                         <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
                             [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
                             [type]="field.apiType!" [initialValue]="field.value"

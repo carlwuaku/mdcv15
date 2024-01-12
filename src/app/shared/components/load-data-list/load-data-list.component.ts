@@ -1,18 +1,19 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { Pager } from './Pager.interface';
 import { MatTableDataSource } from '@angular/material/table';
-import {MatSort, Sort} from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
   styleUrls: ['./load-data-list.component.scss']
 })
-export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
+export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   is_loading = false;
   // pagination things
@@ -31,7 +32,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
-  @Input() columnLabels?: {[key:string]: string};
+  @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
 
   @Input() image_keys = ['picture', 'qr_code']
@@ -44,8 +45,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   displayedColumns: string[] = [];
   @ViewChild(MatSort) sort!: MatSort;
   // @Input() actions: DataActionsButton[] = [];
-  @Input() getActions: (row:any) => DataActionsButton[] = (row:any) => [];
-
+  @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
+  @Input() searchParam = "";
+  selection = new SelectionModel<any>(true, []);
   constructor(private dbService: HttpService,
     private notify: NotifyService) {
 
@@ -57,7 +59,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   ngOnInit(): void {
-
+    this.selection.changed.subscribe((data) => {
+      console.log(data.source.selected);
+      this.onSelect.emit(data.source.selected)
+    })
   }
 
   ngAfterViewInit() {
@@ -65,6 +70,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(this.timestamp)
     this.offset = 0;
     this.currentPage = 1;
     this.getData();
@@ -83,27 +89,45 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
     this.getData();
   }
 
+  paramInputChanged() {
+    //when cleared, load everything
+    if (!this.searchParam.trim()) {
+      this.offset = 0;
+      this.getData();
+    }
+  }
+
+  search() {
+    this.offset = 0;
+    this.getData();
+  }
+
+
+
 
   getData() {
     this.loading = true;
     this.showTable = false;
-    const extra = `offset=${this.offset}&limit=${this.limit}`;
+    let extra = `page=${this.offset}&limit=${this.limit}`;
+    if (this.searchParam.trim()) {
+      extra += `&param=${this.searchParam}`
+    }
     const url = this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
 
-    this.dbService.get<{data:any[], pager: Pager, columnLabels:any, displayColumns: string[]}>(url).pipe(takeUntil(this.destroy$))
+    this.dbService.get<{ data: any[], total: number, columnLabels: any, displayColumns: string[] }>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-            data.data.map(item => {
-              item.actions = this.getActions(item)
-            })
-            this.dataSource = new MatTableDataSource(data.data);
+          data.data.map(item => {
+            item.actions = this.getActions(item)
+          })
+          this.dataSource = new MatTableDataSource(data.data);
 
-            this.error = false;
-            this.totalRows = data.pager.total;
-            this.displayedColumns = ['#', "actions",...data.displayColumns];
-            this.columnLabels = data.columnLabels
-            this.showTable = true;
-
+          this.error = false;
+          this.totalRows = data.total;
+          this.displayedColumns = ['#','select', "actions", ...data.displayColumns];
+          this.columnLabels = data.columnLabels
+          this.showTable = true;
+          this.dataSource.sort = this.sort;
         },
         error: (err) => {
           this.loading = false;
@@ -114,12 +138,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
       });
   }
 
-  getColumnLabel(column:string):string{
-    if(this.columnLabels && this.columnLabels[column]){
-    return this.columnLabels[column];
-  }
+  getColumnLabel(column: string): string {
+    if (this.columnLabels && this.columnLabels[column]) {
+      return this.columnLabels[column];
+    }
 
-  const fullName = column.replace(/[-_]/g, ' ');
+    const fullName = column.replace(/[-_]/g, ' ');
     return fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
   }
 
@@ -133,7 +157,32 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy{
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-   }
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
 
 
 }

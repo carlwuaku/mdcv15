@@ -1,1 +1,40 @@
-<p>role-permissions works!</p>
+<div>
+  <h3>{{role?.role_name}}</h3>
+  <em>{{role?.description}}</em><button mat-raised-button color="primary" (click)="getData()"><mat-icon>refresh</mat-icon> Refresh</button>
+</div>
+<div class="row">
+  <div class="col-6">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Current Permissions({{permissions.length}}) </mat-card-title>
+      <mat-card-subtitle>Click on a permission in the list if you want to remove it from this role</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-action-list >
+
+        <button  (click)="removePermission(permission)" mat-list-item  *ngFor="let permission of permissions">
+          <span matListItemTitle>{{permission.name}}</span>
+          <span matListItemLine>{{permission.description}}</span></button>
+      </mat-action-list>
+    </mat-card-content>
+  </mat-card>
+
+
+  </div>
+  <div class="col-6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Excluded Permissions({{excludedPermissions.length}}) </mat-card-title>
+        <mat-card-subtitle>Click on a permission in the list if you want to add it to this role</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-action-list>
+          <button (click)="addPermission(permission)" mat-list-item  *ngFor="let permission of excludedPermissions">
+            <span matListItemTitle>{{permission.name}}</span>
+            <span matListItemLine>{{permission.description}}</span></button>
+        </mat-action-list>
+      </mat-card-content>
+    </mat-card>
+
+</div>
+</div>
