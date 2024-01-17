@@ -60,7 +60,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   ngOnInit(): void {
     this.selection.changed.subscribe((data) => {
-      console.log(data.source.selected);
       this.onSelect.emit(data.source.selected)
     })
   }

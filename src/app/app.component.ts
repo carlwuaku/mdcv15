@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router';
 import { GoogleTagManagerService } from "angular-google-tag-manager";
 import { AnalyticsService } from "./core/services/analytics/analytics.service";
 import { TranslateService } from '@ngx-translate/core';
@@ -40,15 +40,19 @@ export class AppComponent implements OnInit {
         console.log(err)
       },
     })
-    // this.analyticsService.startGoogleAnalytics();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        let root: ActivatedRouteSnapshot = this.router.routerState.snapshot.root;
+        let titles = [];
+        while (root) {
+          if(root.data['title']){titles.push(  root.data['title']);}
 
-    // this.router.events.subscribe((item) => {
-    //   if (item instanceof NavigationEnd) {
-    //     const gtmTag = { event: 'page', pageName: item.url };
-    //     this.gtmService.pushTag(gtmTag).then(() => { }).catch(error => { });
-    //   }
-    // });
-    // this.analyticsService.trackPages(this.router);
+          root = root.firstChild!;
+        }
+        this.title = titles.join('/ ');
+      }
+    });
   }
+
 
 }
