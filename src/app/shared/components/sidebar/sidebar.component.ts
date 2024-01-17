@@ -89,7 +89,7 @@ export class SidebarComponent {
       ]
     },
     {
-      title: "Internship",
+      title: "Practitioners",
       has_children: true,
       active_children: false,
       url: "",
@@ -97,28 +97,9 @@ export class SidebarComponent {
       children: [
         {
           title: "Dashboard/Search",
-          url: "/intern_dashboard"
+          url: "/practitioners"
         },
-        {
-          title: "Add Intern",
-          url: "/add_intern"
-        },
-        {
-          title: "Add Posting",
-          url: "/add_posting"
-        },
-        {
-          title: "Facilities",
-          url: "/list_intern_facilities"
-        },
-        {
-          title: "GPPQE",
-          url: "/list_gppqe"
-        },
-        {
-          title: "Reports",
-          url: "/interns_reports"
-        }
+
       ]
     },
     {

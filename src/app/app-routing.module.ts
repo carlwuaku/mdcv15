@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'cpd',
   loadChildren: () => import('./features/cpd/cpd.module').then(m => m.CpdModule) },
   { path: 'practitioners', loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },
-  { path: 'admin', resolve: {userData: UserResolver}, loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
+  { path: 'admin', data:{title: "Admin"}, resolve: {userData: UserResolver}, loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   {
     path: '**',
     redirectTo: '',
