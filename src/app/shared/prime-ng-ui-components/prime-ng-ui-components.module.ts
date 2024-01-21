@@ -59,6 +59,7 @@ import { TimelineModule } from 'primeng/timeline';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
+import { DeferModule } from 'primeng/defer';
 
 const modules = [
   AccordionModule,
@@ -118,7 +119,8 @@ const modules = [
   SplitButtonModule,
   ToastModule,
   ProgressSpinnerModule,
-  TableModule
+  TableModule,
+  DeferModule
 ]
 @NgModule({
   declarations: [],

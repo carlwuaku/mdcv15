@@ -8,6 +8,7 @@ import { PractitionerDetailsComponent } from './practitioner-details/practitione
 import { PractitionerRenewalComponent } from './practitioner-renewal/practitioner-renewal.component';
 import { PortalRequestsComponent } from './portal-requests/portal-requests.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { EditImageComponent } from './components/edit-image/edit-image.component';
 
 
 
@@ -17,7 +18,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     PractitionerFormComponent,
     PractitionerDetailsComponent,
     PractitionerRenewalComponent,
-    PortalRequestsComponent
+    PortalRequestsComponent,
+    EditImageComponent
   ],
   imports: [
     CommonModule,

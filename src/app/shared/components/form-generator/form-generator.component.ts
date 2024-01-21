@@ -4,6 +4,7 @@ import { IFormGenerator } from './form-generator-interface';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-form-generator',
@@ -85,7 +86,7 @@ export class FormGeneratorComponent implements OnInit {
     }
 
 
-    dbCall.subscribe({
+    dbCall.pipe(take(1)).subscribe({
       next: data => {
         this.notify.successNotification('Submitted successfully');
         this.onSubmit.emit(true)
