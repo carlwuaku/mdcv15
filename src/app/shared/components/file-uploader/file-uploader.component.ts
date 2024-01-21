@@ -1,3 +1,4 @@
+import { HttpEvent, HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { take } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
@@ -21,27 +22,15 @@ export class FileUploaderComponent {
   @Input() assetType:string = "practitioners_images";
   @Input() showUploadButton:boolean = true;
   @Input() showCancelButton:boolean = true;
+  @Input() existingImage: string|null = null;
   @Output() onUploadCompleted: EventEmitter<string> = new EventEmitter<string>();
     constructor(private dbService: HttpService) {
       this.uploadUrl = this.uploadUrl+'/'+this.assetType;
     }
 
-    onUpload(event:UploadEvent) {
-        console.log('on upload',event)
+    onUpload(event:{originalEvent: HttpResponse<{filePath: string}>}) {
+        console.log('on upload',event);
+        this.onUploadCompleted.emit(event.originalEvent.body?.filePath)
     }
-    startUploads(){}
 
-    upload(file: File){
-      const data = new FormData();
-      data.append("uploadFile", file)
-      this.dbService.post<{filePath: string}>(this.uploadUrl, data).pipe(take(1)).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.onUploadCompleted.emit(response.filePath)
-        },
-        error: (error) => {
-
-        }
-      })
-    }
 }

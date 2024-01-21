@@ -13,7 +13,7 @@ import { take } from 'rxjs';
 })
 export class FormGeneratorComponent implements OnInit {
   @Input() fields: IFormGenerator[] = [];
-  @Input() extraData: {key:string, value:any}[] = []
+  @Input() extraData: { key: string, value: any }[] = []
   @Input() url: string = "";
   @Input() id: string | undefined | null;
 
@@ -29,7 +29,7 @@ export class FormGeneratorComponent implements OnInit {
 
   @Output() emitFields = new EventEmitter();
   @Input() numOfRows: number = 3;
-  @Input() validationRules:any = {}
+  @Input() validationRules: any = {}
   constructor(private notify: NotifyService,
     private dbService: HttpService) { }
 
@@ -43,20 +43,22 @@ export class FormGeneratorComponent implements OnInit {
   getExistingObject() {
     this.notify.showLoading();
     this.dbService.get<any>(`${this.existingObjectUrl}`).subscribe(
-      {next: data => {
-        //for each key, find the corresponding field and set the value
-        this.fields.map(field => {
-          field.value = data.data[field.name];
-        })
-        this.notify.hideLoading();
-    },
-     error:  error => {
-      this.notify.failNotification("Error loading data. Please try again")
-    }})
+      {
+        next: data => {
+          //for each key, find the corresponding field and set the value
+          this.fields.map(field => {
+            field.value = data.data[field.name];
+          })
+          this.notify.hideLoading();
+        },
+        error: error => {
+          this.notify.failNotification("Error loading data. Please try again")
+        }
+      })
   }
 
   generateFilterUrl() {
-    let params:string[] = [];
+    let params: string[] = [];
     this.fields.forEach(field => {
       if (field.value) { params.push(`${field.name}=${field.value}`); }
 
@@ -65,7 +67,7 @@ export class FormGeneratorComponent implements OnInit {
     this.emitFields.emit(this.fields);
   }
 
-  submit(): void{
+  submit(): void {
     if (!this.validateForm(this.fields)) {
       this.notify.hideLoading();
       return; // Stop submission if validation fails
@@ -73,8 +75,8 @@ export class FormGeneratorComponent implements OnInit {
     this.notify.showLoading();
     const data = new FormData();
     this.fields.forEach(field => {
-      if(field.value)
-      data.append(field.name, field.value)
+      if (field.value)
+        data.append(field.name, field.value)
     });
     this.extraData.forEach(item => {
       data.append(item.key, item.value)
@@ -82,7 +84,7 @@ export class FormGeneratorComponent implements OnInit {
     let dbCall = this.dbService.post<any>(this.url, data)
     if (this.id) {
       data.append("id", this.id)
-     dbCall = this.dbService.put<any>(this.url, data);
+      dbCall = this.dbService.put<any>(this.url, data);
     }
 
 
@@ -92,18 +94,18 @@ export class FormGeneratorComponent implements OnInit {
         this.onSubmit.emit(true)
 
 
-    },
-    error: error => {
-      this.notify.hideLoading();
-      // this.notify.noConnectionNotification();
+      },
+      error: error => {
+        this.notify.hideLoading();
+        // this.notify.noConnectionNotification();
 
-      console.log(error);
+        console.log(error);
 
-    }
-  });
+      }
+    });
   }
 
-  setFieldValue(args:any, action: IFormGenerator) {
+  setFieldValue(args: any, action: IFormGenerator) {
     action.value = args;
   }
 

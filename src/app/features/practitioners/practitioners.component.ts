@@ -14,8 +14,8 @@ import { EditImageComponent } from './components/edit-image/edit-image.component
 })
 export class PractitionersComponent {
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog){}
-  baseUrl: string = "practitioners/practitioners";
-  url: string = "practitioners/practitioners?withDeleted=yes";
+  baseUrl: string = "practitioners/details";
+  url: string = "practitioners/details?withDeleted=yes";
   ts: string = "";
 
   getActions = (practitioner: PractitionerObject): DataActionsButton[]=> {
@@ -31,8 +31,8 @@ export class PractitionersComponent {
     }
     else {
       actions.push(
-        { label: "View", type: "link", link: `practitioners/role-form/`, linkProp: 'uuid' },
-        { label: "Edit", type: "link", link: `practitioners/role-form/`, linkProp: 'uuid' },
+        { label: "View", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'uuid' },
+        { label: "Edit", type: "link", link: `practitioners/practitioner-form/`, linkProp: 'uuid' },
         { label: "Edit picture", type: "button", onClick: (practitioner: PractitionerObject) => this.editImage(practitioner) },
         { label: "Deactivate", type: "button", onClick: (role: PractitionerObject) => this.deleteRole(role)}
       )

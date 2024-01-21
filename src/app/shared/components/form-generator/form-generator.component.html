@@ -22,6 +22,8 @@
                         <textarea  class="form-control" [required]="field.required" *ngSwitchCase="'textarea'" [(ngModel)]="field.value"
                             name="{{field.label}}"></textarea>
 
+                        <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)" *ngSwitchCase="'picture'"></app-file-uploader>
+
                         <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
                             [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
                             [type]="field.apiType!" [initialValue]="field.value"

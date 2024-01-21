@@ -99,38 +99,14 @@ export class SidebarComponent {
           title: "Dashboard/Search",
           url: "/practitioners"
         },
+        {
+          title: "Add New Practitioner/Search",
+          url: "/practitioners/practitioner-form"
+        },
 
       ]
     },
-    {
-      title: "MCA",
-      has_children: true,
-      active_children: false,
-      url: "",
-      icon: "fa fa-users",
-      children: [
-        {
-          title: "Dashboard/Search",
-          url: "/mca_dashboard"
-        },
-        {
-          title: "Add MCA",
-          url: "/add_mca"
-        },
-        {
-          title: "New Registrations",
-          url: "/mca_registrations"
-        },
-        {
-          title: "MCA Schools",
-          url: "/mca_schools"
-        },
-        {
-          title: "MCA Reports",
-          url: "/mca_reports"
-        }
-      ]
-    },
+
     {
       title: "Messaging",
       has_children: true,
