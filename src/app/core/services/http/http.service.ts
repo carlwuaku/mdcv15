@@ -8,7 +8,7 @@ import { DateService } from '../../date/date.service';
   providedIn: 'root'
 })
 export class HttpService {
-
+  public baseUrl = environment.host;
   constructor(private httpClient: HttpClient, private dateService: DateService) { }
 
   public constructURL(url: string, doNotEncode?: boolean): string {

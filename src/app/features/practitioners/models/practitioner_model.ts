@@ -51,6 +51,8 @@ export interface PractitionerObject {
     place_of_work:string ;
     gazette_specialty: any ;
     college_membership:string ;
+    uuid:string;
+    deleted_at:string|null;
 }
 
 export enum PractitionerTypes {

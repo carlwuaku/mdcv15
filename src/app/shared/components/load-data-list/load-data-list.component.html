@@ -86,6 +86,16 @@
               </mat-checkbox>
             </span>
 
+            <span *ngSwitchCase="'picture'">
+              <div pDefer >
+                <ng-template>
+                  <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
+                </ng-template>
+            </div>
+
+
+            </span>
+
             <span *ngSwitchDefault>
               {{element[column]}}
             </span>
