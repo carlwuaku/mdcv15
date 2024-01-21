@@ -1,4 +1,12 @@
-<p-fileUpload [withCredentials]="true" [name]="parameter" [url]="uploadUrl" (onUpload)="onUpload($event)"
+<span *ngIf="existingImage">
+  Current:
+  <div pDefer >
+    <ng-template>
+      <p-image [src]="existingImage" [preview]="true" alt="Image" width="100"></p-image>
+    </ng-template>
+</div>
+</span>
+<p-fileUpload [name]="parameter" [url]="uploadUrl"  (onUpload)="onUpload($event)"
 [multiple]="multiple" accept="image/*" [maxFileSize]="1000000">
   <ng-template pTemplate="content">
       <ul *ngIf="uploadedFiles.length">

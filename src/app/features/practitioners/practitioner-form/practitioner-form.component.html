@@ -1,1 +1,7 @@
-<p>practitioner-form works!</p>
+<mat-card>
+  <mat-card-content>
+    <app-form-generator [url]="formUrl" [fields]="fields" [existingObjectUrl]="existingUrl"
+      (onSubmit)="formSubmitted($event)" [id]="id" [extraData]="extraFormData">
+    </app-form-generator>
+  </mat-card-content>
+</mat-card>
