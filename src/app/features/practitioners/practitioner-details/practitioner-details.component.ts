@@ -15,6 +15,9 @@ export class PractitionerDetailsComponent implements OnInit {
   id: string | null = null;
   object: PractitionerObject | null = null;
   loading: boolean = false;
+  columnLabels?: { [key: string]: string };
+  displayedColumns: string[] = [];
+
   constructor(private notify: NotifyService,
     private dbService: HttpService, private ar: ActivatedRoute,public dialog: MatDialog) {
     this.id = ar.snapshot.params['id'];
@@ -27,10 +30,13 @@ export class PractitionerDetailsComponent implements OnInit {
   getExistingObject() {
     this.loading = true;
     this.notify.showLoading();
-    this.dbService.get<{data: PractitionerObject}>(`practitioners/details/${this.id}`).subscribe(
+    this.dbService.get<{data: PractitionerObject, columnLabels:{ [key: string]: string }, displayColumns: string[]}>(`practitioners/details/${this.id}`).subscribe(
       {
         next: data => {
           this.object = data.data;
+          this.columnLabels = data.columnLabels;
+          this.displayedColumns = data.displayColumns;
+
           this.notify.hideLoading();
         },
         error: error => {
