@@ -4,7 +4,7 @@
 
     <div class="wrap-text">
         <div mat-dialog-content >
-          <app-file-uploader ></app-file-uploader>
+          <app-file-uploader (onUploadCompleted)="fileUploadComplete($event)"></app-file-uploader>
         </div>
     </div>
 </div>
@@ -12,7 +12,7 @@
 
 <mat-dialog-actions  align="end">
 
-    <button  mat-flat-button color="warn" type="button" [mat-dialog-close]="true">
+    <button  mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
         Cancel
     </button>
 </mat-dialog-actions>

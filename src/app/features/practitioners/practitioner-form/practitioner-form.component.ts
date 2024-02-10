@@ -398,7 +398,7 @@ export class PractitionerFormComponent {
 
   formSubmitted(args:boolean) {
     if (args) {
-      this.router.navigate(['/admin/roles'])
+      this.router.navigate(['/practitioners'])
     }
   }
 }

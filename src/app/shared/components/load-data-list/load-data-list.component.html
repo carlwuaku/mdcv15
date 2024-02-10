@@ -87,11 +87,16 @@
             </span>
 
             <span *ngSwitchCase="'picture'">
-              <div pDefer >
+              <!-- if the result is within the first 10, show it. there's a bug in defer that does not display the images until
+              the user scrolls to it. sometimes the view is displayed without the need to scroll, like when the data changes and only
+            one item is displayed -->
+              <div *ngIf="i > 9" pDefer >
                 <ng-template>
                   <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
                 </ng-template>
             </div>
+            <p-image *ngIf="i < 9" [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
+
 
 
             </span>
