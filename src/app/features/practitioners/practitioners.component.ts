@@ -46,22 +46,10 @@ export class PractitionersComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       if(result){
-        this.dbService.put<{message:string}>("practitioners/" + practitioner.id, {
-          picture: result,
-          uuid: practitioner.uuid
-        }).subscribe({
-         next: response => {
-           this.notify.successNotification(response.message);
-            this.updateTimestamp();
-           },
-         error: error => {  }
-       })
+        this.updateTimestamp();
       }
     });
-
-
   }
 
   activate(practitioner:PractitionerObject){}

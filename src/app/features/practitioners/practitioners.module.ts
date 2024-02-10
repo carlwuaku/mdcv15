@@ -9,6 +9,9 @@ import { PractitionerRenewalComponent } from './practitioner-renewal/practitione
 import { PortalRequestsComponent } from './portal-requests/portal-requests.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EditImageComponent } from './components/edit-image/edit-image.component';
+import { RenewalIndividualComponent } from './components/renewal-individual/renewal-individual.component';
+import { SpecialistComponent } from './components/specialist/specialist.component';
+import { PortalActivationComponent } from './components/portal-activation/portal-activation.component';
 
 
 
@@ -19,7 +22,10 @@ import { EditImageComponent } from './components/edit-image/edit-image.component
     PractitionerDetailsComponent,
     PractitionerRenewalComponent,
     PortalRequestsComponent,
-    EditImageComponent
+    EditImageComponent,
+    RenewalIndividualComponent,
+    SpecialistComponent,
+    PortalActivationComponent
   ],
   imports: [
     CommonModule,
