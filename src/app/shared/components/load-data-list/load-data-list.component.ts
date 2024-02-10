@@ -8,6 +8,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ImageModule } from 'primeng/image';
+import { getLabelFromKey } from '../../utils/helper';
 
 @Component({
   selector: 'app-load-data-list',
@@ -143,8 +144,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       return this.columnLabels[column];
     }
 
-    const fullName = column.replace(/[-_]/g, ' ');
-    return fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
+    return getLabelFromKey(column, false);
   }
 
   setSelected(args: any) {

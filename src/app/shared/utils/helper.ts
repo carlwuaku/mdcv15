@@ -15,9 +15,9 @@ export function extractKeys(object: any, exclude: any[]) {
  * @param key any string
  * @returns string
  */
-export function getLabelFromKey(key: string) {
-    let str1 = replace_underscore(key, ' ');
-    return str1.toUpperCase()
+export function getLabelFromKey(key: string, capitalise?:boolean) {
+    let fullName = replace_underscore(key, ' ');
+    return capitalise? fullName.toUpperCase() : fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
 }
 
 export function replace_underscore(str:string, sub:string):string {
@@ -27,4 +27,6 @@ export function replace_underscore(str:string, sub:string):string {
 export function goBackHome(){
     window.location.assign('/')
 }
+
+
 
