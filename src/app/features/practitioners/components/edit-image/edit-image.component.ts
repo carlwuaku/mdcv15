@@ -25,7 +25,6 @@ export class EditImageComponent {
   }
 
   fileUploadComplete(filePath:string){
-    console.log(filePath);
     this.notify.showLoading();
     const data = new FormData();
     data.append("picture", filePath)

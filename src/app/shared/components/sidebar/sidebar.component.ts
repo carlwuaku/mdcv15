@@ -254,7 +254,7 @@ export class SidebarComponent {
         },
         {
           title: "System Settings",
-          url: "/admin/settings"
+          url: "/settings"
         },
         {
           title: "Flags",

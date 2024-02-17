@@ -4,10 +4,14 @@
 
 .flex{
     display: flex;
-    gap: 8px; 
+    gap: 8px;
 }
 
 .horizontal{
     flex-direction: row;
-    
+
+}
+
+.formField{
+  margin-bottom: 4px;
 }

@@ -1,0 +1,59 @@
+<h1 mat-dialog-title>Edit Setting: [{{setting.key}}] </h1>
+
+<div class="dialog-container">
+
+    <div class="wrap-text">
+        <div mat-dialog-content >
+
+          <div [ngSwitch]="setting.control_type">
+            <div *ngSwitchCase="'yes-no'">
+              <label><input type="radio" name="value" [(ngModel)]="setting.value" value="yes"> Yes</label>
+              <label><input type="radio" name="value" [(ngModel)]="setting.value" value="no"> No</label>
+
+            </div>
+            <div *ngSwitchCase="'textarea'">
+              <!-- <ckeditor [(ngModel)]="setting.value" [editor]="Editor" data="{{setting.value}}" (ready)="onReady($event)"></ckeditor> -->
+              <!-- <ckeditor editorUrl="//cdn.ckeditor.com/4.16.2/full/ckeditor.js" [(ngModel)]="setting.value"></ckeditor> -->
+              <ckeditor [editor]="Editor"  [(ngModel)]="setting.value"></ckeditor>
+
+
+              <!-- <ckeditor [(ngModel)]="setting.value" name="setting.value"></ckeditor> -->
+            </div>
+            <!-- <div class="list-group"  *ngSwitchCase="'list'">
+              <div class="list-group-item">
+                <label>Add New</label> <br>
+                <input [(ngModel)]="new_item" name="new_item" type="text"> <button type="button" (click)="addNew()" class="btn btn-sm btn-success">Add</button>
+              </div>
+              <a class="list-group-item list-group-item-success"  *ngFor="let item of temp_added_list">{{item}}
+                  <span class="pull-right" >
+                    <button  (click)="removeAddedItem(item)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
+
+                  </span>
+                </a>
+              <a class="list-group-item" [ngClass]="{'text-danger': removed_items.indexOf(item) != -1}" *ngFor="let item of temp_list">{{item}}
+                <span class="pull-right" >
+                  <button *ngIf="removed_items.indexOf(item) == -1" (click)="removeItem(item)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
+                  <button *ngIf="removed_items.indexOf(item) != -1" (click)="undoRemove(item)" class="btn btn-sm btn-warning"><i class="fa fa-undo"></i> </button>
+
+                </span>
+              </a>
+            </div> -->
+
+            <div *ngSwitchDefault>
+              <input (keyup.enter)="save()" [(ngModel)]="setting.value" class="form-control" name="edit" >
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<mat-dialog-actions  align="end">
+
+    <button  mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
+        Cancel
+    </button>
+    <button  mat-flat-button color="primary" type="button" (click)="save()">
+      Save
+  </button>
+</mat-dialog-actions>

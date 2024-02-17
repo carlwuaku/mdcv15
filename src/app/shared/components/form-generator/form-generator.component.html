@@ -3,9 +3,9 @@
     <div class=" ">
         <div class="row">
             <ng-container *ngFor="let field of fields; let i = index">
-                <div class="col-md-{{12 / numOfRows}}">
-                    <label>{{field.label}} <span *ngIf="field.required">*</span></label><br>
-                    <span class="text-muted">{{field.hint}}</span> <br>
+                <div class="col-md-{{12 / numOfRows}} formField">
+                    <label>{{field.label}} <span *ngIf="field.required">*</span></label>
+                    <div class="text-muted">{{field.hint}}</div>
                     <ng-container [ngSwitch]="field.type">
                         <div *ngSwitchCase="'radio'">
                             <span *ngFor="let option of field.options">
@@ -29,9 +29,14 @@
                             [type]="field.apiType!" [initialValue]="field.value"
                             (selectionChanged)="setFieldValue($event, field)" >
                         </app-select-object>
-
-                        <input  class="form-control" *ngSwitchDefault [required]="field.required" type="{{field.type}}"
+                        <span *ngSwitchDefault>
+                          <input  class="form-control"  [attr.list]="formId+field.name+'_datalist'" [required]="field.required" type="{{field.type}}"
                             [(ngModel)]="field.value" name="{{field.label}}" />
+                            <datalist id="{{formId+field.name}}_datalist" *ngIf="field.options.length > 0">
+                            <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
+                            </datalist>
+                        </span>
+
                     </ng-container>
                 </div>
                 <!-- Start a new row if index is a multiple of numOfRows or it's the last iteration -->
