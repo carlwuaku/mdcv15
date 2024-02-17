@@ -5,9 +5,9 @@ import { PractitionerFormComponent } from './practitioner-form/practitioner-form
 import { PractitionerDetailsComponent } from './practitioner-details/practitioner-details.component';
 
 const routes: Routes = [
-  { path: '', component: PractitionersComponent },
-  { path: 'practitioner-form', component: PractitionerFormComponent },
-  { path: 'practitioner-form/:id', component: PractitionerFormComponent },
+  { path: '', data:{title: 'Practitioners'}, component: PractitionersComponent },
+  { path: 'practitioner-form', data:{title: 'Create Practitioner'}, component: PractitionerFormComponent },
+  { path: 'practitioner-form/:id', data:{title: 'Edit Practitioner'}, component: PractitionerFormComponent },
   { path: 'practitioner-details/:id', component: PractitionerDetailsComponent },
 ];
 

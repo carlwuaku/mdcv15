@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { take } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-form-generator',
@@ -29,9 +30,13 @@ export class FormGeneratorComponent implements OnInit {
 
   @Output() emitFields = new EventEmitter();
   @Input() numOfRows: number = 3;
-  @Input() validationRules: any = {}
+  @Input() validationRules: any = {};
+  //some random string to differentiate the form from others. useful for generating ids
+  formId: string = "";
   constructor(private notify: NotifyService,
-    private dbService: HttpService) { }
+    private dbService: HttpService) {
+      this.formId = uuidv4();
+     }
 
   ngOnInit(): void {
     //if an id was provided, get the existing object
@@ -107,6 +112,8 @@ export class FormGeneratorComponent implements OnInit {
 
   setFieldValue(args: any, action: IFormGenerator) {
     action.value = args;
+    //run the onChange function
+    if (action.onChange) { action.onChange(action.value); }
   }
 
   showOrHide() {

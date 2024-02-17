@@ -33,10 +33,10 @@ export class SelectObjectComponent implements OnInit, OnChanges{
 
   }
   ngOnChanges(changes: SimpleChanges): void {
-    // this.getData();
+    this.getData();
   }
   ngOnInit(): void {
-    this.getData()
+    // this.getData()
   }
 
 

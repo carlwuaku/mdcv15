@@ -17,8 +17,8 @@ export class PractitionerFormComponent {
       name: "category",
       hint: "",
       options: [
-        {key: "Medical", value: "Medical"},
-        {key: "Dental", value: "Dental"},
+        { key: "Medical", value: "Medical" },
+        { key: "Dental", value: "Dental" },
         // {key: "Medical", value: "Medical"},
       ],
       type: "select",
@@ -30,9 +30,9 @@ export class PractitionerFormComponent {
       name: "register_type",
       hint: "",
       options: [
-        {key: "Permanent", value: "Permanent"},
-        {key: "Provisional", value: "Provisional"},
-        {key: "Temporary", value: "Temporary"}
+        { key: "Permanent", value: "Permanent" },
+        { key: "Provisional", value: "Provisional" },
+        { key: "Temporary", value: "Temporary" }
       ],
       type: "select",
       value: "",
@@ -125,8 +125,8 @@ export class PractitionerFormComponent {
       name: "sex",
       hint: "",
       options: [
-        {key: "Male", value: "Male"},
-        {key: "Female", value: "Female"}
+        { key: "Male", value: "Male" },
+        { key: "Female", value: "Female" }
       ],
       type: "select",
       value: "",
@@ -140,8 +140,8 @@ export class PractitionerFormComponent {
       name: "status",
       hint: "",
       options: [
-        {key: "Alive", value: "Alive"},
-        {key: "Deceased", value: "Deceased"}
+        { key: "Alive", value: "Alive" },
+        { key: "Deceased", value: "Deceased" }
       ],
       type: "select",
       value: "",
@@ -168,12 +168,12 @@ export class PractitionerFormComponent {
       name: "title",
       hint: "",
       options: [
-        {key: "Mr", value: "Mr"},
-        {key: "Mrs", value: "Mrs"},
-        {key: "Miss", value: "Miss"},
-        {key: "Prof", value: "Prof"},
-        {key: "Dr", value: "Dr"},
-        {key: "Rev", value: "Rev"}
+        { key: "Mr", value: "Mr" },
+        { key: "Mrs", value: "Mrs" },
+        { key: "Miss", value: "Miss" },
+        { key: "Prof", value: "Prof" },
+        { key: "Dr", value: "Dr" },
+        { key: "Rev", value: "Rev" }
       ],
       type: "select",
       value: "",
@@ -200,6 +200,10 @@ export class PractitionerFormComponent {
       name: "nationality",
       hint: "",
       options: [
+        {key:"Ghanaian",value:"Ghanaian"},
+        {key:"Nigerian",value:"Nigerian"},
+        {key:"U.S.A",value:"U.S.A"},
+        {key:"Togolese",value:"Togolose"},
       ],
       type: "text",
       value: "",
@@ -250,28 +254,35 @@ export class PractitionerFormComponent {
     {
       label: "Region",
       name: "region",
-      hint: "set the correct api",
+      hint: "",
       options: [
       ],
-      type: "select",
+      type: "api",
       value: "",
       required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
+      api_url: "regions/regions",
+      apiKeyProperty: "name",
+      apiLabelProperty: "name",
+      apiType: "select",
+      onChange: (value:string) => {
+        console.log(value)
+        const districtField = this.fields.find((item) =>  item.name === "district");
+        if(districtField) {districtField.api_url = `regions/districts/${value}`}
+      }
     },
     {
       label: "District",
       name: "district",
-      hint: "select the correct api",
+      hint: "",
       options: [
       ],
-      type: "select",
+      type: "api",
       value: "",
       required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
+      api_url: "regions/districts",
+      apiKeyProperty: "district",
+      apiLabelProperty: "district",
+      apiType: "select",
     },
     {
       label: "Email",
@@ -315,28 +326,35 @@ export class PractitionerFormComponent {
     {
       label: "Specialty",
       name: "specialty",
-      hint: "set the correct api",
+      hint: "",
       options: [
       ],
-      type: "select",
+      type: "api",
       value: "",
       required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
+      api_url: "specialties/specialties",
+      apiKeyProperty: "name",
+      apiLabelProperty: "name",
+      apiType: "select",
+      onChange: (value:string) => {
+        console.log(value)
+        const subspecialtiesField = this.fields.find((item) =>  item.name === "subspecialty");
+        if(subspecialtiesField) {subspecialtiesField.api_url = `specialties/subspecialties/${value}`}
+      }
     },
     {
       label: "Subspecialty",
       name: "subspecialty",
-      hint: "set the correct specialty",
+      hint: "",
       options: [
       ],
-      type: "select",
+      type: "api",
       value: "",
       required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
+      api_url: "specialties/subspecialties",
+      apiKeyProperty: "subspecialty",
+      apiLabelProperty: "subspecialty",
+      apiType: "select"
     },
     {
       label: "Date of Permanent Registration",
@@ -369,9 +387,9 @@ export class PractitionerFormComponent {
       name: "college_membership",
       hint: "",
       options: [
-        {key: "", value:"None"},
-        {key: "Member", value:"Member"},
-        {key: "Fellow", value:"Fellow"},
+        { key: "", value: "None" },
+        { key: "Member", value: "Member" },
+        { key: "Fellow", value: "Fellow" },
       ],
       type: "select",
       value: "",
@@ -382,21 +400,21 @@ export class PractitionerFormComponent {
     },
   ];
   id: string;
-  extraFormData:{  key: string, value: any }[] = []
-  constructor(ar: ActivatedRoute, private router:Router) {
+  extraFormData: { key: string, value: any }[] = []
+  constructor(ar: ActivatedRoute, private router: Router) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
       this.title = "Edit practitioner";
       this.existingUrl = `practitioners/details/${this.id}`;
       this.formUrl = `practitioners/details/${this.id}`;
-      this.extraFormData = [{key: "uuid", value: this.id}]
+      this.extraFormData = [{ key: "uuid", value: this.id }]
     }
   }
 
   ngOnInit(): void {
   }
 
-  formSubmitted(args:boolean) {
+  formSubmitted(args: boolean) {
     if (args) {
       this.router.navigate(['/practitioners'])
     }
