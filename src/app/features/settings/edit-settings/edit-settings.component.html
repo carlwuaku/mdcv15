@@ -12,12 +12,13 @@
 
             </div>
             <div *ngSwitchCase="'textarea'">
-              <!-- <ckeditor [(ngModel)]="setting.value" [editor]="Editor" data="{{setting.value}}" (ready)="onReady($event)"></ckeditor> -->
-              <!-- <ckeditor editorUrl="//cdn.ckeditor.com/4.16.2/full/ckeditor.js" [(ngModel)]="setting.value"></ckeditor> -->
               <ckeditor [editor]="Editor"  [(ngModel)]="setting.value"></ckeditor>
-
-
-              <!-- <ckeditor [(ngModel)]="setting.value" name="setting.value"></ckeditor> -->
+            </div>
+            <div *ngSwitchCase="'list'">
+              <app-array-editor [objects]="arrayList" (valueChanged)="setValue($event)"  ></app-array-editor>
+            </div>
+            <div *ngSwitchCase="'object'">
+              <app-json-editor [jsonObject]="jsonObject" (valueChanged)="setValue($event)"  ></app-json-editor>
             </div>
             <!-- <div class="list-group"  *ngSwitchCase="'list'">
               <div class="list-group-item">

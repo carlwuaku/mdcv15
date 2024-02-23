@@ -1,10 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { SettingsObject } from '../models/Settings.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { take } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 @Component({
@@ -12,8 +11,10 @@ import Editor from 'ckeditor5-custom-build/build/ckeditor';
   templateUrl: './edit-settings.component.html',
   styleUrls: ['./edit-settings.component.scss']
 })
-export class EditSettingsComponent {
+export class EditSettingsComponent  implements OnInit{
   public Editor = Editor.Editor;
+  arrayList: any[] = [];
+  jsonObject: {[key:string]:any} = {};
   constructor(
     public dialogRef: MatDialogRef<EditSettingsComponent>,
     @Inject(MAT_DIALOG_DATA) public setting: SettingsObject,
@@ -22,24 +23,36 @@ export class EditSettingsComponent {
     ) {
 
     }
+  ngOnInit(): void {
+    console.log(this.setting)
+    if(this.setting.control_type === "list"){
+      if(typeof(this.setting.value) === "string"){
+        this.arrayList = this.setting.value.split(";");
+      }
+      else if(Array.isArray(this.setting.value)){
+        this.arrayList = this.setting.value;
+      }
+    }
+    else if(this.setting.type === "object"){
+      this.setting.control_type = "object";
+      if(typeof(this.setting.value) === "string"){
+        this.jsonObject =  JSON.parse(this.setting.value);
+      }
+      else if(typeof this.setting.value === "object" && this.setting.value !== null){
+        this.jsonObject = this.setting.value;
+      }
+    }
+  }
 
-    // public onReady( editor: DecoupledEditor ): void {
-    //   const element = editor.ui.getEditableElement()!;
-    //   const parent = element.parentElement!;
-
-    //   parent.insertBefore(
-    //     editor.ui.view.toolbar.element!,
-    //     element
-    //   );
-    // }
 
     closeDialog(): void {
       this.dialogRef.close(false);
   }
 
-  editorValueChanged(args:any){
-    console.log(this.setting.value)
+  setValue(args:any){
+    this.setting.value = args;
   }
+
 
   save(){
     this.notify.showLoading();

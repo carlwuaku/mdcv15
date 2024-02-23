@@ -1,16 +1,17 @@
 <app-loading *ngIf="loading"></app-loading>
 <span *ngIf="type === 'select'">
-
     <mat-select [(value)]="selectedItem" (selectionChange)="selectionMade()" appearance="outline">
       <mat-option>None</mat-option>
-      <mat-option *ngFor="let object of objects" [value]="object[keyProperty]">{{object[labelProperty]}} </mat-option>
+      <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
+      <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}} </mat-option>
     </mat-select>
+</span>
 
-
-<!-- <p-dropdown (onChange)="selectionMade()" *ngIf="isLoaded" [options]="objects" [(ngModel)]="selectedItem"
-    [optionValue]="keyProperty" [optionLabel]="labelProperty" [filter]="true" [filterBy]="labelProperty"
-    [showClear]="true" [showClear]="true">
-</p-dropdown> -->
+<span *ngIf="type === 'datalist'">
+  <input type="text" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem" (change)="selectionMade()" (keyup)="selectionMade()">
+  <datalist id="{{dataListId}}">
+    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}}</option>
+  </datalist>
 </span>
 
 <div  *ngIf="type === 'search'">

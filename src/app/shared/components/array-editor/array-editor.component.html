@@ -1,0 +1,19 @@
+<div class="list-group"  >
+  <div class="list-group-item">
+    <label>Add New</label> <br>
+    <input [(ngModel)]="newItem" name="new_item" type="text"> <button mat-flat-button type="button" (click)="addNew()" class=" btn-success">Add</button>
+  </div>
+
+  <a class="list-group-item" [ngClass]="{'removedItem': removedItems.indexOf(item) != -1}" *ngFor="let item of objects; let i = index">{{item}}
+    <span class="pull-right" >
+      <button mat-icon-button *ngIf="removedItems.indexOf(item) == -1" (click)="removeItem(item)"
+       class=" btn-danger" matTooltip="Mark item to be removed when saved"><mat-icon>delete</mat-icon> </button>
+      <button mat-icon-button *ngIf="removedItems.indexOf(item) != -1"
+      (click)="undoRemove(item)" matTooltip="Undo removal" class="btn-warning"><mat-icon>undo</mat-icon> </button>
+      <button mat-icon-button *ngIf="i > 0"
+        (click)="moveUp(item)" matTooltip="Move item one step up" class="btn-warning"><mat-icon>keyboard_arrow_up</mat-icon> </button>
+      <button mat-icon-button *ngIf="i < objects.length - 1"
+       (click)="moveDown(item)" matTooltip="Move item one step down" class="btn-warning"><mat-icon>keyboard_arrow_down</mat-icon> </button>
+    </span>
+  </a>
+</div>

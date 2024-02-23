@@ -7,7 +7,9 @@
 </div>
 </span>
 <p-fileUpload [name]="parameter" [url]="uploadUrl"  (onUpload)="onUpload($event)"
-[multiple]="multiple" accept="image/*" [maxFileSize]="1000000">
+[multiple]="multiple" accept="image/*" [maxFileSize]="1000000"
+ [chooseLabel]="chooseButtonLabel" [cancelLabel]="cancelButtonLabel" [uploadLabel]="uploadButtonLabel"
+ [showCancelButton]="showCancelButton" [showUploadButton]="showUploadButton" [cancelStyleClass]="'btn btn-danger btn-sm'">
   <ng-template pTemplate="content">
       <ul *ngIf="uploadedFiles.length">
           <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>

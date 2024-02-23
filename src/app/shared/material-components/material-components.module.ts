@@ -15,6 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatListModule} from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTreeModule} from '@angular/material/tree';
 
 const modules = [
   MatDialogModule,
@@ -31,7 +33,9 @@ const modules = [
   MatSelectModule,
   MatListModule,
   MatCheckboxModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule,
+  MatTreeModule
 ];
 @NgModule({
   declarations: [],

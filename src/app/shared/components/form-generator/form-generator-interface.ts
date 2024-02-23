@@ -14,7 +14,10 @@ export interface IFormGenerator {
   apiType?: "search" | "select" | "datalist";
   apiInitialValue?: string;
   apiModule?: string;
-  onChange?: (...value:string[]) => void | undefined
+  onChange?: (...value:string[]) => void | undefined;
+  minLength?: number;
+  maxLength?: number;
+  customValidation?: {fieldsMatch: string[]};
 
 }
 

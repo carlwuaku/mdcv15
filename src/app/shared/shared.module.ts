@@ -29,6 +29,9 @@ import { DataListMenuButtonComponent } from './components/data-list-menu-button/
 import { FormGeneratorComponent } from './components/form-generator/form-generator.component';
 import { FileUploaderComponent } from './components/file-uploader/file-uploader.component';
 import { KeyValueDisplayComponent } from './components/key-value-display/key-value-display.component';
+import { ArrayEditorComponent } from './components/array-editor/array-editor.component';
+import { JsonEditorComponent } from './components/json-editor/json-editor.component';
+import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,10 @@ import { KeyValueDisplayComponent } from './components/key-value-display/key-val
     DataListMenuButtonComponent,
     FormGeneratorComponent,
     FileUploaderComponent,
-    KeyValueDisplayComponent
+    KeyValueDisplayComponent,
+    ArrayEditorComponent,
+    JsonEditorComponent,
+    InlineEditorComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -91,7 +97,9 @@ import { KeyValueDisplayComponent } from './components/key-value-display/key-val
     SelectObjectComponent,
     FormGeneratorComponent,
     FileUploaderComponent,
-    KeyValueDisplayComponent
+    KeyValueDisplayComponent,
+    ArrayEditorComponent,
+    JsonEditorComponent
   ],
   providers: [
     ClipboardCopyDirective

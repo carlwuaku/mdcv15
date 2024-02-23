@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ArrayEditorComponent } from './array-editor.component';
+
+describe('ArrayEditorComponent', () => {
+  let component: ArrayEditorComponent;
+  let fixture: ComponentFixture<ArrayEditorComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ ArrayEditorComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ArrayEditorComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

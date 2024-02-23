@@ -1,0 +1,31 @@
+<!-- <div class="json-editor">
+  <div *ngFor="let key of objectKeys(jsonObject)">
+    <div class="json-node">
+      <span class="json-key">{{ key }}</span>:
+      <span class="json-value" *ngIf="!isObject(jsonObject[key])">{{ jsonObject[key] }}</span>
+      <app-json-editor *ngIf="isObject(jsonObject[key])" [jsonObject]="jsonObject[key]"></app-json-editor>
+      <button mat-flat-button color="primary" (click)="addProperty(key)"> Add Property</button>
+      <button mat-flat-button color="primary" (click)="editValue(key)">Edit Value</button>
+    </div>
+  </div>
+</div> -->
+<button mat-flat-button>Add child</button>
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let key of objectKeys(jsonObject)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <button mat-icon-button><mat-icon>remove</mat-icon></button>
+        <app-inline-editor [text]="key" (valueChanged)="setPropertyValue(key, $event)"></app-inline-editor>
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+    <p>
+      <span  *ngIf="!isObject(jsonObject[key])">
+        <app-inline-editor (valueChanged)="setPropertyValue(key, $event)" [text]="jsonObject[key]"></app-inline-editor>
+      </span>
+      <app-json-editor *ngIf="isObject(jsonObject[key])" [jsonObject]="jsonObject[key]">
+      </app-json-editor>
+    </p>
+  </mat-expansion-panel>
+
+</mat-accordion>
