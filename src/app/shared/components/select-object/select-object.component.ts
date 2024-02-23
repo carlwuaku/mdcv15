@@ -3,6 +3,7 @@ import { take, takeUntil } from 'rxjs';
 import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { API_ADMIN_PATH } from '../../utils/constants';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-select-object',
@@ -27,12 +28,15 @@ export class SelectObjectComponent implements OnInit, OnChanges{
 
   @Input() selection_mode: "single" | "singles" | "multiple" = "single";
   search_param: string = "";
-
+  dataListId:string = "";
 
   constructor(private dbService: HttpService, private dateService:DateService) {
 
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.type === "datalist"){
+      this.dataListId = uuidv4();
+    }
     this.getData();
   }
   ngOnInit(): void {
@@ -69,14 +73,7 @@ export class SelectObjectComponent implements OnInit, OnChanges{
   }
 
   selectionMade() {
-    // if (this.selectedItem) {
-    //   console.log(this.selectedItem)
-    //   const selected = this.objects.find((value) => value[this.keyProperty] === this.selectedItem);
-
-    // }
-    console.log(this.selectedItem)
     this.selectionChanged.emit(this.selectedItem);
-
   }
 
 

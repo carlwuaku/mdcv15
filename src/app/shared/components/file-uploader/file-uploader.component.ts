@@ -15,22 +15,26 @@ interface UploadEvent {
 })
 export class FileUploaderComponent {
   uploadedFiles: any[] = [];
-  @Input() maxFileSize:number = 1_000_000
-  @Input() uploadUrl:string = `${this.dbService.baseUrl}file-server/new`;
-  @Input() multiple:boolean = false;
-  @Input() parameter:string = "uploadFile";
-  @Input() assetType:string = "practitioners_images";
-  @Input() showUploadButton:boolean = true;
-  @Input() showCancelButton:boolean = true;
-  @Input() existingImage: string|null = null;
-  @Output() onUploadCompleted: EventEmitter<string> = new EventEmitter<string>();
-    constructor(private dbService: HttpService) {
-      this.uploadUrl = this.uploadUrl+'/'+this.assetType;
-    }
+  @Input() maxFileSize: number = 1_000_000
+  @Input() uploadUrl: string = `${this.dbService.baseUrl}file-server/new`;
+  @Input() multiple: boolean = false;
+  @Input() parameter: string = "uploadFile";
+  @Input() assetType: string = "practitioners_images";
+  @Input() showUploadButton: boolean = true;
+  @Input() showCancelButton: boolean = true;
+  @Input() existingImage: string | null = null;
+  @Input() uploadButtonLabel:string = "Confirm";
+  @Input() cancelButtonLabel:string = "Cancel";
+  @Input() chooseButtonLabel: string = "Select File";
 
-    onUpload(event:{originalEvent: HttpResponse<{filePath: string}>}) {
-        console.log('on upload',event);
-        this.onUploadCompleted.emit(event.originalEvent.body?.filePath)
-    }
+  @Output() onUploadCompleted: EventEmitter<string> = new EventEmitter<string>();
+  @Input() required: boolean = false;
+  constructor(private dbService: HttpService) {
+    this.uploadUrl = this.uploadUrl + '/' + this.assetType;
+  }
+
+  public onUpload(event: { originalEvent: HttpResponse<{ filePath: string }> }) {
+    this.onUploadCompleted.emit(event.originalEvent.body?.filePath)
+  }
 
 }

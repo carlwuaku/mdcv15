@@ -112,6 +112,7 @@ export class FormGeneratorComponent implements OnInit {
 
   setFieldValue(args: any, action: IFormGenerator) {
     action.value = args;
+    console.log(action.name, args)
     //run the onChange function
     if (action.onChange) { action.onChange(action.value); }
   }
@@ -122,48 +123,46 @@ export class FormGeneratorComponent implements OnInit {
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-      const rules = this.validationRules[field.name];
 
-      if (rules) {
-        if (rules.required && !field.value) {
+        if (field.required || field.required && !field.value) {
           this.notify.failNotification(`Field '${field.name}' is required.`);
           return false;
         }
 
-        if (rules.minLength && field.value.length < rules.minLength) {
+        if (field.minLength && field.value.length < field.minLength) {
           this.notify.failNotification(
-            `Field '${field.name}' should be at least ${rules.minLength} characters long.`
+            `Field '${field.name}' should be at least ${field.minLength} characters long.`
           );
           return false;
         }
 
-        if (rules.maxLength && field.value.length > rules.maxLength) {
+        if (field.maxLength && field.value.length > field.maxLength) {
           this.notify.failNotification(
-            `Field '${field.name}' should be at most ${rules.maxLength} characters long.`
+            `Field '${field.name}' should be at most ${field.maxLength} characters long.`
           );
           return false;
         }
 
-        if (rules.customValidation) {
+        if (field.customValidation) {
           // For custom validation rule "fieldsMatch", pass an object with both field values
-          if (field.name === 'fieldsMatch') {
-            const field1 = fields.find((f) => f.name === 'fieldName1');
-            const field2 = fields.find((f) => f.name === 'fieldName2');
-            if (!rules.customValidation({ fieldName1: field1, fieldName2: field2 })) {
-              this.notify.failNotification(
-                `Fields '${field1?.name}' and '${field2?.name}' should match.`
-              );
-              return false;
-            }
-          } else if (!rules.customValidation(field.value)) {
-            this.notify.failNotification(
-              `Field '${field.name}' does not meet custom validation criteria.`
-            );
-            return false;
-          }
-        }
+          if (field.customValidation.fieldsMatch) {
+            let fieldsToMatch = field.customValidation.fieldsMatch;
+            //the rules will be an array of field names which must match. the value must match each field
+            for (let i = 0; i < fieldsToMatch.length; i++) {
+              const matchFieldName = fieldsToMatch[i];
+              const matchField = fields.find((f) => f.name === matchFieldName);
+              if(matchField){
+                if(field.value != matchField.value){
+                  this.notify.failNotification(
+                    `Fields '${field.label}' and '${matchField.label}' should match.`
+                  );
+                  return false;
+                }
+              }
 
-        // Add more validation rules as needed
+            }
+          }
+
       }
     }
 

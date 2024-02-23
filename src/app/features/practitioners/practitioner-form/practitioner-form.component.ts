@@ -241,15 +241,16 @@ export class PractitionerFormComponent {
     {
       label: "Institution Type",
       name: "institution_type",
-      hint: "set the correct api",
+      hint: "",
       options: [
       ],
-      type: "select",
+      type: "api",
       value: "",
       required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
+      api_url: "admin/settings/Doctors.work_institution_types",
+      apiKeyProperty: "name",
+      apiLabelProperty: "name",
+      apiType: "datalist",
     },
     {
       label: "Region",
