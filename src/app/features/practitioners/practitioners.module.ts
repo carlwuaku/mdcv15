@@ -12,6 +12,8 @@ import { EditImageComponent } from './components/edit-image/edit-image.component
 import { RenewalIndividualComponent } from './components/renewal-individual/renewal-individual.component';
 import { SpecialistComponent } from './components/specialist/specialist.component';
 import { PortalActivationComponent } from './components/portal-activation/portal-activation.component';
+import { AdditionalQualificationsComponent } from './components/additional-qualifications/additional-qualifications.component';
+import { EditAdditionalQualificationComponent } from './components/edit-additional-qualification/edit-additional-qualification.component';
 
 
 
@@ -25,7 +27,9 @@ import { PortalActivationComponent } from './components/portal-activation/portal
     EditImageComponent,
     RenewalIndividualComponent,
     SpecialistComponent,
-    PortalActivationComponent
+    PortalActivationComponent,
+    AdditionalQualificationsComponent,
+    EditAdditionalQualificationComponent
   ],
   imports: [
     CommonModule,

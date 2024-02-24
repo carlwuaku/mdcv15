@@ -15,7 +15,7 @@ import { EditImageComponent } from './components/edit-image/edit-image.component
 export class PractitionersComponent {
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog){}
   baseUrl: string = "practitioners/details";
-  url: string = "practitioners/details?withDeleted=yes";
+  url: string = "practitioners/details";
   ts: string = "";
 
   getActions = (practitioner: PractitionerObject): DataActionsButton[]=> {
@@ -34,7 +34,7 @@ export class PractitionersComponent {
         { label: "View", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'uuid' },
         { label: "Edit", type: "link", link: `practitioners/practitioner-form/`, linkProp: 'uuid' },
         { label: "Edit picture", type: "button", onClick: (practitioner: PractitionerObject) => this.editImage(practitioner) },
-        { label: "Deactivate", type: "button", onClick: (role: PractitionerObject) => this.deleteRole(role)}
+        { label: "Deactivate", type: "button", onClick: (role: PractitionerObject) => this.delete(role)}
       )
     }
     return actions;
@@ -54,8 +54,8 @@ export class PractitionersComponent {
 
   activate(practitioner:PractitionerObject){}
 
-  deleteRole (practitioner: PractitionerObject) {
-    if (!window.confirm('Are you sure you want to deactivate this role? This will prevent the role from receiving new users, but will not affect existing users. You will be able to restore it')) {
+  delete (practitioner: PractitionerObject) {
+    if (!window.confirm('Are you sure you want to deactivate this practitioner? You will be able to restore it')) {
       return;
     }
     this.dbService.delete<{message:string}>("practitioners/roles/" + practitioner.uuid).subscribe({

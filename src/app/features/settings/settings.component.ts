@@ -15,7 +15,7 @@ import { getToday } from 'src/app/shared/utils/dates';
 export class SettingsComponent {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
   baseUrl: string = "admin/settings";
-  url: string = "admin/settings?withDeleted=yes";
+  url: string = "admin/settings";
   ts: string = "";
 
   getActions = (object: SettingsObject): DataActionsButton[] => {

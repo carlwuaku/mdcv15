@@ -50,6 +50,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
   @Input() searchParam = "";
   selection = new SelectionModel<any>(true, []);
+  @Input() withDeleted:boolean = false;
   constructor(private dbService: HttpService,
     private notify: NotifyService) {
 
@@ -112,6 +113,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     let extra = `page=${this.offset}&limit=${this.limit}`;
     if (this.searchParam.trim()) {
       extra += `&param=${this.searchParam}`
+    }
+    if(this.withDeleted){
+      extra += `&withDeleted=yes`
     }
     const url = this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
 

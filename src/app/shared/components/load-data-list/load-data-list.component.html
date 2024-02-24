@@ -2,6 +2,11 @@
 
   <app-pagination [current_page]="currentPage" [total]="totalRows" [limit]="limit" (pageChanged)="setPage($event)"
     (limitChanged)="setLimit($event)"></app-pagination>
+    <span>
+      <label >
+        <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
+      </label>
+    </span>
 
 
   <div class="mini-card">
@@ -110,7 +115,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'strikethrough': row.deleted_at !== null}"></tr>
 
     </table>
   </div>
