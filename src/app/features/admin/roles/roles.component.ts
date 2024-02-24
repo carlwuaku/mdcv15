@@ -15,7 +15,7 @@ export class RolesComponent {
 
   constructor(private dbService: HttpService, private notify:NotifyService){}
   baseUrl: string = "admin/roles";
-  url: string = "admin/roles?withDeleted=yes";
+  url: string = "admin/roles";
   ts: string = "";
 
   getActions = (role: Role): DataActionsButton[]=> {

@@ -1,13 +1,21 @@
-<span *ngIf="existingImage">
+<span *ngIf="originalImage">
   Current:
   <div pDefer >
     <ng-template>
-      <p-image [src]="existingImage" [preview]="true" alt="Image" width="100"></p-image>
+      <p-image [src]="originalImage" [preview]="true" alt="Image" width="100"></p-image>
+    </ng-template>
+</div>
+</span>
+<span *ngIf="uploadedImage">
+  New:
+  <div pDefer >
+    <ng-template>
+      <p-image [src]="uploadedImage" [preview]="true" alt="Image" width="100"></p-image>
     </ng-template>
 </div>
 </span>
 <p-fileUpload [name]="parameter" [url]="uploadUrl"  (onUpload)="onUpload($event)"
-[multiple]="multiple" accept="image/*" [maxFileSize]="1000000"
+[multiple]="multiple" [accept]="accept" [maxFileSize]="maxFileSize"
  [chooseLabel]="chooseButtonLabel" [cancelLabel]="cancelButtonLabel" [uploadLabel]="uploadButtonLabel"
  [showCancelButton]="showCancelButton" [showUploadButton]="showUploadButton" [cancelStyleClass]="'btn btn-danger btn-sm'">
   <ng-template pTemplate="content">

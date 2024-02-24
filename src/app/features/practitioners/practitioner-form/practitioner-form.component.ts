@@ -372,7 +372,7 @@ export class PractitionerFormComponent {
     },
     {
       label: "Provisional Registration Number",
-      name: "provisional_registration_number",
+      name: "provisional_number",
       hint: "",
       options: [
       ],

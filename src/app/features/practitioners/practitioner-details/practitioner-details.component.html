@@ -39,7 +39,7 @@
     </div>
 
   </div>
-  <mat-tab-group>
+  <mat-tab-group *ngIf="object != null">
     <mat-tab label="Personal Details">
       <ng-template matTabContent>
         <mat-card>
@@ -51,7 +51,11 @@
     </mat-tab>
     <mat-tab label="Education History">
       <ng-template matTabContent>
-
+        <mat-card>
+          <mat-card-content>
+        <app-additional-qualifications [practitioner]="object"></app-additional-qualifications>
+        </mat-card-content>
+        </mat-card>
       </ng-template>
     </mat-tab>
     <mat-tab label="Housemanship">

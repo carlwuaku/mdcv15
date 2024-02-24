@@ -112,7 +112,6 @@ export class FormGeneratorComponent implements OnInit {
 
   setFieldValue(args: any, action: IFormGenerator) {
     action.value = args;
-    console.log(action.name, args)
     //run the onChange function
     if (action.onChange) { action.onChange(action.value); }
   }
@@ -123,8 +122,8 @@ export class FormGeneratorComponent implements OnInit {
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-
-        if (field.required || field.required && !field.value) {
+      console.log(field)
+        if (field.required && !field.value) {
           this.notify.failNotification(`Field '${field.name}' is required.`);
           return false;
         }
