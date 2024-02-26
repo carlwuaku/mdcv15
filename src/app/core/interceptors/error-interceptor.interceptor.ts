@@ -11,7 +11,7 @@ import { catchError, map, Observable, retry, throwError } from 'rxjs';
 import { NotifyService } from '../services/notify/notify.service';
 
 @Injectable()
-export class ErrorInterceptorInterceptor implements HttpInterceptor {
+export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(private notify:NotifyService) {}
 
@@ -24,7 +24,13 @@ export class ErrorInterceptorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         //display a toast with the error message
         console.error(error)
-        this.notify.failNotification(error.message)
+        if (error.error && error.error.message) {
+          this.notify.failNotification(error.error.message);
+        } else {
+          // Fallback to a generic error message if the server's message is not available
+          this.notify.failNotification('An error occurred. Please try again later.');
+        }
+        // this.notify.failNotification(error.message)
         return throwError(() => error);
 
       })

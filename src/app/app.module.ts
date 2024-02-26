@@ -17,6 +17,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from "@ngx-transla
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ErrorInterceptorService } from './core/interceptors/global-error-handler.interceptor';
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
+import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
@@ -82,7 +83,7 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
     { provide: "googleTagManagerId", useValue: gtmContainerId },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptorService,
+      useClass: ErrorInterceptor,
       multi: true,
     },
     {

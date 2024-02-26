@@ -135,6 +135,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.dataSource.sort = this.sort;
         },
         error: (err) => {
+          console.error(err)
           this.loading = false;
         },
         complete: () => {

@@ -2,18 +2,17 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { PractitionerAdditionalQualification } from '../../models/additional_qualification_model';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
-import { PractitionerObject } from '../../models/practitioner_model';
-
+import { PractitionerObject } from '../../../models/practitioner_model';
+import { PractitionerWorkHistory } from '../work_history_model';
 @Component({
-  selector: 'app-edit-additional-qualification',
-  templateUrl: './edit-additional-qualification.component.html',
-  styleUrls: ['./edit-additional-qualification.component.scss']
+  selector: 'app-edit-work-history',
+  templateUrl: './edit-work-history.component.html',
+  styleUrls: ['./edit-work-history.component.scss']
 })
-export class EditAdditionalQualificationComponent {
-  formUrl: string = "practitioners/qualifications";
-  existingUrl: string = "practitioners/qualifications";
+export class EditWorkHistoryComponent {
+  formUrl: string = "practitioners/workhistory";
+  existingUrl: string = "practitioners/workhistory";
   fields: IFormGenerator[] = [
     {
       label: "Institution",
@@ -25,8 +24,8 @@ export class EditAdditionalQualificationComponent {
       required: true
     },
     {
-      label: "Qualification",
-      name: "qualification",
+      label: "Position",
+      name: "position",
       hint: "",
       options: [],
       type: "text",
@@ -35,6 +34,20 @@ export class EditAdditionalQualificationComponent {
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
+    },
+    {
+      label: "Institution Type",
+      name: "institution_type",
+      hint: "",
+      options: [
+      ],
+      type: "api",
+      value: "",
+      required: false,
+      api_url: "admin/settings/Doctors.work_institution_types",
+      apiKeyProperty: "name",
+      apiLabelProperty: "name",
+      apiType: "datalist",
     },
     {
       label: "Start Date",
@@ -66,10 +79,9 @@ export class EditAdditionalQualificationComponent {
   extraFormData: { key: string, value: any }[] = [];
   id: string = "";
   constructor(
-    public dialogRef: MatDialogRef<EditAdditionalQualificationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { object: PractitionerAdditionalQualification | null, practitioner: PractitionerObject },
-    private dbService: HttpService,
-    private notify: NotifyService
+    public dialogRef: MatDialogRef<EditWorkHistoryComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { object: PractitionerWorkHistory | null, practitioner: PractitionerObject },
+
   ) {
     this.extraFormData = [
       { key: "registration_number", value: data.practitioner.registration_number },
@@ -78,8 +90,8 @@ export class EditAdditionalQualificationComponent {
       this.extraFormData.push({ key: "uuid", value: data.object.uuid }
       );
       this.id = data.object.uuid;
-      this.existingUrl = "practitioners/qualifications/" + this.id;
-      this.formUrl = "practitioners/qualifications/" + this.id;
+      this.existingUrl = "practitioners/workhistory/" + this.id;
+      this.formUrl = "practitioners/workhistory/" + this.id;
     }
 
 
