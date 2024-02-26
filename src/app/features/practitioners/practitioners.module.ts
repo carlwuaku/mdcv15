@@ -13,7 +13,9 @@ import { RenewalIndividualComponent } from './components/renewal-individual/rene
 import { SpecialistComponent } from './components/specialist/specialist.component';
 import { PortalActivationComponent } from './components/portal-activation/portal-activation.component';
 import { AdditionalQualificationsComponent } from './components/additional-qualifications/additional-qualifications.component';
-import { EditAdditionalQualificationComponent } from './components/edit-additional-qualification/edit-additional-qualification.component';
+import { EditAdditionalQualificationComponent } from './components/additional-qualifications/edit-additional-qualification/edit-additional-qualification.component';
+import { WorkHistoryComponent } from './components/work-history/work-history.component';
+import { EditWorkHistoryComponent } from './components/work-history/edit-work-history/edit-work-history.component';
 
 
 
@@ -29,7 +31,9 @@ import { EditAdditionalQualificationComponent } from './components/edit-addition
     SpecialistComponent,
     PortalActivationComponent,
     AdditionalQualificationsComponent,
-    EditAdditionalQualificationComponent
+    EditAdditionalQualificationComponent,
+    WorkHistoryComponent,
+    EditWorkHistoryComponent
   ],
   imports: [
     CommonModule,

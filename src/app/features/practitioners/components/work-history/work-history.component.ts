@@ -1,50 +1,49 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
-import { PractitionerAdditionalQualification } from './additional_qualification_model';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { getToday } from 'src/app/shared/utils/dates';
-import { EditAdditionalQualificationComponent } from './edit-additional-qualification/edit-additional-qualification.component';
 import { PractitionerObject } from '../../models/practitioner_model';
-
+import { PractitionerWorkHistory } from './work_history_model';
+import { EditWorkHistoryComponent } from './edit-work-history/edit-work-history.component';
 @Component({
-  selector: 'app-additional-qualifications',
-  templateUrl: './additional-qualifications.component.html',
-  styleUrls: ['./additional-qualifications.component.scss']
+  selector: 'app-work-history',
+  templateUrl: './work-history.component.html',
+  styleUrls: ['./work-history.component.scss']
 })
-export class AdditionalQualificationsComponent implements OnChanges{
+export class WorkHistoryComponent implements OnChanges{
   @Input() practitioner!:PractitionerObject;
-  baseUrl: string = "practitioners/qualifications";
-  url: string = "practitioners/qualifications";
+  baseUrl: string = "practitioners/workhistory";
+  url: string = "practitioners/workhistory";
   ts: string = "";
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog){}
   ngOnChanges(changes: SimpleChanges): void {
-    this.url  = `practitioners/qualifications?registration_number=${this.practitioner.registration_number}`;
+    this.url  = `practitioners/workhistory?registration_number=${this.practitioner.registration_number}`;
   }
 
 
-  getActions = (object: PractitionerAdditionalQualification): DataActionsButton[]=> {
+  getActions = (object: PractitionerWorkHistory): DataActionsButton[]=> {
     const actions: DataActionsButton[] = [
 
     ];
     if(!object.deleted_at){
       actions.push(
-        { label: "Edit", type: "button", onClick: (object: PractitionerAdditionalQualification) => this.edit(object) },
-        { label: "Delete", type: "button", onClick: (object: PractitionerAdditionalQualification) => this.delete(object)}
+        { label: "Edit", type: "button", onClick: (object: PractitionerWorkHistory) => this.edit(object) },
+        { label: "Delete", type: "button", onClick: (object: PractitionerWorkHistory) => this.delete(object)}
       )
     }
     else{
       actions.push(
-        { label: "Restore", type: "button", onClick: (object: PractitionerAdditionalQualification) => this.restore(object)}
+        { label: "Restore", type: "button", onClick: (object: PractitionerWorkHistory) => this.restore(object)}
       )
     }
     return actions;
   }
 
 
-  edit(object: PractitionerAdditionalQualification){
-    const dialogRef = this.dialog.open(EditAdditionalQualificationComponent, {
+  edit(object: PractitionerWorkHistory){
+    const dialogRef = this.dialog.open(EditWorkHistoryComponent, {
       data: {object:object, practitioner: this.practitioner},
     });
 
@@ -56,7 +55,7 @@ export class AdditionalQualificationsComponent implements OnChanges{
   }
 
   create(){
-    const dialogRef = this.dialog.open(EditAdditionalQualificationComponent, {
+    const dialogRef = this.dialog.open(EditWorkHistoryComponent, {
       data: {object:null, practitioner: this.practitioner},
     });
 
@@ -68,11 +67,11 @@ export class AdditionalQualificationsComponent implements OnChanges{
   }
 
 
-  delete (object: PractitionerAdditionalQualification) {
+  delete (object: PractitionerWorkHistory) {
     if (!window.confirm('Are you sure you want to deactivate this entry? ')) {
       return;
     }
-    this.dbService.delete<{message:string}>("practitioners/qualifications/" + object.uuid).subscribe({
+    this.dbService.delete<{message:string}>("practitioners/workhistory/" + object.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
          this.updateTimestamp(); },
@@ -80,11 +79,11 @@ export class AdditionalQualificationsComponent implements OnChanges{
     })
   }
 
-  restore(object: PractitionerAdditionalQualification){
-    if (!window.confirm('Are you sure you want to restore this qualification?')) {
+  restore(object: PractitionerWorkHistory){
+    if (!window.confirm('Are you sure you want to restore this entry?')) {
       return;
     }
-    this.dbService.put<{message:string}>("practitioners/qualifications/" + object.uuid + "/restore", { }).subscribe({
+    this.dbService.put<{message:string}>("practitioners/workhistory/" + object.uuid + "/restore", { }).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
          this.updateTimestamp(); },

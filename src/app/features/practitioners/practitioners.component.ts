@@ -26,7 +26,7 @@ export class PractitionersComponent {
 
     if (practitioner.deleted_at !== null) {
       actions.push(
-        { label: "Activate", type: "button", onClick: (practitioner: PractitionerObject) => this.activate(practitioner) }
+        { label: "Restore", type: "button", onClick: (practitioner: PractitionerObject) => this.activate(practitioner) }
       )
     }
     else {
@@ -34,7 +34,7 @@ export class PractitionersComponent {
         { label: "View", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'uuid' },
         { label: "Edit", type: "link", link: `practitioners/practitioner-form/`, linkProp: 'uuid' },
         { label: "Edit picture", type: "button", onClick: (practitioner: PractitionerObject) => this.editImage(practitioner) },
-        { label: "Deactivate", type: "button", onClick: (role: PractitionerObject) => this.delete(role)}
+        { label: "Delete", type: "button", onClick: (role: PractitionerObject) => this.delete(role)}
       )
     }
     return actions;
@@ -52,13 +52,24 @@ export class PractitionersComponent {
     });
   }
 
-  activate(practitioner:PractitionerObject){}
-
-  delete (practitioner: PractitionerObject) {
-    if (!window.confirm('Are you sure you want to deactivate this practitioner? You will be able to restore it')) {
+  activate(object:PractitionerObject){
+    if (!window.confirm('Are you sure you want to restore this practitioner?')) {
       return;
     }
-    this.dbService.delete<{message:string}>("practitioners/roles/" + practitioner.uuid).subscribe({
+    this.dbService.put<{message:string}>("practitioners/details/" + object.uuid + "/restore", { }).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+         this.updateTimestamp();
+        },
+      error: error => {  }
+    })
+  }
+
+  delete (practitioner: PractitionerObject) {
+    if (!window.confirm('Are you sure you want to delete this practitioner? You will be able to restore it')) {
+      return;
+    }
+    this.dbService.delete<{message:string}>("practitioners/details/" + practitioner.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
          this.updateTimestamp(); },

@@ -42,6 +42,7 @@ export class ErrorInterceptorService implements HttpInterceptor {
         }
       }),
       catchError((error: HttpErrorResponse) => {
+        console.error(error)
         let errorMessage = '';
         if (error.error instanceof ErrorEvent) {
           // client-side error
