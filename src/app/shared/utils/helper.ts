@@ -28,5 +28,12 @@ export function goBackHome(){
     window.location.assign('/')
 }
 
+export function replaceSpaceWithUnderscore(str:string|null, stringifyNull:boolean = true):string {
+  if(!str){
+    return stringifyNull ? "null" : "";
+  }
+    return str.replace(/ /g, '_');
+}
+
 
 

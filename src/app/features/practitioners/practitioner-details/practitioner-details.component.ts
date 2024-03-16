@@ -17,7 +17,7 @@ export class PractitionerDetailsComponent implements OnInit {
   loading: boolean = false;
   columnLabels?: { [key: string]: string };
   displayedColumns: string[] = [];
-
+  errorLoadingData: boolean = false;
   constructor(private notify: NotifyService,
     private dbService: HttpService, private ar: ActivatedRoute,public dialog: MatDialog) {
     this.id = ar.snapshot.params['id'];
@@ -29,6 +29,7 @@ export class PractitionerDetailsComponent implements OnInit {
 
   getExistingObject() {
     this.loading = true;
+    this.errorLoadingData = false;
     this.notify.showLoading();
     this.dbService.get<{data: PractitionerObject, columnLabels:{ [key: string]: string }, displayColumns: string[]}>(`practitioners/details/${this.id}`).subscribe(
       {
@@ -40,7 +41,10 @@ export class PractitionerDetailsComponent implements OnInit {
           this.notify.hideLoading();
         },
         error: error => {
-          this.notify.failNotification("Error loading data. Please try again")
+          console.log(error);
+          this.errorLoadingData = true;
+          this.object = null;
+          // this.notify.failNotification("Error loading data. Please try again")
         },
         complete: () => {
           this.loading = false;

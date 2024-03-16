@@ -9,13 +9,15 @@ import { PractitionerRenewalComponent } from './practitioner-renewal/practitione
 import { PortalRequestsComponent } from './portal-requests/portal-requests.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EditImageComponent } from './components/edit-image/edit-image.component';
-import { RenewalIndividualComponent } from './components/renewal-individual/renewal-individual.component';
+import { RenewalIndividualComponent } from './components/renewal/renewal-individual/renewal-individual.component';
 import { SpecialistComponent } from './components/specialist/specialist.component';
 import { PortalActivationComponent } from './components/portal-activation/portal-activation.component';
 import { AdditionalQualificationsComponent } from './components/additional-qualifications/additional-qualifications.component';
 import { EditAdditionalQualificationComponent } from './components/additional-qualifications/edit-additional-qualification/edit-additional-qualification.component';
 import { WorkHistoryComponent } from './components/work-history/work-history.component';
 import { EditWorkHistoryComponent } from './components/work-history/edit-work-history/edit-work-history.component';
+import { RenewalComponent } from './components/renewal/renewal.component';
+import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-form.component';
 
 
 
@@ -33,7 +35,9 @@ import { EditWorkHistoryComponent } from './components/work-history/edit-work-hi
     AdditionalQualificationsComponent,
     EditAdditionalQualificationComponent,
     WorkHistoryComponent,
-    EditWorkHistoryComponent
+    EditWorkHistoryComponent,
+    RenewalComponent,
+    RenewalFormComponent,
   ],
   imports: [
     CommonModule,

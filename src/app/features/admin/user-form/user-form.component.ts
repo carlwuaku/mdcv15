@@ -32,6 +32,7 @@ export class UserFormComponent {
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
+      minLength: 8
     },
     {
       label: "Confirm Password",
@@ -44,6 +45,10 @@ export class UserFormComponent {
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
+      minLength: 8,
+      customValidation: {
+        fieldsMatch: ["password"]
+      }
     },
     {
       label: "Phone number",

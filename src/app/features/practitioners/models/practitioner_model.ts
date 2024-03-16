@@ -29,7 +29,6 @@ export interface PractitionerObject {
     is_superintendent: string ;
     education_history: any[];
     retention_history: any[];
-    // cpd_history:CpdListObject[] =null;
     age: number;
     //in many contexts we want to selected some items.
     selected: boolean;
@@ -53,6 +52,7 @@ export interface PractitionerObject {
     college_membership:string ;
     uuid:string;
     deleted_at:string|null;
+    last_renewal_uuid:string|null;
 }
 
 export enum PractitionerTypes {

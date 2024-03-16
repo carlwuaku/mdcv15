@@ -751,3 +751,58 @@ tr:nth-child(even) {
 #sidebar-overlay{
   z-index: 998 !important;
 }
+
+//create a style for any class starting with .in_good_standing
+
+
+
+//give it the same styling as bootstrap badge
+.badge {
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+@mixin badge-variant {
+  padding: 0.25em 0.4em;
+  font-size: 90%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.in_good_standing-In_Good_Standing, .category-Medical, .status-Alive, .register_type-Permanent, .register_type-Full{
+  @include badge-variant;
+  color: white;
+  background-color: green;
+}
+
+.in_good_standing-Not_In_Good_Standing, .status-Deceased, .register_type-Provisional{
+  @include badge-variant;
+  color: white;
+  background-color: red;
+}
+
+.in_good_standing-Pending_Payment, .in_good_standing-Pending_Approval, .register_type-Temporary{
+  @include badge-variant;
+  color: white;
+  background-color: orange;
+}
+
+.category-Dental{
+  @include badge-variant;
+  color: white;
+  background-color: #17a2b8 !important;
+}
+
+
+
+

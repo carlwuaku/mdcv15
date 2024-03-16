@@ -22,6 +22,7 @@ export class ErrorInterceptorService implements HttpInterceptor {
     return next.handle(request).pipe(
       tap((event) => {
         if (event instanceof HttpResponse) {
+          console.log(event)
           if (event.body.status === "0") {
             const errorMessage = `Authentication Error: ${event.body.message}`
             // this.notify.failNotification(errorMessage)

@@ -1,29 +1,41 @@
 <div class="flex-col gap4">
 
-  <app-pagination [current_page]="currentPage" [total]="totalRows" [limit]="limit" (pageChanged)="setPage($event)"
+  <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit" (pageChanged)="setPage($event)"
     (limitChanged)="setLimit($event)"></app-pagination>
     <span>
       <label >
         <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
       </label>
     </span>
+    <!-- <span class="flex-row">
+      <label >Sort By: </label> <select [(ngModel)]="sortBy" (change)="getData()">
+        <option *ngFor="let column of displayedColumns" [value]="column">{{getColumnLabel(column)}}</option>
+      </select>
+
+      <span>
+        <label>Ascending <input  type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
+        <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
+      </span>
+    </span> -->
 
 
-  <div class="mini-card">
+
+  <span class="mini-card" *ngIf="showExport">
     <em>{{selection.selected.length}} Selected:</em>
     <app-export-table [objects]="selection.selected"></app-export-table>
-    <button (click)="getData()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reload </button>
 
-  </div>
+  </span>
+  <button *ngIf="preload" (click)="getData()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reload </button>
+
   <app-loading *ngIf="loading"></app-loading>
-  <div>
+  <div *ngIf="showSearch">
     <form ngNativeValidate (ngSubmit)="search()">
       <label for="">Search</label> <input name="search" required matInput [(ngModel)]="searchParam" type="search">
       <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
 
     </form>
   </div>
-  <div class="alert alert-info" role="alert">
+  <div class="alert alert-info" role="alert" *ngIf="showInfo">
     Click on a column header to sort the table. <br>
     To export the data, e.g. to excel format, select the rows you would like to export. Use the top checkbox to select all
   </div>
@@ -58,7 +70,21 @@
             <span *ngSwitchCase="'#'">{{i + 1}}</span>
 
             <span *ngSwitchCase="'actions'">
-              <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
+              <!-- if element.actions has only one item, show a single button. else display the menu button -->
+              <span *ngIf="element.actions.length === 1; else menuButton">
+                <button *ngIf="element.actions[0].type === 'button'" (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
+                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
+                  <span>{{ element.actions[0].label }}</span>
+                </button>
+
+                <a *ngIf="element.actions[0].type === 'link'"  routerLink="/{{element.actions.link}}/{{element[element.actions.linkProp]}}" mat-menu-item>
+                  <mat-icon *ngIf="element.actions.icon">{{ element.actions.icon }}</mat-icon>
+                  <span>{{ element.actions.label }}</span>
+                </a>
+
+              </span>
+              <ng-template #menuButton>
+                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
                 aria-label="Example icon-button with a menu">
                 <mat-icon>expand_more</mat-icon> Menu
               </button>
@@ -83,6 +109,8 @@
                   <span>{{ action.label }}</span>
                 </a>
               </ng-template>
+              </ng-template>
+
             </span>
 
             <span *ngSwitchCase="'select'">
@@ -106,7 +134,7 @@
 
             </span>
 
-            <span *ngSwitchDefault [innerHTML]="element[column]">
+            <span *ngSwitchDefault [innerHTML]="element[column]" [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))">
 
             </span>
           </span>
@@ -115,7 +143,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'strikethrough': row.deleted_at !== null}"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'strikethrough': row.deleted_at }"></tr>
 
     </table>
   </div>

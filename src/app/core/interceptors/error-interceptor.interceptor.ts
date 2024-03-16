@@ -21,15 +21,34 @@ export class ErrorInterceptor implements HttpInterceptor {
       map((event: HttpEvent<any>) => {
         return event;
       }),
-      catchError((error: HttpErrorResponse) => {
+      catchError((error: any) => {
         //display a toast with the error message
-        console.error(error)
-        if (error.error && error.error.message) {
-          this.notify.failNotification(error.error.message);
-        } else {
-          // Fallback to a generic error message if the server's message is not available
-          this.notify.failNotification('An error occurred. Please try again later.');
+        let errorMessage = '';
+        if (error.error instanceof ErrorEvent) {
+          // client-side error
+          errorMessage = `Connection Error: ${error.error.message}`;
+
         }
+        else if(typeof(error.error) === "string"){
+          errorMessage = `${error.error}`;
+        }
+        else if(typeof(error.error) === "object"){
+          if('message' in error.error){
+            errorMessage = error.error.message;
+          }
+          else{
+            errorMessage = JSON.stringify( error.error)
+          }
+
+        }
+
+        else {
+          // server-side error
+
+          errorMessage = `Server Error Code: ${error.status}\n Message: ${error.message}`;
+
+        }
+        this.notify.failNotification(errorMessage)
         // this.notify.failNotification(error.message)
         return throwError(() => error);
 

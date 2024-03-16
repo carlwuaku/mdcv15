@@ -18,6 +18,9 @@ export interface IFormGenerator {
   minLength?: number;
   maxLength?: number;
   customValidation?: {fieldsMatch: string[]};
+  disabled?: "" | "disabled";
+  hidden?: "" | "hidden";
+  showOnly? :boolean;
 
 }
 

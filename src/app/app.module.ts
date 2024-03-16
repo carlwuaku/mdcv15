@@ -81,16 +81,17 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
     },
     MessageService,
     { provide: "googleTagManagerId", useValue: gtmContainerId },
+
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeadersInterceptorInterceptor,
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
       multi: true,
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HeadersInterceptorInterceptor,
-      multi: true,
-    }
   ],
   bootstrap: [AppComponent],
 })

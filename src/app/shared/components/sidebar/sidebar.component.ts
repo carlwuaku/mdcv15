@@ -103,6 +103,14 @@ export class SidebarComponent {
           title: "Add New Practitioner/Search",
           url: "/practitioners/practitioner-form"
         },
+        {
+          title: "Start Renewal",
+          url: "/practitioners/renewal-form"
+        },
+        {
+          title: "Renewal History",
+          url: "/practitioners/renewals"
+        },
 
       ]
     },
@@ -129,106 +137,6 @@ export class SidebarComponent {
       ]
     }
     ,
-    {
-      title: "OTCMS",
-      has_children: true,
-      active_children: false,
-      url: "",
-      icon: "fa fa-building",
-      children: [
-        {
-          title: "Dashboard/Search",
-          url: "/otcms_dashboard"
-        },
-        // {
-        //   title: "Add OTCMS",
-        //   url: "/add_otcms"
-        // },
-        {
-          title: "Renewals",
-          url: "/otcms_renewal_dashboard"
-        },
-        {
-          title: "Report",
-          url: "/otcms_reports"
-        }
-      ]
-    },
-    {
-      title: "Pharmacies",
-      has_children: true,
-      active_children: false,
-      url: "",
-      icon: "fa fa-building",
-      children: [
-        {
-          title: "Dashboard/Search",
-          url: "/pharmacies_dashboard"
-        },
-        // {
-        //   title: "Add Pharmacy",
-        //   url: "/add_pharmacy"
-        // },
-        {
-          title: "Renewals",
-          url: "/renewal_dashboard"
-        },
-        {
-          title: "Report",
-          url: "/pharmacy_reports"
-        }
-      ]
-    },
-    {
-      title: "Pharmacists",
-      has_children: true,
-      active_children: false,
-      url: "",
-      icon: "fa fa-users",
-      children: [
-        {
-          title: "Dashboard/Search",
-          url: "/pharmacist"
-        },
-        {
-          title: "Add Pharmacist",
-          url: "/add_pharmacist"
-        },
-
-
-        {
-          title: "Web Portal Edits",
-          url: "/web_edits"
-        },
-        {
-          title: "Reports",
-          url: "/pharmacist_reports"
-        }
-      ]
-    },
-    {
-      title: "Technicians",
-      has_children: true,
-      active_children: false,
-      url: "",
-      icon: "fa fa-users",
-      children: [
-        {
-          title: "Dashboard/Search",
-          url: "/technician_dashboard"
-        },
-        {
-          title: "Add Technician",
-          url: "/add_technician"
-        },
-
-
-        {
-          title: "Reports",
-          url: "/technician_reports"
-        }
-      ]
-    },
     {
       title: "System Config",
       has_children: true,

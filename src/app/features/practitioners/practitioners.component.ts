@@ -82,4 +82,21 @@ export class PractitionersComponent {
   }
 
   setSelectedItems(objects: PractitionerObject[]) { }
+
+  specialClasses:{[key:string]:string} =
+    {
+      "in_good_standing-In_Good_Standing": "badge bg-success",
+      "in_good_standing-Not_In_Good_Standing": "badge bg-danger",
+      "in_good_standing-Pending-Payment": "badge bg-warning",
+      "in_good_standing-Pending-Approval": "badge bg-warning",
+      "category-Medical": "badge bg-success",
+      "category-Dental": "badge bg-info",
+      "status-Alive": "badge bg-success",
+      "status-Deceased": "badge bg-danger",
+      "register_type-Provisional": "badge bg-danger",
+      "register_type-Temporary": "badge bg-warning",
+      "register_type-Permanent": "badge bg-success",
+      "register_type-Full": "badge bg-success",
+    }
+  ;
 }

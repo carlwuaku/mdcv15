@@ -35,7 +35,12 @@
 
         </p>
       </div>
+      <div class="col-sm-12" *ngIf="errorLoadingData">
+        <b>Error loading data. Please try again</b>
+        <button mat-raised-button  (click)="getExistingObject()" >Reload</button>
 
+
+      </div>
     </div>
 
   </div>
@@ -70,7 +75,7 @@
     </mat-tab>
     <mat-tab label="Renewal History">
       <ng-template matTabContent>
-
+        <app-renewal [practitioner]="object"></app-renewal>
       </ng-template>
     </mat-tab>
     <mat-tab label="Work History">
