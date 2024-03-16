@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { IFormGenerator } from './form-generator-interface';
-import { AuthService } from 'src/app/core/auth/auth.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { take } from 'rxjs';
@@ -33,6 +32,7 @@ export class FormGeneratorComponent implements OnInit {
   @Input() validationRules: any = {};
   //some random string to differentiate the form from others. useful for generating ids
   formId: string = "";
+  @Input() retainExtraFields:string[] =[];
   constructor(private notify: NotifyService,
     private dbService: HttpService) {
       this.formId = uuidv4();
@@ -52,9 +52,24 @@ export class FormGeneratorComponent implements OnInit {
         next: data => {
           //for each key, find the corresponding field and set the value
           this.fields.map(field => {
-            field.value = data.data[field.name];
+            field.value = data.data[field.name] === "null" ? null : data.data[field.name];
+
+            // if(field.value !== "retain"){
+            //   this.extraData.push({key: field.name, value: field.value})
+            // }
           })
           this.notify.hideLoading();
+          this.retainExtraFields.forEach(field => {
+            //check if there's already an extra data object with a key matching the field
+            const index = this.extraData.findIndex(data => data.key === field);
+            if(index > -1){
+              this.extraData[index].value = data.data[field];
+            }
+            else{
+              this.extraData.push({key: field, value: data.data[field]})
+            }
+          });
+
         },
         error: error => {
           this.notify.failNotification("Error loading data. Please try again")
@@ -122,13 +137,12 @@ export class FormGeneratorComponent implements OnInit {
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-      console.log(field)
         if (field.required && !field.value) {
           this.notify.failNotification(`Field '${field.name}' is required.`);
           return false;
         }
 
-        if (field.minLength && field.value.length < field.minLength) {
+        if (field.value?.trim() && field.minLength && field.value.length < field.minLength) {
           this.notify.failNotification(
             `Field '${field.name}' should be at least ${field.minLength} characters long.`
           );

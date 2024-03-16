@@ -8,7 +8,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ImageModule } from 'primeng/image';
-import { getLabelFromKey } from '../../utils/helper';
+import { getLabelFromKey, replaceSpaceWithUnderscore } from '../../utils/helper';
 
 @Component({
   selector: 'app-load-data-list',
@@ -16,6 +16,7 @@ import { getLabelFromKey } from '../../utils/helper';
   styleUrls: ['./load-data-list.component.scss']
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @ViewChild(MatSort) sort!: MatSort;
 
   is_loading = false;
   // pagination things
@@ -45,12 +46,27 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     'deleted_by', 'password_hash', 'last_ip']
   showTable: boolean = false;
   displayedColumns: string[] = [];
-  @ViewChild(MatSort) sort!: MatSort;
   // @Input() actions: DataActionsButton[] = [];
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
   @Input() searchParam = "";
   selection = new SelectionModel<any>(true, []);
-  @Input() withDeleted:boolean = false;
+  @Input() withDeleted: boolean = false;
+  @Input() preload: boolean = true;
+  /**this contains a key-value pair of classnames that should be given to contents of the table cell based
+   * on the value of the key. For example, if the key is "status" and the value is "Alive", the classname
+   * could be "badge badge-success". This is used in the template. the classnames must exist in the global
+   * style.css or be defined perhaps another css file in the assets. it cannot be defined in the component.
+   */
+  @Input() specialClasses: { [key: string]: string } = {};
+  replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
+  @Input() showPagination: boolean = true;
+  @Input() showExport:  boolean = true;
+  @Input() showSearch:  boolean = true;
+  @Input() showInfo:  boolean = true;
+
+  @Input() sortBy: string = "";
+  @Input() sortOrder: string = "asc";
+
   constructor(private dbService: HttpService,
     private notify: NotifyService) {
 
@@ -68,14 +84,25 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    // this.dataSource.sort = this.sort;
+    this.sort.sortChange.subscribe(() => {
+      this.sortBy = this.sort.active;
+      this.sortOrder = this.sort.direction
+      this.getData();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(this.timestamp)
-    this.offset = 0;
-    this.currentPage = 1;
-    this.getData();
+    if (this.preload) {
+      this.offset = 0;
+      this.currentPage = 1;
+      this.getData();
+    }
+    //if the searchParam changed, search
+    if (changes['searchParam']?.currentValue.trim()) {
+      this.search();
+    }
+
   }
 
   setPage(args: number) {
@@ -114,22 +141,34 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.searchParam.trim()) {
       extra += `&param=${this.searchParam}`
     }
-    if(this.withDeleted){
+    if (this.withDeleted) {
       extra += `&withDeleted=yes`
+    }
+    //if sorting
+    if (this.sortBy) {
+      extra += `&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`
     }
     const url = this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
 
-    this.dbService.get<{ data: any[], total: number, columnLabels: any, displayColumns: string[] }>(url).pipe(takeUntil(this.destroy$))
+    this.dbService.get<{ data: { [key: string]: any }[], total: number, columnLabels: any, displayColumns: string[] }>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           data.data.map(item => {
-            item.actions = this.getActions(item)
+            item['actions'] = this.getActions(item);
+            //set the class as the key of the object + - + the value
+            //so we can use it in the template
+            item['class'] = item[this.exclusionKeys[0]] + "-" + item[this.exclusionKeys[1]]
+            item['class'] = item
           })
           this.dataSource = new MatTableDataSource(data.data);
 
           this.error = false;
           this.totalRows = data.total;
-          this.displayedColumns = ['#','select', "actions", ...data.displayColumns];
+          this.displayedColumns = ['#'];
+          if(this.rowSelection == 'multiple'){
+            this.displayedColumns.push( 'select');
+          }
+          this.displayedColumns.push(...["actions", ...data.displayColumns])
           this.columnLabels = data.columnLabels
           this.showTable = true;
           this.dataSource.sort = this.sort;
@@ -190,4 +229,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
 
+  getColumnClass(columnAndValue: string): string {
+    return this.specialClasses[columnAndValue] || columnAndValue;
+  }
 }

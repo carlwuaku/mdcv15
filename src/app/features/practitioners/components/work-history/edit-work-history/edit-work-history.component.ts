@@ -50,14 +50,44 @@ export class EditWorkHistoryComponent {
       apiType: "datalist",
     },
     {
+      label: "Location",
+      name: "location",
+      hint: "",
+      options: [],
+      type: "text",
+      value: "",
+      required: true,
+      api_url: "",
+      apiKeyProperty: "",
+      apiLabelProperty: "",
+    },
+    {
+      label: "Region",
+      name: "region",
+      hint: "",
+      options: [
+      ],
+      type: "api",
+      value: "",
+      required: false,
+      api_url: "regions/regions",
+      apiKeyProperty: "name",
+      apiLabelProperty: "name",
+      apiType: "select",
+      onChange: (value:string) => {
+        const districtField = this.fields.find((item) =>  item.name === "district");
+        if(districtField) {districtField.api_url = `regions/districts/${value}`}
+      }
+    },
+    {
       label: "Start Date",
       name: "start_date",
       hint: "",
       options: [
       ],
-      type: "text",
+      type: "date",
       value: "",
-      required: false,
+      required: true,
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
@@ -68,9 +98,9 @@ export class EditWorkHistoryComponent {
       hint: "",
       options: [
       ],
-      type: "text",
+      type: "date",
       value: "",
-      required: true,
+      required: false,
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",

@@ -34,10 +34,14 @@ export class SelectObjectComponent implements OnInit, OnChanges{
 
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.type === "datalist"){
+    if(this.type === "datalist" && !this.dataListId.trim()){
       this.dataListId = uuidv4();
     }
+    if((changes['url']?.currentValue !== changes['url']?.previousValue)
+    || (changes['type']?.currentValue !== changes['type']?.previousValue)
+    && (this.type === "datalist" || this.type === "select")){
     this.getData();
+    }
   }
   ngOnInit(): void {
     // this.getData()
