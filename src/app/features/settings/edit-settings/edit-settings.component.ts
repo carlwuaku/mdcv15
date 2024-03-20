@@ -5,7 +5,6 @@ import { take } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { EditorConfig } from '@ckeditor/ckeditor5-core';
 
 @Component({
   selector: 'app-edit-settings',
@@ -16,19 +15,21 @@ export class EditSettingsComponent  implements OnInit{
   public Editor = Editor.Editor;
   arrayList: any[] = [];
   jsonObject: {[key:string]:any} = {};
-  editorConfig:EditorConfig = {
-    table: {
-      contentToolbar: [
-        'tableColumn', 'tableRow', 'mergeTableCells',
-        'tableProperties', 'tableCellProperties'
-    ]
-    },
-    mediaEmbed:{
-      previewsInData:true,
+  // editorConfig:EditorConfig = {
 
-    }
+  //   table: {
+  //     contentToolbar: [
+  //       'tableColumn', 'tableRow', 'mergeTableCells',
+  //       'tableProperties', 'tableCellProperties'
+  //   ]
+  //   },
+  //   mediaEmbed:{
+  //     previewsInData: true,
 
-  }
+
+  //   }
+
+  // }
   constructor(
     public dialogRef: MatDialogRef<EditSettingsComponent>,
     @Inject(MAT_DIALOG_DATA) public setting: SettingsObject,
