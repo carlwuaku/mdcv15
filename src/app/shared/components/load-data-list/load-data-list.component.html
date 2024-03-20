@@ -67,7 +67,7 @@
 
         <td mat-cell *matCellDef="let element; let i = index;">
           <span [ngSwitch]="column">
-            <span *ngSwitchCase="'#'">{{i + 1}}</span>
+            <span *ngSwitchCase="'#'">{{offset+ i + 1}}</span>
 
             <span *ngSwitchCase="'actions'">
               <!-- if element.actions has only one item, show a single button. else display the menu button -->
