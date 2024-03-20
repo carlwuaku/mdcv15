@@ -32,7 +32,7 @@ export function replaceSpaceWithUnderscore(str:string|null, stringifyNull:boolea
   if(!str){
     return stringifyNull ? "null" : "";
   }
-    return str.replace(/ /g, '_');
+    return typeof str === 'string' ? str.replace(/ /g, '_') : "";
 }
 
 

@@ -18,6 +18,7 @@ import { WorkHistoryComponent } from './components/work-history/work-history.com
 import { EditWorkHistoryComponent } from './components/work-history/edit-work-history/edit-work-history.component';
 import { RenewalComponent } from './components/renewal/renewal.component';
 import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-form.component';
+import { RenewalCertificateComponent } from './components/renewal/renewal-certificate/renewal-certificate.component';
 
 
 
@@ -38,6 +39,7 @@ import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-
     EditWorkHistoryComponent,
     RenewalComponent,
     RenewalFormComponent,
+    RenewalCertificateComponent,
   ],
   imports: [
     CommonModule,

@@ -30,7 +30,7 @@ export class ApiCountComponent implements OnInit {
 
     this.httpService.get<any>(this.url || this.commonUrls[this.type]).pipe(take(1)).subscribe(data => {
       this.loading = false;
-      this.count = data[this.property]
+      this.count = data.data
     })
   }
 

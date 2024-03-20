@@ -12,7 +12,7 @@
 
             </div>
             <div *ngSwitchCase="'textarea'">
-              <ckeditor [editor]="Editor"  [(ngModel)]="setting.value"></ckeditor>
+              <ckeditor [editor]="Editor" [config]="editorConfig"  [(ngModel)]="setting.value"></ckeditor>
             </div>
             <div *ngSwitchCase="'list'">
               <app-array-editor [objects]="arrayList" (valueChanged)="setValue($event)"  ></app-array-editor>
