@@ -155,10 +155,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
         next: (data) => {
           data.data.map(item => {
             item['actions'] = this.getActions(item);
-            //set the class as the key of the object + - + the value
-            //so we can use it in the template
-            item['class'] = item[this.exclusionKeys[0]] + "-" + item[this.exclusionKeys[1]]
-            item['class'] = item
           })
           this.dataSource = new MatTableDataSource(data.data);
 

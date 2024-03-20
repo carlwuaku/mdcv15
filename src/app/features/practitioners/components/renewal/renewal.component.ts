@@ -7,6 +7,7 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 import { getToday } from 'src/app/shared/utils/dates';
 import { PractitionerObject } from '../../models/practitioner_model';
 import { RenewalService } from '../../renewal.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-renewal',
@@ -18,13 +19,36 @@ export class RenewalComponent implements OnChanges{
   url: string = "practitioners/renewal";
   ts: string = "";
   @Input() practitioner: PractitionerObject | undefined = undefined;
+  practitioner_type: "Doctor"|"Physician Assistant" = "Doctor";
+  status: "Pending Approval" | "Pending Payment" | "Approved" = "Approved";
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog,
-    private renewalService: RenewalService){
+    private renewalService: RenewalService, private ar: ActivatedRoute) {
+      //get query params for status and practitioner_type
+      const practitioner_type = this.ar.snapshot.queryParamMap.get('practitioner_type');
+      const status = this.ar.snapshot.queryParamMap.get('status');
+      this.practitioner_type = practitioner_type === "Physician Assistant" ? "Physician Assistant" : "Doctor";
+      switch (status) {
+        case "Pending Approval":
+          this.status = "Pending Approval";
+          break;
+        case "Pending Payment":
+          this.status = "Pending Payment";
+          break;
+        case "Approved":
+
+        default:
+          this.status = "Approved";
+          break;
+      }
 
   }
   ngOnChanges(changes: SimpleChanges): void {
+    const queryParams = `?practitioner_type=${this.practitioner_type}&status=${this.status}`;
     if(this.practitioner){
-      this.url = this.baseUrl + "/practitioner/" + this.practitioner.uuid;
+      this.url = this.baseUrl + "/practitioner/" + this.practitioner.uuid+queryParams;
+    }
+    else{
+      this.url = this.baseUrl + queryParams;
     }
   }
 

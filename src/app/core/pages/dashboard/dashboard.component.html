@@ -43,16 +43,18 @@
                         </strong> New Portal Edits
                     </a>
                     <a [routerLink]="['/pending_relicensure/doctor']"
+                    [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Approval'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorRelicensureApprovalCount'"></app-api-count>
+                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Approval&practitioner_type=Doctor'" ></app-api-count>
                         </strong> Relic.
                         Pending Approval
                     </a>
                     <a [routerLink]="['/pending_relicensure_payment/doctor']"
+                    [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Payment'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorRelicensurePaymentCount'"></app-api-count>
+                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Payment&practitioner_type=Doctor'"></app-api-count>
                         </strong> Relic.
                         Pending Payment
                     </a>
@@ -95,17 +97,19 @@
                         </strong> New Temporary
                         Registrations
                     </a>
-                    <a [routerLink]="['/pending_relicensure/PA']"
+                    <a [routerLink]="['/practitioners/renewal']"
+                    [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Approval'}"
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'paRelicensureApprovalCount'"></app-api-count>
+                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Approval&practitioner_type=Physician Assistant'"></app-api-count>
                         </strong> Relic.
                         Pending Approval
                     </a>
                     <a [routerLink]="['/pending_relicensure_payment/PA']"
+                    [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Payment'}"
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'paRelicensurePaymentCount'"></app-api-count>
+                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Payment&practitioner_type=Physician Assistant'"></app-api-count>
                         </strong> Relic. Pending
                         Payment
                     </a>
