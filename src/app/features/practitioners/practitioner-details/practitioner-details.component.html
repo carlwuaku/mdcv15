@@ -10,6 +10,9 @@
           <small>(<em><b>{{object.registration_number}} </b> </em>) </small>
         </h4>
         <p>
+          <span class="in_good_standing-{{replaceSpaceWithUnderscore(object.in_good_standing)}}">{{object.in_good_standing}}</span>
+          <span class="badge" [ngClass]="{'badge-danger': !object.specialty, 'badge-success': object.specialty}">Specialty: {{object.specialty || 'None'}}</span>
+
           <!-- <app-renewal-individual [type]="'Doctor'" [reg_num]="object.registration_number"></app-renewal-individual>
           <app-specialist [existing_specialty]="object.specialty" [object]="object" [reg_num]="object.registration_number"></app-specialist> -->
 

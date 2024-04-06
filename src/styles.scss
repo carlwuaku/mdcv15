@@ -17,7 +17,9 @@ body {
 
 .flex-row {
   display: flex;
-  row-gap: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .row-gap-1 {
@@ -91,7 +93,7 @@ body {
   }
 }
 
-.flex-col{
+.flex-col {
   display: flex;
   flex-direction: column;
 
@@ -100,7 +102,7 @@ body {
 
 
 
-.p-galleria-item{
+.p-galleria-item {
   min-height: 75vh !important;
 }
 
@@ -108,16 +110,16 @@ body {
   --maskbg: #6c757d !important;
 }
 
-.gap8{
+.gap8 {
   gap: 8px;
 }
 
-.gap4{
+.gap4 {
   gap: 4px !important;
 }
 
 
-.wrap-text{
+.wrap-text {
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -126,9 +128,10 @@ body {
   word-break: break-word;
 }
 
-.full-width{
+.full-width {
   width: 100%;
 }
+
 .form-row {
   margin-bottom: 7px;
 }
@@ -299,10 +302,7 @@ body {
 }
 
 @media print {
-  .no-print {
-    display: none;
-    width: 0px !important;
-  }
+
 
   section {
     padding: 0px;
@@ -318,14 +318,39 @@ body {
     left: 0px;
   }
 
-  .main-panel {
+
+  .no-print,
+  .main-sidebar,
+  .page-title {
+    display: none;
+    width: 0px !important;
     all: unset;
   }
+
+  section {
+    padding: 0px;
+    margin: 0px !important;
+    top: 0px;
+    left: 0px;
+  }
+
+
+  .main-panel,
+  .content-wrapper,
+  .content,
+  .container,
+  .flex-col,
+  .gap4 {
+    all: unset !important;
+  }
 }
+
 
 @media screen {
   #print_space {
     display: none;
+    padding: 0px !important;
+    margin: 0px !important;
   }
 }
 
@@ -748,7 +773,8 @@ tr:nth-child(even) {
   border-bottom: 1px solid #dee2e6;
   z-index: 999 !important;
 }
-#sidebar-overlay{
+
+#sidebar-overlay {
   z-index: 998 !important;
 }
 
@@ -779,30 +805,34 @@ tr:nth-child(even) {
   border-radius: 0.25rem;
 }
 
-.in_good_standing-In_Good_Standing, .category-Medical, .status-Alive, .register_type-Permanent, .register_type-Full{
+.in_good_standing-In_Good_Standing,
+.category-Medical,
+.status-Alive,
+.register_type-Permanent,
+.register_type-Full {
   @include badge-variant;
   color: white;
   background-color: green;
 }
 
-.in_good_standing-Not_In_Good_Standing, .status-Deceased, .register_type-Provisional{
+.in_good_standing-Not_In_Good_Standing,
+.status-Deceased,
+.register_type-Provisional {
   @include badge-variant;
   color: white;
   background-color: red;
 }
 
-.in_good_standing-Pending_Payment, .in_good_standing-Pending_Approval, .register_type-Temporary{
+.in_good_standing-Pending_Payment,
+.in_good_standing-Pending_Approval,
+.register_type-Temporary {
   @include badge-variant;
   color: white;
   background-color: orange;
 }
 
-.category-Dental{
+.category-Dental {
   @include badge-variant;
   color: white;
   background-color: #17a2b8 !important;
 }
-
-
-
-

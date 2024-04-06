@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+
+<div class="dialog-container">
+  <app-form-generator  [fields]="fields" [formType]="formType"
+    (emitFields)="formSubmitted($event)"></app-form-generator>
+</div>
+
+
+<mat-dialog-actions >
+    <button mat-flat-button color="warn" type="button" [mat-dialog-close]="true" >
+        Cancel
+    </button>
+</mat-dialog-actions>
+

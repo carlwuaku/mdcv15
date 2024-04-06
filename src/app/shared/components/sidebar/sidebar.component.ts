@@ -22,13 +22,7 @@ export class SidebarComponent {
       icon: "fa fa-refresh",
       children: []
     },
-    {
-      title: "Newly Qualified",
-      has_children: false,
-      url: "/pass_list",
-      icon: "fa fa-home",
-      children: []
-    },
+
     {
       title: "CPD",
       has_children: true,
@@ -170,7 +164,7 @@ export class SidebarComponent {
         },
         {
           title: "Activities",
-          url: "/admin/view_activities"
+          url: "/activities"
         },
         {
           title: "Logs",

@@ -21,6 +21,7 @@ export class FormGeneratorComponent implements OnInit {
 
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
+  @Input() resetButtonText: string = "Reset";
   @Input() formType: "submit" | "filter" = "submit";
   @Input() show: boolean = true;
   @Input() enableShowHideButton: boolean = false;

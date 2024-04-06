@@ -34,6 +34,8 @@ const routes: Routes = [
   { path: 'practitioners', loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },
   { path: 'admin', data:{title: "Admin"}, resolve: {userData: UserResolver}, loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   { path: 'settings', loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule) },
+  { path: 'activities', loadChildren: () => import('./features/activities/activities.module').then(m => m.ActivitiesModule) },
+  { path: 'applications', loadChildren: () => import('./features/application-forms/application-forms.module').then(m => m.ApplicationFormsModule) },
   {
     path: '**',
     redirectTo: '',

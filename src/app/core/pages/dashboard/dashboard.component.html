@@ -18,22 +18,25 @@
                         <i class="fa fa-refresh"></i> Renewal of license</a>
                     <a class="list-group-item col-pink bg-pink-hover link">
                         <i class="fa fa-forward"></i> Migration to Permanent Register</a>
-                    <a [routerLink]="['/provisional_registrations/Doctor']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Provisional Registration Application'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorProvisionalRegistrationCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Provisional Registration Application'"></app-api-count>
                         </strong> New Provisional Registrations
                     </a>
-                    <a [routerLink]="['/permanent_registrations/Doctor']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Permanent Registration Application'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorPermanentRegistrationCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Permanent Registration Application'"></app-api-count>
                         </strong> New Permanent Registrations
                     </a>
-                    <a [routerLink]="['/temporary_registrations/Doctor']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Temporary Registration Application'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorTemporaryRegistrationsCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Temporary Registration Application'"></app-api-count>
                         </strong> New Temporary Registrations
                     </a>
                     <a [routerLink]="['/portalEdits']" class="list-group-item col-pink bg-pink-hover link">
@@ -42,7 +45,7 @@
 
                         </strong> New Portal Edits
                     </a>
-                    <a [routerLink]="['/pending_relicensure/doctor']"
+                    <a [routerLink]="['/practitioners/renewals']"
                     [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Approval'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
@@ -50,7 +53,7 @@
                         </strong> Relic.
                         Pending Approval
                     </a>
-                    <a [routerLink]="['/pending_relicensure_payment/doctor']"
+                    <a [routerLink]="['/practitioners/renewals']"
                     [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Payment'}"
                         class="list-group-item col-pink bg-pink-hover link">
                         <strong class="badge badge-warning">
@@ -78,26 +81,32 @@
                         <i class="fa fa-refresh"></i> Renewal of license</a>
                     <a class="list-group-item col-purple bg-purple-hover link">
                         <i class="fa fa-forward"></i> Migration to Permanent Register</a>
-                    <a [routerLink]="['/provisional_registrations/PA']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Provisional Registration Application'}"
+
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'paProvisionalRegistrationCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Provisional Registration Application'"></app-api-count>
                         </strong> New Provisional Registrations
                     </a>
-                    <a [routerLink]="['/permanent_registrations/PA']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Permanent Registration Application'}"
+
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'paPermanentRegistrationCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Permanent Registration Application'"></app-api-count>
                         </strong> New Permanent Registrations
                     </a>
-                    <a [routerLink]="['/temporary_registrations/PA']"
+                    <a [routerLink]="['/applications']"
+                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Temporary Registration Application'}"
+
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
-                            <app-api-count [type]="'paTemporaryRegistrationCount'"></app-api-count>
+                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Temporary Registration Application'"></app-api-count>
                         </strong> New Temporary
                         Registrations
                     </a>
-                    <a [routerLink]="['/practitioners/renewal']"
+                    <a [routerLink]="['/practitioners/renewals']"
                     [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Approval'}"
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">
@@ -105,7 +114,7 @@
                         </strong> Relic.
                         Pending Approval
                     </a>
-                    <a [routerLink]="['/pending_relicensure_payment/PA']"
+                    <a [routerLink]="['/practitioners/renewals']"
                     [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Payment'}"
                         class="list-group-item col-purple bg-purple-hover link">
                         <strong class="badge badge-warning">

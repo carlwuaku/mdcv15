@@ -5,6 +5,7 @@ import { PractitionerObject } from '../models/practitioner_model';
 import { ActivatedRoute } from '@angular/router';
 import { EditImageComponent } from '../components/edit-image/edit-image.component';
 import { MatDialog } from '@angular/material/dialog';
+import { replaceSpaceWithUnderscore } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-practitioner-details',
@@ -18,6 +19,8 @@ export class PractitionerDetailsComponent implements OnInit {
   columnLabels?: { [key: string]: string };
   displayedColumns: string[] = [];
   errorLoadingData: boolean = false;
+  replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
+
   constructor(private notify: NotifyService,
     private dbService: HttpService, private ar: ActivatedRoute,public dialog: MatDialog) {
     this.id = ar.snapshot.params['id'];

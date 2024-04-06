@@ -1,11 +1,11 @@
 <div *ngIf="isLoggedIn; else login " class="wrapper">
   <app-navbar></app-navbar>
-  <div class="main"></div>
+  <!-- <div class="main"></div> -->
   <app-sidebar></app-sidebar>
   <div class="content-wrapper">
     <section class="content">
       <div class="container flex-col gap4">
-        <h4>{{title}}</h4>
+        <h4 class="page-title no-print">{{title}}</h4>
       <router-outlet></router-outlet>
     </div>
     </section>

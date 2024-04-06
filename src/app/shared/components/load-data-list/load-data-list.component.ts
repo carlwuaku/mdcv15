@@ -9,6 +9,10 @@ import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ImageModule } from 'primeng/image';
 import { getLabelFromKey, replaceSpaceWithUnderscore } from '../../utils/helper';
+import { columnFilterInterface } from './data-list-interface';
+import { IFormGenerator } from '../form-generator/form-generator-interface';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFormComponent } from '../dialog-form/dialog-form.component';
 
 @Component({
   selector: 'app-load-data-list',
@@ -46,6 +50,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     'deleted_by', 'password_hash', 'last_ip']
   showTable: boolean = false;
   displayedColumns: string[] = [];
+  sortColumns:string[] =[];
   // @Input() actions: DataActionsButton[] = [];
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
   @Input() searchParam = "";
@@ -66,9 +71,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   @Input() sortBy: string = "";
   @Input() sortOrder: string = "asc";
+  @Input() filters: IFormGenerator[] = [];
+  tableTitle: string = "";
 
   constructor(private dbService: HttpService,
-    private notify: NotifyService) {
+    private notify: NotifyService, private dialog:MatDialog) {
 
 
   }
@@ -84,12 +91,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit() {
-    // this.dataSource.sort = this.sort;
-    this.sort.sortChange.subscribe(() => {
-      this.sortBy = this.sort.active;
-      this.sortOrder = this.sort.direction
-      this.getData();
-    });
+    this.dataSource.sort = this.sort;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -131,12 +133,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.getData();
   }
 
-
-
-
-  getData() {
-    this.loading = true;
-    this.showTable = false;
+  prepUrl():string{
     let extra = `page=${this.offset}&limit=${this.limit}`;
     if (this.searchParam.trim()) {
       extra += `&param=${this.searchParam}`
@@ -144,13 +141,35 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.withDeleted) {
       extra += `&withDeleted=yes`
     }
+
     //if sorting
     if (this.sortBy) {
       extra += `&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`
     }
-    const url = this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
+    return this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
+  }
 
-    this.dbService.get<{ data: { [key: string]: any }[], total: number, columnLabels: any, displayColumns: string[] }>(url).pipe(takeUntil(this.destroy$))
+
+  getData(url?:string) {
+    this.loading = true;
+    this.showTable = false;
+    if(!url){
+      url = this.prepUrl();
+    }
+    const splitUrl = url.split("?");
+    let tableTitleArray:string[] = [];
+    //splitUrl should return a string like param=123&limit=10&page=1. apart from page and limit,
+    //split every key=value into key: value, separated by commas
+    const params = splitUrl[1].split("&").filter(param => !param.includes("page=") && !param.includes("limit=")
+    && !param.includes("sortBy=") && !param.includes("sortOrder=")).map(x => x.split("="));
+    console.log(params)
+    params.map(param => {
+      tableTitleArray.push(this.getColumnLabel(param[0])+": "+param[1]);
+    })
+    this.tableTitle = tableTitleArray.join(", ");
+
+    this.dbService.get<{ data: { [key: string]: any }[], total: number, columnLabels: any,
+    displayColumns: string[],columnFilters?: IFormGenerator[] }>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           data.data.map(item => {
@@ -160,6 +179,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
           this.error = false;
           this.totalRows = data.total;
+          this.sortColumns = data.displayColumns;
           this.displayedColumns = ['#'];
           if(this.rowSelection == 'multiple'){
             this.displayedColumns.push( 'select');
@@ -168,6 +188,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.columnLabels = data.columnLabels
           this.showTable = true;
           this.dataSource.sort = this.sort;
+          if(this.filters.length == 0 && data.columnFilters&& data.columnFilters.length > 0){
+          this.filters = data.columnFilters;
+          }
         },
         error: (err) => {
           console.error(err)
@@ -227,5 +250,32 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   getColumnClass(columnAndValue: string): string {
     return this.specialClasses[columnAndValue] || columnAndValue;
+  }
+
+  setFilters(args:IFormGenerator[]){
+    let url = this.prepUrl();
+    args.forEach(filter => {
+      if(filter.value){
+        url += `&${filter.name}=${filter.value}`
+      }
+    });
+    this.getData(url);
+  }
+
+  showFilterDialog(){
+    const dialogRef = this.dialog.open(DialogFormComponent, {
+      data: {
+        title: "Filter",
+        fields: this.filters,
+        formType: "filter"
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.setFilters(result)
+    });
+  }
+
+  reset(){
+    window.location.reload();
   }
 }
