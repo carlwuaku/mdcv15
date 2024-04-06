@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+
+<div class="dialog-container">
+  <app-key-value-display [object]="object"></app-key-value-display>
+
+</div>
+
+
+<mat-dialog-actions >
+    <button mat-flat-button color="warn" type="button" [mat-dialog-close]="true" >
+        Close
+    </button>
+</mat-dialog-actions>

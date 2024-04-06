@@ -32,6 +32,8 @@ import { KeyValueDisplayComponent } from './components/key-value-display/key-val
 import { ArrayEditorComponent } from './components/array-editor/array-editor.component';
 import { JsonEditorComponent } from './components/json-editor/json-editor.component';
 import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
+import { DialogFormComponent } from './components/dialog-form/dialog-form.component';
+import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-display/dialog-key-value-display.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,9 @@ import { InlineEditorComponent } from './components/inline-editor/inline-editor.
     KeyValueDisplayComponent,
     ArrayEditorComponent,
     JsonEditorComponent,
-    InlineEditorComponent
+    InlineEditorComponent,
+    DialogFormComponent,
+    DialogKeyValueDisplayComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -99,7 +103,8 @@ import { InlineEditorComponent } from './components/inline-editor/inline-editor.
     FileUploaderComponent,
     KeyValueDisplayComponent,
     ArrayEditorComponent,
-    JsonEditorComponent
+    JsonEditorComponent,
+    DialogKeyValueDisplayComponent
   ],
   providers: [
     ClipboardCopyDirective

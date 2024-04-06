@@ -19,7 +19,6 @@ export class PractitionerFormComponent {
       options: [
         { key: "Medical", value: "Medical" },
         { key: "Dental", value: "Dental" },
-        // {key: "Medical", value: "Medical"},
       ],
       type: "select",
       value: "",
@@ -266,7 +265,6 @@ export class PractitionerFormComponent {
       apiLabelProperty: "name",
       apiType: "select",
       onChange: (value:string) => {
-        console.log(value)
         const districtField = this.fields.find((item) =>  item.name === "district");
         if(districtField) {districtField.api_url = `regions/districts/${value}`}
       }

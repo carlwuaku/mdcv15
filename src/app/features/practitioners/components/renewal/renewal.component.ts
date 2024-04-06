@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -14,13 +14,13 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './renewal.component.html',
   styleUrls: ['./renewal.component.scss']
 })
-export class RenewalComponent implements OnChanges{
+export class RenewalComponent implements OnInit, OnChanges{
   baseUrl: string = "practitioners/renewal";
   url: string = "practitioners/renewal";
   ts: string = "";
   @Input() practitioner: PractitionerObject | undefined = undefined;
   practitioner_type: "Doctor"|"Physician Assistant" = "Doctor";
-  status: "Pending Approval" | "Pending Payment" | "Approved" = "Approved";
+  status: ""| "Pending Approval" | "Pending Payment" | "Approved" = "Approved";
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute) {
       //get query params for status and practitioner_type
@@ -35,15 +35,27 @@ export class RenewalComponent implements OnChanges{
           this.status = "Pending Payment";
           break;
         case "Approved":
-
-        default:
           this.status = "Approved";
           break;
+        default:
+          this.status = "";
+          break;
       }
+      console.log(practitioner_type, status)
 
   }
+  ngOnInit(): void {
+    this.setUrl();
+  }
   ngOnChanges(changes: SimpleChanges): void {
-    const queryParams = `?practitioner_type=${this.practitioner_type}&status=${this.status}`;
+    this.setUrl();
+  }
+
+  setUrl(){
+    let queryParams = `?practitioner_type=${this.practitioner_type}`;
+    if(this.status){
+      queryParams += `&status=${this.status}`
+    }
     if(this.practitioner){
       this.url = this.baseUrl + "/practitioner/" + this.practitioner.uuid+queryParams;
     }
@@ -52,9 +64,7 @@ export class RenewalComponent implements OnChanges{
     }
   }
 
-
-
-  getActions = (practitioner: RenewalObject): DataActionsButton[]=> {
+  getActions = (object: RenewalObject): DataActionsButton[]=> {
 
     const actions: DataActionsButton[] = [
       { label: "Edit", type: "link", link: `practitioners/renewal-form/`, linkProp: 'uuid' },
@@ -65,6 +75,31 @@ export class RenewalComponent implements OnChanges{
         { label: "View Practitioner", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'practitioner_uuid' }
       )
     }
+    if(object.status === "Approved"){
+      actions.push(
+        { label: "Print Certificate", type: "link", link: `practitioners/renewal-certificate/`, linkProp: 'uuid' }
+      )
+    }
+
+    if(object.status === "Pending Approval"){
+      actions.push(
+        { label: "Set to Pending Payment", type: "button", onClick: (object: RenewalObject) => this.update(object, {"status": "Pending Payment", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid})}
+      )
+    }
+    if(object.status !== "Approved"){
+      actions.push(
+        { label: "Approve", type: "button", onClick: (object: RenewalObject) => this.update(object, {"status": "Approved", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid})}
+      )
+    }
+
+    if(object.status === "Pending Payment"){
+      actions.push(
+        { label: "Set to Pending Approval", type: "button", onClick: (object: RenewalObject) => this.update(object,
+          {"status": "Pending Approval", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid})}
+      )
+    }
+
+
     return actions;
   }
   delete (object: RenewalObject) {
@@ -78,5 +113,17 @@ export class RenewalComponent implements OnChanges{
 
   updateTimestamp(){
     this.ts = getToday("timestamp_string");
+  }
+
+  update(object: RenewalObject, data:{[key:string]:string}){
+    if(!window.confirm('Are you sure you want to update this entry? ')) {
+      return;
+    }
+    this.renewalService.update(object.uuid, data).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+         this.updateTimestamp(); },
+      error: error => {  }
+    })
   }
 }

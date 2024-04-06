@@ -21,6 +21,7 @@
 
               <select  class="form-control"
                 [required]="field.required" *ngSwitchCase="'select'" [(ngModel)]="field.value" name="{{field.label}}">
+                <option value="">None</option>
                 <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
               </select>
 
@@ -52,5 +53,10 @@
       </ng-container>
     </div>
   </div>
-  <button type="submit" class="btn btn-sm btn-primary">{{submitButtonText}}</button>
+  <div>
+    <button type="reset" mat-button color="warn">{{resetButtonText}}</button>
+
+    <button type="submit" mat-raised-button color="primary">{{submitButtonText}}</button>
+
+  </div>
 </form>

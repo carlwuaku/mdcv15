@@ -21,4 +21,14 @@ export class RenewalService {
     }
     return this.dbService.delete<{message:string}>("practitioners/renewal/" + uuid)
   }
+
+  update(uuid:string, data:{[key:string]:string}):Observable<{message:string}>{
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+      formData.append(key, data[key])
+    })
+    formData.append("uuid", uuid);
+    return this.dbService.put(`practitioners/renewal/${uuid}`, formData)
+
+  }
 }

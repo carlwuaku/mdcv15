@@ -5,6 +5,7 @@ import { PractitionerFormComponent } from './practitioner-form/practitioner-form
 import { PractitionerDetailsComponent } from './practitioner-details/practitioner-details.component';
 import { RenewalComponent } from './components/renewal/renewal.component';
 import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-form.component';
+import { RenewalCertificateComponent } from './components/renewal/renewal-certificate/renewal-certificate.component';
 
 const routes: Routes = [
   { path: '', data:{title: 'Practitioners'}, component: PractitionersComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'renewals', data:{title: 'Renewals'}, component: RenewalComponent },
   { path: 'renewal-form', data:{title: 'Create Renewal'}, component: RenewalFormComponent },
   { path: 'renewal-form/:id', data:{title: 'Edit Renewal'}, component: RenewalFormComponent },
+  { path: 'renewal-certificate/:id', data:{title: 'Print Renewal Certificate'}, component: RenewalCertificateComponent },
 
 ];
 
