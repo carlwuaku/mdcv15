@@ -61,24 +61,19 @@ export class SidebarComponent {
       ]
     },
     {
-      title: "Accounts",
+      title: "Applications",
       has_children: true,
       active_children: false,
       url: "",
       icon: "fa fa-dollar",
       children: [
         {
-          title: "Manage Fees",
-          url: "/fees"
+          title: "Submitted Application",
+          url: "/applicationsx"
         },
         {
-          title: "Generate Invoice",
-          url: "/view_invoice"
-        }
-        ,
-        {
-          title: "View Invoices",
-          url: "/online_payments"
+          title: "Manage Templates",
+          url: "/application-templates"
         }
       ]
     },

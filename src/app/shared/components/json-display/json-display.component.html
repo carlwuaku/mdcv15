@@ -1,6 +1,24 @@
-<span *ngIf="field == 'picture' || type == 'custom'; else text">
-    <img height="80" src="{{value}}" alt="none">
+
+<span [ngSwitch]="objectType">
+  <span *ngSwitchCase="'array'">
+    <ul>
+      <li *ngFor="let item of value">
+        <app-json-display [depth]="depth+1" [value]="item"></app-json-display>
+      </li>
+    </ul>
+  </span>
+  <span *ngSwitchCase="'object'">
+    <app-json-display [depth]="depth+1"  [value]="value"></app-json-display>
+  </span>
+  <span *ngSwitchCase="'image'">
+    <img [src]="value" alt="image" [height]="imageHeight">
+  </span>
+  <span *ngSwitchCase="'link'">
+    <a [href]="value">{{value}}</a>
+  </span>
+  <span *ngSwitchDefault>
+    {{value}}
+  </span>
 </span>
 
 
-<ng-template #text> {{value}} </ng-template>

@@ -13,4 +13,5 @@ export interface ApplicationFormObject {
   email: string,
   phone: string,
   qr_code: string
+  actions?: any[]
 }

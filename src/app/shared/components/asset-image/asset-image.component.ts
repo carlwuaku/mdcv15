@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class AssetImageComponent {
   @Input() name!: string
-  @Input() height: string = "100px";
+  @Input() height: string = "100";
 }

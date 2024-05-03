@@ -20,25 +20,7 @@
             <div *ngSwitchCase="'object'">
               <app-json-editor [jsonObject]="jsonObject" (valueChanged)="setValue($event)"  ></app-json-editor>
             </div>
-            <!-- <div class="list-group"  *ngSwitchCase="'list'">
-              <div class="list-group-item">
-                <label>Add New</label> <br>
-                <input [(ngModel)]="new_item" name="new_item" type="text"> <button type="button" (click)="addNew()" class="btn btn-sm btn-success">Add</button>
-              </div>
-              <a class="list-group-item list-group-item-success"  *ngFor="let item of temp_added_list">{{item}}
-                  <span class="pull-right" >
-                    <button  (click)="removeAddedItem(item)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
 
-                  </span>
-                </a>
-              <a class="list-group-item" [ngClass]="{'text-danger': removed_items.indexOf(item) != -1}" *ngFor="let item of temp_list">{{item}}
-                <span class="pull-right" >
-                  <button *ngIf="removed_items.indexOf(item) == -1" (click)="removeItem(item)" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
-                  <button *ngIf="removed_items.indexOf(item) != -1" (click)="undoRemove(item)" class="btn btn-sm btn-warning"><i class="fa fa-undo"></i> </button>
-
-                </span>
-              </a>
-            </div> -->
 
             <div *ngSwitchDefault>
               <input (keyup.enter)="save()" [(ngModel)]="setting.value" class="form-control" name="edit" >
@@ -49,7 +31,7 @@
 </div>
 
 
-<mat-dialog-actions  align="end">
+<mat-dialog-actions  >
 
     <button  mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
         Cancel

@@ -17,6 +17,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
+import {MatInputModule} from '@angular/material/input';
 
 const modules = [
   MatDialogModule,
@@ -35,7 +36,8 @@ const modules = [
   MatCheckboxModule,
   MatTabsModule,
   MatTooltipModule,
-  MatTreeModule
+  MatTreeModule,
+  MatInputModule
 ];
 @NgModule({
   declarations: [],

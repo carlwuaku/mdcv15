@@ -3,10 +3,10 @@
     <td>
       {{row.key}}
     </td>
-    <td>{{row.value}}
-
+    <td>
+      <app-json-display [value]="row.value"></app-json-display>
     </td>
   </tr>
-
-
 </table>
+
+

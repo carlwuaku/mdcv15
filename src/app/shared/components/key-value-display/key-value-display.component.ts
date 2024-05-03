@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { getLabelFromKey } from '../../utils/helper';
+import { getLabelFromKey, isArray, isObject } from '../../utils/helper';
 
 @Component({
   selector: 'app-key-value-display',
@@ -10,7 +10,9 @@ export class KeyValueDisplayComponent implements OnInit{
   @Input() object: any = null;
   @Input() displayedColumns:string[] = [];
   @Input() columnLabels?:{ [key: string]: string } = {};
-  finalList:{key:string, value:any}[] = []
+  finalList:{key:string, value:any}[] = [];
+  isObject = isObject;
+  isArray = isArray;
   ngOnInit(): void {
     this.finalList = [];
     if(this.object){
@@ -31,4 +33,25 @@ export class KeyValueDisplayComponent implements OnInit{
 
     }
   }
+
+  /**
+   * check if the value is a url, image, or a string
+   * @param value string
+   * @returns string
+   */
+  getDataType(value:any):string{
+    if(typeof value === 'string'){
+      if(value.startsWith('http')){
+        return 'url';
+      }
+      if(value.startsWith('data:image')){
+        return 'image';
+      }
+    }
+    return 'string'
+  }
+
+
+
+
 }

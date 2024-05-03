@@ -1,47 +1,27 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { ApplicationFormObject } from './models/application-form.model';
+import { Component, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { DialogKeyValueDisplayComponent } from 'src/app/shared/components/dialog-key-value-display/dialog-key-value-display.component';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
+import { ApplicationFormObject } from '../application-forms/models/application-form.model';
 import { RenewalService } from '../practitioners/renewal.service';
-import { DialogKeyValueDisplayComponent } from 'src/app/shared/components/dialog-key-value-display/dialog-key-value-display.component';
 
 @Component({
-  selector: 'app-application-forms',
-  templateUrl: './application-forms.component.html',
-  styleUrls: ['./application-forms.component.scss']
+  selector: 'app-application-templates',
+  templateUrl: './application-templates.component.html',
+  styleUrls: ['./application-templates.component.scss']
 })
-export class ApplicationFormsComponent implements OnInit {
-  baseUrl: string = "applications/details";
-  url: string = "applications/details";
+export class ApplicationTemplatesComponent {
+  baseUrl: string = "applications/templates";
+  url: string = "applications/templates";
   ts: string = "";
-  practitioner_type: "Doctor"|"Physician Assistant" = "Doctor";
-  status: string = "Approved";
-  form_type: string|null;
+
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute) {
-      //get query params for status and practitioner_type
-      const practitioner_type = this.ar.snapshot.queryParamMap.get('practitioner_type');
-      const status = this.ar.snapshot.queryParamMap.get('status');
-      this.form_type = this.ar.snapshot.queryParamMap.get('form_type');
-      this.practitioner_type = practitioner_type === "Physician Assistant" ? "Physician Assistant" : "Doctor";
-      switch (status) {
-        case "Pending Approval":
-          this.status = "Pending Approval";
-          break;
-        case "Pending Payment":
-          this.status = "Pending Payment";
-          break;
-        case "Approved":
-          this.status = "Approved";
-          break;
-        default:
-          this.status = "";
-          break;
-      }
+
 
   }
   ngOnInit(): void {
@@ -52,15 +32,9 @@ export class ApplicationFormsComponent implements OnInit {
   }
 
   setUrl(){
-    let queryParams = `?practitioner_type=${this.practitioner_type}`;
-    if(this.status){
-      queryParams += `&status=${this.status}`
-    }
-    if(this.form_type){
-      queryParams += `&form_type=${this.form_type}`
-    }
 
-      this.url = this.baseUrl + queryParams;
+
+      this.url = this.baseUrl;
 
   }
 

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { isObject } from '../../utils/helper';
 
 @Component({
   selector: 'app-json-editor',
@@ -6,16 +7,14 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./json-editor.component.scss']
 })
 export class JsonEditorComponent {
-
+  isObject = isObject;
   @Input() jsonObject: {[key:string]:any} = {};
 
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
   }
 
-  isObject(value: any): boolean {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
-  }
+
 
   setPropertyValue(key:string, value: any){
     this.jsonObject[key] = value;
