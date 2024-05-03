@@ -36,6 +36,7 @@ const routes: Routes = [
   { path: 'settings', loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule) },
   { path: 'activities', loadChildren: () => import('./features/activities/activities.module').then(m => m.ActivitiesModule) },
   { path: 'applications', loadChildren: () => import('./features/application-forms/application-forms.module').then(m => m.ApplicationFormsModule) },
+  { path: 'application-templates', loadChildren: () => import('./features/application-templates/application-templates.module').then(m => m.ApplicationTemplatesModule) },
   {
     path: '**',
     redirectTo: '',

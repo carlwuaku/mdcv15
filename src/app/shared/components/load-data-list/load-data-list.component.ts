@@ -172,6 +172,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     displayColumns: string[],columnFilters?: IFormGenerator[] }>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
+          const derivedHeaders = [];
           data.data.map(item => {
             item['actions'] = this.getActions(item);
           })

@@ -15,31 +15,34 @@
             <ng-container [ngSwitch]="field.type">
               <div *ngSwitchCase="'radio'">
                 <span *ngFor="let option of field.options">
-                  <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.label}}" />
+                  <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
                   {{option.key}}</span>
               </div>
 
-              <select  class="form-control"
-                [required]="field.required" *ngSwitchCase="'select'" [(ngModel)]="field.value" name="{{field.label}}">
+              <select class="form-control" [required]="field.required" *ngSwitchCase="'select'"
+                [(ngModel)]="field.value" name="{{field.name}}">
                 <option value="">None</option>
                 <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
               </select>
 
-              <textarea   class="form-control"
-                [required]="field.required" *ngSwitchCase="'textarea'" [(ngModel)]="field.value"
-                name="{{field.label}}"></textarea>
+              <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'"
+                [(ngModel)]="field.value" name="{{field.name}}"></textarea>
 
               <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"
                 *ngSwitchCase="'picture'"></app-file-uploader>
 
+              <app-ckeditor name="{{field.name}}" (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+                *ngSwitchCase="'html'"></app-ckeditor>
+
+              <app-json-editor (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+                *ngSwitchCase="'json'"></app-json-editor>
               <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
                 [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
                 [type]="field.apiType!" [initialValue]="field.value" (selectionChanged)="setFieldValue($event, field)">
               </app-select-object>
               <span *ngSwitchDefault>
-                <input class="form-control"
-                  [attr.list]="formId+field.name+'_datalist'" [required]="field.required" type="{{field.type}}"
-                  [(ngModel)]="field.value" name="{{field.label}}" />
+                <input class="form-control" [attr.list]="formId+field.name+'_datalist'" [required]="field.required"
+                  type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
                 <datalist id="{{formId+field.name}}_datalist" *ngIf="field.options.length > 0">
                   <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
                 </datalist>

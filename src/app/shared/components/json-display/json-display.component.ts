@@ -1,55 +1,57 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from "ag-grid-angular";
+import { isArray, isObject } from '../../utils/helper';
 
 @Component({
-  selector: 'json-display',
+  selector: 'app-json-display',
   templateUrl: './json-display.component.html',
   styleUrls: ['./json-display.component.scss']
 })
-export class JsonDisplayComponent {
-  params:any;
-  objects: any;
-  field!:string;
-  value:any;
-  type!:string
-  agInit(params:any): void {
-    this.params = params;
-    this.field = this.params.node.data.field;
-    this.type = params.type
-    switch (params.type) {
-      case "old_value":
-        this.value = this.params.node.data.old_value;
-        break;
-      case "custom":
-        this.value = this.params.node.data.picture;
-        break;
-      default:
-        this.value = this.params.node.data.value;
+export class JsonDisplayComponent implements OnInit {
+
+
+  @Input() value:any;
+  objectType:"array"|"object"|"image"|"link"|"string" = "string";
+  isObject = isObject;
+  isArray = isArray;
+  imageHeight = "100px";
+  imageWidth = "100px";
+  @Input() depth = 0;
+
+
+
+
+  ngOnInit(): void {
+    //if the depth is greater than 3, then we should not display the object
+    if(this.depth > 3){
+      this.objectType = "string";
+      return;
     }
-
-    // console.log(this.params.type, this.params.node.data)
-  }
-
-
-
-  ngOnDestroy() {
-    console.log(`Destroying LinkName Component`);
-  }
-
-  refresh(): boolean {
-    return false;
-  }
-
-  onClick($event:any) {
-    if (this.params.onClick instanceof Function) {
-      // put anything into params u want pass into parents component
-      const params = {
-        event: $event,
-        rowData: this.params.node.data
-        // ...something
+    if(!this.value){
+      this.objectType = "string";
+    }
+    if(isObject(this.value)){
+      this.objectType = "object";
+    }
+    else if(isArray(this.value)){
+      this.objectType = "array";
+    }
+    else if(typeof this.value === 'string'){
+      if(this.value.startsWith('http')){
+        //check if the link is an image
+        if(this.value.endsWith('.jpg') || this.value.endsWith('.png') || this.value.endsWith('.jpeg')){
+          this.objectType = "image";
+        }
+        else
+        this.objectType = "link";
       }
-      this.params.onClick(params);
-
+      if(this.value.startsWith('data:image')){
+        this.objectType = "image";
+      }
+    }
+    else{
+      this.objectType = "string";
     }
   }
+
 }

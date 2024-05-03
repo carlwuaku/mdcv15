@@ -1,13 +1,15 @@
-<h1 mat-dialog-title>{{ title }}</h1>
+<div class="p-2 flex items-center justify-between sticky top-0 bg-white"><h3 >{{ title }}</h3>
+  <button mat-flat-button color="warn" type="button" [mat-dialog-close]="true" >
+    Close
+</button>
+</div>
 
-<div class="dialog-container">
+<div class="dialog-container p-2">
   <app-key-value-display [object]="object"></app-key-value-display>
 
 </div>
 
 
 <mat-dialog-actions >
-    <button mat-flat-button color="warn" type="button" [mat-dialog-close]="true" >
-        Close
-    </button>
+
 </mat-dialog-actions>

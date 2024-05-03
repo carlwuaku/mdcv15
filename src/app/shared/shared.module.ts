@@ -34,6 +34,8 @@ import { JsonEditorComponent } from './components/json-editor/json-editor.compon
 import { InlineEditorComponent } from './components/inline-editor/inline-editor.component';
 import { DialogFormComponent } from './components/dialog-form/dialog-form.component';
 import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-display/dialog-key-value-display.component';
+import { CkeditorComponent } from './components/ckeditor/ckeditor.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,8 @@ import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-di
     JsonEditorComponent,
     InlineEditorComponent,
     DialogFormComponent,
-    DialogKeyValueDisplayComponent
+    DialogKeyValueDisplayComponent,
+    CkeditorComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -73,7 +76,8 @@ import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-di
     TranslateModule,
     DialogModule,
     MaterialComponentsModule,
-    AgGridModule
+    AgGridModule,
+    CKEditorModule
   ],
   exports: [
     PrimeNgUiComponentsModule,
@@ -104,7 +108,8 @@ import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-di
     KeyValueDisplayComponent,
     ArrayEditorComponent,
     JsonEditorComponent,
-    DialogKeyValueDisplayComponent
+    DialogKeyValueDisplayComponent,
+    CkeditorComponent
   ],
   providers: [
     ClipboardCopyDirective

@@ -47,5 +47,12 @@ export function printDiv(idName: string): void {
   };
 }
 
+export function isObject(value: any): boolean {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function isArray(value:any):boolean{
+  return Array.isArray(value);
+}
 
 
