@@ -5,54 +5,29 @@
   <div class=" ">
     <div class="row">
       <ng-container *ngFor="let field of fields; let i = index">
-        <div class="col-md-{{12 / numOfRows}} formField">
-
-          <label>{{field.label}} <span *ngIf="field.required">*</span></label>
-          <div class="text-muted">{{field.hint}}</div>
-          <div *ngIf="field.showOnly === true; else showInput">
-            {{field.value}}</div>
-          <ng-template #showInput>
-            <ng-container [ngSwitch]="field.type">
-              <div *ngSwitchCase="'radio'">
-                <span *ngFor="let option of field.options">
-                  <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
-                  {{option.key}}</span>
-              </div>
-
-              <select class="form-control" [required]="field.required" *ngSwitchCase="'select'"
-                [(ngModel)]="field.value" name="{{field.name}}">
-                <option value="">None</option>
-                <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
-              </select>
-
-              <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'"
-                [(ngModel)]="field.value" name="{{field.name}}"></textarea>
-
-              <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"
-                *ngSwitchCase="'picture'"></app-file-uploader>
-
-              <app-ckeditor name="{{field.name}}" (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
-                *ngSwitchCase="'html'"></app-ckeditor>
-
-              <app-json-editor (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
-                *ngSwitchCase="'json'"></app-json-editor>
-              <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
-                [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
-                [type]="field.apiType!" [initialValue]="field.value" (selectionChanged)="setFieldValue($event, field)">
-              </app-select-object>
-              <span *ngSwitchDefault>
-                <input class="form-control" [attr.list]="formId+field.name+'_datalist'" [required]="field.required"
-                  type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
-                <datalist id="{{formId+field.name}}_datalist" *ngIf="field.options.length > 0">
-                  <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
-                </datalist>
-              </span>
-
-            </ng-container>
-          </ng-template>
+        <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
+          <div *ngFor="let subField of field" class=" formField flex-col flex-grow">
+            <label>{{subField.label}} row <span *ngIf="subField.required">*</span></label>
+            <div class="text-muted">{{subField.hint}}</div>
+            <div *ngIf="subField.showOnly === true;">
+              <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
+            </div>
+            <div *ngIf="!subField.showOnly">
+              <ng-container *ngTemplateOutlet="renderField; context: { $implicit: subField }"></ng-container>
+            </div>
+          </div>
         </div>
-        <!-- Start a new row if index is a multiple of numOfRows or it's the last iteration -->
-        <div *ngIf="(i + 1) % numOfRows === 0 || i === fields.length - 1" class="w-100"></div>
+        <div *ngIf="isFormField(field)">
+            <label>{{field.label}} <span *ngIf="field.required">*</span></label>
+            <div class="text-muted">{{field.hint}}</div>
+            <div *ngIf="field.showOnly === true;">
+              <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
+            </div>
+            <div *ngIf="!field.showOnly">
+              <ng-container *ngTemplateOutlet="renderField; context: { $implicit: field }"></ng-container>
+            </div>
+        </div>
+
       </ng-container>
     </div>
   </div>
@@ -63,3 +38,45 @@
 
   </div>
 </form>
+<ng-template #renderReadOnly let-field>
+  {{field.value}}
+</ng-template>
+<ng-template #renderField let-field>
+  <ng-container [ngSwitch]="field.type">
+    <div *ngSwitchCase="'radio'">
+      <span *ngFor="let option of field.options">
+        <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
+        {{option.key}}</span>
+    </div>
+
+    <mat-select class="form-control" [required]="field.required" *ngSwitchCase="'select'"
+      [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
+      <mat-option value="">None</mat-option>
+      <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+    </mat-select>
+
+    <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'"
+      [(ngModel)]="field.value" name="{{field.name}}"></textarea>
+
+    <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"
+      *ngSwitchCase="'picture'"></app-file-uploader>
+
+    <app-ckeditor name="{{field.name}}" (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+      *ngSwitchCase="'html'"></app-ckeditor>
+
+    <app-json-editor (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+      *ngSwitchCase="'json'"></app-json-editor>
+    <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
+      [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
+      [type]="field.apiType!" [initialValue]="field.value" (selectionChanged)="setFieldValue($event, field)">
+    </app-select-object>
+    <span *ngSwitchDefault>
+      <input class="form-control" [attr.list]="formId+field.name+'_datalist'" [required]="field.required"
+        type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
+      <datalist id="{{formId+field.name}}_datalist" *ngIf="field.options.length > 0">
+        <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
+      </datalist>
+    </span>
+
+  </ng-container>
+</ng-template>

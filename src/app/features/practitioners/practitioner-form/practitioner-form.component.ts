@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { findFormField, IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 
 @Component({
   selector: 'app-practitioner-form',
@@ -11,7 +11,7 @@ export class PractitionerFormComponent {
   title: string = "Add a new practitioner";
   formUrl: string = "practitioners/details";
   existingUrl: string = "practitioners/details";
-  fields: IFormGenerator[] = [
+  fields: (IFormGenerator|IFormGenerator[])[] = [
     {
       label: "Category",
       name: "category",
@@ -119,7 +119,7 @@ export class PractitionerFormComponent {
       apiKeyProperty: "",
       apiLabelProperty: "",
     },
-    {
+    [{
       label: "Sex",
       name: "sex",
       hint: "",
@@ -161,7 +161,7 @@ export class PractitionerFormComponent {
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
-    },
+    }],
     {
       label: "Title",
       name: "title",
@@ -265,7 +265,7 @@ export class PractitionerFormComponent {
       apiLabelProperty: "name",
       apiType: "select",
       onChange: (value:string) => {
-        const districtField = this.fields.find((item) =>  item.name === "district");
+        const districtField = findFormField(this.fields, "district");
         if(districtField) {districtField.api_url = `regions/districts/${value}`}
       }
     },
@@ -336,7 +336,7 @@ export class PractitionerFormComponent {
       apiLabelProperty: "name",
       apiType: "select",
       onChange: (value:string) => {
-        const subspecialtiesField = this.fields.find((item) =>  item.name === "subspecialty");
+        const subspecialtiesField = findFormField(this.fields, "district");
         if(subspecialtiesField) {subspecialtiesField.api_url = `specialties/subspecialties?specialty=${value}`}
       }
     },

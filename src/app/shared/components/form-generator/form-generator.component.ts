@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { IFormGenerator } from './form-generator-interface';
+import { IFormGenerator, isFormField, isRow } from './form-generator-interface';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { take } from 'rxjs';
@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
   styleUrls: ['./form-generator.component.css']
 })
 export class FormGeneratorComponent implements OnInit {
-  @Input() fields: IFormGenerator[] = [];
+  @Input() fields: (IFormGenerator | IFormGenerator[])[] = [];
   @Input() extraData: { key: string, value: any }[] = []
   @Input() url: string = "";
   @Input() id: string | undefined | null;
@@ -34,6 +34,8 @@ export class FormGeneratorComponent implements OnInit {
   //some random string to differentiate the form from others. useful for generating ids
   formId: string = "";
   @Input() retainExtraFields:string[] =[];
+  isFormField = isFormField;
+  isRow = isRow;
   constructor(private notify: NotifyService,
     private dbService: HttpService) {
       this.formId = uuidv4();
@@ -53,11 +55,14 @@ export class FormGeneratorComponent implements OnInit {
         next: data => {
           //for each key, find the corresponding field and set the value
           this.fields.map(field => {
-            field.value = data.data[field.name] === "null" ? null : data.data[field.name];
-
-            // if(field.value !== "retain"){
-            //   this.extraData.push({key: field.name, value: field.value})
-            // }
+            if(this.isFormField(field)){
+              field.value = data.data[field.name] === "null" ? null : data.data[field.name];
+            }
+            else if(this.isRow(field)){
+              field.map(rowField => {
+                rowField.value = data.data[rowField.name] === "null" ? null : data.data[rowField.name];
+              })
+            }
           })
           this.notify.hideLoading();
           this.retainExtraFields.forEach(field => {
@@ -80,8 +85,11 @@ export class FormGeneratorComponent implements OnInit {
 
   generateFilterUrl() {
     let params: string[] = [];
-    this.fields.forEach(field => {
+    const allFields = this.fields.flat();
+    allFields.forEach(field => {
       if (field.value) { params.push(`${field.name}=${field.value}`); }
+
+
 
     });
     this.onSubmit.emit(params.join("&"));
@@ -89,13 +97,14 @@ export class FormGeneratorComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.validateForm(this.fields)) {
+    const allFields = this.fields.flat();
+    if (!this.validateForm(allFields)) {
       this.notify.hideLoading();
       return; // Stop submission if validation fails
     }
     this.notify.showLoading();
     const data = new FormData();
-    this.fields.forEach(field => {
+    allFields.forEach(field => {
       if (field.value)
         data.append(field.name, field.value)
     });
@@ -182,4 +191,8 @@ export class FormGeneratorComponent implements OnInit {
 
     return true; // Form is valid
   }
+
+
+
+
 }
