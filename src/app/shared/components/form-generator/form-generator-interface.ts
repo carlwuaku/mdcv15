@@ -54,3 +54,26 @@ export const PractitionerCategories = [
   { key: "Dental", value: "Dental" },
   { key: "Physician Assistant", value: "Physician Assistant" },
 ]
+
+export function isRow(value: IFormGenerator | IFormGenerator[]):value is IFormGenerator[] {
+  return (value as IFormGenerator[]).length !== undefined;
+}
+
+export function isFormField(value: IFormGenerator | IFormGenerator[]):value is IFormGenerator {
+  return (value as IFormGenerator).label !== undefined;
+}
+
+export function findFormField(fields: (IFormGenerator | IFormGenerator[])[], name: string): IFormGenerator | undefined {
+  for (const field of fields) {
+    if (isFormField(field) && field.name === name) {
+      return field;
+    }
+    else if(isRow(field)){
+      const found = field.find(f => f.name === name);
+      if(found){
+        return found;
+      }
+    }
+  }
+  return undefined;
+}
