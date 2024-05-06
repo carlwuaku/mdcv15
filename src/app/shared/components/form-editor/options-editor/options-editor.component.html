@@ -1,0 +1,34 @@
+<h2 mat-dialog-title> {{data.label}}</h2>
+<mat-dialog-content>
+  <p>Labels are what the user sees in the dropdown, values are what is submitted to the server </p>
+  <div class="flex-col gap-1">
+    <b>Add a new option</b>
+    <div class="flex gap-2 justify-between">
+      <mat-form-field>
+        <mat-label>Label</mat-label>
+        <input matInput [(ngModel)]="newkey" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Value</mat-label>
+        <input matInput [(ngModel)]="newValue" />
+      </mat-form-field>
+      <button mat-flat-button color="primary" (click)="addOption()">Add</button>
+    </div>
+
+    <div *ngFor="let item of data.options">
+      <mat-form-field>
+        <mat-label>Label</mat-label>
+        <input matInput [(ngModel)]="item.key" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Value</mat-label>
+        <input matInput [(ngModel)]="item.value" />
+      </mat-form-field>
+    </div>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.options" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

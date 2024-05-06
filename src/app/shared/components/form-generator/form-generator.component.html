@@ -61,10 +61,10 @@
     <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"
       *ngSwitchCase="'picture'"></app-file-uploader>
 
-    <app-ckeditor name="{{field.name}}" (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+    <app-ckeditor [name]="field.name" (valueChange)="setFieldValue($event, field)"
       *ngSwitchCase="'html'"></app-ckeditor>
 
-    <app-json-editor (valueChange)="setFieldValue($event, field)" [(ngModel)]="field.value"
+    <app-json-editor (valueChange)="setFieldValue($event, field)"
       *ngSwitchCase="'json'"></app-json-editor>
     <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
       [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
