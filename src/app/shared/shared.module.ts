@@ -36,6 +36,8 @@ import { DialogFormComponent } from './components/dialog-form/dialog-form.compon
 import { DialogKeyValueDisplayComponent } from './components/dialog-key-value-display/dialog-key-value-display.component';
 import { CkeditorComponent } from './components/ckeditor/ckeditor.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { FormEditorComponent } from './components/form-editor/form-editor.component';
+import { OptionsEditorComponent } from './components/form-editor/options-editor/options-editor.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     InlineEditorComponent,
     DialogFormComponent,
     DialogKeyValueDisplayComponent,
-    CkeditorComponent
+    CkeditorComponent,
+    FormEditorComponent,
+    OptionsEditorComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -109,7 +113,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ArrayEditorComponent,
     JsonEditorComponent,
     DialogKeyValueDisplayComponent,
-    CkeditorComponent
+    CkeditorComponent,
+    FormEditorComponent
   ],
   providers: [
     ClipboardCopyDirective
