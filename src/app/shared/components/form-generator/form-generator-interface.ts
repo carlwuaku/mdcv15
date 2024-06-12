@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export interface IFormGenerator {
   label: string;
   name: string;
@@ -21,7 +23,39 @@ export interface IFormGenerator {
   disabled?: "" | "disabled";
   hidden?: "" | "hidden";
   showOnly? :boolean;
+  key?:string;
 
+}
+
+export class FormField implements IFormGenerator {
+  key?: string = "";
+  label: string = "";
+  name: string = "";
+  type: string = "";
+  hint: string = "";
+  options: { key: string, value: string }[] = [];
+  className?: string;
+  subtitle?: string;
+  value: any;
+  required: boolean = true;
+  api_url?: string;
+  apiLabelProperty?: string;
+  apiKeyProperty?: string;
+  apiType?: "search" | "select" | "datalist";
+  apiInitialValue?: string;
+  apiModule?: string;
+  onChange?: (...value:string[]) => void | undefined;
+  minLength?: number;
+  maxLength?: number;
+  customValidation?: {fieldsMatch: string[]};
+  disabled?: "" | "disabled";
+  hidden?: "" | "hidden";
+  showOnly? :boolean;
+
+  constructor(type:string) {
+    this.type = type;
+    this.key = uuidv4();
+  }
 }
 
 export const defaultObject: IFormGenerator = {

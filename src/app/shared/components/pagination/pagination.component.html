@@ -1,9 +1,10 @@
+<div class="flex align-middle items-center gap-2">
 <b *ngIf="total > 0">{{((current_page - 1) * limit) + 1}} -
     <span *ngIf="(((current_page - 1) * limit) + limit) < total; else show_total ">
         {{((current_page - 1) * limit) + limit}}/{{total}}</span>
     <ng-template #show_total>{{total}}</ng-template>
 </b> Number of rows:
-<select name="limit" [(ngModel)]="limit" (change)="changeLimit()">
+<select class="border" name="limit" [(ngModel)]="limit" (change)="changeLimit()">
     <option value="{{l}}" *ngFor="let l of limits">{{l}}</option>
 </select>
 
@@ -12,10 +13,11 @@ Page:
         class="fa fa-angle-double-left"></i> Page 1 </button>
 <button mat-stroked-button color="primary" *ngIf="current_page > 1" (click)="previousPage()"><i
         class="fa fa-angle-left"></i> Previous Page </button>
-<select name="current_page" [(ngModel)]="current_page" (change)="changePage()">
+<select class="border" name="current_page" [(ngModel)]="current_page" (change)="changePage()">
     <option value="{{dp}}" *ngFor="let dp of dropdown_pages">{{dp}}</option>
 </select>
 <button mat-stroked-button color="primary" *ngIf="current_page < last_page" (click)="nextPage()"> Next Page <i
         class="fa fa-angle-right"></i></button>
 <button mat-stroked-button color="warn" *ngIf="current_page < last_page" (click)="lastPage()"> Last Page <i
         class="fa fa-angle-double-right"></i></button>
+      </div>

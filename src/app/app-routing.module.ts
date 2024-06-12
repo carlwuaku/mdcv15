@@ -12,14 +12,6 @@ const routes: Routes = [
     redirectTo: 'dashboard',
     pathMatch: 'full',
   },
-
-  {
-    path: 'track',
-    loadChildren: () =>
-      import('./features/delivery-path/delivery-path.module').then(
-        (m) => m.DeliveryPathModule
-      ),
-  },
   {
     path: 'dashboard',
     resolve: {userData: UserResolver},

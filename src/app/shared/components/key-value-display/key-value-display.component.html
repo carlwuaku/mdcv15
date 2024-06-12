@@ -1,4 +1,5 @@
-<table class="table table-striped table-bordered" *ngIf="object">
+
+<!-- <table class="table table-striped table-bordered" *ngIf="object">
   <tr *ngFor="let row of finalList">
     <td>
       {{row.key}}
@@ -7,6 +8,12 @@
       <app-json-display [value]="row.value"></app-json-display>
     </td>
   </tr>
-</table>
+</table> -->
+<mat-list *ngIf="object">
+  <mat-list-item *ngFor="let row of finalList">
+    <span matListItemTitle>{{row.key}}</span>
+    <span matListItemLine><app-json-display [value]="row.value"></app-json-display></span>
+  </mat-list-item>
 
+</mat-list>
 

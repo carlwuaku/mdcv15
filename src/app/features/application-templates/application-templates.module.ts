@@ -5,12 +5,14 @@ import { ApplicationTemplatesRoutingModule } from './application-templates-routi
 import { ApplicationTemplatesComponent } from './application-templates.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TemplateFormComponent } from './template-form/template-form.component';
+import { PreviewTemplateComponent } from './preview-template/preview-template.component';
 
 
 @NgModule({
   declarations: [
     ApplicationTemplatesComponent,
-    TemplateFormComponent
+    TemplateFormComponent,
+    PreviewTemplateComponent
   ],
   imports: [
     CommonModule,

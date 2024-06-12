@@ -1,174 +1,176 @@
 <div class="w-full  flex">
-  <div class="flex-col gap-2 w-9/12 border p-2 h-[500px] max-h-[500px]">
+  <div class="flex flex-col gap-1 w-9/12 border p-2 h-[500px] max-h-[500px] overflow-auto">
     <ng-container *ngFor="let field of fields; let i = index">
-      <div *ngIf="isRow(field)" class="flex-col gap-1 p-2 border-dashed border">
-        <div class="flex gap-1 justify-between ">
-          <div *ngFor="let subField of field" class=" formField flex-col flex-grow ">
-            <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: subField }"></ng-container>
+      <div *ngIf="isRow(field)" class="flex flex-col gap-1 p-2 border-dashed border">
+        <div class="flex gap-1">
+          <div class="flex gap-1 justify-between flex-grow overflow-x-auto">
+            <div *ngFor="let subField of field" class="flex formField flex-col flex-grow"
+              [ngClass]="{'selected': subField === selectedItem}">
+              <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: subField }"></ng-container>
+
+            </div>
 
           </div>
-          <button mat-stroked-button color="primary" [matMenuTriggerFor]="addToRowMenu">Add item to row</button>
+          <span>
+            <button mat-stroked-button color="primary" [matMenuTriggerFor]="addToRowMenu">Add item to row</button>
             <mat-menu #addToRowMenu="matMenu">
-              <button *ngFor="let type of inputTypes" mat-menu-item (click)="addFieldToRow(field, type)">{{type}}</button>
+              <button *ngFor="let type of inputTypes" mat-menu-item
+                (click)="addFieldToRow(field, type)">{{type}}</button>
             </mat-menu>
+          </span>
         </div>
+
         <ng-container *ngTemplateOutlet="editorControls; context: { $implicit: field }"></ng-container>
 
       </div>
-      <div *ngIf="isFormField(field)" >
+      <div *ngIf="isFormField(field)" [ngClass]="{'selected': field === selectedItem}">
         <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: field }"></ng-container>
 
       </div>
 
     </ng-container>
-    <button mat-raised-button color="primary"  [matMenuTriggerFor]="addMenu">Add Item</button>
+    <button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">Add Item</button>
     <mat-menu #addMenu="matMenu">
       <button mat-menu-item (click)="addRow()">Row</button>
       <button *ngFor="let type of inputTypes" mat-menu-item (click)="addField(type)">{{type}}</button>
     </mat-menu>
   </div>
-  <div class="flex-col w-3/12 border p-2 h-[500px] max-h-[500px]">
+  <div class="flex-col w-3/12 border p-2 h-[500px] max-h-[500px] overflow-auto">
     <div class="flex justify-center text-gray-600" *ngIf="!selectedItem">Select a field to edit its properties</div>
-    <div class="flex-col gap-1">
-      <div *ngIf="selectedItem" class="border-dashed border p-1">
-        <!-- <div class="flex justify-between">
-          <div>{{selectedItem.label}}</div>
-          <button mat-icon-button (click)="deleteField(selectedItem)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div> -->
-        <div class="flex-col gap-1">
-          <mat-form-field>
-            <label>Label</label>
-            <input matInput [(ngModel)]="selectedItem.label" />
-          </mat-form-field>
-          <mat-form-field>
-            <label>Name</label>
-            <div class="font-thin">Typically this the name submitted to the server</div>
-            <input matInput [(ngModel)]="selectedItem.name" />
-          </mat-form-field>
-          <mat-form-field>
-            <label>Hint</label>
-            <input matInput [(ngModel)]="selectedItem.hint" />
-          </mat-form-field>
-          <mat-form-field>
-            <label>Required</label>
-            <mat-select [(ngModel)]="selectedItem.required">
-              <mat-option [value]="true">Yes</mat-option>
-              <mat-option [value]="false">No</mat-option>
-            </mat-select>
-          </mat-form-field>
+    <div *ngIf="selectedItem" class="border-dashed border p-1 flex flex-col gap-1">
 
-          <div class="flex-col gap-1">
-            <label>Options</label>
-            <button mat-raised-button (click)="openOptionsDialog()">{{selectedItem.options.length}} Set. Edit/View Options</button>
-          </div>
 
-          <mat-form-field>
-            <label>Show Only</label>
-            <mat-select [(ngModel)]="selectedItem.showOnly">
-              <mat-option [value]="true">Yes</mat-option>
-              <mat-option [value]="false">No</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <label>Type</label>
-            <mat-select [(ngModel)]="selectedItem.type">
-              <mat-option *ngFor="let type of inputTypes" [value]="type">{{type}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <label>API Type</label>
-            <mat-select [(ngModel)]="selectedItem.apiType">
-              <mat-option *ngFor="let type of ['select', 'search', 'datalist']" [value]="type">{{type}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <label>API URL</label>
-            <input matInput [(ngModel)]="selectedItem.api_url" />
-          </mat-form-field>
-          <mat-form-field>
-            <label>API Label Property</label>
-            <input matInput [(ngModel)]="selectedItem.apiLabelProperty" />
-          </mat-form-field>
-    </div>
-  </div>
-</div>
+      <mat-form-field appearance="fill">
+        <label>Label</label>
+        <input matInput [(ngModel)]="selectedItem.label" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>Name</label>
+        <div class="font-thin">Typically this the name submitted to the server</div>
+        <input matInput [(ngModel)]="selectedItem.name" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>Hint</label>
+        <input matInput [(ngModel)]="selectedItem.hint" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>Required</label>
+        <mat-select [(ngModel)]="selectedItem.required">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-<ng-template #editorContainer let-field >
-  <div (click)="setSelectedField(field)" class="border-dashed border p-1 hover:bg-white cursor-pointer" >
-    <label>{{field.label}} <span *ngIf="field.required">*</span></label>
-    <div class="text-muted">{{field.hint}}</div>
-    <div class="flex">
-      <div *ngIf="field.showOnly === true;" class="flex-grow">
-        <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
+      <div class="flex-col gap-1">
+        <label>Options</label>
+        <button mat-raised-button (click)="openOptionsDialog()">{{selectedItem.options.length}} Set. Edit/View
+          Options</button>
       </div>
-      <div *ngIf="!field.showOnly"  class="flex-grow">
-        <ng-container *ngTemplateOutlet="renderField; context: { $implicit: field }"></ng-container>
+
+      <mat-form-field appearance="fill">
+        <label>Show Only</label>
+        <mat-select [(ngModel)]="selectedItem.showOnly">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>Type</label>
+        <mat-select [(ngModel)]="selectedItem.type">
+          <mat-option *ngFor="let type of inputTypes" [value]="type">{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>API Type</label>
+        <mat-select [(ngModel)]="selectedItem.apiType">
+          <mat-option *ngFor="let type of ['select', 'search', 'datalist']" [value]="type">{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>API URL</label>
+        <input matInput [(ngModel)]="selectedItem.api_url" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <label>API Label Property</label>
+        <input matInput [(ngModel)]="selectedItem.apiLabelProperty" />
+      </mat-form-field>
+
+    </div>
+  </div>
+
+  <ng-template #editorContainer let-field>
+    <div (click)="setSelectedField(field)"
+      class="border-dashed border p-1 hover:bg-white border-blue-500 cursor-pointer"
+      [ngClass]="{'selected': field === selectedItem}">
+      <label>{{field.label}} <span *ngIf="field.required">*</span></label>
+      <div class="text-muted">{{field.hint}}</div>
+      <div class="flex flex-col">
+        <div *ngIf="field.showOnly === true;" class="flex-grow">
+          <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
+        </div>
+        <div *ngIf="!field.showOnly" class="flex-grow">
+          <ng-container *ngTemplateOutlet="renderField; context: { $implicit: field }"></ng-container>
+        </div>
+        <ng-container *ngTemplateOutlet="editorControls; context: { $implicit: field }"></ng-container>
       </div>
-      <ng-container *ngTemplateOutlet="editorControls; context: { $implicit: field }"></ng-container>
-    </div>
-  </div>
-
-</ng-template>
-
-<ng-template #renderReadOnly let-field>
-  {{field.value}}
-</ng-template>
-<ng-template #renderField let-field>
-  <ng-container [ngSwitch]="field.type">
-    <div *ngSwitchCase="'radio'">
-      <span *ngFor="let option of field.options">
-        <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
-        {{option.key}}</span>
     </div>
 
-    <div *ngSwitchCase="'checkbox'">
-      <span *ngFor="let option of field.options">
-        <input type="checkbox" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
-        {{option.key}}</span>
+  </ng-template>
+
+  <ng-template #renderReadOnly let-field>
+    {{field.value}}
+  </ng-template>
+  <ng-template #renderField let-field>
+    <ng-container [ngSwitch]="field.type">
+      <div *ngSwitchCase="'radio'">
+        <span *ngFor="let option of field.options">
+          <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
+          {{option.key}}</span>
+      </div>
+
+      <div *ngSwitchCase="'checkbox'">
+        <span *ngFor="let option of field.options">
+          <input type="checkbox" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
+          {{option.key}}</span>
+      </div>
+
+      <mat-select class="form-control" [required]="field.required" *ngSwitchCase="'select'" [(ngModel)]="field.value"
+        name="{{field.name}}" appearance="outline">
+        <mat-option value="">None</mat-option>
+        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+      </mat-select>
+
+      <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'" [(ngModel)]="field.value"
+        name="{{field.name}}"></textarea>
+
+      <app-file-uploader [existingImage]="field.value" *ngSwitchCase="'picture'"></app-file-uploader>
+
+      <app-ckeditor [name]="field.name" *ngSwitchCase="'html'"></app-ckeditor>
+
+      <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!" [labelProperty]="field.apiLabelProperty || '' "
+        [keyProperty]="field.apiKeyProperty || ''" [type]="field.apiType!" [initialValue]="field.value">
+      </app-select-object>
+      <span *ngSwitchDefault>
+        <input class="form-control" [attr.list]="field.name+'_datalist'" [required]="field.required"
+          type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
+        <datalist id="{{field.name}}_datalist" *ngIf="field.options.length > 0">
+          <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
+        </datalist>
+      </span>
+
+    </ng-container>
+  </ng-template>
+
+  <ng-template #editorControls let-field>
+    <div class="flex flex-grow-0 gap-1 border-dashed ">
+      <button mat-icon-button color="primary" (click)="moveFieldUp(field)" pTooltip="Move this field up">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" (click)="moveFieldDown(field)" pTooltip="Move this field down">
+        <mat-icon>arrow_downward</mat-icon>
+      </button>
+      <button mat-icon-button color="danger" pTooltip="Delete this field" (click)="deleteField(field)">
+        <mat-icon>remove</mat-icon>
+      </button>
     </div>
-
-    <mat-select class="form-control" [required]="field.required" *ngSwitchCase="'select'"
-      [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
-      <mat-option value="">None</mat-option>
-      <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
-    </mat-select>
-
-    <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'"
-      [(ngModel)]="field.value" name="{{field.name}}"></textarea>
-
-    <app-file-uploader [existingImage]="field.value"
-      *ngSwitchCase="'picture'"></app-file-uploader>
-
-    <app-ckeditor [name]="field.name"
-      *ngSwitchCase="'html'"></app-ckeditor>
-
-    <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!"
-      [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
-      [type]="field.apiType!" [initialValue]="field.value" >
-    </app-select-object>
-    <span *ngSwitchDefault>
-      <input class="form-control" [attr.list]="field.name+'_datalist'" [required]="field.required"
-        type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
-      <datalist id="{{field.name}}_datalist" *ngIf="field.options.length > 0">
-        <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
-      </datalist>
-    </span>
-
-  </ng-container>
-</ng-template>
-
-<ng-template #editorControls let-field>
-  <div class="flex flex-grow-0 gap-1 border-dashed ">
-    <button mat-icon-button color="primary" (click)="moveFieldUp(field)" pTooltip="Move this field up" >
-      <mat-icon>arrow_upward</mat-icon>
-    </button>
-    <button mat-icon-button color="primary" (click)="moveFieldDown(field)" pTooltip="Move this field down" >
-      <mat-icon>arrow_downward</mat-icon>
-    </button>
-    <button mat-icon-button color="danger" pTooltip="Delete this field" (click)="deleteField(field)">
-      <mat-icon>remove</mat-icon>
-    </button>
-  </div>
-</ng-template>
+  </ng-template>

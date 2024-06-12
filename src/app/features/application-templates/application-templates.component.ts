@@ -8,6 +8,7 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 import { getToday } from 'src/app/shared/utils/dates';
 import { ApplicationFormObject } from '../application-forms/models/application-form.model';
 import { RenewalService } from '../practitioners/renewal.service';
+import { ApplicationTemplatesService } from './application-templates.service';
 
 @Component({
   selector: 'app-application-templates',
@@ -20,7 +21,7 @@ export class ApplicationTemplatesComponent {
   ts: string = "";
 
   constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog,
-    private renewalService: RenewalService, private ar: ActivatedRoute) {
+    private templateService: ApplicationTemplatesService, private ar: ActivatedRoute) {
 
 
   }
@@ -41,15 +42,15 @@ export class ApplicationTemplatesComponent {
   getActions = (object: ApplicationFormObject): DataActionsButton[]=> {
 
     const actions: DataActionsButton[] = [
-      { label: "View Details", type: "button", onClick: (object: ApplicationFormObject) => this.view(object)},
-      { label: "Edit", type: "link", link: `practitioners/renewal-form/`, linkProp: 'uuid' },
+      { label: "Preview", type: "link", link: `application-templates/preview/`, linkProp: 'uuid' },
+      { label: "Edit", type: "link", link: `application-templates/form/`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: ApplicationFormObject) => this.delete(object)}
     ];
 
     return actions;
   }
   delete (object: ApplicationFormObject) {
-    this.renewalService.delete(object.uuid).subscribe({
+    this.templateService.delete(object.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
          this.updateTimestamp(); },
@@ -74,15 +75,5 @@ export class ApplicationTemplatesComponent {
     this.ts = getToday("timestamp_string");
   }
 
-  update(object: ApplicationFormObject, data:{[key:string]:string}){
-    if(!window.confirm('Are you sure you want to update this entry? ')) {
-      return;
-    }
-    this.renewalService.update(object.uuid, data).subscribe({
-      next: response => {
-        this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
-    })
-  }
+
 }

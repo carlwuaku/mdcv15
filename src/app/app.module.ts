@@ -18,6 +18,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ErrorInterceptorService } from './core/interceptors/global-error-handler.interceptor';
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
+import { MatNativeDateModule } from '@angular/material/core';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
@@ -71,6 +72,7 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
         deps: [HttpClient]
       }
     }),
+    MatNativeDateModule
   ],
   providers: [
     {

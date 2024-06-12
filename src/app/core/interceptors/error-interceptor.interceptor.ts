@@ -23,6 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       }),
       catchError((error: any) => {
         //display a toast with the error message
+        console.log('ErrorInterceptor', error)
         let errorMessage = '';
         if (error.error instanceof ErrorEvent) {
           // client-side error
