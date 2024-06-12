@@ -18,6 +18,9 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatInputModule} from '@angular/material/input';
+import {MatStepperModule} from '@angular/material/stepper';
+import { MatDatepickerComponent } from './mat-datepicker/mat-datepicker.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 const modules = [
   MatDialogModule,
@@ -37,16 +40,21 @@ const modules = [
   MatTabsModule,
   MatTooltipModule,
   MatTreeModule,
-  MatInputModule
+  MatInputModule,
+  MatStepperModule,
+  MatDatepickerModule
 ];
 @NgModule({
-  declarations: [],
+  declarations: [
+    MatDatepickerComponent
+  ],
   imports: [
     CommonModule,
     ...modules
   ],
   exports: [
-    ...modules
+    ...modules,
+    MatDatepickerComponent
   ]
 })
 export class MaterialComponentsModule { }

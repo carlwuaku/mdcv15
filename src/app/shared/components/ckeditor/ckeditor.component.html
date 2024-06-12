@@ -1,1 +1,2 @@
-<ckeditor [editor]="Editor" [name]="name"  [(ngModel)]="value" (change)="valueChanged()"></ckeditor>
+<ckeditor [editor]="Editor" [name]="name" (ready)="onReady($event)"  [(ngModel)]="value" (change)="valueChanged()"
+></ckeditor>

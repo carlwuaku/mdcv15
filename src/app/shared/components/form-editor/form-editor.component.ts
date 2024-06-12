@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IFormGenerator, isFormField, isRow } from '../form-generator/form-generator-interface';
+import { FormField, IFormGenerator, isFormField, isRow } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsEditorComponent } from './options-editor/options-editor.component';
 
@@ -9,10 +9,10 @@ import { OptionsEditorComponent } from './options-editor/options-editor.componen
   styleUrls: ['./form-editor.component.scss']
 })
 export class FormEditorComponent implements OnInit{
-  @Input() fields: (IFormGenerator | IFormGenerator[])[] = [];
-  @Output() submitted:EventEmitter<(IFormGenerator | IFormGenerator[])[]> = new EventEmitter();
-  selectedItem: IFormGenerator | undefined;
-  lastSelected: IFormGenerator | undefined;// Add a property to store the last selected field so we can reset
+  @Input() fields: (FormField | FormField[])[] = [];
+  @Output() formChanged:EventEmitter<(FormField | FormField[])[]> = new EventEmitter();
+  selectedItem: FormField | undefined;
+  lastSelected: FormField | undefined;// Add a property to store the last selected field so we can reset
   isRow = isRow;
   isFormField = isFormField
   inputTypes = [
@@ -42,10 +42,12 @@ export class FormEditorComponent implements OnInit{
   ngOnInit(): void {
   }
 
+
+
   addField(type:string) {
     // Add a new IFormGenerator object to the fields array
     this.fields.push({
-      label: "Default Label",
+      label: `Field ${this.fields.length + 1}`,
       name: "",
       hint: "",
       options: [],
@@ -55,33 +57,28 @@ export class FormEditorComponent implements OnInit{
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
+      showOnly: false,
     });
     this.selectedItem = (this.fields[this.fields.length - 1] as IFormGenerator);
+    if(type === "checkbox" || type === "radio" || type === "select"){
+      this.openOptionsDialog();
+    }
+    this.formChanged.emit(this.fields);
   }
 
   addRow() {
     // Add a new row to the fields array
     this.fields.push([]);
+    this.formChanged.emit(this.fields);
   }
 
-  addFieldToRow(row: IFormGenerator[], type:string) {
+  addFieldToRow(row: FormField[], type:string) {
     // Add a new IFormGenerator object to the row array
-    row.push({
-      label: "Default Label",
-      name: "",
-      hint: "",
-      options: [],
-      type: type,
-      value: "",
-      required: false,
-      api_url: "",
-      apiKeyProperty: "",
-      apiLabelProperty: "",
-    });
-
+    row.push(new FormField(type));
+    this.formChanged.emit(this.fields);
   }
 
-  moveRowFieldUp(row: IFormGenerator[], field: IFormGenerator) {
+  moveRowFieldUp(row: FormField[], field: FormField) {
     // Get the index of the field
     const index = row.indexOf(field);
     // If the field is not the first field
@@ -89,9 +86,10 @@ export class FormEditorComponent implements OnInit{
       // Swap the field with the field before it
       [row[index - 1], row[index]] = [row[index], row[index - 1]];
     }
+    this.formChanged.emit(this.fields);
   }
 
-  moveRowFieldDown(row: IFormGenerator[], field: IFormGenerator) {
+  moveRowFieldDown(row: FormField[], field: FormField) {
     // Get the index of the field
     const index = row.indexOf(field);
     // If the field is not the last field
@@ -99,6 +97,7 @@ export class FormEditorComponent implements OnInit{
       // Swap the field with the field after it
       [row[index + 1], row[index]] = [row[index], row[index + 1]];
     }
+    this.formChanged.emit(this.fields);
   }
 
   deleteField(name:string) {
@@ -109,11 +108,12 @@ export class FormEditorComponent implements OnInit{
       // Remove the field from the fields array
       this.fields.splice(index, 1);
     }
+    this.formChanged.emit(this.fields);
   }
 
   removeRow() {}
 
-  moveFieldUp(field: IFormGenerator) {
+  moveFieldUp(field: FormField) {
     // Get the index of the field
     const index = this.fields.indexOf(field);
     // If the field is not the first field
@@ -121,9 +121,10 @@ export class FormEditorComponent implements OnInit{
       // Swap the field with the field before it
       [this.fields[index - 1], this.fields[index]] = [this.fields[index], this.fields[index - 1]];
     }
+    this.formChanged.emit(this.fields);
   }
 
-  moveFieldDown(field: IFormGenerator) {
+  moveFieldDown(field: FormField) {
     // Get the index of the field
     const index = this.fields.indexOf(field);
     // If the field is not the last field
@@ -131,11 +132,12 @@ export class FormEditorComponent implements OnInit{
       // Swap the field with the field after it
       [this.fields[index + 1], this.fields[index]] = [this.fields[index], this.fields[index + 1]];
     }
+    this.formChanged.emit(this.fields);
   }
 
   editField() {}
 
-  setSelectedField(field: IFormGenerator) {
+  setSelectedField(field: FormField) {
     this.selectedItem = field;
   }
 
@@ -147,6 +149,7 @@ export class FormEditorComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if(result)
       this.selectedItem!.options = result;
+      this.formChanged.emit(this.fields);
     });
   }
 

@@ -12,6 +12,12 @@ export class CkeditorComponent {
   @Input() value: string = '';
   @Output() valueChange:EventEmitter<string> = new EventEmitter<string>();
 
+  onReady(editor: any) {
+    editor.editing.view.change( (writer:any) => {
+      writer.setStyle( 'height', '200px', editor.editing.view.document.getRoot() );
+  } );
+  }
+
   valueChanged(){
     this.valueChange.emit(this.value);
   }

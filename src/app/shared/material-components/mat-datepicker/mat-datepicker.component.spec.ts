@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContactSupportComponent } from './contact-support.component';
+import { MatDatepickerComponent } from './mat-datepicker.component';
 
-describe('ContactSupportComponent', () => {
-  let component: ContactSupportComponent;
-  let fixture: ComponentFixture<ContactSupportComponent>;
+describe('MatDatepickerComponent', () => {
+  let component: MatDatepickerComponent;
+  let fixture: ComponentFixture<MatDatepickerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ContactSupportComponent ]
+      declarations: [ MatDatepickerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ContactSupportComponent);
+    fixture = TestBed.createComponent(MatDatepickerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

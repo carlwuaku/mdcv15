@@ -38,6 +38,7 @@ import { CkeditorComponent } from './components/ckeditor/ckeditor.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormEditorComponent } from './components/form-editor/form-editor.component';
 import { OptionsEditorComponent } from './components/form-editor/options-editor/options-editor.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,9 @@ import { OptionsEditorComponent } from './components/form-editor/options-editor/
     DialogModule,
     MaterialComponentsModule,
     AgGridModule,
-    CKEditorModule
+    CKEditorModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
     PrimeNgUiComponentsModule,
@@ -114,7 +117,9 @@ import { OptionsEditorComponent } from './components/form-editor/options-editor/
     JsonEditorComponent,
     DialogKeyValueDisplayComponent,
     CkeditorComponent,
-    FormEditorComponent
+    FormEditorComponent,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     ClipboardCopyDirective

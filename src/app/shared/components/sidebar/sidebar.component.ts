@@ -69,11 +69,15 @@ export class SidebarComponent {
       children: [
         {
           title: "Submitted Application",
-          url: "/applicationsx"
+          url: "/applications"
         },
         {
           title: "Manage Templates",
           url: "/application-templates"
+        },
+        {
+          title: "Add New Templates",
+          url: "/application-templates/form"
         }
       ]
     },

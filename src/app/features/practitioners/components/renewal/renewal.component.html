@@ -3,8 +3,8 @@
 
   <mat-card>
     <mat-card-content>
-      <app-load-data-list [timestamp]="ts" [url]="url"
-          [getActions]="getActions">
+      <app-load-data-list [showDeleted]="false" [showExport]="false" [showInfo]="false" [showSort]="false"
+        [showFilterButton]="false" [timestamp]="ts" [url]="url" [getActions]="getActions">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

@@ -1,53 +1,50 @@
-<div class="flex-col gap4">
-  <div class="flex-row">
+<div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2">
     <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"
       (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
-    <span>
-      <label>
-        <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
-      </label>
-    </span>
-    <button *ngIf="preload" (click)="reset()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reset
-    </button>
+      <div class="flex">
+        <span *ngIf="showDeleted">
+          <label>
+            <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
+          </label>
+        </span>
+        <button *ngIf="preload" (click)="reset()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reset
+        </button>
+
+        <span *ngIf="showExport">
+          <em>{{selection.selected.length}} Selected:</em>
+          <app-export-table [objects]="selection.selected"></app-export-table>
+        </span>
+      </div>
+      <div class="flex flex-row gap-2 align-middle items-center">
+        <div *ngIf="showSearch">
+          <form ngNativeValidate (ngSubmit)="search()">
+            <mat-form-field  [appearance]="'fill'">
+            <mat-label for="">Search</mat-label>
+            <input  name="search" required matInput [(ngModel)]="searchParam" type="search">
+          </mat-form-field>
+            <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
+          </form>
 
 
+        </div>
+        <button *ngIf="showFilterButton" mat-stroked-button color="primary" [disabled]="filters.length < 1" (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
+
+        <span *ngIf="showSort" class="flex flex-row gap-1">
+          <mat-form-field  [appearance]="'outline'">
+            <mat-label>Sort By: </mat-label>
+             <mat-select [(ngModel)]="sortBy" (change)="getData()">
+              <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
+            <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
 
 
-    <span *ngIf="showExport">
-      <em>{{selection.selected.length}} Selected:</em>
-      <app-export-table [objects]="selection.selected"></app-export-table>
-
-    </span>
+        </span>
+      </div>
   </div>
-  <div class="flex-row">
-    <div *ngIf="showSearch">
-      <form ngNativeValidate (ngSubmit)="search()">
-        <mat-form-field  [appearance]="'outline'">
-        <mat-label for="">Search</mat-label>
-        <input  name="search" required matInput [(ngModel)]="searchParam" type="search">
-      </mat-form-field>
-        <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
-      </form>
 
-
-    </div>
-    <button mat-stroked-button color="primary" [disabled]="filters.length < 1" (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
-
-    <span class="flex-row">
-      <mat-form-field  [appearance]="'outline'">
-        <mat-label>Sort By: </mat-label>
-         <mat-select [(ngModel)]="sortBy" (change)="getData()">
-          <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-
-      <span>
-        <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
-        <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
-      </span>
-    </span>
-  </div>
 
 
 
