@@ -1,12 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "primeng/resources/primeng.css";
-@import "primeng/resources/themes/md-light-indigo/theme.css";
-@import 'ag-grid-community/styles/ag-grid.css';
-@import 'ag-grid-community/styles/ag-theme-alpine.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "primeng/resources/primeng.css";
+@import "primeng/resources/themes/md-light-indigo/theme.css";
+
+
+// Import the Angular Material theming functions
+@import '@angular/material/theming';
+
+// Define a custom primary color palette
+$my-app-primary: mat-palette($mat-indigo, 500, 700, 900); // The 700 and 900 values are bolder shades
+
+// Define a custom accent color palette
+$my-app-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// Create the theme object
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+
+// Include the theme styles in your application
+@include angular-material-theme($my-app-theme);
+
 html,
 body {
   height: 100%;
@@ -14,7 +29,9 @@ body {
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   background-color: #fefefe;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
 
 
 
@@ -831,6 +848,14 @@ tr:nth-child(even) {
   font-size: 18px;
 }
 
+.badge-warning {
+  background-color: #ffc107;
+  color: #000000;
+}
+
+.mat-form-field {
+  width: 100%;
+}
 // .ck-editor__editable_inline {
 //   min-height: 500px !important;
 // }

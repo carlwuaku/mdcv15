@@ -3,7 +3,7 @@
     <ng-template matStepLabel>General Information</ng-template>
     <form [formGroup]="generalFormGroup">
       <div class="flex flex-col gap-1 pt-2">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>Form Name*</mat-label>
           <input matInput formControlName="form_name" name="form_name" required>
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required field</mat-error>

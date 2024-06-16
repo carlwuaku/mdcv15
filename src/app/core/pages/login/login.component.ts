@@ -4,6 +4,8 @@ import { API_ADMIN_PATH, API_PATH, LOCAL_USER_ID, LOCAL_USER_KEY, LOCAL_USER_TOK
 import { AuthService } from '../../auth/auth.service';
 import { IUser, User } from '../../models/user.model';
 import { HttpService } from '../../services/http/http.service';
+import { AppService } from 'src/app/app.service';
+import { NotifyService } from '../../services/notify/notify.service';
 
 @Component({
   selector: 'app-login',
@@ -19,11 +21,17 @@ export class LoginComponent implements OnInit {
   user!:IUser;
   loading: boolean = false;
   flash_message: string | null = "";
-
-
+  appName: string = "";
+  logo:string = "";
+  recaptchaVerified:boolean = false;
+  recaptchaSiteKey: string = ""
   constructor(public authService: AuthService,
-    private dbService: HttpService) {
-    // this.dbService.setTitle("Login");
+    private dbService: HttpService, private appService: AppService, private notify: NotifyService) {
+      this.appService.appSettings.subscribe(data => {
+        this.appName = data.appLongName;
+        this.logo = data.logo;
+        this.recaptchaSiteKey = data.recaptchaSiteKey;
+      })
 
   }
 
@@ -38,6 +46,12 @@ export class LoginComponent implements OnInit {
 
 
   login() {
+    if (!this.recaptchaVerified) {
+      this.error = true;
+      this.notify.failNotification("Recaptcha verification failed. Try again");
+      this.error_message = "Recaptcha verification failed. Try again";
+      return;
+    }
     this.loading = true;
     this.error = false;
 
@@ -77,4 +91,27 @@ export class LoginComponent implements OnInit {
       });
     }
   }
+
+  resolved(response: string) {
+    const body = { 'g-recaptcha-response':response };
+    this.dbService.post<{message:string}>(API_PATH + '/verify-recaptcha', body).subscribe({
+      next: (res) => {
+        this.recaptchaVerified = true;
+        this.error_message = "";
+      },
+      error: (err) => {
+        // Handle HTTP error
+        this.recaptchaVerified = false;
+        this.error_message = "Recaptcha verification failed. Try again";
+      },
+    });
+
+
+  }
+
+  recaptchaError() {
+    this.recaptchaVerified = false;
+    this.error_message = "Recaptcha verification failed. Try again";
+  }
+
 }

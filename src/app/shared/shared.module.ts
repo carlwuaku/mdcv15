@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PrimeNgUiComponentsModule } from './prime-ng-ui-components/prime-ng-ui-components.module';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoxamDatePipe } from './pipes/date/loxam-date.pipe';
 import { RemoteDataModule } from 'ngx-remotedata';
 import { ClipboardCopyDirective } from "./directives/clipboard-copy.directive";
@@ -42,7 +41,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    NavbarComponent,
     LoxamDatePipe,
     ClipboardCopyDirective,
     DialogComponent,
@@ -88,7 +86,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   exports: [
     PrimeNgUiComponentsModule,
-    NavbarComponent,
     TranslateModule,
     MaterialComponentsModule,
     ClipboardCopyDirective,

@@ -7,7 +7,7 @@
       <ng-container *ngFor="let field of fields; let i = index">
         <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
           <div *ngFor="let subField of field" class=" formField flex-col flex-grow">
-            <label>{{subField.label}} row <span *ngIf="subField.required">*</span></label>
+            <label>{{subField.label}} <span *ngIf="subField.required">*</span></label>
             <div class="text-muted">{{subField.hint}}</div>
             <div *ngIf="subField.showOnly === true;">
               <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
@@ -48,12 +48,14 @@
         <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
         {{option.key}}</span>
     </div>
-
-    <mat-select class="form-control" [required]="field.required" *ngSwitchCase="'select'"
+    <mat-form-field *ngSwitchCase="'select'">
+      <mat-label>{{field.label}}</mat-label>
+    <mat-select class="form-control" [required]="field.required"
       [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
       <mat-option value="">None</mat-option>
       <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
     </mat-select>
+    </mat-form-field>
 
     <textarea class="form-control" [required]="field.required" *ngSwitchCase="'textarea'"
       [(ngModel)]="field.value" name="{{field.name}}"></textarea>
@@ -71,11 +73,16 @@
       [type]="field.apiType!" [initialValue]="field.value" (selectionChanged)="setFieldValue($event, field)">
     </app-select-object>
     <span *ngSwitchDefault>
-      <input class="form-control" [attr.list]="formId+field.name+'_datalist'" [required]="field.required"
-        type="{{field.type}}" [(ngModel)]="field.value" name="{{field.name}}" />
+      <mat-form-field >
+        <mat-label>{{field.label}}</mat-label>
+        <input matInput class="form-control" [required]="field.required" type="{{field.type}}"
+          [(ngModel)]="field.value" name="{{field.name}}" />
+      </mat-form-field>
+
       <datalist id="{{formId+field.name}}_datalist" *ngIf="field.options.length > 0">
         <option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</option>
       </datalist>
+
     </span>
 
   </ng-container>

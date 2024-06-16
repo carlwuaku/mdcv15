@@ -43,6 +43,7 @@
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
+    "ng-recaptcha": "^11.0.0",
     "ngx-remotedata": "8.0.0",
     "primeicons": "6.0.1",
     "primeng": "15.0.0",

@@ -72,7 +72,8 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
         deps: [HttpClient]
       }
     }),
-    MatNativeDateModule
+    MatNativeDateModule,
+
   ],
   providers: [
     {
