@@ -1,66 +1,59 @@
-<div class="full-page login-page section-image " filter-color="black" data-image="../../assets/img/bg5.jpg">
-    <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
-    <div class="content">
-        <div class="container">
+<div class="w-full">
+  <div class="flex flex-col gap-2 justify-center items-center">
+    <img src="{{logo}}" alt="logo" class="w-[100px] h-[100px]">
+    <h2>{{appName}}</h2>
+
+  </div>
+  <div class=" w-[60%] m-auto">
+    <form ngNativeValidate (ngSubmit)="login()">
+      <mat-card>
+        <mat-card-header>
+          <div class="w-full text-center text-lg font-bold">Login</div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="card-body flex flex-col gap-2 items-center pt-2">
 
 
-                <div class="flex flex-col gap-2 justify-center items-center">
-                    <app-asset-image [height]="'100'" [name]="'mdc_logo.png'"></app-asset-image>
-
-                    Medical & Dental Council - Log In
-                </div>
-                <form class="md-float-material form-material" ngNativeValidate (ngSubmit)="login()">
-                    <mat-card>
-                        <mat-card-content>
-                            <div class="card-body flex-column gap8">
-
-
-                                <div class="alert alert-danger" *ngIf="error">
-                                    {{error_message}}
-                                </div>
-                                <div class="alert alert-warning background-warning" *ngIf="flash_message != null">
-                                    {{flash_message}}
-                                </div>
-                                <div class="form-group form-primary">
-                                    <label >Username</label> <br>
-                                    <input [(ngModel)]="username" type="text" name="email" class="form-control" required
-                                         pInputText>
-                                </div>
-                                <div class="form-group form-primary">
-                                    <label>Password</label> <br>
-                                    <input type="password" name="password" [(ngModel)]="password" class="form-control"
-                                        required  pInputText>
-                                </div>
-
-                                <div class="row m-t-30">
-                                    <div class="col-md-12">
-                                        <app-loading *ngIf="loading"></app-loading>
-                                        <!-- <button [loading]="loading" type="submit" pButton pRipple label="Submit"
-                                            class="p-button-success"></button> -->
-                                        <button mat-raised-button color="primary" *ngIf="!loading" type="submit"
-                                            class="full-width">Submit</button>
-
-                                        <!-- <button
-                                        class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20">Submit</button> -->
-
-                                    </div>
-                                </div>
-                                <u class="link text-muted" (click)="forgotPassword()">Forgot Password</u>
-                                <div class="card-footer text-center">
-                                    &copy; Medical & Dental Council Ghana <span id="year"></span>. All Rights Reserved.
-                                    <br>
-                                    Unauthorized access is prohibited. All data is protected by the Data Protection Law
-                                </div>
+            <div class="alert alert-danger" *ngIf="error">
+              {{error_message}}
+            </div>
+            <div class="alert alert-warning background-warning" *ngIf="flash_message != null">
+              {{flash_message}}
+            </div>
+            <mat-form-field class="w-full" appearance="fill">
+              <mat-label>Username</mat-label> <br>
+              <input [(ngModel)]="username" type="text" name="email" class="form-control" required matInput>
+            </mat-form-field>
+            <mat-form-field class="w-full" appearance="fill">
+              <label>Password*</label> <br>
+              <input type="password" name="password" [(ngModel)]="password" class="form-control" required matInput>
+            </mat-form-field>
+            <re-captcha *ngIf="recaptchaSiteKey" (errored)="recaptchaError()" (resolved)="resolved($event)"  type="image" [siteKey]="recaptchaSiteKey"></re-captcha>
 
 
 
-                            </div>
-                        </mat-card-content>
+            <div class="row m-t-30">
+              <div class="col-md-12">
+                <app-loading *ngIf="loading"></app-loading>
+                <button [disabled]="!recaptchaVerified" mat-raised-button color="primary" *ngIf="!loading" type="submit"
+                  class="full-width">Submit</button>
+              </div>
+            </div>
+            <u class="link text-muted" (click)="forgotPassword()">Forgot Password</u>
+            <div class="card-footer text-center">
+              &copy; Medical & Dental Council Ghana <span id="year"></span>. All Rights Reserved.
+              <br>
+              Unauthorized access is prohibited. All data is protected by the Data Protection Law
+            </div>
 
-                    </mat-card>
 
-                </form>
 
-        </div>
-    </div>
+          </div>
+        </mat-card-content>
+
+      </mat-card>
+
+    </form>
+  </div>
+
 </div>

@@ -71,7 +71,7 @@ export class AuthService {
     return this.dbService.get<any>("admin/profile").pipe(map(data => {
       this.currentUser = data.user;
       this.currentUser!.permissions = data.permissions
-      return data;
+      return this.currentUser!;
     }));
   }
 
