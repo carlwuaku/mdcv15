@@ -5,6 +5,7 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { take } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { generateFormFieldsFromObject } from '../../utils/helper';
 
 @Component({
   selector: 'app-form-generator',
@@ -33,13 +34,17 @@ export class FormGeneratorComponent implements OnInit {
   @Input() validationRules: any = {};
   //some random string to differentiate the form from others. useful for generating ids
   formId: string = "";
-  @Input() retainExtraFields:string[] =[];
+  @Input() retainExtraFields: string[] = ["id", "uuid"];
+
+  @Input() autoGenerateFields: boolean = false;
+  @Input() autoGenerateFieldsKey: string = "";//the key in the data to use to generate fields
+  @Input() autoGenerateFieldsExclude: string[] = ["id", "uuid"];//fields to exclude from auto generation
   isFormField = isFormField;
   isRow = isRow;
   constructor(private notify: NotifyService,
     private dbService: HttpService) {
-      this.formId = uuidv4();
-     }
+    this.formId = uuidv4();
+  }
 
   ngOnInit(): void {
     //if an id was provided, get the existing object
@@ -53,26 +58,34 @@ export class FormGeneratorComponent implements OnInit {
     this.dbService.get<any>(`${this.existingObjectUrl}`).subscribe(
       {
         next: data => {
+          if (this.autoGenerateFields) {
+            this.fields = [];
+            const source = this.autoGenerateFieldsKey ? data.data[this.autoGenerateFieldsKey] : data.data;
+            this.fields = generateFormFieldsFromObject(source, this.autoGenerateFieldsExclude);
+          } //if autoGenerateFields is true, the fields will be generated from the data
           //for each key, find the corresponding field and set the value
-          this.fields.map(field => {
-            if(this.isFormField(field)){
-              field.value = data.data[field.name] === "null" ? null : data.data[field.name];
-            }
-            else if(this.isRow(field)){
-              field.map(rowField => {
-                rowField.value = data.data[rowField.name] === "null" ? null : data.data[rowField.name];
-              })
-            }
-          })
+          else {
+            this.fields.map(field => {
+              if (this.isFormField(field)) {
+                field.value = data.data[field.name] === "null" ? null : data.data[field.name];
+              }
+              else if (this.isRow(field)) {
+                field.map(rowField => {
+                  rowField.value = data.data[rowField.name] === "null" ? null : data.data[rowField.name];
+                })
+              }
+            })
+          }
+
           this.notify.hideLoading();
           this.retainExtraFields.forEach(field => {
             //check if there's already an extra data object with a key matching the field
             const index = this.extraData.findIndex(data => data.key === field);
-            if(index > -1){
+            if (index > -1) {
               this.extraData[index].value = data.data[field];
             }
-            else{
-              this.extraData.push({key: field, value: data.data[field]})
+            else {
+              this.extraData.push({ key: field, value: data.data[field] })
             }
           });
 
@@ -105,8 +118,8 @@ export class FormGeneratorComponent implements OnInit {
     this.notify.showLoading();
     const data = new FormData();
     allFields.forEach(field => {
-      if (field.value)
-        data.append(field.name, field.value)
+
+      data.append(field.name, field.value || "");
     });
     this.extraData.forEach(item => {
       data.append(item.key, item.value)
@@ -147,44 +160,44 @@ export class FormGeneratorComponent implements OnInit {
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-        if (field.required && !field.value) {
-          this.notify.failNotification(`Field '${field.name}' is required.`);
-          return false;
-        }
+      if (field.required && !field.value) {
+        this.notify.failNotification(`Field '${field.name}' is required.`);
+        return false;
+      }
 
-        if (field.value?.trim() && field.minLength && field.value.length < field.minLength) {
-          this.notify.failNotification(
-            `Field '${field.name}' should be at least ${field.minLength} characters long.`
-          );
-          return false;
-        }
+      if (field.value?.trim() && field.minLength && field.value.length < field.minLength) {
+        this.notify.failNotification(
+          `Field '${field.name}' should be at least ${field.minLength} characters long.`
+        );
+        return false;
+      }
 
-        if (field.maxLength && field.value.length > field.maxLength) {
-          this.notify.failNotification(
-            `Field '${field.name}' should be at most ${field.maxLength} characters long.`
-          );
-          return false;
-        }
+      if (field.maxLength && field.value.length > field.maxLength) {
+        this.notify.failNotification(
+          `Field '${field.name}' should be at most ${field.maxLength} characters long.`
+        );
+        return false;
+      }
 
-        if (field.customValidation) {
-          // For custom validation rule "fieldsMatch", pass an object with both field values
-          if (field.customValidation.fieldsMatch) {
-            let fieldsToMatch = field.customValidation.fieldsMatch;
-            //the rules will be an array of field names which must match. the value must match each field
-            for (let i = 0; i < fieldsToMatch.length; i++) {
-              const matchFieldName = fieldsToMatch[i];
-              const matchField = fields.find((f) => f.name === matchFieldName);
-              if(matchField){
-                if(field.value != matchField.value){
-                  this.notify.failNotification(
-                    `Fields '${field.label}' and '${matchField.label}' should match.`
-                  );
-                  return false;
-                }
+      if (field.customValidation) {
+        // For custom validation rule "fieldsMatch", pass an object with both field values
+        if (field.customValidation.fieldsMatch) {
+          let fieldsToMatch = field.customValidation.fieldsMatch;
+          //the rules will be an array of field names which must match. the value must match each field
+          for (let i = 0; i < fieldsToMatch.length; i++) {
+            const matchFieldName = fieldsToMatch[i];
+            const matchField = fields.find((f) => f.name === matchFieldName);
+            if (matchField) {
+              if (field.value != matchField.value) {
+                this.notify.failNotification(
+                  `Fields '${field.label}' and '${matchField.label}' should match.`
+                );
+                return false;
               }
-
             }
+
           }
+        }
 
       }
     }

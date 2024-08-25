@@ -24,7 +24,8 @@ export class TemplateFormComponent implements OnInit{
   footer: string = "";
   on_submit_email: string = "";
   on_submit_message: string = "";
-
+  on_approve_email_template: string = "";
+  on_deny_email_template: string = "";
   id: string;
   extraFormData: { key: string, value: any }[] = [];
   generalFormGroup = new FormGroup({
@@ -50,7 +51,12 @@ export class TemplateFormComponent implements OnInit{
     on_submit_email: new FormControl("", Validators.required),
     on_submit_message: new FormControl("", Validators.required),
   });
+  onFinishFormGroup = new FormGroup({
+    on_approve_email_template: new FormControl("", Validators.required),
+    on_deny_email_template: new FormControl("", Validators.required),
+  });
   loading: boolean = false;
+
 
 
   constructor(ar: ActivatedRoute, private router: Router, private notify:NotifyService, private dbService: HttpService,
@@ -79,6 +85,8 @@ export class TemplateFormComponent implements OnInit{
         this.footer = response.data.footer;
         this.on_submit_email = response.data.on_submit_email;
         this.on_submit_message = response.data.on_submit_message;
+        this.on_approve_email_template = response.data.on_approve_email_template;
+        this.on_deny_email_template = response.data.on_deny_email_template;
 
         this.generalFormGroup.get("form_name")?.setValue(response.data.form_name);
         this.generalFormGroup.get("open_date")?.setValue(response.data.open_date);
@@ -90,9 +98,8 @@ export class TemplateFormComponent implements OnInit{
         this.footerFormGroup.get("footer")?.setValue(response.data.footer);
         this.onSubmitFormGroup.get("on_submit_email")?.setValue(response.data.on_submit_email);
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
-
-
-
+        this.onFinishFormGroup.get("on_approve_email_template")?.setValue(response.data.on_approve_email_template);
+        this.onFinishFormGroup.get("on_deny_email_template")?.setValue(response.data.on_deny_email_template);
       },
       error: error => {
         this.loading = false;
@@ -125,6 +132,9 @@ export class TemplateFormComponent implements OnInit{
         break;
       case "on_submit":
         form = this.onSubmitFormGroup;
+        break;
+        case "on_finish":
+        form = this.onFinishFormGroup;
         break;
     }
     if (form) {
@@ -172,6 +182,12 @@ export class TemplateFormComponent implements OnInit{
       data.append("on_submit_email", this.onSubmitFormGroup.get("on_submit_email")?.value!);
       if(this.onSubmitFormGroup.get("on_submit_message")?.value)
       data.append("on_submit_message", this.onSubmitFormGroup.get("on_submit_message")?.value!);
+    }
+    if(this.onFinishFormGroup.valid){
+      if(this.onFinishFormGroup.get("on_approve_email_template")?.value)
+      data.append("on_approve_email_template", this.onFinishFormGroup.get("on_approve_email_template")?.value!);
+      if(this.onFinishFormGroup.get("on_deny_email_template")?.value)
+      data.append("on_deny_email_template", this.onFinishFormGroup.get("on_deny_email_template")?.value!);
     }
     this.notify.showLoading();
     let dbCall = this.dbService.post<any>(this.formUrl, data)

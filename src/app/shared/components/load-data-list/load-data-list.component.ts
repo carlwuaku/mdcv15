@@ -73,12 +73,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() sortOrder: string = "asc";
   @Input() filters: IFormGenerator[] = [];
   tableTitle: string = "";
-  @Input() showDeleted: any;
-  @Input() showFilterButton: any;
-  @Input() showSort: any;
+  @Input() showDeleted: boolean = true;
+  @Input() showFilterButton: boolean = true;
+  @Input() showSort: boolean = true;
+  @Input() hint: string = "";
 
-  constructor(private dbService: HttpService,
-    private notify: NotifyService, private dialog: MatDialog) {
+  constructor(private dbService: HttpService, private dialog: MatDialog) {
 
 
   }
@@ -98,6 +98,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(this.filters)
     if (this.preload) {
       this.offset = 0;
       this.currentPage = 1;
@@ -149,6 +150,14 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.sortBy) {
       extra += `&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`
     }
+    console.log(this.filters)
+    if(this.filters.length > 0){
+      this.filters.forEach(filter => {
+
+        if (filter.value) {
+          extra += `&${filter.name}=${filter.value}`}
+        });
+    }
     return this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
   }
 
@@ -165,7 +174,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     //split every key=value into key: value, separated by commas
     const params = splitUrl[1].split("&").filter(param => !param.includes("page=") && !param.includes("limit=")
       && !param.includes("sortBy=") && !param.includes("sortOrder=")).map(x => x.split("="));
-    console.log(params)
     params.map(param => {
       tableTitleArray.push(this.getColumnLabel(param[0]) + ": " + param[1]);
     })
@@ -194,8 +202,16 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.columnLabels = data.columnLabels
           this.showTable = true;
           this.dataSource.sort = this.sort;
-          if (this.filters.length == 0 && data.columnFilters && data.columnFilters.length > 0) {
-            this.filters = data.columnFilters;
+          if (data.columnFilters && data.columnFilters.length > 0) {
+            //merge the filters from the server with the filters from the parent component, preserving the parent component's values
+            this.filters = data.columnFilters.map(filter => {
+              const existingFilter = this.filters.find(x => x.name == filter.name);
+              if (existingFilter) {
+                filter.value = existingFilter.value;
+              }
+              return filter;
+            })
+
           }
         },
         error: (err) => {
@@ -259,13 +275,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   setFilters(args: IFormGenerator[]) {
-    let url = this.prepUrl();
-    args.forEach(filter => {
-      if (filter.value) {
-        url += `&${filter.name}=${filter.value}`
-      }
-    });
-    this.getData(url);
+    this.filters = args;
+
+    this.getData();
   }
 
   showFilterDialog() {
@@ -274,10 +286,14 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
         title: "Filter",
         fields: this.filters,
         formType: "filter"
-      }
+      },
+      width: '50vw'
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.setFilters(result)
+      if (result && result.length == 0) {
+        this.setFilters(result)
+      }
+
     });
   }
 

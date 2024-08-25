@@ -10,6 +10,8 @@ import { API_PATH } from './shared/utils/constants';
 import { ActivatedRoute } from '@angular/router';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppService } from './app.service';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -23,11 +25,12 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean;
   user = this.authService.currentUser;
   mobileQuery: MediaQueryList;
-
+  logo: string = "";
 
   private _mobileQueryListener: () => void;
 
   public opened: boolean = true;
+
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
@@ -45,9 +48,9 @@ export class AppComponent implements OnInit {
     this.mobileQuery.addListener(this._mobileQueryListener);
     //log changes in the mobilequery
     this.mobileQuery.addEventListener('change', (e) => {
-      if(e.matches){
+      if (e.matches) {
         this.opened = false;
-      }else{
+      } else {
         this.opened = true;
       }
     });
@@ -57,13 +60,23 @@ export class AppComponent implements OnInit {
     });
     this.appService.appSettings.subscribe(data => {
       this.appName = data.appName;
+      this.logo = data.logo;
     })
   }
 
   ngOnInit(): void {
-    if(this.isLoggedIn){
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMaXxiM-ANGciBypyPjaPqcU8qfCI19z0",
+      authDomain: "mdcms-uat.firebaseapp.com",
+      projectId: "mdcms-uat",
+      storageBucket: "mdcms-uat.appspot.com",
+      messagingSenderId: "377847874484",
+      appId: "1:377847874484:web:8d40c9eb4f003fd9ed28e1",
+      measurementId: "G-FC717CXV4E"
+    };
+
+    if (this.isLoggedIn) {
       this.authService.getUser().subscribe(data => {
-        console.log(data)
         this.user = data;
       });
     }
@@ -77,9 +90,11 @@ export class AppComponent implements OnInit {
 
           root = root.firstChild!;
         }
-        this.title = titles.join('/ ');
+        this.title = titles.join('/ ');console.log(this.title)
       }
     });
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
   }
 
   logout() {

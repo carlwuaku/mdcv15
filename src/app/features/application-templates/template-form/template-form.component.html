@@ -103,6 +103,26 @@
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="onFinishFormGroup">
+    <ng-template matStepLabel>On Approve/Deny Email Templates</ng-template>
+    <form [formGroup]="onFinishFormGroup">
+      <label for="">Email to send to user after form is approved</label>
+      <app-ckeditor [name]="'on_approve_email_template'" [value]="on_approve_email_template" (valueChange)="setFormField('on_finish', 'on_approve_email_template', $event)"
+    ></app-ckeditor>
+    <mat-error *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_approve_email_template')?.hasError('required')">Required field</mat-error>
+
+    <label for="">Message to display after form is submitted</label>
+    <app-ckeditor [name]="'on_deny_email_template'" [value]="on_deny_email_template" (valueChange)="setFormField('on_finish','on_deny_email_template', $event)"
+    ></app-ckeditor>
+    <mat-error *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_deny_email_template')?.hasError('required')">Required field</mat-error>
+
+      <div>
+        <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
         <button type="button" (click)="submit()" mat-raised-button color="primary" matStepperNext>Submit</button>
       </div>
     </form>

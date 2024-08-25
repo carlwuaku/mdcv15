@@ -1,48 +1,54 @@
-<div class="flex flex-col gap-2">
-  <div class="flex flex-col gap-2">
-    <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"
-      (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
-      <div class="flex">
-        <span *ngIf="showDeleted">
-          <label>
-            <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
-          </label>
-        </span>
-        <button *ngIf="preload" (click)="reset()" mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Reset
-        </button>
-
-        <span *ngIf="showExport">
-          <em>{{selection.selected.length}} Selected:</em>
-          <app-export-table [objects]="selection.selected"></app-export-table>
-        </span>
-      </div>
-      <div class="flex flex-row gap-2 align-middle items-center">
-        <div *ngIf="showSearch">
-          <form ngNativeValidate (ngSubmit)="search()">
-            <mat-form-field  [appearance]="'fill'">
-            <mat-label for="">Search</mat-label>
-            <input  name="search" required matInput [(ngModel)]="searchParam" type="search">
-          </mat-form-field>
-            <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
-          </form>
+<div class="flex flex-col gap-2 ">
+  <div class="flex flex-col gap-2 flex-wrap">
+    <div>
+      <h3 class="text-lg">{{tableTitle}}</h3>
+      <p *ngIf="hint">{{hint}}</p>
+    </div>
+    <form *ngIf="showSearch" ngNativeValidate (ngSubmit)="search()"
+      class="flex flex-row gap-1 align-middle items-center flex-auto">
+      <mat-form-field [appearance]="'fill'" class="flex-auto">
+        <mat-label for="">Search</mat-label>
+        <input name="search" required matInput [(ngModel)]="searchParam" type="search">
+      </mat-form-field>
+      <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
+    </form>
 
 
-        </div>
-        <button *ngIf="showFilterButton" mat-stroked-button color="primary" [disabled]="filters.length < 1" (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
+    <div class="flex  gap-2  items-center flex-wrap">
+      <button *ngIf="showFilterButton" mat-flat-button color="primary" [disabled]="filters.length < 1"
+        (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
 
-        <span *ngIf="showSort" class="flex flex-row gap-1">
-          <mat-form-field  [appearance]="'outline'">
-            <mat-label>Sort By: </mat-label>
-             <mat-select [(ngModel)]="sortBy" (change)="getData()">
-              <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
-            <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
+      <span *ngIf="showDeleted">
+        <label>
+          <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
+        </label>
+      </span>
+      <button *ngIf="preload" (click)="reset()" mat-stroked-button color="error"><mat-icon>refresh</mat-icon> Reset
+      </button>
+
+      <span *ngIf="showExport">
+        <em>{{selection.selected.length}} Selected:</em>
+        <app-export-table [objects]="selection.selected"></app-export-table>
+      </span>
+    </div>
+    <div class="flex flex-row gap-2 align-middle items-center flex-wrap">
+      <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"
+        (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
 
 
-        </span>
-      </div>
+      <span *ngIf="showSort" class="flex flex-row gap-1 items-center flex-wrap">
+        <mat-form-field [appearance]="'fill'">
+          <mat-label>Sort By: </mat-label>
+          <mat-select [(ngModel)]="sortBy" (selectionChange)="getData()">
+            <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
+        <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
+
+
+      </span>
+    </div>
   </div>
 
 
@@ -51,12 +57,13 @@
   <app-loading *ngIf="loading"></app-loading>
 
   <div class="text-muted" *ngIf="showInfo">
-   <mat-icon>info</mat-icon> To export the data, e.g. to excel format, select the rows you would like to export. Use the top checkbox to select
+    <mat-icon>info</mat-icon> To export the data, e.g. to excel format, select the rows you would like to export. Use
+    the top checkbox to select
     all
   </div>
-  <b>{{tableTitle}}</b>
 
-  <div class="table-responsive">
+
+  <div class="overflow-auto flex-auto max-h-[500px]">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
       <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
 
