@@ -853,9 +853,8 @@ tr:nth-child(even) {
   color: #000000;
 }
 
-.mat-form-field {
+.mat-mdc-form-field{
   width: 100%;
+  max-width: 450px;
 }
-// .ck-editor__editable_inline {
-//   min-height: 500px !important;
-// }
+

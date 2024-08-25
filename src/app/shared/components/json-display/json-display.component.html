@@ -10,8 +10,8 @@
   <span *ngSwitchCase="'object'">
     <app-json-display [depth]="depth+1"  [value]="value"></app-json-display>
   </span>
-  <span *ngSwitchCase="'image'">
-    <img [src]="value" alt="image" [height]="imageHeight">
+  <span *ngSwitchCase="'image'" class="overflow-visible">
+    <img [src]="value" alt="image" [style.height.px]="imageHeight">
   </span>
   <span *ngSwitchCase="'link'">
     <a [href]="value">{{value}}</a>

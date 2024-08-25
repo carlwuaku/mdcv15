@@ -1,0 +1,9 @@
+<mat-card>
+  <mat-card-content>
+    <app-loading *ngIf="!loaded"></app-loading>
+    <app-form-generator *ngIf="loaded" [autoGenerateFields]="autoGenerateFields" [url]="formUrl" [fields]="fields"
+      [existingObjectUrl]="existingUrl" [autoGenerateFieldsKey]="'form_data'" (onSubmit)="formSubmitted($event)"
+      [id]="id" [extraData]="extraFormData">
+    </app-form-generator>
+  </mat-card-content>
+</mat-card>

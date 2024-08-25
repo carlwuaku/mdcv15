@@ -1,3 +1,4 @@
+import { IFormGenerator } from "../components/form-generator/form-generator-interface";
 
 export function extractKeys(object: any, exclude: any[]) {
   const keys = [];
@@ -17,6 +18,51 @@ export function extractKeys(object: any, exclude: any[]) {
 export function getLabelFromKey(key: string, capitalise?: boolean) {
   let fullName = replace_underscore(key, ' ');
   return capitalise ? fullName.toUpperCase() : fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
+}
+
+export function guessInputType(name: string): string {
+  const lowerName = name.toLowerCase();
+  if (lowerName.includes('description')) {
+    return 'textarea';
+  }
+  if (lowerName.includes('registration_number') || lowerName.includes('id_number') || lowerName.includes('license_number')) {
+    return 'text';
+  }
+
+  if (lowerName.includes('picture') || lowerName.includes('photo') || lowerName.includes('image')) {
+    return 'picture';
+  }
+
+  if (lowerName.includes('date') || lowerName.endsWith('_at') || lowerName.endsWith('_on')) {
+    return 'date';
+  }
+
+  if (lowerName.includes('file') || lowerName.includes('attachment') || lowerName.includes('document')) {
+    return 'file';
+  }
+
+  if (lowerName.includes('email')) {
+    return 'email';
+  }
+
+  if (lowerName.includes('password')) {
+    return 'password';
+  }
+
+  if (lowerName.includes('phone') || lowerName.includes('mobile')) {
+    return 'tel';
+  }
+
+  if (lowerName.includes('url') || lowerName.includes('website') || lowerName.includes('link')) {
+    return 'url';
+  }
+
+  if (lowerName.includes('number') || lowerName.includes('amount') || lowerName.includes('quantity')) {
+    return 'number';
+  }
+
+  // Default to text for any other cases
+  return 'text';
 }
 
 export function replace_underscore(str: string, sub: string): string {
@@ -50,8 +96,28 @@ export function isObject(value: any): boolean {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-export function isArray(value:any):boolean{
+export function isArray(value: any): boolean {
   return Array.isArray(value);
+}
+
+export function generateFormFieldsFromObject(object: any, exclude: string[] = []): IFormGenerator[] {
+  const keys = extractKeys(object, exclude);
+  const fields: IFormGenerator[] = [];
+  keys.forEach(key => {
+    fields.push({
+      label: getLabelFromKey(key),
+      name: key,
+      hint: "",
+      options: [],
+      type: guessInputType(key),
+      value: object[key],
+      required: false,
+      api_url: "",
+      apiKeyProperty: "",
+      apiLabelProperty: "",
+    });
+  });
+  return fields;
 }
 
 

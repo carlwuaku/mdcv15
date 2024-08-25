@@ -1,10 +1,12 @@
+import { Params } from "@angular/router";
+
 export interface MenuItem {
   title: string;
   url: string;
   icon: string;
   children: DashboardItem[];
   active_children?: boolean;
-
+  urlParams?: Params;
 }
 
 export interface DashboardItem extends MenuItem {
@@ -33,7 +35,7 @@ export const menuItems: MenuItem[] = [
 
     active_children: false,
     url: "",
-    icon: "menu_book",
+    icon: "auto_stories_outlined",
     children: [
       {
         title: "Dashboard/Search",
@@ -94,7 +96,7 @@ export const menuItems: MenuItem[] = [
     icon: "list_alt",
     children: [
       {
-        title: "Submitted Application",
+        title: "All Applications",
         url: "/applications",
 
         icon: '',
@@ -121,7 +123,7 @@ export const menuItems: MenuItem[] = [
 
     active_children: false,
     url: "",
-    icon: "person",
+    icon: "person_outlined",
     children: [
       {
         title: "Dashboard/Search",
@@ -295,39 +297,39 @@ export const dashboardItems: DashboardItem[] = [
       {
         title: "New Provisional Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Doctor", "form_type": "Practitioners Provisional Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Provisional Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Provisional Registration Application&status=Pending Approval"
       },
       {
         title: "New Permanent Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Doctor", "form_type": "Practitioners Permanent Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Permanent Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Permanent Registration Application&status=Pending Approval"
       },
       {
         title: "New Temporary Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Doctor", "form_type": "Practitioners Temporary Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Temporary Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Doctor&form_type=Practitioners Temporary Registration Application&status=Pending Approval"
       },
       {
         title: "New Portal Edits",
-        url: "/practitioners/portal-edits",
-
+        url: "/applications",
+        urlParams: { "form_type": "Portal Edit", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: ""
+        apiCountUrl: "applications/count?form_type=Portal Edit&status=Pending Approval"
       },
       {
         title: "Relic. Pending Approval",
         url: "/practitioners/renewals",
-
+        urlParams: { "status": "Pending Approval", "practitioner_type": "Doctor" },
         icon: '',
         children: [],
         apiCountUrl: "practitioners/renewal-count?status=Pending Approval&practitioner_type=Doctor"
@@ -335,7 +337,7 @@ export const dashboardItems: DashboardItem[] = [
       {
         title: "Relic. Pending Payment",
         url: "/practitioners/renewals",
-
+        urlParams: { "status": "Pending Payment", "practitioner_type": "Doctor" },
         icon: '',
         children: [],
         apiCountUrl: "practitioners/renewal-count?status=Pending Payment&practitioner_type=Doctor'"
@@ -382,39 +384,32 @@ export const dashboardItems: DashboardItem[] = [
       {
         title: "New Provisional Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Physician Assistant", "form_type": "Practitioners Provisional Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Provisional Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Provisional Registration Application&status=Pending Approval"
       },
       {
         title: "New Permanent Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Physician Assistant", "form_type": "Practitioners Permanent Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Permanent Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Permanent Registration Application&status=Pending Approval"
       },
       {
         title: "New Temporary Registrations",
         url: "/applications",
-
+        urlParams: { "practitioner_type": "Physician Assistant", "form_type": "Practitioners Temporary Registration Application", "status": "Pending Approval" },
         icon: '',
         children: [],
-        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Temporary Registration Application"
+        apiCountUrl: "applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Temporary Registration Application&status=Pending Approval"
       },
-      {
-        title: "New Portal Edits",
-        url: "/practitioners/portal-edits",
 
-        icon: '',
-        children: [],
-        apiCountUrl: ""
-      },
       {
         title: "Relic. Pending Approval",
         url: "/practitioners/renewals",
-
+        urlParams: { "status": "Pending Approval", "practitioner_type": "Physician Assistant" },
         icon: '',
         children: [],
         apiCountUrl: "practitioners/renewal-count?status=Pending Approval&practitioner_type=Physician Assistant"
@@ -422,7 +417,7 @@ export const dashboardItems: DashboardItem[] = [
       {
         title: "Relic. Pending Payment",
         url: "/practitioners/renewals",
-
+        urlParams: { "status": "Pending Payment", "practitioner_type": "Physician Assistant" },
         icon: '',
         children: [],
         apiCountUrl: "practitioners/renewal-count?status=Pending Payment&practitioner_type=Physician Assistant'"

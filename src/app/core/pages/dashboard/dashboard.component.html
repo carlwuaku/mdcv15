@@ -4,7 +4,7 @@
       <mat-card-title>{{ item.title }}</mat-card-title>
     </mat-card-header>
     <mat-nav-list>
-      <a mat-list-item class="border-b pt-1 pb-1" [routerLink]="link.url"
+      <a mat-list-item class="border-b pt-1 pb-1" [routerLink]="link.url" [queryParams]="link.urlParams"
         *ngFor="let link of item.children">
 
       <div class="flex gap-1 items-center">

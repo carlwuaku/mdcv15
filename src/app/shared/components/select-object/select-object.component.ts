@@ -29,7 +29,7 @@ export class SelectObjectComponent implements OnInit, OnChanges{
   @Input() selection_mode: "single" | "singles" | "multiple" = "single";
   search_param: string = "";
   dataListId:string = "";
-
+  @Input() fieldLabel:string = "";
   constructor(private dbService: HttpService, private dateService:DateService) {
 
   }

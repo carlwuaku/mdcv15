@@ -3,9 +3,7 @@ import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,7 +16,8 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ErrorInterceptorService } from './core/interceptors/global-error-handler.interceptor';
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { LocationStrategy, HashLocationStrategy} from "@angular/common";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
@@ -48,22 +47,6 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
     FormsModule,
     SharedModule,
     ToastModule,
-    StoreModule.forRoot(
-      {},
-      {
-        runtimeChecks: {
-          strictStateImmutability: true,
-          strictActionImmutability: true,
-          strictStateSerializability: false,
-          strictActionSerializability: false,
-        },
-      }
-    ),
-    StoreDevtoolsModule.instrument({
-      name: 'HireTrackerApp',
-      maxAge: 25,
-    }),
-    EffectsModule.forRoot(),
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -95,6 +78,8 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
       useClass: ErrorInterceptor,
       multi: true,
     },
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
   ],
   bootstrap: [AppComponent],
 })

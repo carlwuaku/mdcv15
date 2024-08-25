@@ -14,7 +14,7 @@ export class JsonDisplayComponent implements OnInit {
   objectType:"array"|"object"|"image"|"link"|"string" = "string";
   isObject = isObject;
   isArray = isArray;
-  imageHeight = "100px";
+  imageHeight = 100;
   imageWidth = "100px";
   @Input() depth = 0;
 

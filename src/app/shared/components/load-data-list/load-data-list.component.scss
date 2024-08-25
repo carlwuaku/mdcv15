@@ -1,20 +1,25 @@
-
-.mini-card{
+.mini-card {
   display: flex;
   flex-direction: row;
   gap: 4px;
-align-items: center;
+  align-items: center;
 }
 
-.parent{
+.parent {
   display: flex;
   flex-direction: column;
 }
+
 .mat-column-select {
   overflow: initial;
 }
 
-.strikethrough{
+.strikethrough {
   text-decoration: line-through;
 }
 
+.mat-mdc-header-row {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}

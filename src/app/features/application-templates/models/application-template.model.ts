@@ -14,5 +14,9 @@ export interface ApplicationTemplateObject {
   status: string,
   created_on: string,
   deleted_at: string,
-  actions?: any[]
+  actions?: any[],
+  on_approve_email_template: string,
+  on_deny_email_template: string,
+  approve_url: string,
+  deny_url: string
 }

@@ -1,10 +1,8 @@
-<div class="gap4">
-  <a mat-raised-button color="primary" routerLink="/application-template/form">Add a new form template</a>
+<div class="flex flex-col gap-1">
 
   <mat-card>
     <mat-card-content>
-      <app-load-data-list [timestamp]="ts" [url]="url"
-          [getActions]="getActions">
+      <app-load-data-list [hint]="hint" [filters]="filters" [timestamp]="ts" [url]="url" [getActions]="getActions">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>
