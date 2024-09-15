@@ -13,11 +13,10 @@ import { gtmContainerId } from "./app-config";
 import { CoreModule } from './core/core.module';
 import { TranslateModule, TranslateLoader, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { ErrorInterceptorService } from './core/interceptors/global-error-handler.interceptor';
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
-import { LocationStrategy, HashLocationStrategy} from "@angular/common";
+import { LocationStrategy, HashLocationStrategy, DatePipe } from "@angular/common";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
@@ -55,7 +54,7 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
         deps: [HttpClient]
       }
     }),
-    MatNativeDateModule,
+    MatNativeDateModule
 
   ],
   providers: [
@@ -78,9 +77,10 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
       useClass: ErrorInterceptor,
       multi: true,
     },
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    DatePipe
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

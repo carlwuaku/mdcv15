@@ -1,301 +1,50 @@
-<div class="flex flex-wrap justify-between gap-2">
-  <mat-card class="w-[32%]" *ngFor="let item of menuItems">
+<div class="flex flex-col gap-2 w-full">
+
+  <mat-card>
     <mat-card-header>
-      <mat-card-title>{{ item.title }}</mat-card-title>
+      <mat-card-title> <mat-icon>search</mat-icon> Search</mat-card-title>
     </mat-card-header>
-    <mat-nav-list>
-      <a mat-list-item class="border-b pt-1 pb-1" [routerLink]="link.url" [queryParams]="link.urlParams"
-        *ngFor="let link of item.children">
-
-      <div class="flex gap-1 items-center">
-        <span class="inline-flex items-center text-pretty gap-1 flex-grow">
-          {{ link.title }}
-        </span>
-        <span class="inline-flex justify-center badge badge-warning" *ngIf="link.apiCountUrl">
-          <app-api-count [url]="link.apiCountUrl"></app-api-count>
-        </span>
-      </div>
-      </a>
-    </mat-nav-list>
-
+    <mat-card-content>
+      <app-search-widget></app-search-widget>
+    </mat-card-content>
   </mat-card>
+  <div class="h-[600px]">
+    <app-ghana-map></app-ghana-map>
+  </div>
+  <div class="flex flex-wrap justify-between  gap-2">
 
-  <!--
-    <div class="col-md-4">
+    <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'person_outlined'" [title]="'Licenses'"
+      [description]="'Manage Practitioner Licenses'" [counterUrl]="'licenses/count'"></app-dashboard-tile>
+    <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'list_alt'" [title]="'Applications'"
+      [counterUrl]="'applications/count'" [description]="'Manage Practitioner Licenses'"
+      [counterText]="'New Applications'"></app-dashboard-tile>
+    <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'list_alt'" [title]="'Renewals'"
+      [counterUrl]="'practitioners/renewal-count?status=Pending Approval'"
+      [description]="'Manage Practitioner Licenses'" [counterText]="'Pending Approval'"></app-dashboard-tile>
+  </div>
 
-        <mat-card>
-            <div class="card-header bg-pink dashboard-card-header" data-background-color="green">
-                <h4 class="card-title"> <i class="feather icon-users"></i> Doctors</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a class="list-group-item col-pink bg-pink-hover" [routerLink]="['/add_doctor']">
-                        <i class="fa fa-plus"></i> Add New Doctor
-                    </a>
-                    <a class="list-group-item col-pink bg-pink-hover" [routerLink]="['/doctor_reports']">
-                        <i class="fa fa-line-chart"></i>
-                        Doctor Reports</a>
-                    <a class="list-group-item col-pink bg-pink-hover link"  [routerLink]="['/practitioners/renewal-form']">
-                        <i class="fa fa-refresh"></i> Renewal of license</a>
-                    <a class="list-group-item col-pink bg-pink-hover link">
-                        <i class="fa fa-forward"></i> Migration to Permanent Register</a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Provisional Registration Application'}"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Provisional Registration Application'"></app-api-count>
-                        </strong> New Provisional Registrations
-                    </a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Permanent Registration Application'}"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Permanent Registration Application'"></app-api-count>
-                        </strong> New Permanent Registrations
-                    </a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Doctor', form_type: 'Practitioners Temporary Registration Application'}"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Doctor&form_type=Practitioners Temporary Registration Application'"></app-api-count>
-                        </strong> New Temporary Registrations
-                    </a>
-                    <a [routerLink]="['/portalEdits']" class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [type]="'portalCount'"></app-api-count>
+  <!-- <div class="flex flex-wrap justify-between gap-2">
+    <mat-card class="w-[32%]" *ngFor="let item of menuItems">
+      <mat-card-header>
+        <mat-card-title>{{ item.title }}</mat-card-title>
+      </mat-card-header>
+      <mat-nav-list>
+        <a mat-list-item class="border-b pt-1 pb-1" [routerLink]="link.url" [queryParams]="link.urlParams"
+          *ngFor="let link of item.children">
 
-                        </strong> New Portal Edits
-                    </a>
-                    <a [routerLink]="['/practitioners/renewals']"
-                    [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Approval'}"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Approval&practitioner_type=Doctor'" ></app-api-count>
-                        </strong> Relic.
-                        Pending Approval
-                    </a>
-                    <a [routerLink]="['/practitioners/renewals']"
-                    [queryParams]="{practitioner_type: 'Doctor', status: 'Pending Payment'}"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Payment&practitioner_type=Doctor'"></app-api-count>
-                        </strong> Relic.
-                        Pending Payment
-                    </a>
-                </mat-nav-list>
-            </div>
-        </mat-card>
-    </div>
+          <div class="flex gap-1 items-center">
+            <span class="inline-flex items-center text-pretty gap-1 flex-grow">
+              {{ link.title }}
+            </span>
+            <span class="inline-flex justify-center badge badge-warning" *ngIf="link.apiCountUrl">
+              <app-api-count [url]="link.apiCountUrl"></app-api-count>
+            </span>
+          </div>
+        </a>
+      </mat-nav-list>
 
-    <div class="col-md-4">
-        <mat-card>>
-            <div class="card-header bg-purple" data-background-color="green">
-                <h4 class="card-title"> <i class="feather icon-users"></i> Physician Assistants</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a class="list-group-item col-purple bg-purple-hover" [routerLink]="['/add_pa']">
-                        <i class="fa fa-plus"></i> Add New Physician Assistant</a>
-                    <a class="list-group-item col-purple bg-purple-hover" [routerLink]="['/pa_reports']">
-                        <i class="fa fa-line-chart"></i> Physician Assistant Reports</a>
-                    <a class="list-group-item col-purple bg-purple-hover link" [routerLink]="['/practitioners/renewal-form']" >
-                        <i class="fa fa-refresh"></i> Renewal of license</a>
-                    <a class="list-group-item col-purple bg-purple-hover link">
-                        <i class="fa fa-forward"></i> Migration to Permanent Register</a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Provisional Registration Application'}"
-
-                        class="list-group-item col-purple bg-purple-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Provisional Registration Application'"></app-api-count>
-                        </strong> New Provisional Registrations
-                    </a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Permanent Registration Application'}"
-
-                        class="list-group-item col-purple bg-purple-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Permanent Registration Application'"></app-api-count>
-                        </strong> New Permanent Registrations
-                    </a>
-                    <a [routerLink]="['/applications']"
-                    [queryParams]="{practitioner_type: 'Physician Assistant', form_type: 'Practitioners Temporary Registration Application'}"
-
-                        class="list-group-item col-purple bg-purple-hover link">
-                        <strong class="badge badge-warning">
-                          <app-api-count [url]="'applications/count?practitioner_type=Physician Assistant&form_type=Practitioners Temporary Registration Application'"></app-api-count>
-                        </strong> New Temporary
-                        Registrations
-                    </a>
-                    <a [routerLink]="['/practitioners/renewals']"
-                    [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Approval'}"
-                        class="list-group-item col-purple bg-purple-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Approval&practitioner_type=Physician Assistant'"></app-api-count>
-                        </strong> Relic.
-                        Pending Approval
-                    </a>
-                    <a [routerLink]="['/practitioners/renewals']"
-                    [queryParams]="{practitioner_type: 'Physician Assistant', status: 'Pending Payment'}"
-                        class="list-group-item col-purple bg-purple-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [url]="'practitioners/renewal-count?status=Pending Payment&practitioner_type=Physician Assistant'"></app-api-count>
-                        </strong> Relic. Pending
-                        Payment
-                    </a>
-                </mat-nav-list>
-            </div>
-          </mat-card>
-    </div>
-
-    <div class="col-md-4">
-        <mat-card>>
-            <div class="card-header bg-deep-purple" data-background-color="green">
-                <h4 class=""> <i class="feather icon-book"></i> CPD</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover" [routerLink]="['/cpd/add']">
-                        <i class="fa fa-plus"></i> Add CPD Event</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover" [routerLink]="['/cpd/list_cpd']">
-                        <i class="fa fa-list"></i> View/Update Attendance Lists</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/cpd/cpd_pending_approval']">
-                        <strong class="badge badge-warning">
-                            <app-api-count [type]="'cpdPending'"></app-api-count>
-</strong> Pending Approval</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/cpd/list_cpd_facilities']">
-                        <i class="fa fa-building"></i> Manage CPD Organizers</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/cpd/cpd_online_providers']">
-                        <i class="fa fa-globe"></i> Manage Online CPD Organizers</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/cpd/cpd_attendance_report']">
-                        <i class="fa fa-line-chart"></i> Attendance Reports</a>
-
-                </mat-nav-list>
-            </div>
-        </mat-card>
-    </div>
- -->
+    </mat-card>
 
 
+  </div> -->
 </div>
-<!--
-<div class="row">
-
-    <div class="col-md-4">
-
-        <mat-card>>
-            <div class="card-header bg-pink dashboard-card-header" data-background-color="green">
-                <h4 class="card-title"> <i class="feather icon-users"></i> Housemanship</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a class="list-group-item col-pink bg-pink-hover" [routerLink]="['/housemanship_facilities']">
-                        <i class="fa fa-plus"></i> Add/Manage Sites
-                    </a>
-                    <a class="list-group-item col-pink bg-pink-hover" [routerLink]="['/view_postings']">
-                        <i class="fa fa-list"></i>
-                        View 1st Year Postings</a>
-                    <a class="list-group-item col-pink bg-pink-hover" [routerLink]="['/view_postings_2']">
-                        <i class="fa fa-list"></i>
-                        View 2nd Year Postings</a>
-
-                    <a [routerLink]="['/housemanship_applications/Doctor/1']"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorHousemanship1Count'"></app-api-count>
-                        </strong> 1st Year Housemanship
-                        Applications - Doctors
-                    </a>
-                    <a [routerLink]="['/housemanship_2_applications/Doctor']"
-                        class="list-group-item col-pink bg-pink-hover link">
-                        <strong class="badge badge-warning">
-                            <app-api-count [type]="'doctorHousemanship2Count'"></app-api-count>
-                        </strong> 2nd Year Housemanship
-                        Applications - Doctors
-                    </a>
-                </mat-nav-list>
-            </div>
-        </mat-card>
-    </div>
-    <div class="col-md-4">
-        <mat-card>>
-            <div class="card-header bg-purple" data-background-color="green">
-                <h4 class=""> <i class="feather icon-book"></i> Online Payments</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a [routerLink]="['/fees']" class="list-group-item col-purple bg-purple-hover link">
-                        <i class="fa fa-list"></i> Manage Fees
-                    </a>
-
-                </mat-nav-list>
-            </div>
-        </mat-card>
-    </div>
-
-    <div class="col-md-4">
-        <mat-card>
-            <div class="card-header bg-deep-purple" data-background-color="green">
-                <h4 class=""> <i class="feather icon-book"></i> Examination</h4>
-            </div>
-            <div class="">
-                <mat-nav-list>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover" [routerLink]="['/exam_list']">
-                        <i class="fa fa-list"></i> Manage Exam
-                    </a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/exam_registrations/doctor']">
-                        <strong class="badge badge-warning"><app-api-count [type]="'doctorExamRegistrationCount'"></app-api-count></strong>
-                        New Registration - Doctors <br>
-                        (<app-api-count [type]="'doctorsMedicalExamRegistrationCount'"></app-api-count> Medical,
-                        <app-api-count [type]="'doctorsDentalExamRegistrationCount'"></app-api-count> Dental) <br>
-                        (<strong class="badge badge-warning"><app-api-count [type]="'examSpecialistRegistrationCount'"></app-api-count></strong>
-                        Specialists)</a>
-                    <a class="list-group-item col-deep-purple bg-deep-purple-hover"
-                        [routerLink]="['/exam_registrations/PA']">
-                        <strong class="badge badge-warning"><app-api-count [type]="'paExamRegistrationCount'"></app-api-count></strong>
-                        New Registration - PAs <br>
-                        (<app-api-count [type]="'paMedicalExamRegistrationCount'"></app-api-count> Medical,
-                        <app-api-count [type]="'paDentalExamRegistrationCount'"></app-api-count> Dental)
-                    </a>
-
-
-
-
-
-                </mat-nav-list>
-                <div id="accordion">
-                    <mat-card>>
-                        <div class="card-header" id="exam_applications_header">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#exam_applications"
-                                    aria-expanded="true" aria-controls="collapseOne">
-                                    <strong class="badge badge-warning"><app-api-count [type]="'examApplicationCount'"></app-api-count></strong>
-                                    New Exam Applications
-                                </button>
-                            </h5>
-                        </div>
-                        <b>To be replaced with a component from the exam module</b>
-                      <div id="exam_applications" class="collapse show" aria-labelledby="exam_applications_header"
-                            data-parent="#accordion">
-                            <div class="card-body">
-                                <ul class="list-group">
-                                    <li *ngFor="let eic of exams_individual_count" class="list-group-item">
-                                        <a routerLink="/exams/{{eic.exam_id}}"> <strong
-                                                class="badge badge-warning">{{eic.total}}</strong>
-                                            {{eic.title}} </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </mat-card>
-
-                </div>
-            </div>
-        </mat-card>
-    </div>
-</div> -->

@@ -8,5 +8,5 @@ import { dashboardItems, menuItems } from 'src/app/shared/utils/data';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-menuItems = dashboardItems
+  menuItems = []// dashboardItems
 }

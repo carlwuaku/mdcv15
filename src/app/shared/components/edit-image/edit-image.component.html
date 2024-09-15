@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Edit Image for [{{data.unique_id}}] {{data.name}} </h1>
+
+<div class="dialog-container">
+
+  <div class="wrap-text">
+    <div mat-dialog-content>
+      <app-file-uploader (onFilesSelected)="onFileSelected($event)"></app-file-uploader>
+    </div>
+  </div>
+</div>
+
+
+<mat-dialog-actions align="end">
+
+  <button mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
+    Cancel
+  </button>
+  <button mat-raised-button color="primary" type="button" (click)="uploadFiles()">
+    Save
+  </button>
+</mat-dialog-actions>

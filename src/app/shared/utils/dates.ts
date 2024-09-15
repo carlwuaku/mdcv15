@@ -42,7 +42,7 @@ export function formatDateTime(date: string): string {
  * @param date
  * @returns {string}
  */
-export function getToday(type: 'timestamp' | 'timestamp_string' | 'month' | 'year'| '' = '', date: string | Date | null = null): string {
+export function getToday(type: 'timestamp' | 'timestamp_string' | 'month' | 'year' | '' = '', date: string | Date | null = null): string {
   let today = new Date();
   if (date != null) {
     today = new Date(date);
@@ -85,8 +85,8 @@ export function getToday(type: 'timestamp' | 'timestamp_string' | 'month' | 'yea
 
     case "month":
       return mm_string;
-      case "year":
-        return yyyy.toString();
+    case "year":
+      return yyyy.toString();
     default:
       return yyyy + '-' + mm_string + '-' + dd_string;
   }
@@ -521,6 +521,8 @@ export function setDates(quick_option: string): startEndDates {
   return { "startDate": start_date, "endDate": end_date };
 
 }
+
+
 
 
 

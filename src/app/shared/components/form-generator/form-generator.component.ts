@@ -6,6 +6,9 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { take } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { generateFormFieldsFromObject } from '../../utils/helper';
+import { DatePipe } from '@angular/common';
+import { ProgressItem } from '../progress-dialog/progress-dialog.component';
+import { FileUploadResponse, FileUploadService } from 'src/app/core/services/http/file-upload.service';
 
 @Component({
   selector: 'app-form-generator',
@@ -41,8 +44,10 @@ export class FormGeneratorComponent implements OnInit {
   @Input() autoGenerateFieldsExclude: string[] = ["id", "uuid"];//fields to exclude from auto generation
   isFormField = isFormField;
   isRow = isRow;
+
+  imageFieldsFiles: Map<string, File> = new Map();
   constructor(private notify: NotifyService,
-    private dbService: HttpService) {
+    private dbService: HttpService, private datePipe: DatePipe, private fileUploadService: FileUploadService) {
     this.formId = uuidv4();
   }
 
@@ -109,12 +114,23 @@ export class FormGeneratorComponent implements OnInit {
     this.emitFields.emit(this.fields);
   }
 
-  submit(): void {
+  startSubmit(): void {
     const allFields = this.fields.flat();
     if (!this.validateForm(allFields)) {
       this.notify.hideLoading();
       return; // Stop submission if validation fails
     }
+    if (this.imageFieldsFiles.size > 0) {
+      this.uploadFiles();
+    }
+    else {
+      this.submit();
+    }
+
+  }
+
+  private submit(): void {
+    const allFields = this.fields.flat();
     this.notify.showLoading();
     const data = new FormData();
     allFields.forEach(field => {
@@ -160,12 +176,13 @@ export class FormGeneratorComponent implements OnInit {
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
+      console.log(field)
       if (field.required && !field.value) {
         this.notify.failNotification(`Field '${field.name}' is required.`);
         return false;
       }
 
-      if (field.value?.trim() && field.minLength && field.value.length < field.minLength) {
+      if (field.minLength && field.value?.trim() && field.value.length < field.minLength) {
         this.notify.failNotification(
           `Field '${field.name}' should be at least ${field.minLength} characters long.`
         );
@@ -206,6 +223,41 @@ export class FormGeneratorComponent implements OnInit {
   }
 
 
+  formatDate(date: Date): string {
+    console.log(this.datePipe.transform(date, 'yyyy/MM/dd'))
+    return this.datePipe.transform(date, 'yyyy/MM/dd') || '';
+  }
+
+  onFileSelected(files: File[], field: IFormGenerator) {
+    console.log('Files selected:', field.name);
+    if (files.length > 0) {
+      field.value = files[0];
+      this.imageFieldsFiles.set(field.name, files[0]);
+    }
+  }
+
+  private uploadFiles() {
+    const uploadUrl = 'file-server/new/practitioners_images';
+    this.fileUploadService.uploadFiles(this.imageFieldsFiles, uploadUrl)
+      .subscribe({
+        next: (results) => {
+          console.log('All files uploaded successfully', results);
+          // set the image url to the field value
+          results.forEach((result: FileUploadResponse) => {
+            const field = this.fields.flat().find((f) => f.name === result.key);
+            if (field) {
+              field.value = result.response.fullPath;
+            }
+          });
+          this.imageFieldsFiles.clear();
+          this.submit();
+        },
+        error: (error) => {
+          console.error('Error uploading files', error);
+          // Handle errors
+        }
+      });
+  }
 
 
 }

@@ -1,11 +1,12 @@
 <div *ngIf="isLoggedIn; else login " class="example-container" [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="example-toolbar">
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <div class="bg-white rounded-full"><img src="{{logo}}" [style.height.px]="50" alt="logo" ></div>
+    <div class="bg-white rounded-full"><img src="{{logo}}" [style.height.px]="50" alt="logo"></div>
 
     <h1 class="example-app-name">{{appName}}</h1>
     <span class="spacer"></span>
-    <button mat-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon> {{user?.email}} <mat-icon>keyboard_arrow_down</mat-icon> </button>
+    <button mat-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon> {{user?.email}}
+      <mat-icon>keyboard_arrow_down</mat-icon> </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item>Change Password</button>
       <button mat-menu-item>View Profile</button>
@@ -21,7 +22,8 @@
 
     <mat-sidenav-content>
       <div class="container flex flex-col gap-2 p-2">
-        <h3 class="page-title no-print">{{title}}</h3>
+        <h3 class="page-title no-print flex gap-1 items-center"><button mat-icon-button color="primary"
+            (click)="goBack()"><mat-icon>arrow_back</mat-icon></button> {{title}}</h3>
         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>

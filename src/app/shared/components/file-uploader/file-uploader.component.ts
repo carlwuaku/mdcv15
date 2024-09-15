@@ -14,9 +14,9 @@ interface UploadEvent {
   templateUrl: './file-uploader.component.html',
   styleUrls: ['./file-uploader.component.scss']
 })
-export class FileUploaderComponent implements OnChanges{
+export class FileUploaderComponent implements OnChanges {
   uploadedFiles: any[] = [];
-  @Input() maxFileSize: number =  5; // in MB
+  @Input() maxFileSize: number = 5; // in MB
   @Input() uploadUrl: string = `${this.dbService.baseUrl}file-server/new`;
   @Input() multiple: boolean = false;
   @Input() parameter: string = "uploadFile";
@@ -24,25 +24,26 @@ export class FileUploaderComponent implements OnChanges{
   @Input() showUploadButton: boolean = true;
   @Input() showCancelButton: boolean = true;
   @Input() existingImage: string | null = null;
-  @Input() uploadButtonLabel:string = "Confirm";
-  @Input() cancelButtonLabel:string = "Cancel";
+  @Input() uploadButtonLabel: string = "Confirm";
+  @Input() cancelButtonLabel: string = "Cancel";
   @Input() chooseButtonLabel: string = "Select File";
-  @Input() accept:string = "image/*"
+  @Input() accept: string = "image/*"
   @Input() showPreview: boolean = true;
   @Input() previewHeight: string = "100";
 
-  @Output() onUploadCompleted: EventEmitter<string> = new EventEmitter<string>();
+  // @Output() onUploadCompleted: EventEmitter<string> = new EventEmitter<string>();
   @Input() required: boolean = false;
-  uploadedImage:string|undefined = undefined;
-  @Input() originalImage:string|undefined = undefined;
+  uploadedImage: string | undefined = undefined;
+  @Input() originalImage: string | undefined = undefined;
   @Input() selectedFiles: File[] = [];
   @ViewChild('fileInput') fileInput!: ElementRef;
   previews: { file: File, preview: string }[] = [];
+  @Output() onFilesSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
   constructor(private dbService: HttpService, private notifyService: NotifyService) {
     this.uploadUrl = this.uploadUrl + '/' + this.assetType;
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(!this.originalImage){
+    if (!this.originalImage) {
       this.originalImage = this.existingImage?.slice()
     }
 
@@ -61,6 +62,7 @@ export class FileUploaderComponent implements OnChanges{
         this.notifyService.failNotification(`${file.name} exceeds the ${this.maxFileSize}MB limit. `);
       }
     });
+    this.onFilesSelected.emit(this.selectedFiles);
     this.generatePreviews();
     this.fileInput.nativeElement.value = '';
   }
@@ -93,10 +95,10 @@ export class FileUploaderComponent implements OnChanges{
     }
   }
 
-  public onUpload(event: { originalEvent: HttpResponse<{ filePath: string, fullPath:string }> }) {
-    this.uploadedImage = event.originalEvent.body?.fullPath
-    this.onUploadCompleted.emit(event.originalEvent.body?.fullPath)
-  }
+  // public onUpload(event: { originalEvent: HttpResponse<{ filePath: string, fullPath:string }> }) {
+  //   this.uploadedImage = event.originalEvent.body?.fullPath
+  //   this.onUploadCompleted.emit(event.originalEvent.body?.fullPath)
+  // }
 
   public remove(file: File) {
     this.selectedFiles = this.selectedFiles.filter(f => f !== file);

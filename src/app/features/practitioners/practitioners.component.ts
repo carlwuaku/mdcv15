@@ -5,7 +5,7 @@ import { getToday } from 'src/app/shared/utils/dates';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { PractitionerObject } from './models/practitioner_model';
 import { MatDialog } from '@angular/material/dialog';
-import { EditImageComponent } from './components/edit-image/edit-image.component';
+import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 
 @Component({
   selector: 'app-practitioners',
@@ -13,18 +13,18 @@ import { EditImageComponent } from './components/edit-image/edit-image.component
   styleUrls: ['./practitioners.component.scss']
 })
 export class PractitionersComponent {
-  constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog){}
+  constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
   baseUrl: string = "practitioners/details";
   url: string = "practitioners/details";
   ts: string = "";
 
-  getActions = (practitioner: PractitionerObject): DataActionsButton[]=> {
+  getActions = (practitioner: PractitionerObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
 
     ];
 
-    if (practitioner.deleted_at !== null) {
+    if (practitioner.deleted_at) {
       actions.push(
         { label: "Restore", type: "button", onClick: (practitioner: PractitionerObject) => this.activate(practitioner) }
       )
@@ -34,56 +34,60 @@ export class PractitionersComponent {
         { label: "View", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'uuid' },
         { label: "Edit", type: "link", link: `practitioners/practitioner-form/`, linkProp: 'uuid' },
         { label: "Edit picture", type: "button", onClick: (practitioner: PractitionerObject) => this.editImage(practitioner) },
-        { label: "Delete", type: "button", onClick: (role: PractitionerObject) => this.delete(role)}
+        { label: "Delete", type: "button", onClick: (role: PractitionerObject) => this.delete(role) }
       )
     }
     return actions;
   }
 
-  editImage(practitioner: PractitionerObject){
+  editImage(practitioner: PractitionerObject) {
     const dialogRef = this.dialog.open(EditImageComponent, {
-      data: practitioner,
+      data: {
+        uuid: practitioner.uuid, picture: practitioner.picture,
+        name: practitioner.first_name + practitioner.last_name, unique_id: practitioner.registration_number, updateUrl: "practitioners/details/"
+      },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
         this.updateTimestamp();
       }
     });
   }
 
-  activate(object:PractitionerObject){
+  activate(object: PractitionerObject) {
     if (!window.confirm('Are you sure you want to restore this practitioner?')) {
       return;
     }
-    this.dbService.put<{message:string}>("practitioners/details/" + object.uuid + "/restore", { }).subscribe({
+    this.dbService.put<{ message: string }>("practitioners/details/" + object.uuid + "/restore", {}).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp();
-        },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
-  delete (practitioner: PractitionerObject) {
+  delete(practitioner: PractitionerObject) {
     if (!window.confirm('Are you sure you want to delete this practitioner? You will be able to restore it')) {
       return;
     }
-    this.dbService.delete<{message:string}>("practitioners/details/" + practitioner.uuid).subscribe({
+    this.dbService.delete<{ message: string }>("practitioners/details/" + practitioner.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
-  updateTimestamp(){
+  updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
 
   setSelectedItems(objects: PractitionerObject[]) { }
 
-  specialClasses:{[key:string]:string} =
+  specialClasses: { [key: string]: string } =
     {
       "in_good_standing-In_Good_Standing": "badge bg-success",
       "in_good_standing-Not_In_Good_Standing": "badge bg-danger",
@@ -98,5 +102,5 @@ export class PractitionersComponent {
       "register_type-Permanent": "badge bg-success",
       "register_type-Full": "badge bg-success",
     }
-  ;
+    ;
 }

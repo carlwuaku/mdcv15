@@ -1,6 +1,6 @@
 <button *ngIf="enableShowHideButton" class="btn btn-sm btn-primary" (click)="showOrHide()">{{show ? 'Hide' : 'Show'}}
   {{showHideButtonTitle}}</button>
-<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? submit() : generateFilterUrl()"
+<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
   class=" flex flex-col gap-1">
 
 
@@ -55,12 +55,17 @@
         <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
+      <mat-label>{{field.label}}</mat-label>
+      <textarea class="flex-auto" [required]="field.required" matInput [(ngModel)]="field.value"
+        name="{{field.name}}"></textarea>
+    </mat-form-field>
+    <div *ngSwitchCase="'picture'" class="flex flex-col gap-1">
+      <label for="">{{field.label}}</label>
+      <app-file-uploader (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
+        (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+    </div>
 
-    <textarea class="flex-auto" [required]="field.required" *ngSwitchCase="'textarea'" [(ngModel)]="field.value"
-      name="{{field.name}}"></textarea>
-
-    <app-file-uploader [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"
-      *ngSwitchCase="'picture'"></app-file-uploader>
 
     <app-ckeditor [value]="field.value" [name]="field.name" (valueChange)="setFieldValue($event, field)"
       *ngSwitchCase="'html'"></app-ckeditor>
@@ -73,7 +78,8 @@
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
       <mat-label>{{field.label}}</mat-label>
-      <input matInput [matDatepicker]="picker">
+      <input [(ngModel)]="field.value" (dateChange)="field.value = formatDate($event.value)" matInput
+        [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>

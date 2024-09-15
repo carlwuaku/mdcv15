@@ -1,0 +1,17 @@
+<div class="flex gap-2">
+  <form ngNativeValidate (submit)="submit()" class=" flex gap-1">
+    <mat-form-field class="flex-grow" appearance="fill">
+      <input name="param" required matInput placeholder="Search" [(ngModel)]="param">
+    </mat-form-field>
+    <mat-form-field class="flex-grow" appearance="fill">
+      <mat-label>Search By</mat-label>
+      <mat-select name="search_type" required [(ngModel)]="search_type">
+        <mat-option value="facilities">Facilities</mat-option>
+        <mat-option value="renewals">Renewals</mat-option>
+        <mat-option value="cpd">CPDs</mat-option>
+        <mat-option value="application_forms">Application Forms</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Search</button>
+  </form>
+</div>

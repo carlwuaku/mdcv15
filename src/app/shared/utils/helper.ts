@@ -69,7 +69,10 @@ export function replace_underscore(str: string, sub: string): string {
   return str.replace(/_/g, sub);
 }
 
-export function goBackHome() {
+export function goBackHome(message?: string) {
+  if (message) {
+    alert(message)
+  }
   window.location.assign('/')
 }
 

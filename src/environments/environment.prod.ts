@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   name: "prod",
 
-  host: "https://uat.mdcghana.org/",
+  host: "https://licensing.druglanepms.com/",
   routeTracing: false,
-  googleAnalyticsTrackingId:""
+  googleAnalyticsTrackingId: ""
 };

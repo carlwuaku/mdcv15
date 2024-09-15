@@ -1,0 +1,31 @@
+.map-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+}
+
+path {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1px;
+}
+
+text {
+  font-size: 14px;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+::ng-deep .region-label {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 1px 1px 1px #fff;
+}
