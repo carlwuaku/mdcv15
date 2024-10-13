@@ -44,7 +44,7 @@
     "eslint": "^8.57.0",
     "faker": "4.1.0",
     "file-saver": "^2.0.5",
-    "firebase": "^10.12.2",
+    "firebase": "^10.13.2",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
     "leaflet": "^1.9.4",

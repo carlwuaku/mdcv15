@@ -25,7 +25,8 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    component: SearchComponent
+    component: SearchComponent,
+    data: { title: 'Search' }
   },
   {
     path: 'cpd',

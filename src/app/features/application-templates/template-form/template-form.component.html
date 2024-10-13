@@ -6,13 +6,15 @@
         <mat-form-field appearance="outline">
           <mat-label>Form Name*</mat-label>
           <input matInput formControlName="form_name" name="form_name" required>
-          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required field</mat-error>
+          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required
+            field</mat-error>
         </mat-form-field>
         <div class="flex flex-col gap-1">
           <mat-label>Open From</mat-label>
           <input type="date" name="open_date" formControlName="open_date" required>
           <!-- <app-mat-datepicker  (onFinish)="setFormField('general','open_date', $event)"></app-mat-datepicker> -->
-          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('open_date')?.hasError('required')">Required field</mat-error>
+          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('open_date')?.hasError('required')">Required
+            field</mat-error>
 
         </div>
         <div class="flex flex-col gap-1">
@@ -20,7 +22,8 @@
           <input type="date" name="close_date" formControlName="close_date" required>
 
           <!-- <app-mat-datepicker  (onFinish)="setFormField('general','close_date', $event)"></app-mat-datepicker> -->
-          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('close_date')?.hasError('required')">Required field</mat-error>
+          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('close_date')?.hasError('required')">Required
+            field</mat-error>
 
         </div>
 
@@ -28,15 +31,17 @@
       <button mat-raised-button color="primary" matStepperNext>Next</button>
     </form>
   </mat-step>
-  <mat-step >
+  <mat-step>
     <ng-template matStepLabel>Guidelines</ng-template>
     <form [formGroup]="guidlinesFormGroup">
-      <label for="">(Optional) Type any instructions you want your users to read about the form before they fill it. This
+      <label for="">(Optional) Type any instructions you want your users to read about the form before they fill it.
+        This
         will be available as a link on the form.
       </label>
-      <app-ckeditor [name]="'guidelines'" [value]="guidelines" (valueChange)="setFormField('guidelines','guidelines',$event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="guidlinesFormGroup && guidlinesFormGroup.get('guidelines')?.hasError('required')">Required field</mat-error>
+      <app-ckeditor [name]="'guidelines'" [value]="guidelines"
+        (valueChange)="setFormField('guidelines','guidelines',$event)"></app-ckeditor>
+      <mat-error *ngIf="guidlinesFormGroup && guidlinesFormGroup.get('guidelines')?.hasError('required')">Required
+        field</mat-error>
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
@@ -47,14 +52,14 @@
   <mat-step>
     <ng-template matStepLabel>Form Fields</ng-template>
     <form [formGroup]="dataFormGroup">
-    <label for="">Use the controls below to add/arrange the form fields</label>
-    <app-form-editor [fields]="fields" (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
-    <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
+      <label for="">Use the controls below to add/arrange the form fields</label>
+      <app-form-editor [fields]="fields" (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
+      <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
 
-  </form>
+    </form>
     <div>
       <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
     </div>
   </mat-step>
 
@@ -62,9 +67,10 @@
     <ng-template matStepLabel>Header</ng-template>
     <label for="">The header of the form. This can contain the title, logo, or any content</label>
     <form [formGroup]="headerFormGroup">
-      <app-ckeditor [name]="'header'" [value]="header" (valueChange)="setFormField('header', 'header', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="headerFormGroup && headerFormGroup.get('header')?.hasError('required')">Required field</mat-error>
+      <app-ckeditor [name]="'header'" [value]="header"
+        (valueChange)="setFormField('header', 'header', $event)"></app-ckeditor>
+      <mat-error *ngIf="headerFormGroup && headerFormGroup.get('header')?.hasError('required')">Required
+        field</mat-error>
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
@@ -77,9 +83,10 @@
     <ng-template matStepLabel>Footer</ng-template>
     <form [formGroup]="footerFormGroup">
       <label for="">The footer of the form. It can contain any message</label>
-      <app-ckeditor [name]="'footer'" [value]="footer" (valueChange)="setFormField('footer','footer', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="footerFormGroup && footerFormGroup.get('footer')?.hasError('required')">Required field</mat-error>
+      <app-ckeditor [name]="'footer'" [value]="footer"
+        (valueChange)="setFormField('footer','footer', $event)"></app-ckeditor>
+      <mat-error *ngIf="footerFormGroup && footerFormGroup.get('footer')?.hasError('required')">Required
+        field</mat-error>
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
@@ -92,14 +99,16 @@
     <ng-template matStepLabel>On Submit Templates</ng-template>
     <form [formGroup]="onSubmitFormGroup">
       <label for="">Email to send to user after form is submitted</label>
-      <app-ckeditor [name]="'on_submit_email'" [value]="on_submit_email" (valueChange)="setFormField('on_submit', 'on_submit_email', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_email')?.hasError('required')">Required field</mat-error>
+      <app-ckeditor [name]="'on_submit_email'" [value]="on_submit_email"
+        (valueChange)="setFormField('on_submit', 'on_submit_email', $event)"></app-ckeditor>
+      <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_email')?.hasError('required')">Required
+        field</mat-error>
 
-    <label for="">Message to display after form is submitted</label>
-    <app-ckeditor [name]="'on_submit_message'" [value]="on_submit_message" (valueChange)="setFormField('on_submit','on_submit_message', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_message')?.hasError('required')">Required field</mat-error>
+      <label for="">Message to display after form is submitted</label>
+      <app-ckeditor [name]="'on_submit_message'" [value]="on_submit_message"
+        (valueChange)="setFormField('on_submit','on_submit_message', $event)"></app-ckeditor>
+      <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_message')?.hasError('required')">Required
+        field</mat-error>
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
@@ -112,14 +121,18 @@
     <ng-template matStepLabel>On Approve/Deny Email Templates</ng-template>
     <form [formGroup]="onFinishFormGroup">
       <label for="">Email to send to user after form is approved</label>
-      <app-ckeditor [name]="'on_approve_email_template'" [value]="on_approve_email_template" (valueChange)="setFormField('on_finish', 'on_approve_email_template', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_approve_email_template')?.hasError('required')">Required field</mat-error>
+      <app-ckeditor [name]="'on_approve_email_template'" [value]="on_approve_email_template"
+        (valueChange)="setFormField('on_finish', 'on_approve_email_template', $event)"></app-ckeditor>
+      <mat-error
+        *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_approve_email_template')?.hasError('required')">Required
+        field</mat-error>
 
-    <label for="">Message to display after form is submitted</label>
-    <app-ckeditor [name]="'on_deny_email_template'" [value]="on_deny_email_template" (valueChange)="setFormField('on_finish','on_deny_email_template', $event)"
-    ></app-ckeditor>
-    <mat-error *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_deny_email_template')?.hasError('required')">Required field</mat-error>
+      <label for="">Message to display after form is denied</label>
+      <app-ckeditor [name]="'on_deny_email_template'" [value]="on_deny_email_template"
+        (valueChange)="setFormField('on_finish','on_deny_email_template', $event)"></app-ckeditor>
+      <mat-error
+        *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_deny_email_template')?.hasError('required')">Required
+        field</mat-error>
 
       <div>
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
@@ -128,9 +141,3 @@
     </form>
   </mat-step>
 </mat-stepper>
-
-
-
-
-
-

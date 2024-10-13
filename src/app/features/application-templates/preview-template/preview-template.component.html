@@ -4,23 +4,27 @@
   <mat-card *ngIf="data">
     <mat-card-content>
       <div [innerHTML]="header"></div>
-      <app-form-generator [fields]="data.data" ></app-form-generator>
+      <app-form-generator [fields]="data.data"></app-form-generator>
       <div [innerHTML]="footer"></div>
     </mat-card-content>
   </mat-card>
 
   <mat-card *ngIf="on_submit_email || on_submit_message">
+    <mat-card-header>
+      <mat-card-title>Email sent after form is submitted</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-      <h3>Email sent after form is submitted</h3>
       <div [innerHTML]="on_submit_email"></div>
       <h3>Message displayed after form is submitted</h3>
       <div [innerHTML]="on_submit_message"></div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card >
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Guidelines</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-      <h3>Guidlines</h3>
       <div [innerHTML]="guidelines"></div>
     </mat-card-content>
   </mat-card>

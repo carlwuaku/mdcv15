@@ -9,18 +9,36 @@
 
 // Import the Angular Material theming functions
 @import '@angular/material/theming';
-
+@include mat-core();
 // Define a custom primary color palette
-$my-app-primary: mat-palette($mat-indigo, 500, 700, 900); // The 700 and 900 values are bolder shades
+$my-app-primary: mat-palette($mat-indigo); // The 700 and 900 values are bolder shades
 
 // Define a custom accent color palette
-$my-app-accent: mat-palette($mat-pink, A200, A100, A400);
+$my-app-accent: mat-palette($mat-orange);
+
+$my-app-warn: mat-palette($mat-red);
+
+$my-app-secondary: mat-palette($mat-grey);
 
 // Create the theme object
-$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+$my-app-theme: mat-light-theme((color: (primary: $my-app-primary,
+        accent: $my-app-accent,
+        warn: $my-app-warn,
+      )));
 
 // Include the theme styles in your application
 @include angular-material-theme($my-app-theme);
+
+
+// Define your theme (or import it if it's defined elsewhere)
+// $primary: mat-palette($mat-indigo);
+// $accent: mat-palette($mat-pink, A200, A100, A400);
+// $theme: mat-light-theme((color: (primary: $primary,
+//         accent: $accent,
+//       ),
+//       typography: (font-family: 'Roboto, sans-serif'),
+//       density: 1
+//       ));
 
 html,
 body {
@@ -870,3 +888,22 @@ tr:nth-child(even) {
   background-color: #dc3545 !important;
   color: white;
 }
+
+.bg-accent {
+  background-color: mat-color($my-app-accent);
+}
+
+.light-accent {
+  background-color: mat-color($my-app-accent, 100);
+  color: mat-color($my-app-accent, 900);
+}
+
+.text-green {
+  color: green;
+}
+
+.text-orange {
+  color: orange;
+}
+
+// define colors for certain words. we need to find a way to make this dynamic

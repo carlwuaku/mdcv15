@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { LicenseObject } from './models/license_model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
@@ -15,8 +15,9 @@ import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-im
 export class LicensesComponent {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
   baseUrl: string = "licenses/details";
-  url: string = "licenses/details";
+  @Input() url: string = "licenses/details";
   ts: string = "";
+  @Input() showSearch: boolean = true;
 
   getActions = (license: LicenseObject): DataActionsButton[] => {
 

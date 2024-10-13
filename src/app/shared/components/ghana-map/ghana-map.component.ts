@@ -35,11 +35,21 @@ export class GhanaMapComponent implements AfterViewInit, OnInit {
 
 
   private initMap(): void {
-    this.map = L.map('map').setView([7.9465, -1.0232], 7).setZoom(7, { animate: true });  // Coordinates for Ghana
+    this.map = L.map('map', {
+      center: [7.9465, -1.0232],
+      zoom: 7,
+      zoomControl: true,
+      attributionControl: false,
+      maxBounds: L.latLngBounds(L.latLng(4.5, -3.5), L.latLng(11.5, 1.5)),
+      minZoom: 6,
+      maxZoom: 10,
+    });
+    // this.map = L.map('map').
+    // setView([7.9465, -1.0232], 7).setZoom(7, { animate: true });  // Coordinates for Ghana
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //   attribution: '© OpenStreetMap contributors'
+    // }).addTo(this.map);
   }
 
   private addGeoJson(): void {
@@ -63,15 +73,16 @@ export class GhanaMapComponent implements AfterViewInit, OnInit {
         }
 
       }).addTo(this.map);
+      this.map.fitBounds(L.geoJSON(this.geoJsonData).getBounds());
     }
   }
 
   private getColor(value: number): string {
     // Example color function, adjust as needed
-    return value > 20 ? '#0556f7' :
-      value > 15 ? '#4884fa' :
-        value > 10 ? '#7da7fa' :
-          value > 5 ? '#abc7ff' :
+    return value > 1000 ? '#0556f7' :
+      value > 500 ? '#4884fa' :
+        value > 200 ? '#7da7fa' :
+          value > 50 ? '#abc7ff' :
             '#d9e6ff';
   }
 

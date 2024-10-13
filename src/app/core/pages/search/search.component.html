@@ -1,11 +1,14 @@
 <div class=" flex flex-col gap-1">
-  <app-search-widget [search_type]="search_type" [param]="param"></app-search-widget>
+  <app-search-widget [searchType]="searchType" [param]="param"></app-search-widget>
 
   <mat-card>
     <mat-card-content>
-      <div [ngSwitch]="search_type">
+      <div></div>
+      <div *ngIf="!searchTypes.length"><app-loading></app-loading> Fetching configuration</div>
+      <div *ngIf="!url && searchType && searchTypes.length">Misconfigured url. Please refresh the page</div>
+      <div *ngIf="url" [ngSwitch]="searchType">
         <div *ngSwitchCase="'facilities'">
-          <app-licenses></app-licenses>
+          <app-licenses [url]="finalUrl" [showSearch]="false"></app-licenses>
         </div>
 
         <div *ngSwitchDefault>

@@ -1,45 +1,24 @@
 <div class="flex flex-col gap-1">
-  <div class="user">
+  <div class="user p-3">
     <div class="flex flex-col gap-1" *ngIf="object != null">
       <div class="flex gap-2 text-lg items-center">
         <img src="{{object.picture}}" [style.height.px]="100" alt="no_picture" />
+        <div class="flex flex-col gap-1">
+          <h3>{{object.name}}</h3>
+          <small>(<em><b>{{object.license_number}} </b> </em>) </small>
+        </div>
 
-        {{object.name}}
-        <small>(<em><b>{{object.license_number}} </b> </em>) </small>
       </div>
       <div class="flex gap-1 flex-wrap items-center">
-        <span
-          class="in_good_standing-{{replaceSpaceWithUnderscore(object.in_good_standing)}}">{{object.in_good_standing}}</span>
-        <span class="badge" *ngIf="object['specialty']"
-          [ngClass]="{'badge-danger': !object['specialty'], 'badge-success': object['specialty']}">Specialty:
-          {{object['specialty'] || 'None'}}</span>
+        <div class="bg-white text-black rounded shadow-sm p-1 flex gap-1" *ngFor="let tab of headerTabs">
+          <span class="text-gray-600 font-thin">{{tab.label}}</span>
+          <span [ngClass]="getClassFromState(object[tab.key])"
+            class="border-l border-l-black pl-1 ">{{object[tab.key]}}</span>
+        </div>
 
-        <!-- <app-renewal-individual [type]="'Doctor'" [reg_num]="object.registration_number"></app-renewal-individual>
-        <app-specialist [existing_specialty]="object.specialty" [object]="object" [reg_num]="object.registration_number"></app-specialist> -->
-
-        <!-- <span [ngSwitch]="object.register_type"> -->
-        <a *ngIf="object['register_type']"
-          class="register_type-{{replaceSpaceWithUnderscore(object['register_type'])}}">
-          {{object['register_type']}}
-          register</a>
-        <!-- <em *ngSwitchCase="'Permanent'"><a class="badge badge-success">{{object.register_type}} register</a></em>
-          <em *ngSwitchCase="'Temporary'"><a class="badge badge-warning">{{object.register_type}} register</a></em>
-          <em *ngSwitchCase="'Full'"><a class="badge badge-success">{{object.register_type}} register</a></em>
-
-          <em *ngSwitchDefault><a class="badge badge-warning">{{object.register_type}} register</a></em> -->
-        <!-- </span> -->
-
-        <!-- <span [ngSwitch]="object.category"> -->
-        <em *ngIf="object['category']"><a class="category-{{replaceSpaceWithUnderscore(object['category'])}}">
-            {{object['category']}}</a></em>
-        <!-- <em *ngSwitchCase="'Dental'"><a class="badge badge-info">{{object.category}}</a></em>
-
-          <em *ngSwitchDefault><a class="badge badge-warning">{{object.category}}</a></em>
-        </span> -->
-        <!-- <app-portal-activation [reg_num]="object.registration_number" [type]="'Doctor'"></app-portal-activation> -->
-
-        <a mat-raised-button routerLink="/licenses/form/update/{{object.type}}/{{object.uuid}}">Edit Details</a>
-        <button mat-raised-button (click)="editImage()">Change Picture</button>
+        <a mat-raised-button color="primary" routerLink="/licenses/form/update/{{object.type}}/{{object.uuid}}">Edit
+          Details</a>
+        <button mat-raised-button color="primary" (click)="editImage()">Change Picture</button>
 
       </div>
     </div>

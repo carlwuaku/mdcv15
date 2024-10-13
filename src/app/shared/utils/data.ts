@@ -12,6 +12,8 @@ export interface MenuItem {
 export interface DashboardItem extends MenuItem {
   apiCountUrl?: string;
   color?: string;
+  description?: string;
+  apiCountText?: string
 }
 
 export const menuItems: MenuItem[] = [

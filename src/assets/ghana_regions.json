@@ -1305,7 +1305,7 @@
       "properties": {
         "region": "Upper East",
         "capital": "Bolgatanga",
-        "value": 9
+        "value": 120
       },
       "geometry": {
         "type": "Polygon",
@@ -4308,7 +4308,7 @@
       "properties": {
         "region": "North East",
         "capital": "Nalerigu",
-        "value": 8
+        "value": 300
       },
       "geometry": {
         "type": "Polygon",
@@ -7779,7 +7779,7 @@
       "properties": {
         "region": "Savannah",
         "capital": "Damango",
-        "value": 7
+        "value": 190
       },
       "geometry": {
         "type": "Polygon",
@@ -13170,7 +13170,7 @@
       "properties": {
         "region": "Northern",
         "capital": "Tamale",
-        "value": 6
+        "value": 410
       },
       "geometry": {
         "type": "Polygon",
@@ -19357,7 +19357,7 @@
       "properties": {
         "region": "Oti",
         "capital": "Dambai",
-        "value": 0
+        "value": 60
       },
       "geometry": {
         "type": "Polygon",
@@ -22444,7 +22444,7 @@
       "properties": {
         "region": "Bono East",
         "capital": "Techiman",
-        "value": 9
+        "value": 680
       },
       "geometry": {
         "type": "Polygon",
@@ -25775,7 +25775,7 @@
       "properties": {
         "region": "Bono",
         "capital": "Sunyani",
-        "value": 50
+        "value": 219
       },
       "geometry": {
         "type": "Polygon",
@@ -26822,7 +26822,7 @@
       "properties": {
         "region": "Western North",
         "capital": "Sefwi Wiawso",
-        "value": 19
+        "value": 196
       },
       "geometry": {
         "type": "Polygon",
@@ -27877,7 +27877,7 @@
       "properties": {
         "region": "Ahafo",
         "capital": "Ahafo Goaso",
-        "value": 8
+        "value": 311
       },
       "geometry": {
         "type": "Polygon",
@@ -28452,7 +28452,7 @@
       "properties": {
         "region": "Ashanti",
         "capital": "Kumasi",
-        "value": 100
+        "value": 1000
       },
       "geometry": {
         "type": "Polygon",
@@ -32443,7 +32443,7 @@
       "properties": {
         "region": "Eastern",
         "capital": "Koforidua",
-        "value": 12
+        "value": 900
       },
       "geometry": {
         "type": "Polygon",
@@ -33714,7 +33714,7 @@
       "properties": {
         "region": "Volta",
         "capital": "Ho",
-        "value": 28
+        "value": 789
       },
       "geometry": {
         "type": "Polygon",
@@ -35453,7 +35453,7 @@
       "properties": {
         "region": "Western",
         "capital": "Sekondi Takoradi",
-        "value": 23
+        "value": 230
       },
       "geometry": {
         "type": "Polygon",
@@ -37400,7 +37400,7 @@
       "properties": {
         "region": "Central",
         "capital": "Cape Coast",
-        "value": 11
+        "value": 1500
       },
       "geometry": {
         "type": "Polygon",
@@ -39687,7 +39687,7 @@
       "properties": {
         "region": "Greater Accra",
         "capital": "Accra",
-        "value": 1000
+        "value": 1500
       },
       "geometry": {
         "type": "Polygon",

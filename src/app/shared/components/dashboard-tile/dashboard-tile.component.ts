@@ -8,9 +8,9 @@ import { Component, Input } from '@angular/core';
 export class DashboardTileComponent {
   @Input() title: string = '';
   @Input() icon: string = '';
-  @Input() link: string = '';
+  @Input() url: string = '';
   @Input() linkText: string = '';
-  @Input() counterUrl: string = '';
-  @Input() counterText: string = '';
-  @Input() description: string = '';
+  @Input() counterUrl?: string = '';
+  @Input() counterText?: string = '';
+  @Input() description?: string = '';
 }

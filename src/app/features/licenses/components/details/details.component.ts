@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { replaceSpaceWithUnderscore } from 'src/app/shared/utils/helper';
+import { getClassFromState, replaceSpaceWithUnderscore } from 'src/app/shared/utils/helper';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 import { LicenseObject } from '../../models/license_model';
 import { LicensesService } from '../../licenses.service';
+import { AppService } from 'src/app/app.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -20,14 +22,32 @@ export class DetailsComponent {
   displayedColumns: string[] = [];
   errorLoadingData: boolean = false;
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
+  destroy$: Subject<boolean> = new Subject();
+  headerTabs: { label: string, key: string }[] = [];
+  excludedDetailsColumns: string[] = ['uuid', 'picture'];
+  getClassFromState = getClassFromState;
 
   constructor(private notify: NotifyService,
-    private dbService: LicensesService, private ar: ActivatedRoute, public dialog: MatDialog) {
+    private dbService: LicensesService, private ar: ActivatedRoute, public dialog: MatDialog, private appService: AppService) {
     this.id = ar.snapshot.params['id'];
   }
 
   ngOnInit(): void {
-    this.getExistingObject()
+    this.getExistingObject();
+    this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.updateHeaderTabs();
+    });
+  }
+
+  updateHeaderTabs() {
+    if (!this.object) return;
+    const type = this.object.type;
+    this.headerTabs = this.appService.appSettings.value.licenseTypes[type].detailsPageHeaderTabs || [];
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   getExistingObject() {
@@ -40,8 +60,8 @@ export class DetailsComponent {
         next: data => {
           this.object = data.data;
           this.columnLabels = data.columnLabels;
-          this.displayedColumns = data.displayColumns;
-
+          this.displayedColumns = data.displayColumns.filter((col: string) => !this.excludedDetailsColumns.includes(col));
+          this.updateHeaderTabs();
           this.notify.hideLoading();
         },
         error: error => {

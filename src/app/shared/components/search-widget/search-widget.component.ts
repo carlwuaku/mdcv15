@@ -1,35 +1,46 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { AppService } from 'src/app/app.service';
 
 @Component({
   selector: 'app-search-widget',
   templateUrl: './search-widget.component.html',
   styleUrls: ['./search-widget.component.scss']
 })
-export class SearchWidgetComponent {
-  types: string[] = ["Licenses", "Applications", "CPD", "Examinations",
-    "Examination Candidates"];
+export class SearchWidgetComponent implements OnInit, OnDestroy {
+  types: { label: string, key: string, url: string }[] = [];
   @Input() param: string = "";
-  @Input() search_type: string = "Doctors";
+  @Input() searchType: string = "Doctors";
+  destroy$: Subject<boolean> = new Subject();
+  constructor(private router: Router, private ar: ActivatedRoute, private appService: AppService) {
 
-  constructor(private router: Router, private ar: ActivatedRoute
-  ) {
     ar.queryParams
       .subscribe(params => {
         //console.log(params);
 
-        this.search_type = params['search_type'];
+        this.searchType = params['searchType'];
         this.param = params['param'];
       });
+
+
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
-
+  ngOnInit(): void {
+    this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.types = data.searchTypes;
+    });
+  }
 
   submit() {
 
     this.router.navigate(['/search'], {
       queryParams:
-        { param: this.param, search_type: this.search_type, t: Date.now() }
+        { param: this.param, searchType: this.searchType, t: Date.now() }
     });
 
 

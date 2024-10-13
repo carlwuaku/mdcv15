@@ -241,7 +241,6 @@ export class FormGeneratorComponent implements OnInit {
     this.fileUploadService.uploadFiles(this.imageFieldsFiles, uploadUrl)
       .subscribe({
         next: (results) => {
-          console.log('All files uploaded successfully', results);
           // set the image url to the field value
           results.forEach((result: FileUploadResponse) => {
             const field = this.fields.flat().find((f) => f.name === result.key);
@@ -254,7 +253,6 @@ export class FormGeneratorComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error uploading files', error);
-          // Handle errors
         }
       });
   }
