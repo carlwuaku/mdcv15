@@ -6,19 +6,8 @@ import { PractitionersComponent } from './practitioners.component';
 import { PractitionerFormComponent } from './practitioner-form/practitioner-form.component';
 import { PractitionerDetailsComponent } from './practitioner-details/practitioner-details.component';
 import { PractitionerRenewalComponent } from './practitioner-renewal/practitioner-renewal.component';
-import { PortalRequestsComponent } from './portal-requests/portal-requests.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { EditImageComponent } from './components/edit-image/edit-image.component';
-import { RenewalIndividualComponent } from './components/renewal/renewal-individual/renewal-individual.component';
-import { SpecialistComponent } from './components/specialist/specialist.component';
-import { PortalActivationComponent } from './components/portal-activation/portal-activation.component';
-import { AdditionalQualificationsComponent } from './components/additional-qualifications/additional-qualifications.component';
-import { EditAdditionalQualificationComponent } from './components/additional-qualifications/edit-additional-qualification/edit-additional-qualification.component';
-import { WorkHistoryComponent } from './components/work-history/work-history.component';
-import { EditWorkHistoryComponent } from './components/work-history/edit-work-history/edit-work-history.component';
-import { RenewalComponent } from './components/renewal/renewal.component';
-import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-form.component';
-import { RenewalCertificateComponent } from './components/renewal/renewal-certificate/renewal-certificate.component';
+
 
 
 
@@ -28,23 +17,16 @@ import { RenewalCertificateComponent } from './components/renewal/renewal-certif
     PractitionerFormComponent,
     PractitionerDetailsComponent,
     PractitionerRenewalComponent,
-    PortalRequestsComponent,
-    EditImageComponent,
-    RenewalIndividualComponent,
-    SpecialistComponent,
-    PortalActivationComponent,
-    AdditionalQualificationsComponent,
-    EditAdditionalQualificationComponent,
-    WorkHistoryComponent,
-    EditWorkHistoryComponent,
-    RenewalComponent,
-    RenewalFormComponent,
-    RenewalCertificateComponent,
+
   ],
   imports: [
     CommonModule,
     PractitionersRoutingModule,
     SharedModule
+  ],
+  exports: [
+    PractitionersComponent,
+    PractitionerRenewalComponent
   ]
 })
 export class PractitionersModule { }

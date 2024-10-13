@@ -2,21 +2,25 @@
   <div class="user">
     <div class="flex flex-col gap-1" *ngIf="object != null">
       <div class="flex gap-2 text-lg items-center">
-        <img  src="{{object.picture}}" [style.height.px]="100" alt="no_picture" />
+        <img src="{{object.picture}}" [style.height.px]="100" alt="no_picture" />
 
         {{object.first_name}} {{object.middle_name}} {{object.last_name}}
         <small>(<em><b>{{object.registration_number}} </b> </em>) </small>
       </div>
       <div class="flex gap-1 flex-wrap items-center">
-        <span class="in_good_standing-{{replaceSpaceWithUnderscore(object.in_good_standing)}}">{{object.in_good_standing}}</span>
-        <span class="badge" [ngClass]="{'badge-danger': !object.specialty, 'badge-success': object.specialty}">Specialty: {{object.specialty || 'None'}}</span>
+        <span
+          class="in_good_standing-{{replaceSpaceWithUnderscore(object.in_good_standing)}}">{{object.in_good_standing}}</span>
+        <span class="badge"
+          [ngClass]="{'badge-danger': !object.specialty, 'badge-success': object.specialty}">Specialty:
+          {{object.specialty || 'None'}}</span>
 
         <!-- <app-renewal-individual [type]="'Doctor'" [reg_num]="object.registration_number"></app-renewal-individual>
         <app-specialist [existing_specialty]="object.specialty" [object]="object" [reg_num]="object.registration_number"></app-specialist> -->
 
         <!-- <span [ngSwitch]="object.register_type"> -->
-          <a class="register_type-{{replaceSpaceWithUnderscore(object.register_type)}}"> {{object.register_type}} register</a>
-          <!-- <em *ngSwitchCase="'Permanent'"><a class="badge badge-success">{{object.register_type}} register</a></em>
+        <a class="register_type-{{replaceSpaceWithUnderscore(object.register_type)}}"> {{object.register_type}}
+          register</a>
+        <!-- <em *ngSwitchCase="'Permanent'"><a class="badge badge-success">{{object.register_type}} register</a></em>
           <em *ngSwitchCase="'Temporary'"><a class="badge badge-warning">{{object.register_type}} register</a></em>
           <em *ngSwitchCase="'Full'"><a class="badge badge-success">{{object.register_type}} register</a></em>
 
@@ -24,21 +28,21 @@
         <!-- </span> -->
 
         <!-- <span [ngSwitch]="object.category"> -->
-          <em ><a class="category-{{replaceSpaceWithUnderscore(object.category)}}"> {{object.category}}</a></em>
-          <!-- <em *ngSwitchCase="'Dental'"><a class="badge badge-info">{{object.category}}</a></em>
+        <em><a class="category-{{replaceSpaceWithUnderscore(object.category)}}"> {{object.category}}</a></em>
+        <!-- <em *ngSwitchCase="'Dental'"><a class="badge badge-info">{{object.category}}</a></em>
 
           <em *ngSwitchDefault><a class="badge badge-warning">{{object.category}}</a></em>
         </span> -->
         <!-- <app-portal-activation [reg_num]="object.registration_number" [type]="'Doctor'"></app-portal-activation> -->
 
-        <a  mat-raised-button routerLink="/practitioners/practitioner-form/{{object.uuid}}" >Edit Details</a>
-        <button mat-raised-button  (click)="editImage()" >Change Picture</button>
+        <a mat-raised-button routerLink="/practitioners/practitioner-form/{{object.uuid}}">Edit Details</a>
+        <button mat-raised-button (click)="editImage()">Change Picture</button>
 
       </div>
     </div>
     <div class="col-sm-12" *ngIf="errorLoadingData">
       <b>Error loading data. Please try again</b>
-      <button mat-raised-button  (click)="getExistingObject()" >Reload</button>
+      <button mat-raised-button (click)="getExistingObject()">Reload</button>
 
 
     </div>
@@ -49,7 +53,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-           <app-key-value-display *ngIf="object" [object]="object" [displayedColumns]="displayedColumns"></app-key-value-display>
+            <app-key-value-display *ngIf="object" [object]="object"
+              [displayedColumns]="displayedColumns"></app-key-value-display>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -58,8 +63,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-        <app-additional-qualifications [practitioner]="object"></app-additional-qualifications>
-        </mat-card-content>
+            <!-- <app-additional-qualifications [practitioner]="object"></app-additional-qualifications> -->
+          </mat-card-content>
         </mat-card>
       </ng-template>
     </mat-tab>
@@ -75,12 +80,12 @@
     </mat-tab>
     <mat-tab label="Renewal History">
       <ng-template matTabContent>
-        <app-renewal [practitioner]="object"></app-renewal>
+        <!-- <app-renewal [practitioner]="object"></app-renewal> -->
       </ng-template>
     </mat-tab>
     <mat-tab label="Work History">
       <ng-template matTabContent>
-        <app-work-history [practitioner]="object"></app-work-history>
+        <!-- <app-work-history [practitioner]="object"></app-work-history> -->
 
       </ng-template>
     </mat-tab>

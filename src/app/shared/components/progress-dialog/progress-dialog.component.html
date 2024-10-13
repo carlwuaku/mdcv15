@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+  <div *ngFor="let item of data.progressItems">
+    <h3>{{ item.title }}</h3>
+    <mat-progress-bar mode="determinate" [value]="item.progress"></mat-progress-bar>
+    <p>{{ item.progress }}%</p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="data.disableCancel">Cancel</button>
+</mat-dialog-actions>

@@ -22,6 +22,9 @@ import { CpdSessionComponent } from './components/cpd-session/cpd-session.compon
     CommonModule,
     CpdRoutingModule,
     SharedModule
+  ],
+  exports: [
+    CpdComponent
   ]
 })
 export class CpdModule { }

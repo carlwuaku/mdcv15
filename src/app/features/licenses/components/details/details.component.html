@@ -1,0 +1,85 @@
+<div class="flex flex-col gap-1">
+  <div class="user p-3">
+    <div class="flex flex-col gap-1" *ngIf="object != null">
+      <div class="flex gap-2 text-lg items-center">
+        <img src="{{object.picture}}" [style.height.px]="100" alt="no_picture" />
+        <div class="flex flex-col gap-1">
+          <h3>{{object.name}}</h3>
+          <small>(<em><b>{{object.license_number}} </b> </em>) </small>
+        </div>
+
+      </div>
+      <div class="flex gap-1 flex-wrap items-center">
+        <div class="bg-white text-black rounded shadow-sm p-1 flex gap-1" *ngFor="let tab of headerTabs">
+          <span class="text-gray-600 font-thin">{{tab.label}}</span>
+          <span [ngClass]="getClassFromState(object[tab.key])"
+            class="border-l border-l-black pl-1 ">{{object[tab.key]}}</span>
+        </div>
+
+        <a mat-raised-button color="primary" routerLink="/licenses/form/update/{{object.type}}/{{object.uuid}}">Edit
+          Details</a>
+        <button mat-raised-button color="primary" (click)="editImage()">Change Picture</button>
+
+      </div>
+    </div>
+    <div class="col-sm-12" *ngIf="errorLoadingData">
+      <b>Error loading data. Please try again</b>
+      <button mat-raised-button (click)="getExistingObject()">Reload</button>
+
+
+    </div>
+
+  </div>
+  <mat-tab-group *ngIf="object != null">
+    <mat-tab label="Personal Details">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-key-value-display *ngIf="object" [object]="object"
+              [displayedColumns]="displayedColumns"></app-key-value-display>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Education History">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-additional-qualifications [practitioner]="object"></app-additional-qualifications>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Housemanship">
+      <ng-template matTabContent>
+
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="CPD History">
+      <ng-template matTabContent>
+
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Renewal History">
+      <ng-template matTabContent>
+        <app-renewal [practitioner]="object"></app-renewal>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Work History">
+      <ng-template matTabContent>
+        <app-work-history [practitioner]="object"></app-work-history>
+
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Activities">
+      <ng-template matTabContent>
+
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Documents">
+      <ng-template matTabContent>
+
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

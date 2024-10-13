@@ -13,18 +13,18 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 })
 export class RolesComponent {
 
-  constructor(private dbService: HttpService, private notify:NotifyService){}
+  constructor(private dbService: HttpService, private notify: NotifyService) { }
   baseUrl: string = "admin/roles";
   url: string = "admin/roles";
   ts: string = "";
 
-  getActions = (role: Role): DataActionsButton[]=> {
+  getActions = (role: Role): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
 
     ];
 
-    if (role.deleted_at !== null) {
+    if (role.deleted_at) {
       actions.push(
         { label: "Activate", type: "button", onClick: (role: Role) => this.activate(role) }
       )
@@ -33,36 +33,38 @@ export class RolesComponent {
       actions.push(
         { label: "Edit details", type: "link", link: `admin/role-form/`, linkProp: 'role_id' },
         { label: "Edit permissions", type: "link", link: `admin/role-permissions/`, linkProp: 'role_id' },
-        { label: "Deactivate", type: "button", onClick: (role: Role) => this.deleteRole(role)}
+        { label: "Deactivate", type: "button", onClick: (role: Role) => this.deleteRole(role) }
       )
     }
     return actions;
   }
 
-  activate(role: Role){
+  activate(role: Role) {
     if (!window.confirm('Are you sure you want to re-activate this role?')) {
       return;
     }
-    this.dbService.put<{message:string}>("admin/roles/" + role.role_id + "/restore", { }).subscribe({
+    this.dbService.put<{ message: string }>("admin/roles/" + role.role_id + "/restore", {}).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
-  deleteRole (role: Role) {
+  deleteRole(role: Role) {
     if (!window.confirm('Are you sure you want to deactivate this role? This will prevent the role from receiving new users, but will not affect existing users. You will be able to restore it')) {
       return;
     }
-    this.dbService.delete<{message:string}>("admin/roles/" + role.role_id).subscribe({
+    this.dbService.delete<{ message: string }>("admin/roles/" + role.role_id).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
-  updateTimestamp(){
+  updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
 

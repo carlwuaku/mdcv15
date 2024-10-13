@@ -42,18 +42,22 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private dbService: HttpService,
     private ar: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private appService: AppService) {
+    private changeDetectorRef: ChangeDetectorRef, private media: MediaMatcher, private appService: AppService) {
+    // this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    // this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    // this.mobileQuery.addListener(this._mobileQueryListener);
+    // //log changes in the mobilequery
+    // this.mobileQuery.addEventListener('change', (e) => {
+    //   if (e.matches) {
+    //     this.opened = false;
+    //   } else {
+    //     this.opened = true;
+    //   }
+    // });
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this._mobileQueryListener = () => this.updateSidebarState(this.mobileQuery.matches);
     this.mobileQuery.addListener(this._mobileQueryListener);
-    //log changes in the mobilequery
-    this.mobileQuery.addEventListener('change', (e) => {
-      if (e.matches) {
-        this.opened = false;
-      } else {
-        this.opened = true;
-      }
-    });
+
     this.isLoggedIn = this.authService.checkLogin("")
     this.ar.data.subscribe(data => {
       this.title = data['title']
@@ -65,6 +69,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
+    this.changeDetectorRef.detectChanges();
+    this.updateSidebarState(this.mobileQuery.matches);
     const firebaseConfig = {
       apiKey: "AIzaSyBMaXxiM-ANGciBypyPjaPqcU8qfCI19z0",
       authDomain: "mdcms-uat.firebaseapp.com",
@@ -90,7 +97,7 @@ export class AppComponent implements OnInit {
 
           root = root.firstChild!;
         }
-        this.title = titles.join('/ ');console.log(this.title)
+        this.title = titles.join('/ '); console.log(this.title)
       }
     });
     const app = initializeApp(firebaseConfig);
@@ -102,4 +109,14 @@ export class AppComponent implements OnInit {
     //send user to login page
     window.location.assign('/');
   }
+
+  private updateSidebarState(matches: boolean) {
+    this.opened = !matches;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  goBack() {
+    window.history.back();
+  }
+
 }

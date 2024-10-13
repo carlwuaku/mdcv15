@@ -3,9 +3,9 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { PractitionerObject } from '../models/practitioner_model';
 import { ActivatedRoute } from '@angular/router';
-import { EditImageComponent } from '../components/edit-image/edit-image.component';
 import { MatDialog } from '@angular/material/dialog';
 import { replaceSpaceWithUnderscore } from 'src/app/shared/utils/helper';
+import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 
 @Component({
   selector: 'app-practitioner-details',
@@ -22,7 +22,7 @@ export class PractitionerDetailsComponent implements OnInit {
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
 
   constructor(private notify: NotifyService,
-    private dbService: HttpService, private ar: ActivatedRoute,public dialog: MatDialog) {
+    private dbService: HttpService, private ar: ActivatedRoute, public dialog: MatDialog) {
     this.id = ar.snapshot.params['id'];
   }
 
@@ -34,7 +34,7 @@ export class PractitionerDetailsComponent implements OnInit {
     this.loading = true;
     this.errorLoadingData = false;
     this.notify.showLoading();
-    this.dbService.get<{data: PractitionerObject, columnLabels:{ [key: string]: string }, displayColumns: string[]}>(`practitioners/details/${this.id}`).subscribe(
+    this.dbService.get<{ data: PractitionerObject, columnLabels: { [key: string]: string }, displayColumns: string[] }>(`practitioners/details/${this.id}`).subscribe(
       {
         next: data => {
           this.object = data.data;
@@ -55,13 +55,13 @@ export class PractitionerDetailsComponent implements OnInit {
       })
   }
 
-  editImage(){
+  editImage() {
     const dialogRef = this.dialog.open(EditImageComponent, {
       data: this.object,
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
         this.getExistingObject()
       }
     });

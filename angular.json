@@ -33,11 +33,9 @@
               "src/web.config"
             ],
             "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -47,7 +45,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "1mb",
-                  "maximumError": "4mb"
+                  "maximumError": "14mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -63,7 +61,6 @@
               ],
               "outputHashing": "all",
               "extractLicenses": true
-
             },
             "development": {
               "buildOptimizer": false,

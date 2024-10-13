@@ -69,7 +69,10 @@ export function replace_underscore(str: string, sub: string): string {
   return str.replace(/_/g, sub);
 }
 
-export function goBackHome() {
+export function goBackHome(message?: string) {
+  if (message) {
+    alert(message)
+  }
   window.location.assign('/')
 }
 
@@ -118,6 +121,21 @@ export function generateFormFieldsFromObject(object: any, exclude: string[] = []
     });
   });
   return fields;
+}
+
+export function getClassFromState(state: string): string {
+  const classes: Record<string, string> = {
+    "active": "text-green",
+    "inactive": "text-red",
+    "pending": "text-orange",
+    "approved": "text-green",
+    "rejected": "text-red",
+    "deleted": "text-red",
+    "restored": "text-green",
+    "In Good Standing": "text-green",
+    "Not In Good Standing": "text-red",
+  };
+  return classes[state] || "text-black";
 }
 
 

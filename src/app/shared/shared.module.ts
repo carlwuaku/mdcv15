@@ -38,6 +38,11 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormEditorComponent } from './components/form-editor/form-editor.component';
 import { OptionsEditorComponent } from './components/form-editor/options-editor/options-editor.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditImageComponent } from './components/edit-image/edit-image.component';
+import { SearchWidgetComponent } from './components/search-widget/search-widget.component';
+import { DashboardTileComponent } from './components/dashboard-tile/dashboard-tile.component';
+import { ProgressDialogComponent } from './components/progress-dialog/progress-dialog.component';
+import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +76,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DialogKeyValueDisplayComponent,
     CkeditorComponent,
     FormEditorComponent,
-    OptionsEditorComponent
+    OptionsEditorComponent,
+    EditImageComponent,
+    SearchWidgetComponent,
+    DashboardTileComponent,
+    ProgressDialogComponent,
+    GhanaMapComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -116,10 +126,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CkeditorComponent,
     FormEditorComponent,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    EditImageComponent,
+    SearchWidgetComponent,
+    DashboardTileComponent,
+    GhanaMapComponent
   ],
   providers: [
     ClipboardCopyDirective
   ]
 })
-export class SharedModule {}
+export class SharedModule { }

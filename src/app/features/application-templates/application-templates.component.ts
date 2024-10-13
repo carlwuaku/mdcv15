@@ -7,7 +7,7 @@ import { DialogKeyValueDisplayComponent } from 'src/app/shared/components/dialog
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
 import { ApplicationFormObject } from '../application-forms/models/application-form.model';
-import { RenewalService } from '../practitioners/renewal.service';
+import { RenewalService } from '../licenses/renewal.service';
 import { ApplicationTemplatesService } from './application-templates.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class ApplicationTemplatesComponent {
   url: string = "applications/templates";
   ts: string = "";
 
-  constructor(private dbService: HttpService, private notify:NotifyService, public dialog: MatDialog,
+  constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private templateService: ApplicationTemplatesService, private ar: ActivatedRoute) {
 
 
@@ -32,46 +32,47 @@ export class ApplicationTemplatesComponent {
     this.setUrl();
   }
 
-  setUrl(){
+  setUrl() {
 
 
-      this.url = this.baseUrl;
+    this.url = this.baseUrl;
 
   }
 
-  getActions = (object: ApplicationFormObject): DataActionsButton[]=> {
+  getActions = (object: ApplicationFormObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
       { label: "Preview", type: "link", link: `application-templates/preview/`, linkProp: 'uuid' },
       { label: "Edit", type: "link", link: `application-templates/form/`, linkProp: 'uuid' },
-      { label: "Delete", type: "button", onClick: (object: ApplicationFormObject) => this.delete(object)}
+      { label: "Delete", type: "button", onClick: (object: ApplicationFormObject) => this.delete(object) }
     ];
 
     return actions;
   }
-  delete (object: ApplicationFormObject) {
+  delete(object: ApplicationFormObject) {
     this.templateService.delete(object.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
 
-  view (object: ApplicationFormObject) {
+  view(object: ApplicationFormObject) {
     //remove the actions from the object
-    const data = {...object};
+    const data = { ...object };
     delete data.actions;
     this.dialog.open(DialogKeyValueDisplayComponent, {
-      data: {object:data, title: "Application Form"},
+      data: { object: data, title: "Application Form" },
       maxHeight: '90vh',
       maxWidth: '90vw'
 
     })
   }
 
-  updateTimestamp(){
+  updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
 

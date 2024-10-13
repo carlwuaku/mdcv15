@@ -13,6 +13,7 @@ import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from '../dialog-form/dialog-form.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-load-data-list',
@@ -78,8 +79,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() showSort: boolean = true;
   @Input() hint: string = "";
 
-  constructor(private dbService: HttpService, private dialog: MatDialog) {
-
+  constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute) {
+    //if there's a query param, set the searchParam
+    const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
+    if (searchQuery) {
+      this.searchParam = searchQuery;
+    }
 
   }
   ngOnDestroy(): void {
@@ -91,9 +96,15 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.selection.changed.subscribe((data) => {
       this.onSelect.emit(data.source.selected)
     })
+    // if(this.searchParam.trim()){
+    //   this.search();
+    // }
   }
 
   ngAfterViewInit() {
+    if (this.searchParam.trim()) {
+      this.search();
+    }
     this.dataSource.sort = this.sort;
   }
 
@@ -151,12 +162,13 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       extra += `&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`
     }
     console.log(this.filters)
-    if(this.filters.length > 0){
+    if (this.filters.length > 0) {
       this.filters.forEach(filter => {
 
         if (filter.value) {
-          extra += `&${filter.name}=${filter.value}`}
-        });
+          extra += `&${filter.name}=${filter.value}`
+        }
+      });
     }
     return this.url.indexOf("?") == -1 ? this.url + '?' + extra : this.url + `&${extra}`;
   }

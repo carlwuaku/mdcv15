@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpEvent, HttpHeaders } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
 import { DateService } from '../../date/date.service';
@@ -56,7 +56,7 @@ export class HttpService {
     //   url += "&ts=" + this.dateService.getToday("timestamp")
     // }
 
-    return this.httpClient.get<T>(this.constructURL(url), { headers: headers}).pipe(
+    return this.httpClient.get<T>(this.constructURL(url), { headers: headers }).pipe(
       map(data => {
         return data;
       })
@@ -67,9 +67,16 @@ export class HttpService {
     return this.httpClient.post<T>(this.constructURL(url), data)
   }
 
+  public postWithProgress<T>(url: string, data: any): Observable<HttpEvent<T>> {
+    return this.httpClient.post<T>(this.constructURL(url), data, {
+      reportProgress: true,
+      observe: 'events'
+    })
+  }
+
   public put<T>(url: string, data: any): Observable<T> {
     if (data instanceof FormData) {
-      const object:{[key:string]:any} = {};
+      const object: { [key: string]: any } = {};
       data.forEach((value, key) => object[key] = value);
       data = object;
     }
