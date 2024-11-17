@@ -1,4 +1,5 @@
 import { Params } from "@angular/router";
+import { IFormGenerator } from "../components/form-generator/form-generator-interface";
 
 export interface MenuItem {
   title: string;
@@ -14,6 +15,16 @@ export interface DashboardItem extends MenuItem {
   color?: string;
   description?: string;
   apiCountText?: string
+}
+
+export interface RenewalStageItems extends DashboardItem {
+  canViewPermissions: string[],
+  canEditPermissions: string[],
+  canDeletePermissions: string[],
+  canApprovePermissions: string[],
+  printable: boolean,
+  next: string,
+  fields: IFormGenerator[]
 }
 
 export const menuItems: MenuItem[] = [

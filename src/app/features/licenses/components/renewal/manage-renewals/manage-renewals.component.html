@@ -1,0 +1,16 @@
+<div class=" flex flex-col gap-1">
+
+
+  <mat-card>
+    <mat-card-header>
+      With selected: <span *ngIf="!canApprove"></span> <button mat-raised-button color="primary"
+        [disabled]="selectedItems.length === 0" (click)="approve()">Set to: {{action}}</button>
+    </mat-card-header>
+    <mat-card-content>
+      <app-load-data-list [showDeleted]="false" [showExport]="false" [showInfo]="false" [showSort]="false"
+        [showFilterButton]="false" [timestamp]="ts" [url]="url" [getActions]="getActions"
+        (onSelect)="setSelectedItems($event)">
+      </app-load-data-list>
+    </mat-card-content>
+  </mat-card>
+</div>

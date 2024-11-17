@@ -1,28 +1,23 @@
-<a [routerLink]="url">
-  <mat-card>
+<a [routerLink]="url" [queryParams]="urlParams">
+  <mat-card class="dashboard-card">
     <mat-card-content>
       <div class="flex gap-1 ">
-        <div *ngIf="icon"
-          class="h-[90px] w-[90px] flex items-center justify-center  overflow-hidden border rounded-sm bg-accent">
-          <mat-icon class="text-7xl w-[72px] h-[72px] text-white">{{icon}}</mat-icon>
-        </div>
+        <mat-icon *ngIf="icon" class="text-7xl w-[72px] h-[72px]  icon">{{icon}}</mat-icon>
         <div class="flex flex-col justify-start flex-grow">
-          <h3 class="text-lg">{{title}}</h3>
-          <p *ngIf="description" class="text-sm">{{description}}</p>
+          <h3 class="text-2xl font-light  text-primary">{{title}}</h3>
 
-          <div *ngIf="counterUrl" class="flex gap-1 light-accent rounded-sm italic text-sm p-1 w-fit">
-            <strong>
+          <div *ngIf="counterUrl" class="flex gap-1 w-fit items-baseline">
+            <span class="text-3xl font-bold text-accent">
               <app-api-count [url]="counterUrl"></app-api-count>
-            </strong>
-            <p *ngIf="counterText">{{counterText}}</p>
+            </span>
+            <p class="counterText" *ngIf="counterText">{{counterText}}</p>
 
           </div>
-
+          <p *ngIf="description" class="">{{description}}</p>
 
 
         </div>
       </div>
-
     </mat-card-content>
 
   </mat-card>

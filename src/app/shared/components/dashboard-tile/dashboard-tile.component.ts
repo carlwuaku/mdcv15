@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-tile',
@@ -13,4 +14,5 @@ export class DashboardTileComponent {
   @Input() counterUrl?: string = '';
   @Input() counterText?: string = '';
   @Input() description?: string = '';
+  @Input() urlParams?: any;
 }

@@ -16,6 +16,8 @@ import { EditWorkHistoryComponent } from './components/work-history/edit-work-hi
 import { RenewalComponent } from './components/renewal/renewal.component';
 import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-form.component';
 import { RenewalCertificateComponent } from './components/renewal/renewal-certificate/renewal-certificate.component';
+import { RenewalDashboardComponent } from './components/renewal/renewal-dashboard/renewal-dashboard.component';
+import { ManageRenewalsComponent } from './components/renewal/manage-renewals/manage-renewals.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { RenewalCertificateComponent } from './components/renewal/renewal-certif
     RenewalComponent,
     RenewalFormComponent,
     RenewalCertificateComponent,
+    RenewalDashboardComponent,
+    ManageRenewalsComponent,
   ],
   imports: [
     CommonModule,

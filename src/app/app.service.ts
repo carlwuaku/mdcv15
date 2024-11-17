@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { AuthService } from './core/auth/auth.service';
 import { HttpService } from './core/services/http/http.service';
 import { API_PATH } from './shared/utils/constants';
-import { MenuItem } from './shared/utils/data';
+import { MenuItem, RenewalStageItems } from './shared/utils/data';
 import { IFormGenerator } from './shared/components/form-generator/form-generator-interface';
 interface AppSettings {
   appName: string,
@@ -19,8 +19,13 @@ interface AppSettings {
       table: string,
       detailsPageHeaderTabs: { label: string, key: string }[],
       renewalFields: IFormGenerator[],
-    }
+      renewalStages: {
+        [key: string]: RenewalStageItems
+      },
+    },
+
   }
+
 }
 @Injectable({
   providedIn: 'root'
@@ -35,7 +40,7 @@ export class AppService {
     sidebarMenu: [],
     dashboardMenu: [],
     searchTypes: [],
-    licenseTypes: {}
+    licenseTypes: {},
   });
   constructor(private authService: AuthService,
     private dbService: HttpService,) {

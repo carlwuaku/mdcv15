@@ -1,9 +1,9 @@
 export interface RenewalObject {
   id: string;
-  practitioner_uuid: string;
+  license_uuid: string;
   deleted_at: string | null;
   uuid: string;
-  registration_number: string;
+  license_number: string;
   deleted_by: string;
   deleted: string;
   modified_by: string;
@@ -14,26 +14,13 @@ export interface RenewalObject {
   qr_code: string;
   qr_text: string;
   expiry: string;
-  specialty: string;
-  place_of_work: string;
-  region: string;
-  institution_type: string;
-  district: string;
-  status: "Approved" | "Pending Payment" | "Pending Approval";
+
+  status: string;
   payment_date: string;
   payment_file: string;
   payment_file_date: string;
-  subspecialty: string;
-  college_membership: string;
-  payment_invoice_number: string;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  title: string;
-  maiden_name: string;
-  marital_status: string;
+
   picture: string;
-  year: string;
-  practitioner_type: "Doctor" | "Physician Assistant";
-  register_type: "Permanent" | "Temporary" | "Provisional";
+
+  license_type: string;
 }

@@ -16,9 +16,9 @@ import { RenewalService } from '../../../renewal.service';
   styleUrls: ['./renewal-form.component.scss']
 })
 export class RenewalFormComponent {
-  title: string = "Add a new practitioner";
-  formUrl: string = "practitioners/renewal";
-  existingUrl: string = "practitioners/renewal";
+  title: string = "Renew a license";
+  formUrl: string = "licenses/renewal";
+  existingUrl: string = "licenses/renewal";
 
   extraFormData: { key: string, value: any }[] = [];
 
@@ -28,8 +28,8 @@ export class RenewalFormComponent {
   loading: boolean = false;
   errorLoadingData: boolean = false;
   date: string = getToday();
-  practitionerUuid: string | "" = "";
-  selectedPractitioner: LicenseObject | null = null;
+  licenseUuid: string | "" = "";
+  selectedLicense: LicenseObject | null = null;
   fields: IFormGenerator[] = [
     {
       label: "Registration Number",
@@ -272,33 +272,52 @@ export class RenewalFormComponent {
       apiLabelProperty: "",
     },
   ];
-  fieldsToRetain: string[] = ["practitioner_uuid"];
+  fieldsToRetain: string[] = ["license_uuid"];
 
-  practitionerSearchBaseUrl: string = "practitioners/details";
-  practitionerSearchUrl: string = `practitioners/details?renewalYear=${this.date}`;
+  licenseSearchBaseUrl: string = "licenses/details";
+  licenseSearchUrl: string = `licenses/details?renewalYear=${this.date}`;
   ts: string = "";
+  existingRenewal: any | null = null;
   constructor(ar: ActivatedRoute, private router: Router,
     private dbService: HttpService, private notify: NotifyService, private renewalService: RenewalService) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
       this.title = "Edit Renewal";
-      this.existingUrl = `practitioners/renewal/${this.id}`;
-      this.formUrl = `practitioners/renewal/${this.id}`;
+      this.existingUrl = `licenses/renewal/${this.id}`;
+      this.formUrl = `licenses/renewal/${this.id}`;
       this.extraFormData = [{ key: "uuid", value: this.id }]
     }
     //get the query parameters named registration_number
-    this.practitionerUuid = ar.snapshot.queryParamMap.get('practitioner_uuid') || "";
-    if (this.practitionerUuid) {
-      this.getPractitioner()
+    this.licenseUuid = ar.snapshot.queryParamMap.get('license_uuid') || "";
+    if (this.licenseUuid) {
+      this.getLicense(this.licenseUuid)
+    }
+    else if (this.id) {
+      this.getRenewal()
     }
   }
 
   ngOnInit(): void {
-    this.practitionerSearchUrl = `practitioners/details?renewalDate=${this.date}`;
+    this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}`;
+  }
+
+  getFormFields(type: string) {
+    this.loading = true;
+    this.renewalService.getRenewalFormFields(type).subscribe({
+      next: data => {
+        this.fields = data.data;
+        this.setFormFields(this.selectedLicense);
+        this.loading = false;
+      },
+      error: error => {
+        this.notify.failNotification("Error loading form fields. Please try again");
+        this.loading = false;
+      }
+    })
   }
 
   updateUrlYear() {
-    this.practitionerSearchUrl = `practitioners/details?renewalDate=${this.date}`;
+    this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}`;
     //also update the form year field
     const yearField = this.fields.find((item) => item.name === "year");
     if (yearField) { yearField.value = this.date }
@@ -307,44 +326,81 @@ export class RenewalFormComponent {
 
 
 
-  getActions = (practitioner: LicenseObject): DataActionsButton[] => {
+  getActions = (license: LicenseObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
 
     ];
 
-    if (practitioner.in_good_standing === "Not In Good Standing") {
+    if (license.in_good_standing === "Not In Good Standing") {
       actions.push(
-        { label: "Renew", type: "button", onClick: (practitioner: LicenseObject) => this.selectForRenewal(practitioner) }
+        { label: "Renew", type: "button", onClick: (license: LicenseObject) => this.selectForRenewal(license) }
       )
     }
     else {
       actions.push(
-        { label: "Edit", type: "link", link: `practitioners/renewal-form/`, linkProp: 'last_renewal_uuid' },
-        { label: "Undo Renewal", type: "button", onClick: (practitioner: LicenseObject) => this.undoRenewal(practitioner) },
+        { label: "Edit", type: "link", link: `licenses/renewal-form/`, linkProp: 'last_renewal_uuid' },
+        { label: "Undo Renewal", type: "button", onClick: (license: LicenseObject) => this.undoRenewal(license) },
       )
     }
     return actions;
   }
 
-  getPractitioner() {
-    this.dbService.get<LicenseObject>(this.practitionerSearchBaseUrl + "/" + this.practitionerUuid)
+  getLicense(id: string) {
+    this.dbService.get<LicenseObject>(this.licenseSearchBaseUrl + "/" + id)
       .pipe(take(1))
       .subscribe(data => {
-        this.selectedPractitioner = data;
-        this.selectForRenewal(this.selectedPractitioner)
+        this.selectedLicense = data;
+        this.getFormFields(data['type']);
+
       })
   }
 
-  selectForRenewal(practitioner: any) {
-    this.selectedPractitioner = practitioner;
+  getRenewal() {
+    this.dbService.get<{ data: any }>(this.formUrl)
+      .pipe(take(1))
+      .subscribe(data => {
+        this.selectedLicense = {} as LicenseObject;
+        this.selectedLicense['type'] = data.data.license_type;
+        this.selectedLicense['uuid'] = data.data.license_uuid;
+        this.selectedLicense['name'] = data.data.name;
+        this.selectedLicense['postal_address'] = data.data.postal_address;
+        this.selectedLicense['district'] = data.data.district;
+        this.selectedLicense['region'] = data.data.region;
+        this.selectedLicense['phone'] = data.data.phone;
+        this.selectedLicense['email'] = data.data.email;
+        this.selectedLicense['license_number'] = data.data.license_number;
+        this.existingRenewal = data.data;
+        this.getFormFields(data.data.license_type);
+
+      })
+  }
+
+  selectForRenewal(license: any) {
+    this.selectedLicense = license;
+    this.getFormFields(license['type']);
+
+  }
+
+  setFormFields(license: any) {
     this.fields.map(field => {
       if (field.name !== "status") {
-        field.value = practitioner[field.name];
+        field.value = license[field.name];
       }
-    })
+    });
+    if (this.existingRenewal) {
+      Object.keys(this.existingRenewal).forEach(key => {
+        const field = this.fields.find((item) => item.name === key);
+        if (field) { field.value = this.existingRenewal[key] }
+      }
+      )
+    }
+
     this.extraFormData = [
-      { key: "practitioner_uuid", value: practitioner.uuid }
+      { key: "license_uuid", value: license.uuid },
+      { key: "license_type", value: license.type },
+
+
     ]
   }
 
@@ -361,8 +417,8 @@ export class RenewalFormComponent {
 
   formSubmitted(args: boolean) {
     if (args) {
-      this.selectedPractitioner = null;
-      this.router.navigate(['/practitioners/renewal-form'])
+      this.selectedLicense = null;
+      this.router.navigate(['/licenses/renewal-form'])
     }
   }
 

@@ -135,7 +135,11 @@ export class FormGeneratorComponent implements OnInit {
     const data = new FormData();
     allFields.forEach(field => {
 
-      data.append(field.name, field.value || "");
+
+      if (field.type === "date") {
+        data.append(field.name, this.formatDate(field.value) || "");
+      }
+      else { data.append(field.name, field.value || ""); }
     });
     this.extraData.forEach(item => {
       data.append(item.key, item.value)
@@ -224,8 +228,7 @@ export class FormGeneratorComponent implements OnInit {
 
 
   formatDate(date: Date): string {
-    console.log(this.datePipe.transform(date, 'yyyy/MM/dd'))
-    return this.datePipe.transform(date, 'yyyy/MM/dd') || '';
+    return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
   onFileSelected(files: File[], field: IFormGenerator) {
