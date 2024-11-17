@@ -906,4 +906,42 @@ tr:nth-child(even) {
   color: orange;
 }
 
+.dashboard-card {
+  // background: linear-gradient(mat-color($my-app-primary, 500), mat-color($my-app-primary, 600)) !important;
+  // color: white;
+
+  .icon {
+    color: rgba(0, 0, 0, 0.38);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+
+
+
+  // Using the & operator to target the .dashboard-card itself when it's hovered
+  &:hover {
+    .icon {
+      color: mat-color($my-app-accent, 100);
+    }
+  }
+}
+
+.text-accent {
+  color: mat-color($my-app-accent, 300);
+}
+
+.text-primary {
+  color: mat-color($my-app-primary);
+}
+
+.primary-200 {
+  color: mat-color($my-app-primary, 200);
+}
+
+.active {
+  background-color: mat-color($my-app-primary, 100) !important;
+}
+
 // define colors for certain words. we need to find a way to make this dynamic

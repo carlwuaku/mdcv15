@@ -15,33 +15,18 @@ import { LicenseObject } from '../../models/license_model';
   styleUrls: ['./renewal.component.scss']
 })
 export class RenewalComponent implements OnInit, OnChanges {
-  baseUrl: string = "practitioners/renewal";
-  url: string = "practitioners/renewal";
+  baseUrl: string = "licenses/renewal";
+  url: string = "licenses/renewal";
   ts: string = "";
-  @Input() practitioner: LicenseObject | undefined = undefined;
-  practitioner_type: "Doctor" | "Physician Assistant" = "Doctor";
-  status: "" | "Pending Approval" | "Pending Payment" | "Approved" = "Approved";
+  @Input() license: LicenseObject | undefined = undefined;
+  queryParams: { [key: string]: string } = {};
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute) {
-    //get query params for status and practitioner_type
-    const practitioner_type = this.ar.snapshot.queryParamMap.get('practitioner_type');
-    const status = this.ar.snapshot.queryParamMap.get('status');
-    this.practitioner_type = practitioner_type === "Physician Assistant" ? "Physician Assistant" : "Doctor";
-    switch (status) {
-      case "Pending Approval":
-        this.status = "Pending Approval";
-        break;
-      case "Pending Payment":
-        this.status = "Pending Payment";
-        break;
-      case "Approved":
-        this.status = "Approved";
-        break;
-      default:
-        this.status = "";
-        break;
-    }
-    console.log(practitioner_type, status)
+    //get query params for status and license_type
+    this.ar.queryParams.subscribe(params => {
+      this.queryParams = params;
+    });
+
 
   }
   ngOnInit(): void {
@@ -52,12 +37,13 @@ export class RenewalComponent implements OnInit, OnChanges {
   }
 
   setUrl() {
-    let queryParams = `?practitioner_type=${this.practitioner_type}`;
-    if (this.status) {
-      queryParams += `&status=${this.status}`
-    }
-    if (this.practitioner) {
-      this.url = this.baseUrl + "/practitioner/" + this.practitioner.uuid + queryParams;
+    let queryParams = "";
+    Object.keys(this.queryParams).forEach(key => {
+      queryParams += queryParams === "" ? "?" : "&";
+      queryParams += `${key}=${this.queryParams[key]}`;
+    });
+    if (this.license) {
+      this.url = this.baseUrl + "/license/" + this.license.uuid + queryParams;
     }
     else {
       this.url = this.baseUrl + queryParams;
@@ -67,28 +53,28 @@ export class RenewalComponent implements OnInit, OnChanges {
   getActions = (object: RenewalObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
-      { label: "Edit", type: "link", link: `practitioners/renewal-form/`, linkProp: 'uuid' },
+      { label: "Edit", type: "link", link: `licenses/renewal-form/`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: RenewalObject) => this.delete(object) }
     ];
-    if (!this.practitioner) {
+    if (!this.license) {
       actions.unshift(
-        { label: "View Practitioner", type: "link", link: `practitioners/practitioner-details/`, linkProp: 'practitioner_uuid' }
+        { label: "View license", type: "link", link: `licenses/license-details/`, linkProp: 'license_uuid' }
       )
     }
     if (object.status === "Approved") {
       actions.push(
-        { label: "Print Certificate", type: "link", link: `practitioners/renewal-certificate/`, linkProp: 'uuid' }
+        { label: "Print Certificate", type: "link", link: `licenses/renewal-certificate/`, linkProp: 'uuid' }
       )
     }
 
     if (object.status === "Pending Approval") {
       actions.push(
-        { label: "Set to Pending Payment", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Pending Payment", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid }) }
+        { label: "Set to Pending Payment", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Pending Payment", "registration_number": object.license_number, "license_uuid": object.license_uuid }) }
       )
     }
     if (object.status !== "Approved") {
       actions.push(
-        { label: "Approve", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Approved", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid }) }
+        { label: "Approve", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Approved", "registration_number": object.license_number, "license_uuid": object.license_uuid }) }
       )
     }
 
@@ -96,7 +82,7 @@ export class RenewalComponent implements OnInit, OnChanges {
       actions.push(
         {
           label: "Set to Pending Approval", type: "button", onClick: (object: RenewalObject) => this.update(object,
-            { "status": "Pending Approval", "registration_number": object.registration_number, "practitioner_uuid": object.practitioner_uuid })
+            { "status": "Pending Approval", "license_number": object.license_number, "license_uuid": object.license_uuid })
         }
       )
     }

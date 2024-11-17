@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -22,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('sortDialog') sortDialog!: TemplateRef<any>;
 
   is_loading = false;
   // pagination things
@@ -288,7 +289,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   setFilters(args: IFormGenerator[]) {
     this.filters = args;
-
+    console.log(this.filters)
     this.getData();
   }
 
@@ -301,11 +302,27 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       },
       width: '50vw'
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.length == 0) {
-        this.setFilters(result)
+    dialogRef.afterClosed().subscribe((result: IFormGenerator[] | false) => {
+
+      if (result) {
+        //make sure some values were set
+        this.setFilters(result.filter(x => x.value));
       }
 
+    });
+  }
+
+  showSortDialog() {
+    const dialogRef = this.dialog.open(this.sortDialog, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.sortBy = result.sortBy;
+        this.sortOrder = result.sortOrder;
+        this.getData();
+      }
     });
   }
 

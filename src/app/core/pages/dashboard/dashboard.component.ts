@@ -23,7 +23,6 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      console.log(data.dashboardMenu);
       this.menuItems = data.dashboardMenu;
     });
   }

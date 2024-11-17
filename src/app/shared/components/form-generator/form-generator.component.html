@@ -32,6 +32,7 @@
 
 
   <div class="flex gap-1">
+    <ng-content select="[submitButton]"></ng-content>
     <button type="reset" mat-button color="warn">{{resetButtonText}}</button>
 
     <button type="submit" mat-raised-button color="primary">{{submitButtonText}}</button>
@@ -65,6 +66,11 @@
       <app-file-uploader (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
         (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
+    <div *ngSwitchCase="'file'" class="flex flex-col gap-1">
+      <label for="">{{field.label}}</label>
+      <app-file-uploader [accept]="'*/*'" (onFilesSelected)="onFileSelected($event, field)"
+        [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+    </div>
 
 
     <app-ckeditor [value]="field.value" [name]="field.name" (valueChange)="setFieldValue($event, field)"
@@ -78,8 +84,7 @@
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
       <mat-label>{{field.label}}</mat-label>
-      <input [(ngModel)]="field.value" (dateChange)="field.value = formatDate($event.value)" matInput
-        [matDatepicker]="picker">
+      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>

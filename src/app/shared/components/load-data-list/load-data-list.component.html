@@ -15,8 +15,10 @@
 
 
     <div class="flex  gap-2  items-center flex-wrap">
-      <button *ngIf="showFilterButton" mat-flat-button color="primary" [disabled]="filters.length < 1"
+      <button *ngIf="showFilterButton" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
+      <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
+        (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
 
       <span *ngIf="showDeleted">
         <label>
@@ -36,7 +38,7 @@
         (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
 
 
-      <span *ngIf="showSort" class="flex flex-row gap-1 items-center flex-wrap">
+      <!-- <span *ngIf="showSort" class="flex flex-row gap-1 items-center flex-wrap">
         <mat-form-field [appearance]="'fill'">
           <mat-label>Sort By: </mat-label>
           <mat-select [(ngModel)]="sortBy" (selectionChange)="getData()">
@@ -47,7 +49,7 @@
         <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
 
 
-      </span>
+      </span> -->
     </div>
   </div>
 
@@ -178,3 +180,23 @@
     </table>
   </div>
 </div>
+
+<ng-template #sortDialog>
+  <h2 mat-dialog-title>Sort Options</h2>
+  <mat-dialog-content>
+    <mat-form-field [appearance]="'fill'">
+      <mat-label>Sort By: </mat-label>
+      <mat-select [(ngModel)]="sortBy">
+        <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
+      <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="{ sortBy: sortBy, sortOrder: sortOrder }">Apply</button>
+  </mat-dialog-actions>
+</ng-template>

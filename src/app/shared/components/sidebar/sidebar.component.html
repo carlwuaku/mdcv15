@@ -1,7 +1,7 @@
 <mat-nav-list>
   <ng-container *ngFor="let item of menuItems">
     <ng-container *ngIf="item.children.length; else noChildren">
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="isActiveParent(item)">
         <mat-expansion-panel-header>
           <mat-panel-title class="gap-1.5 items-center text-[16px] font-light">
             <mat-icon color="primary">{{ item.icon }}</mat-icon>
@@ -9,7 +9,8 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-nav-list>
-          <a mat-list-item [routerLink]="link.url" *ngFor="let link of item.children">{{ link.title }}</a>
+          <a mat-list-item [ngClass]="{'active shadow-sm rounded-sm': isActiveChild(link)}" [routerLink]="link.url"
+            *ngFor="let link of item.children">{{ link.title }}</a>
         </mat-nav-list>
       </mat-expansion-panel>
     </ng-container>

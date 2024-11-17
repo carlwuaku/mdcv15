@@ -1,0 +1,20 @@
+<a routerLink="/licenses/renewal-form" class="mb-2" mat-raised-button color="accent"><mat-icon>plus</mat-icon> Renew a
+  new
+  license</a>
+<div *ngIf="!licenseType">
+  <mat-card>
+
+    <mat-card-content>
+      <h3 class="text-red">No license type selected</h3>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div *ngIf="licenseType" class="flex flex-wrap justify-between  gap-2">
+
+  <ng-container *ngFor="let item of menuItems">
+    <app-dashboard-tile class="w-[32%] min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
+      [counterText]="item.apiCountText" [description]="item.description" [counterUrl]="item.apiCountUrl"
+      [urlParams]="item.urlParams"></app-dashboard-tile>
+  </ng-container>
+
+</div>

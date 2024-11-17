@@ -2,12 +2,14 @@
   <h1 [innerHTML]="title"></h1>
 </div>
 <div mat-dialog-content>
-  <app-form-generator [fields]="fields" [formType]="formType" (emitFields)="formSubmitted($event)"></app-form-generator>
+  <app-form-generator [fields]="fields" [formType]="formType" (emitFields)="formSubmitted($event)">
+    <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
+      Cancel
+    </button>
+  </app-form-generator>
 </div>
 
 
-<div mat-dialog-actions>
-  <button mat-flat-button color="warn" type="button" [mat-dialog-close]="true">
-    Cancel
-  </button>
-</div>
+<!-- <div mat-dialog-actions>
+
+</div> -->
