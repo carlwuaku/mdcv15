@@ -24,6 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FormsModule } from '@angular/forms';
 const modules = [
   MatDialogModule,
   MatCardModule,
@@ -56,6 +57,7 @@ const modules = [
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ...modules
   ],
   exports: [

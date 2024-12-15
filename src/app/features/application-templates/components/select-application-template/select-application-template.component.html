@@ -1,0 +1,6 @@
+<mat-form-field appearance="fill">
+  <mat-label>Application Type</mat-label>
+  <mat-select [(ngModel)]="formType" (selectionChange)="formTypeSelected()">
+    <mat-option *ngFor="let type of formTypes" [value]="type.form_name">{{type.form_name}}</mat-option>
+  </mat-select>
+</mat-form-field>

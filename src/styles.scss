@@ -835,7 +835,8 @@ tr:nth-child(even) {
 .category-Medical,
 .status-Alive,
 .register_type-Permanent,
-.register_type-Full {
+.register_type-Full,
+.bg-success {
   @include badge-variant;
   color: white;
   background-color: green;
@@ -943,5 +944,3 @@ tr:nth-child(even) {
 .active {
   background-color: mat-color($my-app-primary, 100) !important;
 }
-
-// define colors for certain words. we need to find a way to make this dynamic

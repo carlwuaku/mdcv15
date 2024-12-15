@@ -41,28 +41,7 @@ export class ApplicationFormsComponent implements OnInit {
         options: [],
         required: false
       });
-      // params.push(`${key}=${this.ar.snapshot.queryParamMap.get(key)}`);
     });
-    console.log(this.filters);
-    // this.url = this.baseUrl + "?" + params.join("&");
-    // const practitioner_type = this.ar.snapshot.queryParamMap.get('practitioner_type');
-    // const status = this.ar.snapshot.queryParamMap.get('status');
-    // this.form_type = this.ar.snapshot.queryParamMap.get('form_type');
-    // this.practitioner_type = practitioner_type ;
-    // switch (status) {
-    //   case "Pending Approval":
-    //     this.status = "Pending Approval";
-    //     break;
-    //   case "Pending Payment":
-    //     this.status = "Pending Payment";
-    //     break;
-    //   case "Approved":
-    //     this.status = "Approved";
-    //     break;
-    //   default:
-    //     this.status = "";
-    //     break;
-    // }
 
   }
   ngOnInit(): void {

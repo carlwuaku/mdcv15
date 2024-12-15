@@ -1,8 +1,13 @@
 <div class="flex flex-col gap-2 ">
   <div class="flex flex-col gap-2 flex-wrap">
     <div>
-      <h3 class="text-lg">{{tableTitle}}</h3>
-      <p *ngIf="hint">{{hint}}</p>
+      <ng-container *ngTemplateOutlet="header || defaultHeader">
+      </ng-container>
+      <ng-template #defaultHeader>
+        <h3 class="text-lg">{{tableTitle}}</h3>
+        <p *ngIf="hint">{{hint}}</p>
+      </ng-template>
+
     </div>
     <form *ngIf="showSearch" ngNativeValidate (ngSubmit)="search()"
       class="flex flex-row gap-1 align-middle items-center flex-auto">
@@ -107,10 +112,11 @@
                   <span>{{ element.actions[0].label }}</span>
                 </button>
 
-                <a *ngIf="element.actions[0].type === 'link'"
-                  routerLink="/{{element.actions.link}}/{{element[element.actions.linkProp]}}" mat-menu-item>
-                  <mat-icon *ngIf="element.actions.icon">{{ element.actions.icon }}</mat-icon>
-                  <span>{{ element.actions.label }}</span>
+                <a mat-button color="primary" *ngIf="element.actions[0].type === 'link'"
+                  routerLink="/{{element.actions[0].link}}/{{element[element.actions[0].linkProp]}}"
+                  [queryParams]="element.actions[0].urlParams">
+                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
+                  <span>{{ element.actions[0].label }}</span>
                 </a>
 
               </span>

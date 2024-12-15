@@ -5,17 +5,21 @@ import { ApplicationFormsRoutingModule } from './application-forms-routing.modul
 import { ApplicationFormsComponent } from './application-forms.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageFormComponent } from './manage-form/manage-form.component';
+import { SelectFormTypeComponent } from './select-form-type/select-form-type.component';
+import { ApplicationTemplatesModule } from '../application-templates/application-templates.module';
 
 
 @NgModule({
   declarations: [
     ApplicationFormsComponent,
-    ManageFormComponent
+    ManageFormComponent,
+    SelectFormTypeComponent
   ],
   imports: [
     CommonModule,
     ApplicationFormsRoutingModule,
-    SharedModule
+    SharedModule,
+    ApplicationTemplatesModule
   ]
 })
 export class ApplicationFormsModule { }

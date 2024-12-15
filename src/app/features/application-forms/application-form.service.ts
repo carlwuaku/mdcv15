@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, switchMap, throwError } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { ApplicationTemplateObject } from '../application-templates/models/application-template.model';
-import { ApplicationFormObject } from './models/application-form.model';
+import { ApplicationFormObject, ApplicationTypeCounts } from './models/application-form.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,8 @@ export class ApplicationFormService {
   getApplicationDetails(uuid: string): Observable<{ data: ApplicationFormObject }> {
     return this.dbService.get(`applications/details/${uuid}`)
   }
+
+
 
   delete(uuid: string): Observable<{ message: string }> {
     if (!window.confirm('Are you sure you want to delete this application permanently? You cannot undo this action.')) {
@@ -51,5 +53,9 @@ export class ApplicationFormService {
         return this.dbService.get<{ data: ApplicationTemplateObject }>(`applications/templates/${data.data.form_type}`)
       })
     )
+  }
+
+  getFormStatusCounts(url: string): Observable<{ data: ApplicationTypeCounts[], displayColumns: string[] }> {
+    return this.dbService.get(url)
   }
 }
