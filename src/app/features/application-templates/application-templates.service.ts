@@ -10,20 +10,20 @@ import { ApplicationTemplateObject } from './models/application-template.model';
 })
 export class ApplicationTemplatesService {
   url = "applications/templates";
-  constructor(private dbService: HttpService, private notify:NotifyService) {
+  constructor(private dbService: HttpService, private notify: NotifyService) {
 
   }
 
 
 
-  delete (uuid: string): Observable<{message:string}> {
+  delete(uuid: string): Observable<{ message: string }> {
     if (!window.confirm('Are you sure you want to delete this template permanently? It will not affect any existing applications, but you will have to create a new one if you need it again.')) {
       return throwError(() => new Error('User cancelled delete'));
     }
-    return this.dbService.delete<{message:string}>(`${this.url}/${uuid}`)
+    return this.dbService.delete<{ message: string }>(`${this.url}/${uuid}`)
   }
 
-  update(uuid:string, data:{[key:string]:string}):Observable<{message:string}>{
+  update(uuid: string, data: { [key: string]: string }): Observable<{ message: string }> {
     const formData = new FormData();
     Object.keys(data).forEach(key => {
       formData.append(key, data[key])
@@ -33,8 +33,12 @@ export class ApplicationTemplatesService {
 
   }
 
-  getTemplate(uuid:string):Observable<{data: ApplicationTemplateObject}> {
+  getTemplate(uuid: string): Observable<{ data: ApplicationTemplateObject }> {
     this.notify.showLoading();
     return this.dbService.get<any>(`${this.url}/${uuid}`)
+  }
+
+  getApplicationFormTypes(): Observable<{ data: ApplicationTemplateObject[] }> {
+    return this.dbService.get(`applications/types/form_type`)
   }
 }

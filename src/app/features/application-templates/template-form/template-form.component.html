@@ -3,25 +3,24 @@
     <ng-template matStepLabel>General Information</ng-template>
     <form [formGroup]="generalFormGroup">
       <div class="flex flex-col gap-1 pt-2">
-        <mat-form-field appearance="outline">
-          <mat-label>Form Name*</mat-label>
+        <mat-form-field appearance="fill">
+          <mat-label>Form Name</mat-label>
           <input matInput formControlName="form_name" name="form_name" required>
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required
             field</mat-error>
         </mat-form-field>
         <div class="flex flex-col gap-1">
-          <mat-label>Open From</mat-label>
-          <input type="date" name="open_date" formControlName="open_date" required>
-          <!-- <app-mat-datepicker  (onFinish)="setFormField('general','open_date', $event)"></app-mat-datepicker> -->
+          <app-mat-datepicker [label]="'Open From'"
+            [initialDate]="generalFormGroup.get('open_date')?.value || undefined"
+            (onFinish)="setFormField('general','open_date', $event)"></app-mat-datepicker>
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('open_date')?.hasError('required')">Required
             field</mat-error>
 
         </div>
         <div class="flex flex-col gap-1">
-          <mat-label>Closes On:</mat-label>
-          <input type="date" name="close_date" formControlName="close_date" required>
-
-          <!-- <app-mat-datepicker  (onFinish)="setFormField('general','close_date', $event)"></app-mat-datepicker> -->
+          <app-mat-datepicker [label]="'Closes On'"
+            [initialDate]="generalFormGroup.get('close_date')?.value || undefined"
+            (onFinish)="setFormField('general','close_date', $event)"></app-mat-datepicker>
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('close_date')?.hasError('required')">Required
             field</mat-error>
 
@@ -43,7 +42,7 @@
       <mat-error *ngIf="guidlinesFormGroup && guidlinesFormGroup.get('guidelines')?.hasError('required')">Required
         field</mat-error>
 
-      <div>
+      <div class="flex gap-1 mt-1">
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
       </div>
@@ -57,7 +56,7 @@
       <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
 
     </form>
-    <div>
+    <div class="flex gap-1  mt-1">
       <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
       <button mat-raised-button color="primary" matStepperNext>Next</button>
     </div>
@@ -72,7 +71,7 @@
       <mat-error *ngIf="headerFormGroup && headerFormGroup.get('header')?.hasError('required')">Required
         field</mat-error>
 
-      <div>
+      <div class="flex gap-1 mt-1">
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
       </div>
@@ -88,7 +87,7 @@
       <mat-error *ngIf="footerFormGroup && footerFormGroup.get('footer')?.hasError('required')">Required
         field</mat-error>
 
-      <div>
+      <div class="flex gap-1 mt-1">
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
       </div>
@@ -110,7 +109,7 @@
       <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_message')?.hasError('required')">Required
         field</mat-error>
 
-      <div>
+      <div class="flex gap-1 mt-1">
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
       </div>
@@ -134,9 +133,166 @@
         *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_deny_email_template')?.hasError('required')">Required
         field</mat-error>
 
-      <div>
+      <div class="flex gap-1 mt-1">
         <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
-        <button type="button" (click)="submit()" mat-raised-button color="primary" matStepperNext>Submit</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="workflowFormGroup">
+    <ng-template matStepLabel>Workflow</ng-template>
+    <form [formGroup]="workflowFormGroup" class="flex flex-col gap-1 p-2">
+      <!-- if no stages added add a call to action saying click here to add at least one stage -->
+      <h4>Stages</h4>
+      <!-- Stage List -->
+      <div formArrayName="stages" class="stages-list">
+        <div *ngFor="let stage of stages.controls; let i=index" [formGroupName]="i" class="stage-item">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{stage.get('name')?.value || 'New Stage'}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!-- Stage Details -->
+            <div class="stage-details">
+              <mat-form-field appearance="fill">
+                <mat-label>Stage ID</mat-label>
+                <input matInput formControlName="id" placeholder="e.g., pending_verification">
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Stage Name</mat-label>
+                <input matInput formControlName="name" placeholder="e.g., Pending Verification">
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+              </mat-form-field>
+
+              <!-- Allowed Transitions -->
+              <mat-form-field appearance="fill">
+                <mat-label>Allowed Transitions</mat-label>
+                <mat-select formControlName="allowedTransitions" multiple>
+                  <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('id')?.value"
+                    [disabled]="i === j">
+                    {{s.get('name')?.value}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Actions -->
+              <div class="flex flex-col gap-2 p-1" formArrayName="actions">
+                <h4>Actions</h4>
+                <div *ngFor="let action of getActions(i).controls; let j=index" [formGroupName]="j"
+                  class="flex flex-col gap-1  border border-gray-300 p-2">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Action Type</mat-label>
+                    <mat-hint>Select the type of action to perform</mat-hint>
+                    <mat-select formControlName="type">
+                      <mat-option value="email">Send Email to Applicant</mat-option>
+                      <mat-option value="api_call">API Call</mat-option>
+                      <mat-option value="admin_email">Send Email to Admin</mat-option>
+                      <mat-option value="database_update">Update Database</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <!-- Action Config based on type -->
+                  <div [ngSwitch]="action.get('type')?.value" formGroupName="config" class="flex flex-col gap-1">
+                    <!-- Email Config -->
+                    <div *ngSwitchCase="'email'" class="flex flex-col gap-1">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Email Subject</mat-label>
+                        <input matInput formControlName="subject">
+                      </mat-form-field>
+                      <mat-form-field appearance="fill">
+                        <mat-label>Email Template</mat-label>
+                        <textarea matInput formControlName="template"></textarea>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- API Call Config -->
+                    <div *ngSwitchCase="'api_call'" class="flex flex-col gap-1">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Endpoint URL</mat-label>
+                        <input matInput formControlName="endpoint">
+                      </mat-form-field>
+                      <mat-form-field appearance="fill">
+                        <mat-label>Method</mat-label>
+                        <mat-select formControlName="method">
+                          <mat-option value="GET">GET</mat-option>
+                          <mat-option value="POST">POST</mat-option>
+                          <mat-option value="PUT">PUT</mat-option>
+                          <mat-option value="DELETE">DELETE</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Admin Email Config -->
+                    <div *ngSwitchCase="'admin_email'" class="flex flex-col gap-1">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Recipient Field</mat-label>
+                        <input matInput formControlName="recipient_field">
+                      </mat-form-field>
+                      <mat-form-field appearance="fill">
+                        <mat-label>Email Subject</mat-label>
+                        <input matInput formControlName="subject">
+                      </mat-form-field>
+                      <mat-form-field appearance="fill">
+                        <mat-label>Email Template</mat-label>
+                        <textarea matInput formControlName="template"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <button class="self-start" mat-flat-button color="warn" (click)="removeAction(i, j)">
+                    <mat-icon>delete</mat-icon> Delete this action
+                  </button>
+                </div>
+
+                <button class="self-start" mat-stroked-button color="primary" (click)="addAction(i)">
+                  <mat-icon>add</mat-icon> Add Action
+                </button>
+              </div>
+            </div>
+
+            <div class="self-start">
+              <button mat-flat-button color="warn" (click)="removeStage(i)">
+                <mat-icon>delete</mat-icon> Delete this stage
+              </button>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </div>
+
+      <button mat-flat-button [color]="'accent'" (click)="addStage()">
+        <mat-icon>add</mat-icon> Add Stage
+      </button>
+
+      <!-- Initial Stage Selection -->
+      <mat-form-field appearance="fill" class="initial-stage">
+        <mat-label>Initial Stage</mat-label>
+        <mat-select formControlName="initialStage">
+          <mat-option value="">Select one</mat-option>
+          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('id')?.value">
+            {{stage.get('name')?.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="initial-stage">
+        <mat-label>Final Stage</mat-label>
+        <mat-select formControlName="finalStage">
+          <mat-option value="">Select one</mat-option>
+          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('id')?.value">
+            {{stage.get('name')?.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="flex gap-1 mt-1">
+        <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+        <button type="button" (click)="submit()" mat-raised-button color="primary">Submit</button>
       </div>
     </form>
   </mat-step>

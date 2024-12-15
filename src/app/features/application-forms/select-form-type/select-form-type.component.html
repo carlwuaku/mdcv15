@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <app-select-application-template [formType]="formType" (onFormTypeSelected)="formTypeSelected($event)">
+      </app-select-application-template>
+    </mat-card-content>
+  </mat-card>
+  <div class="flex justify-center items-center">
+    <app-loading *ngIf="countsLoading"></app-loading>
+  </div>
+
+
+  <div *ngIf="formType && !countsLoading" class="flex flex-wrap   gap-2">
+    <ng-container *ngFor="let item of statusCounts">
+      <app-dashboard-tile class="w-[32%] min-w-[300px]" [urlParams]="{
+        form_type: item.form_type,
+        status: item.status
+      }" [url]="'/applications'" [icon]="'list'" [title]="item.status || 'Unspecified'" [description]="''">
+        <ng-template #count><span>{{item.count}}</span></ng-template>
+      </app-dashboard-tile>
+    </ng-container>
+  </div>
+</div>

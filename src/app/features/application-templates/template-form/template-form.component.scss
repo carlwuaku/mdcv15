@@ -1,0 +1,33 @@
+.workflow-container {
+  padding: 16px;
+}
+
+.stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stage-item {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.stage-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.action-item {
+  border: 1px solid #eee;
+  padding: 16px;
+  margin: 8px 0;
+  border-radius: 4px;
+}
+
+.initial-stage {
+  margin-top: 16px;
+}

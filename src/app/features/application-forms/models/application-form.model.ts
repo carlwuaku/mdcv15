@@ -15,3 +15,9 @@ export interface ApplicationFormObject {
   qr_code: string
   actions?: any[]
 }
+
+export interface ApplicationTypeCounts {
+  form_type: string,
+  status: string,
+  count: number
+}

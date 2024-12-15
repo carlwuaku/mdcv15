@@ -6,18 +6,24 @@ import { ApplicationTemplatesComponent } from './application-templates.component
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TemplateFormComponent } from './template-form/template-form.component';
 import { PreviewTemplateComponent } from './preview-template/preview-template.component';
+import { SelectApplicationTemplateComponent } from './components/select-application-template/select-application-template.component';
 
 
 @NgModule({
   declarations: [
     ApplicationTemplatesComponent,
     TemplateFormComponent,
-    PreviewTemplateComponent
+    PreviewTemplateComponent,
+    SelectApplicationTemplateComponent
   ],
   imports: [
     CommonModule,
     ApplicationTemplatesRoutingModule,
-    SharedModule
+    SharedModule,
+
+  ],
+  exports: [
+    SelectApplicationTemplateComponent
   ]
 })
 export class ApplicationTemplatesModule { }

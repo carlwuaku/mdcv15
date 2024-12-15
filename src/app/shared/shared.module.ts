@@ -81,7 +81,7 @@ import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
     SearchWidgetComponent,
     DashboardTileComponent,
     ProgressDialogComponent,
-    GhanaMapComponent
+    GhanaMapComponent,
   ],
   imports: [
     PrimeNgUiComponentsModule,

@@ -6,13 +6,19 @@
         <div class="flex flex-col justify-start flex-grow">
           <h3 class="text-2xl font-light  text-primary">{{title}}</h3>
 
-          <div *ngIf="counterUrl" class="flex gap-1 w-fit items-baseline">
+
+          <div class="flex gap-1 w-fit items-baseline">
             <span class="text-3xl font-bold text-accent">
-              <app-api-count [url]="counterUrl"></app-api-count>
+              <ng-container *ngTemplateOutlet="count || useApiCount">
+              </ng-container>
+              <ng-template #useApiCount>
+                <app-api-count *ngIf="counterUrl" [url]="counterUrl"></app-api-count>
+              </ng-template>
             </span>
             <p class="counterText" *ngIf="counterText">{{counterText}}</p>
 
           </div>
+
           <p *ngIf="description" class="">{{description}}</p>
 
 

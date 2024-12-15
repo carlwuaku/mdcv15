@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -15,4 +15,5 @@ export class DashboardTileComponent {
   @Input() counterText?: string = '';
   @Input() description?: string = '';
   @Input() urlParams?: any;
+  @ContentChild('count') count!: TemplateRef<any>;
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -74,7 +74,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() sortBy: string = "";
   @Input() sortOrder: string = "asc";
   @Input() filters: IFormGenerator[] = [];
-  tableTitle: string = "";
+  @Input() tableTitle: string = "";
+  @ContentChild('header') header!: TemplateRef<any>;
   @Input() showDeleted: boolean = true;
   @Input() showFilterButton: boolean = true;
   @Input() showSort: boolean = true;
