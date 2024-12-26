@@ -29,7 +29,7 @@ const routes: Routes = [
     data: { title: 'Search' }
   },
   {
-    path: 'cpd',
+    path: 'cpd', data: { title: 'Continuous Professional Development' },
     loadChildren: () => import('./features/cpd/cpd.module').then(m => m.CpdModule)
   },
   { path: 'practitioners', data: { title: 'Practitioners' }, loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },

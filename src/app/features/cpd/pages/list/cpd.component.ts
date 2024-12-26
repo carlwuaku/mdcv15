@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ICellRendererParams } from 'ag-grid-community';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { DateService } from 'src/app/core/date/date.service';
-import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { API_CPD_PATH } from 'src/app/shared/utils/constants';
+import { CpdService } from '../../cpd.service';
+import { DataListComponentInterface } from 'src/app/shared/types/DataListComponentInterface';
+import { CpdObject } from '../../models/cpd_model';
+import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 
 @Component({
   selector: 'app-cpd',
@@ -16,80 +18,12 @@ export class CpdComponent implements OnInit {
   can_edit: boolean = false;
   can_delete: boolean = false;
 
-  base_url: string = `${API_CPD_PATH}/getCpds`;
+  baseUrl: string = `cpd/details`;
   year: any
   url: string = "";
-  timestamp: string = "";
-  columnDefs = [
-    {
-      headerName: '#',
-      valueGetter: "node.rowIndex + 1",
-      width: 80,
-      checkboxSelection: true,
-      headerCheckboxSelection: true
-    },
-    {
-      headerName: 'Menu',
-      sortable: true, cellClass: 'bordered',
-      cellRenderer: 'DataListMenuButtonComponent',
-      cellRendererParams: (params: ICellRendererParams) => ({
-        actions: [
-          { label: "View", type: "link", link: `cpd/details/${params.data.id}` },
-          { label: "Edit", type: "link", link: `cpd/edit/${params.data.id}` },
-          { label: "Delete", type: "button", onClick: () => { this.delete(params.data.id) } },
-        ]
-      }),
-      filter: true
-    },
-
-    {
-      headerName: 'Topic',
-      sortable: true, cellClass: 'bordered',
-      cellRenderer: 'LinkNameComponent',
-      cellRendererParams: (params: ICellRendererParams) => ({
-        link: `cpd/details/${params.data.id}`,
-        label: params.data.topic
-      }),
-      filter: true
-    },
-    { headerName: 'Credits', field: 'credits', sortable: true, cellClass: 'bordered', filter: true },
-    { headerName: 'Category', field: 'category', sortable: true, cellClass: 'bordered', filter: true },
-    { headerName: 'Created On', field: 'created_on', sortable: true, cellClass: 'bordered', filter: true },
-
-    { headerName: 'Organizer', field: 'facility_name', sortable: true, editable: true, cellClass: 'bordered', filter: true },
-    {
-      headerName: 'Phone', field: 'facility_phone', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    },
-    {
-      headerName: 'Email', field: 'email', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    },
-    {
-      headerName: 'No. of attendants', field: 'number_of_attendants', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    },
-    {
-      headerName: 'No. of sessions', field: 'number_of_sessions', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    },
-    {
-      headerName: 'Online', field: 'online', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    },
-    {
-      headerName: 'URL', field: 'url', sortable: true, editable: true, cellClass: 'bordered',
-      filter: true
-    }
 
 
-  ];
-
-  rowHeight  = function (params:any) {
-    return 55;
-  };
-
-  constructor(private dbService: HttpService, private dateService: DateService,
+  constructor(private cpdService: CpdService, private dateService: DateService,
     private notify: NotifyService, private authService: AuthService) {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
       this.can_edit = true;
@@ -97,44 +31,48 @@ export class CpdComponent implements OnInit {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Delete")) {
       this.can_delete = true;
     }
-    var date = new Date();
+    const date = new Date();
     this.year = date.getFullYear().toString();
-    // this.dbService.setTitle("CPD Topics");
   }
+
+  ts: string = "";
+
+  getActions = (object: CpdObject): DataActionsButton[] => {
+    const actions: DataActionsButton[] = [
+      { label: "View", type: "link", link: `cpd/details`, linkProp: 'uuid' },
+      { label: "Edit", type: "link", link: `cpd/edit`, linkProp: 'uuid' },
+      { label: "Delete", type: "button", onClick: (object: CpdObject) => this.delete(object) }
+    ];
+
+    return actions;
+  }
+  updateTimestamp(): void {
+    this.ts = new Date().getTime().toString();
+  }
+  setSelectedItems(objects: CpdObject[]): void {
+    console.log(objects);
+  }
+  specialClasses: Record<string, string> = {};
 
 
   ngOnInit(): void {
     this.setUrl();
   }
 
-  setUrl(): void{
-    this.url = this.base_url + "?year=" + this.year
-
+  setUrl(): void {
+    this.url = this.baseUrl + "?year=" + this.year
   }
 
-  delete(id: string):void {
-    if (!this.can_delete) {
-      alert("You are not permitted to perform this action");
+  delete(object: CpdObject) {
+    if (!window.confirm('Are you sure you want to delete this CPD topic? You will not be able to restore it. Note that you cannot delete a topic with associated CPD attendance')) {
       return;
     }
-    if (window.confirm("Sure you want to delete this cpd? You cannot undo this")) {
-      this.notify.showLoading();
-      let data = new FormData();
-
-      data.append("id", id);
-      this.dbService.post<any>(`${API_CPD_PATH}/deleteCpd`, data).subscribe({
-        next: (data:any) => {
-          this.notify.successNotification("cpd deleted successfully");
-          this.timestamp = this.dateService.getToday("timestamp_string")
-
-
-      }, error: (error) => {
-
-        },
-        complete: () => {
-          this.notify.hideLoading();
-
-      }});
-    }
+    this.cpdService.deleteCpd(object).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+        this.updateTimestamp();
+      },
+      error: error => { }
+    })
   }
 }

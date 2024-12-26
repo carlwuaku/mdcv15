@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 export class MatDatepickerComponent implements OnChanges {
   @Input() label: string = 'Date';
   @Input() initialDate?: string = undefined;
-  date: Date = new Date();
+  date?: Date;
   @Output() onFinish: EventEmitter<string> = new EventEmitter();
   // options = {
   //   dateInput: { dateFormat: 'YYYY/MM/DD' } // Set the desired format here
@@ -20,6 +20,7 @@ export class MatDatepickerComponent implements OnChanges {
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialDate'] && this.initialDate) {
+      console.log(this.initialDate, 'initialDate')
       this.date = new Date(this.initialDate);
     }
   }

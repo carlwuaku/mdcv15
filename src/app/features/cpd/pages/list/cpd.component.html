@@ -1,20 +1,19 @@
-<div class="content">
-    <h4>LIST OF CPD EVENTS <small><button [routerLink]="['/cpd/add']" mat-raised-button color="primary"><mat-icon>add</mat-icon> Add a new CPD event </button> </small> </h4>
-    <div class="card">
-        <div class="card-header">
-
-            <!-- <a class="btn btn-primary" (click)="sms()">sms</a> -->
-            <form class="" ngNativeValidate #n="ngForm" (ngSubmit)="setUrl()">
-                <label>Select year</label> <input required type="number" name="year" value="" [(ngModel)]="year">
-                <button mat-raised-button color="primary" type="submit">Query</button>
-            </form>
-
-        </div>
-        <div class="card-body">
-        <app-load-data-list  [url]="url"></app-load-data-list>
-        </div>
-    </div>
+<div class="flex flex-col gap-1">
+  <a mat-raised-button color="primary" class="self-start" routerLink="/cpd/add"><mat-icon>add</mat-icon> Add new CPD
+    topic</a>
+  <mat-card>
+    <mat-card-content>
+      <app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems">
+        <ng-template #header>
+          <form class="flex gap-1">
+            <mat-form-field appearance="fill">
+              <mat-label>Year </mat-label>
+              <input matInput type="number" name="year" [(ngModel)]="year" />
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="setUrl()">Get Data</button>
+          </form>
+        </ng-template>
+      </app-load-data-list>
+    </mat-card-content>
+  </mat-card>
 </div>
-
-
-

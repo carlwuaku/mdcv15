@@ -303,4 +303,8 @@ export class TemplateFormComponent implements OnInit {
   removeAction(stageIndex: number, actionIndex: number) {
     this.getActions(stageIndex).removeAt(actionIndex);
   }
+
+  setRoles(args: any[]) {
+    console.log(args)
+  }
 }

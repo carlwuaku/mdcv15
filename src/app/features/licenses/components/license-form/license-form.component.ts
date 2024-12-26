@@ -3,13 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { goBackHome } from 'src/app/shared/utils/helper';
 import { LicensesService } from '../../licenses.service';
+import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
+import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
   selector: 'app-license-form',
   templateUrl: './license-form.component.html',
   styleUrls: ['./license-form.component.scss']
 })
-export class LicenseFormComponent implements OnInit {
+export class LicenseFormComponent implements OnInit, FormGeneratorComponentInterface {
   public action: string;
   public id: string | undefined = undefined;
   public type: string | undefined = undefined;
@@ -19,7 +21,7 @@ export class LicenseFormComponent implements OnInit {
   public extraFormData: { key: string, value: any }[] = []
   public formUrl: string = "licenses/details"
   public loaded: boolean = false;
-  constructor(private service: LicensesService, ar: ActivatedRoute, private router: Router) {
+  constructor(private service: LicensesService, ar: ActivatedRoute, private router: Router, private notify: NotifyService) {
     this.id = ar.snapshot.params['id'];
     this.action = ar.snapshot.params['action'];
     this.type = ar.snapshot.params['type'];
@@ -51,6 +53,9 @@ export class LicenseFormComponent implements OnInit {
   formSubmitted(args: boolean) {
     if (args) {
       this.router.navigate(['/licenses'])
+    }
+    else {
+      this.notify.failNotification("Failed to save license")
     }
   }
 

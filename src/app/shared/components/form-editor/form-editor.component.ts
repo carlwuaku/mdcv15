@@ -8,9 +8,9 @@ import { OptionsEditorComponent } from './options-editor/options-editor.componen
   templateUrl: './form-editor.component.html',
   styleUrls: ['./form-editor.component.scss']
 })
-export class FormEditorComponent implements OnInit{
+export class FormEditorComponent implements OnInit {
   @Input() fields: (FormField | FormField[])[] = [];
-  @Output() formChanged:EventEmitter<(FormField | FormField[])[]> = new EventEmitter();
+  @Output() formChanged: EventEmitter<(FormField | FormField[])[]> = new EventEmitter();
   selectedItem: FormField | undefined;
   lastSelected: FormField | undefined;// Add a property to store the last selected field so we can reset
   isRow = isRow;
@@ -29,6 +29,7 @@ export class FormEditorComponent implements OnInit{
     "select",
     "textarea",
     "file",
+    "label",
     "button",
     "submit",
     "reset",
@@ -44,7 +45,7 @@ export class FormEditorComponent implements OnInit{
 
 
 
-  addField(type:string) {
+  addField(type: string) {
     // Add a new IFormGenerator object to the fields array
     this.fields.push({
       label: `Field ${this.fields.length + 1}`,
@@ -60,7 +61,7 @@ export class FormEditorComponent implements OnInit{
       showOnly: false,
     });
     this.selectedItem = (this.fields[this.fields.length - 1] as IFormGenerator);
-    if(type === "checkbox" || type === "radio" || type === "select"){
+    if (type === "checkbox" || type === "radio" || type === "select") {
       this.openOptionsDialog();
     }
     this.formChanged.emit(this.fields);
@@ -72,9 +73,10 @@ export class FormEditorComponent implements OnInit{
     this.formChanged.emit(this.fields);
   }
 
-  addFieldToRow(row: FormField[], type:string) {
+  addFieldToRow(row: FormField[], type: string) {
     // Add a new IFormGenerator object to the row array
     row.push(new FormField(type));
+    this.selectedItem = row[row.length - 1];
     this.formChanged.emit(this.fields);
   }
 
@@ -100,7 +102,7 @@ export class FormEditorComponent implements OnInit{
     this.formChanged.emit(this.fields);
   }
 
-  deleteField(name:string) {
+  deleteField(name: string) {
     // Find the index of the field with the name passed in
     const index = this.fields.findIndex((field) => isFormField(field) && field.name === name);
     // If the index is found
@@ -111,7 +113,7 @@ export class FormEditorComponent implements OnInit{
     this.formChanged.emit(this.fields);
   }
 
-  removeRow() {}
+
 
   moveFieldUp(field: FormField) {
     // Get the index of the field
@@ -135,7 +137,45 @@ export class FormEditorComponent implements OnInit{
     this.formChanged.emit(this.fields);
   }
 
-  editField() {}
+  deleteRow(field: FormField[]) {
+    // Find the index of the field with the name passed in
+    const index = this.fields.indexOf(field);
+    if (!window.confirm("Are you sure you want to delete this row?")) {
+      return;
+    }
+    // If the index is found
+    if (index !== -1) {
+      // Remove the field from the fields array
+      this.fields.splice(index, 1);
+    }
+    this.formChanged.emit(this.fields);
+  }
+
+
+
+  moveRowUp(field: FormField[]) {
+    // Get the index of the field
+    const index = this.fields.indexOf(field);
+    // If the field is not the first field
+    if (index > 0) {
+      // Swap the field with the field before it
+      [this.fields[index - 1], this.fields[index]] = [this.fields[index], this.fields[index - 1]];
+    }
+    this.formChanged.emit(this.fields);
+  }
+
+  moveRowDown(field: FormField[]) {
+    // Get the index of the field
+    const index = this.fields.indexOf(field);
+    // If the field is not the last field
+    if (index < this.fields.length - 1) {
+      // Swap the field with the field after it
+      [this.fields[index + 1], this.fields[index]] = [this.fields[index], this.fields[index + 1]];
+    }
+    this.formChanged.emit(this.fields);
+  }
+
+  editField() { }
 
   setSelectedField(field: FormField) {
     this.selectedItem = field;
@@ -144,15 +184,27 @@ export class FormEditorComponent implements OnInit{
   openOptionsDialog() {
     const dialogRef = this.dialog.open(OptionsEditorComponent, {
       width: '70vw',
-      data: {label: this.selectedItem!.label, options: this.selectedItem!.options}
+      data: { label: this.selectedItem!.label, options: this.selectedItem!.options }
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result)
-      this.selectedItem!.options = result;
+      if (result)
+        this.selectedItem!.options = result;
       this.formChanged.emit(this.fields);
     });
   }
 
+  setSelectedItemLabel(args: string) {
+    if (this.selectedItem) {
+      this.selectedItem.label = args;
+      this.autoGenerateName();
+    }
+  }
+
+  autoGenerateName() {
+    if (this.selectedItem && this.selectedItem.label && this.selectedItem.name.trim() === "") {
+      this.selectedItem.name = this.selectedItem.label.toLowerCase().replace(/ /g, "_");
+    }
+  }
 
 
   // saveField() {
