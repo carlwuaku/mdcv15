@@ -1,13 +1,11 @@
 <div class="flex flex-col gap-1">
-  <a mat-raised-button color="primary" routerLink="/admin/userForm">Add a new user</a>
+  <a class="self-start" mat-raised-button color="accent" routerLink="/admin/userForm">Add a new user</a>
 
   <mat-card>
     <mat-card-content>
       <app-load-data-list [timestamp]="ts" [url]="url" (onSelect)="setSelectedItems($event)"
-        (selectionChanged)="setSelectedItems($event)"  [getActions]="getActions">
+        (selectionChanged)="setSelectedItems($event)" [getActions]="getActions">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>
 </div>
-
-

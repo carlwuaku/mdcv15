@@ -18,20 +18,20 @@ export class LoginComponent implements OnInit {
   password!: string;
   error: boolean = false;
   error_message: string = "";
-  user!:IUser;
+  user!: IUser;
   loading: boolean = false;
   flash_message: string | null = "";
   appName: string = "";
-  logo:string = "";
-  recaptchaVerified:boolean = false;
+  logo: string = "";
+  recaptchaVerified: boolean = false;
   recaptchaSiteKey: string = ""
   constructor(public authService: AuthService,
     private dbService: HttpService, private appService: AppService, private notify: NotifyService) {
-      this.appService.appSettings.subscribe(data => {
-        this.appName = data.appLongName;
-        this.logo = data.logo;
-        this.recaptchaSiteKey = data.recaptchaSiteKey;
-      })
+    this.appService.appSettings.subscribe(data => {
+      this.appName = data.appLongName;
+      this.logo = data.logo;
+      this.recaptchaSiteKey = data.recaptchaSiteKey;
+    })
 
   }
 
@@ -58,19 +58,21 @@ export class LoginComponent implements OnInit {
     let data = new FormData();
     data.append('email', this.username);
     data.append('password', this.password);
-    data.append('device_name','admin portal');
-    this.dbService.post<{token: string, user: User}>(`${API_PATH}/mobile-login`, data)
+    data.append('device_name', 'admin portal');
+    this.dbService.post<{ token: string, user: User }>(`${API_PATH}/mobile-login`, data)
       .pipe(take(1))
-      .subscribe({next: (response) => {
-        localStorage.setItem(LOCAL_USER_TOKEN, response.token);
-        this.authService.currentUser = response.user;
-        window.location.assign('/');
-      },
-      error: (err) => {
-        this.error = true;
-        this.error_message = err.error.message
-        this.loading = false;
-      },});
+      .subscribe({
+        next: (response) => {
+          localStorage.setItem(LOCAL_USER_TOKEN, response.token);
+          // this.authService.currentUser = response.user;
+          window.location.assign('/');
+        },
+        error: (err) => {
+          this.error = true;
+          this.error_message = err.error.message
+          this.loading = false;
+        },
+      });
   }
 
   logout() {
@@ -84,7 +86,7 @@ export class LoginComponent implements OnInit {
       const reg = input.trim();
       let data = new FormData();
       data.append("username", reg)
-      this.dbService.post < { message: string }>("send_reset_password_link_email",data).subscribe(data => {
+      this.dbService.post<{ message: string }>("send_reset_password_link_email", data).subscribe(data => {
         alert(data.message);
 
 
@@ -93,8 +95,8 @@ export class LoginComponent implements OnInit {
   }
 
   resolved(response: string) {
-    const body = { 'g-recaptcha-response':response };
-    this.dbService.post<{message:string}>(API_PATH + '/verify-recaptcha', body).subscribe({
+    const body = { 'g-recaptcha-response': response };
+    this.dbService.post<{ message: string }>(API_PATH + '/verify-recaptcha', body).subscribe({
       next: (res) => {
         this.recaptchaVerified = true;
         this.error_message = "";

@@ -106,8 +106,8 @@
             <span *ngSwitchCase="'actions'">
               <!-- if element.actions has only one item, show a single button. else display the menu button -->
               <span *ngIf="element.actions.length === 1; else menuButton">
-                <button *ngIf="element.actions[0].type === 'button'" (click)="element.actions[0].onClick(element)"
-                  mat-raised-button color="primary">
+                <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
+                  (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
                   <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
                   <span>{{ element.actions[0].label }}</span>
                 </button>

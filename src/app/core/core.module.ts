@@ -8,6 +8,7 @@ import { RecaptchaModule } from "ng-recaptcha";
 import { SearchComponent } from './pages/search/search.component';
 import { LicensesModule } from '../features/licenses/licenses.module';
 import { PractitionersModule } from '../features/practitioners/practitioners.module';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { PractitionersModule } from '../features/practitioners/practitioners.mod
     DashboardComponent,
     LoginComponent,
     LogoutComponent,
-    SearchComponent
+    SearchComponent,
+    PageNotFoundComponent
   ],
   imports: [
     CommonModule,

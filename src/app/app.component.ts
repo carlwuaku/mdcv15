@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
 
           root = root.firstChild!;
         }
-        this.title = titles.join('/ '); console.log(this.title)
+        this.title = titles.join('/ ');
       }
     });
     const app = initializeApp(firebaseConfig);
