@@ -19,5 +19,5 @@ export interface CpdObject {
   end_month_name?: string;
   phone?: string;
   email?: string;
-  uuid?: string;
+  uuid: string;
 }

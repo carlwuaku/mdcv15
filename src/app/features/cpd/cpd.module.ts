@@ -10,6 +10,10 @@ import { ProvidersListComponent } from './pages/providers-list/providers-list.co
 import { ProvidersFormComponent } from './pages/providers-form/providers-form.component';
 import { ProvidersDetailsComponent } from './pages/providers-details/providers-details.component';
 import { CpdFormComponent } from './pages/cpd-form/cpd-form.component';
+import { CpdAttendanceComponent } from './components/cpd-attendance/cpd-attendance.component';
+import { ManageCpdAttendanceComponent } from './pages/manage-cpd-attendance/manage-cpd-attendance.component';
+import { CpdListComponent } from './components/cpd-list/cpd-list.component';
+import { LicenseCpdHistoryComponent } from './components/license-cpd-history/license-cpd-history.component';
 
 
 @NgModule({
@@ -20,7 +24,11 @@ import { CpdFormComponent } from './pages/cpd-form/cpd-form.component';
     ProvidersListComponent,
     ProvidersFormComponent,
     ProvidersDetailsComponent,
-    CpdFormComponent
+    CpdFormComponent,
+    CpdAttendanceComponent,
+    ManageCpdAttendanceComponent,
+    CpdListComponent,
+    LicenseCpdHistoryComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +36,9 @@ import { CpdFormComponent } from './pages/cpd-form/cpd-form.component';
     SharedModule
   ],
   exports: [
-    CpdComponent
+    CpdComponent,
+    CpdAttendanceComponent,
+    LicenseCpdHistoryComponent
   ]
 })
 export class CpdModule { }

@@ -332,7 +332,7 @@ export class RenewalFormComponent {
 
     ];
 
-    if (license.in_good_standing === "Not In Good Standing") {
+    if (!license.last_renewal_uuid) {
       actions.push(
         { label: "Renew", type: "button", onClick: (license: LicenseObject) => this.selectForRenewal(license) }
       )

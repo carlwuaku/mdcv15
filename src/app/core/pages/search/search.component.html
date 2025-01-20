@@ -1,20 +1,18 @@
 <div class=" flex flex-col gap-1">
   <app-search-widget [searchType]="searchType" [param]="param"></app-search-widget>
 
-  <mat-card>
-    <mat-card-content>
-      <div></div>
-      <div *ngIf="!searchTypes.length"><app-loading></app-loading> Fetching configuration</div>
-      <div *ngIf="!url && searchType && searchTypes.length">Misconfigured url. Please refresh the page</div>
-      <div *ngIf="url" [ngSwitch]="searchType">
-        <div *ngSwitchCase="'facilities'">
-          <app-licenses [url]="finalUrl" [showSearch]="false"></app-licenses>
-        </div>
-
-        <div *ngSwitchDefault>
-          <p>Search for something</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <div *ngIf="!searchTypes.length"><app-loading></app-loading> Fetching configuration</div>
+  <div *ngIf="!url && searchType && searchTypes.length">Misconfigured url. Please refresh the page</div>
+  <div *ngIf="url" [ngSwitch]="searchType">
+    <div *ngSwitchCase="'facilities'">
+      <app-licenses [showAddButton]="false" [showSelectLicenseType]="false" [url]="finalUrl" [licenseType]="searchType"
+        [showSearch]="false"></app-licenses>
+    </div>
+    <div *ngSwitchCase="'practitioners'">
+      <app-licenses [url]="finalUrl" [licenseType]="searchType" [showSearch]="false"></app-licenses>
+    </div>
+    <div *ngSwitchDefault>
+      <p>Search for something</p>
+    </div>
+  </div>
 </div>

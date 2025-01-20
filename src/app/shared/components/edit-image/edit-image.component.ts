@@ -38,6 +38,14 @@ export class EditImageComponent {
       alert('Please select an image to upload');
       return;
     }
+    //the file must be a valid image type
+    const file = this.images.get("Image");
+    if (!file) {
+      alert('Please select an image to upload');
+      return;
+    }
+
+
     const uploadUrl = 'file-server/new/practitioners_images';
     this.fileUploadService.uploadFiles(this.images, uploadUrl)
       .subscribe({

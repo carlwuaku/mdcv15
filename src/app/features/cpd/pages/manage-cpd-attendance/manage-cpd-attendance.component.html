@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-1">
+  <div *ngIf="cpdObject">
+    <h1 class="text-primary text-xl">{{cpdObject.topic}}</h1>
+  </div>
+  <div class="flex gap-1">
+    <mat-card class="w-1/3">
+      <mat-card-header>
+        <mat-card-title>Select the practitioners</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="flex flex-col gap-1">
+        <app-select-object [embedSearchResults]="false" [type]="'search'" [url]="'licenses/details'"
+          selection_mode="multiple" (selectionChanged)="onLicenseSelected($event)"></app-select-object>
+        <app-mat-datepicker (onFinish)="setAttendanceDate($event)"></app-mat-datepicker>
+        <mat-form-field>
+          <mat-label>Venue</mat-label>
+          <input matInput [(ngModel)]="venue">
+        </mat-form-field>
+        <div>
+          <b>({{selectedLicenses.length}}) Selected practitioners</b>
+          <mat-action-list *ngIf="selectedLicenses.length > 0">
+            <button mat-list-item *ngFor="let license of selectedLicenses"
+              (click)="removeSelectedLicense(license)">{{license.name}}
+              ({{license.license_number}})
+            </button>
+          </mat-action-list>
+        </div>
+        <button [disabled]="selectedLicenses.length < 1" class="self-start" mat-raised-button color="primary"
+          (click)="submitAttendance()">Save</button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="w-2/3">
+      <mat-card-content>
+        <app-cpd-attendance [cpdUuid]="cpdUuid" [ts]="timestamp"></app-cpd-attendance>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

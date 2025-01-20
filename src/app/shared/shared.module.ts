@@ -43,6 +43,8 @@ import { SearchWidgetComponent } from './components/search-widget/search-widget.
 import { DashboardTileComponent } from './components/dashboard-tile/dashboard-tile.component';
 import { ProgressDialogComponent } from './components/progress-dialog/progress-dialog.component';
 import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
+import { SelectLicenseTypeComponent } from './components/select-license-type/select-license-type.component';
+import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
 
 @NgModule({
   declarations: [
@@ -82,6 +84,8 @@ import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
     DashboardTileComponent,
     ProgressDialogComponent,
     GhanaMapComponent,
+    SelectLicenseTypeComponent,
+    FilterEmptyValuesPipe,
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -130,7 +134,9 @@ import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
     EditImageComponent,
     SearchWidgetComponent,
     DashboardTileComponent,
-    GhanaMapComponent
+    GhanaMapComponent,
+    SelectLicenseTypeComponent,
+    FilterEmptyValuesPipe
   ],
   providers: [
     ClipboardCopyDirective

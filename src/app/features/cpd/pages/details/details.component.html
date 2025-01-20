@@ -38,6 +38,15 @@
         </mat-card>
       </ng-template>
     </mat-tab>
+    <mat-tab label="Attendance">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-cpd-attendance *ngIf="object" [cpdUuid]="object.uuid"></app-cpd-attendance>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
 
   </mat-tab-group>
 </div>

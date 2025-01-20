@@ -31,13 +31,12 @@ export class SearchComponent implements OnInit, OnDestroy, OnChanges {
     this.ar.queryParams
       .subscribe(params => {
         this.searchType = params['searchType'];
-        this.param = params['param'];
+        this.param = params['searchParam'];
         this.ts = params['t'];
         this.updateUrl();
       });
 
     this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      console.log(this.searchType)
       this.searchTypes = data.searchTypes;
       this.updateUrl();
     });
@@ -45,7 +44,7 @@ export class SearchComponent implements OnInit, OnDestroy, OnChanges {
 
   updateUrl() {
     this.url = this.searchTypes.find((type: { label: string, key: string, url: string }) => type.key === this.searchType)?.url;
-    this.finalUrl = `${this.url}?param=${this.param}&ts=${this.ts}`;
+    this.finalUrl = `${this.url}?searchParam=${this.param}&ts=${this.ts}`;
   }
 
 

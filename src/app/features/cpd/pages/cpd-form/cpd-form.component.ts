@@ -15,14 +15,14 @@ export class CpdFormComponent implements OnInit, FormGeneratorComponentInterface
   fields: IFormGenerator[] = [
     {
       label: "Select provider",
-      name: "provider_id",
+      name: "provider_uuid",
       hint: "",
       options: [],
       type: "api",
       value: "",
       required: true,
       api_url: "cpd/providers",
-      apiKeyProperty: "id",
+      apiKeyProperty: "uuid",
       apiLabelProperty: "name",
       apiType: "select",
     },

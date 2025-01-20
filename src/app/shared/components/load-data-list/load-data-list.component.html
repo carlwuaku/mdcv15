@@ -9,19 +9,36 @@
       </ng-template>
 
     </div>
-    <form *ngIf="showSearch" ngNativeValidate (ngSubmit)="search()"
-      class="flex flex-row gap-1 align-middle items-center flex-auto">
-      <mat-form-field [appearance]="'fill'" class="flex-auto">
-        <mat-label for="">Search</mat-label>
-        <input name="search" required matInput [(ngModel)]="searchParam" type="search">
-      </mat-form-field>
-      <button type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search</button>
-    </form>
+    <div class="flex gap-1 items-center">
+      <form *ngIf="showSearch" ngNativeValidate (ngSubmit)="search()"
+        class="flex flex-row gap-1 align-middle items-center">
+        <mat-form-field [appearance]="'fill'" class="flex-auto">
+          <mat-label for="">Search</mat-label>
+          <input name="search" required matInput [(ngModel)]="searchParam" (change)="paramInputChanged()" type="search">
+          <button matSuffix type="submit" mat-icon-button color="primary"> <mat-icon>search</mat-icon> </button>
+        </mat-form-field>
+
+      </form>
+      <button *ngIf="preload && showReset" (click)="reset()" mat-stroked-button
+        color="error"><mat-icon>refresh</mat-icon> Reset
+      </button>
+    </div>
+
 
 
     <div class="flex  gap-2  items-center flex-wrap">
       <button *ngIf="showFilterButton" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
+      <mat-chip-set aria-label="Filters">
+        <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
+          {{filter.label}} :
+          {{filter.value}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+
+        </mat-chip>
+      </mat-chip-set>
       <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
 
@@ -30,8 +47,7 @@
           <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
         </label>
       </span>
-      <button *ngIf="preload" (click)="reset()" mat-stroked-button color="error"><mat-icon>refresh</mat-icon> Reset
-      </button>
+
 
       <span *ngIf="showExport">
         <em>{{selection.selected.length}} Selected:</em>
@@ -100,6 +116,14 @@
 
 
         <td mat-cell *matCellDef="let element; let i = index;">
+          <ng-template #imageTemplate>
+            <div *ngIf="i > 9" pDefer>
+              <ng-template>
+                <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
+              </ng-template>
+            </div>
+            <p-image *ngIf="i < 9" [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
+          </ng-template>
           <span [ngSwitch]="column">
             <span *ngSwitchCase="'#'">{{offset+ i + 1}}</span>
 
@@ -155,21 +179,10 @@
                 [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
               </mat-checkbox>
             </span>
-
-            <span *ngSwitchCase="'picture'">
-              <!-- if the result is within the first 10, show it. there's a bug in defer that does not display the images until
-              the user scrolls to it. sometimes the view is displayed without the need to scroll, like when the data changes and only
-            one item is displayed -->
-              <div *ngIf="i > 9" pDefer>
-                <ng-template>
-                  <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
-                </ng-template>
-              </div>
-              <p-image *ngIf="i < 9" [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
+            <span *ngSwitchCase="'picture'" [ngTemplateOutlet]="imageTemplate"></span>
+            <span *ngSwitchCase="'qr_code'" [ngTemplateOutlet]="imageTemplate"></span>
 
 
-
-            </span>
 
             <span *ngSwitchDefault [innerHTML]="element[column]"
               [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))">
@@ -184,8 +197,11 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'strikethrough': row.deleted_at }"></tr>
 
     </table>
+
   </div>
 </div>
+
+
 
 <ng-template #sortDialog>
   <h2 mat-dialog-title>Sort Options</h2>

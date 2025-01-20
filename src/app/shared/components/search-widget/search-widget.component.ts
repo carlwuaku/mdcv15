@@ -17,10 +17,8 @@ export class SearchWidgetComponent implements OnInit, OnDestroy {
 
     ar.queryParams
       .subscribe(params => {
-        //console.log(params);
-
         this.searchType = params['searchType'];
-        this.param = params['param'];
+        this.param = params['searchParam'];
       });
 
 
@@ -40,7 +38,7 @@ export class SearchWidgetComponent implements OnInit, OnDestroy {
 
     this.router.navigate(['/search'], {
       queryParams:
-        { param: this.param, searchType: this.searchType, t: Date.now() }
+        { searchParam: this.param, searchType: this.searchType, t: Date.now() }
     });
 
 

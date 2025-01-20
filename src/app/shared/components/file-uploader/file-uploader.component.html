@@ -21,7 +21,8 @@
       (click)="triggerFileInput()">Select Files</button>
     <p *ngIf="maxFileSize && maxFileSize > 0">Max {{maxFileSize}}MB </p>
   </div>
-  <input class="hidden" #fileInput type="file" [multiple]="multiple" (change)="onFileSelected($event)">
+  <input class="hidden" [accept]="accept" #fileInput type="file" [multiple]="multiple"
+    (change)="onFileSelected($event)">
   <div *ngFor="let item of previews" class="flex flex-col items-center border-dashed border p-1 rounded-md">
     <img *ngIf="item.file.type.startsWith('image/')" [src]="item.preview" alt="Preview" [style.width.px]="previewHeight"
       [style.height.px]="previewHeight">

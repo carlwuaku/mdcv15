@@ -1,29 +1,57 @@
 <app-loading *ngIf="loading"></app-loading>
 
-  <mat-form-field class="flex-auto" *ngIf="type === 'select'">
-    <mat-label>{{fieldLabel}}</mat-label>
-    <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()" appearance="outline">
-      <mat-option>None</mat-option>
-      <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
-      <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}} </mat-option>
-    </mat-select>
-  </mat-form-field>
+<mat-form-field class="flex-auto" *ngIf="type === 'select'">
+  <mat-label>{{fieldLabel}}</mat-label>
+  <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()" appearance="outline">
+    <mat-option>None</mat-option>
+    <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
+    <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] ||
+      object}} </mat-option>
+  </mat-select>
+</mat-form-field>
 
 
 
-  <mat-form-field class="flex-auto" *ngIf="type === 'datalist'">
-    <mat-label>{{fieldLabel}}</mat-label>
-  <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem" (change)="selectionMade()" (keyup)="selectionMade()">
+<mat-form-field class="flex-auto" *ngIf="type === 'datalist'">
+  <mat-label>{{fieldLabel}}</mat-label>
+  <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem"
+    (change)="selectionMade()" (keyup)="selectionMade()">
   <datalist id="{{dataListId}}">
-    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}}</option>
+    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}}
+    </option>
   </datalist>
 </mat-form-field>
 
 
-<div  *ngIf="type === 'search'">
-  <label>{{fieldLabel}}</label>
-    <p-autoComplete [(ngModel)]="selectedItem" [dropdown]="true" [field]="labelProperty" [suggestions]="objects"
-        (completeMethod)="search($event)"></p-autoComplete>
+<div *ngIf="type === 'search'">
+  <mat-form-field appearance="fill">
+    <mat-label>{{fieldLabel}}</mat-label>
+    <input matInput type="text" class="form-control" [(ngModel)]="search_param" (ngModelChange)="selectionMade()"
+      (keyup.enter)="search()">
+    <button mat-icon-button matSuffix (click)="search()"><mat-icon>search</mat-icon> </button>
+  </mat-form-field>
 
+  <mat-card *ngIf="search_param && objects.length > 0" [ngClass]="{'absolute z-10': !embedSearchResults }">
+    <div class="flex justify-end">
+      <button mat-raised-button color="primary" (click)="saveSearchSelection()">
+        <mat-icon>check</mat-icon>
+        Done</button>
+      <button mat-icon-button color="warn" (click)="search_param = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-card-content class="overflow-auto max-h-[350px]">
+
+      <mat-selection-list [(ngModel)]="selectedSearchItems">
+        <mat-list-option *ngFor="let object of objects; let i = index" [value]="object">
+          {{i+1 +". "+object[labelProperty]}}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card-content>
+
+
+    <!-- <p-autoComplete [(ngModel)]="selectedItem" [dropdown]="true" [field]="labelProperty" [suggestions]="objects"
+        (completeMethod)="search($event)"></p-autoComplete> -->
+
+  </mat-card>
 </div>
-

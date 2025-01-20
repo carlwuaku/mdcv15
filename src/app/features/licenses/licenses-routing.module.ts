@@ -11,6 +11,7 @@ import { ManageRenewalsComponent } from './components/renewal/manage-renewals/ma
 
 const routes: Routes = [
   { path: '', component: LicensesComponent },
+  { path: 'list', component: LicensesComponent },
   { path: 'form/:action/:type', component: LicenseFormComponent, data: { title: "Add new license" } },
   { path: 'form/:action/:type/:id', component: LicenseFormComponent, data: { title: "Update license" } },
   { path: 'license-details/:id', component: DetailsComponent, data: { title: "License details" } },
@@ -21,7 +22,7 @@ const routes: Routes = [
   { path: 'renewal-form', data: { title: 'Create Renewal' }, component: RenewalFormComponent },
   { path: 'renewal-form/:id', data: { title: 'Edit Renewal' }, component: RenewalFormComponent },
   { path: 'renewal-certificate/:id', data: { title: 'Print Renewal Certificate' }, component: RenewalCertificateComponent },
-  { path: 'renewals/:licenseType', data: { title: 'Manage Renewals' }, component: RenewalDashboardComponent },
+  { path: 'renewal-dashboard', data: { title: 'Manage Renewals' }, component: RenewalDashboardComponent },
 
 ];
 

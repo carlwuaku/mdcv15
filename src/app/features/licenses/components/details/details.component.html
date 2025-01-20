@@ -57,7 +57,13 @@
     </mat-tab>
     <mat-tab label="CPD History">
       <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
 
+            <app-license-cpd-history [baseUrl]="'cpd/license-attendance'" [url]="'cpd/license-attendance'"
+              [licenseNumber]="object.license_number"></app-license-cpd-history>
+          </mat-card-content>
+        </mat-card>
       </ng-template>
     </mat-tab>
     <mat-tab label="Renewal History">

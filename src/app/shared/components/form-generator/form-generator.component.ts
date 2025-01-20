@@ -182,20 +182,20 @@ export class FormGeneratorComponent implements OnInit {
     for (const field of fields) {
       console.log(field)
       if (field.required && !field.value) {
-        this.notify.failNotification(`Field '${field.name}' is required.`);
+        this.notify.failNotification(`Field '${field.label}' is required.`);
         return false;
       }
 
       if (field.minLength && field.value?.trim() && field.value.length < field.minLength) {
         this.notify.failNotification(
-          `Field '${field.name}' should be at least ${field.minLength} characters long.`
+          `Field '${field.label}' should be at least ${field.minLength} characters long.`
         );
         return false;
       }
 
       if (field.maxLength && field.value.length > field.maxLength) {
         this.notify.failNotification(
-          `Field '${field.name}' should be at most ${field.maxLength} characters long.`
+          `Field '${field.label}' should be at most ${field.maxLength} characters long.`
         );
         return false;
       }

@@ -18,6 +18,7 @@ import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-
 import { RenewalCertificateComponent } from './components/renewal/renewal-certificate/renewal-certificate.component';
 import { RenewalDashboardComponent } from './components/renewal/renewal-dashboard/renewal-dashboard.component';
 import { ManageRenewalsComponent } from './components/renewal/manage-renewals/manage-renewals.component';
+import { CpdModule } from '../cpd/cpd.module';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ManageRenewalsComponent } from './components/renewal/manage-renewals/ma
   imports: [
     CommonModule,
     LicensesRoutingModule,
-    SharedModule
+    SharedModule,
+    CpdModule
   ],
   exports: [
     LicensesComponent,

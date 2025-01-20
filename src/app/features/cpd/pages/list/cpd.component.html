@@ -3,17 +3,7 @@
     topic</a>
   <mat-card>
     <mat-card-content>
-      <app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems">
-        <ng-template #header>
-          <form class="flex gap-1">
-            <mat-form-field appearance="fill">
-              <mat-label>Year </mat-label>
-              <input matInput type="number" name="year" [(ngModel)]="year" />
-            </mat-form-field>
-            <button mat-raised-button color="primary" (click)="setUrl()">Get Data</button>
-          </form>
-        </ng-template>
-      </app-load-data-list>
+      <app-cpd-list></app-cpd-list>
     </mat-card-content>
   </mat-card>
 </div>

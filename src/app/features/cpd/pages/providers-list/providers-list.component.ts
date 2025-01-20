@@ -18,7 +18,7 @@ export class ProvidersListComponent implements DataListComponentInterface<CpdPro
   selectedItems: CpdProviderObject[] = [];
   getActions = (object: CpdProviderObject): DataActionsButton[] => {
     const actions: DataActionsButton[] = [
-      { label: "View", type: "link", link: `cpd/provider/`, linkProp: 'uuid' },
+      { label: "View", type: "link", link: `cpd/providers/`, linkProp: 'uuid' },
       { label: "Edit", type: "link", link: `cpd/providers-form`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: CpdProviderObject) => this.delete(object) }
     ];

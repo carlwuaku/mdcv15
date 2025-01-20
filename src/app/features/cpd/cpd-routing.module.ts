@@ -6,6 +6,7 @@ import { ProvidersFormComponent } from './pages/providers-form/providers-form.co
 import { ProvidersDetailsComponent } from './pages/providers-details/providers-details.component';
 import { CpdFormComponent } from './pages/cpd-form/cpd-form.component';
 import { DetailsComponent } from './pages/details/details.component';
+import { ManageCpdAttendanceComponent } from './pages/manage-cpd-attendance/manage-cpd-attendance.component';
 
 const routes: Routes = [
   { path: '', component: CpdComponent, data: { title: 'List all CPDs' } },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'details/:id', component: DetailsComponent, data: { title: 'CPD details' } },
   { path: 'providers/:id', component: ProvidersDetailsComponent, data: { title: 'CPD provider details' } },
   { path: 'providers-form', component: ProvidersFormComponent, data: { title: 'Add new CPD provider details' } },
-  { path: 'providers-form/:id', component: ProvidersFormComponent, data: { title: 'Edit CPD provider details' } }
+  { path: 'providers-form/:id', component: ProvidersFormComponent, data: { title: 'Edit CPD provider details' } },
+  { path: 'attendance/:id', component: ManageCpdAttendanceComponent, data: { title: 'Add/Edit Attendance' } },
 ];
 
 @NgModule({
