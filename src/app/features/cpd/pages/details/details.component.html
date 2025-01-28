@@ -1,204 +1,88 @@
-<div class="content">
-
-
-
-    <div class="card">
-        <div class="card-header">
-            <h4>CPD DETAILS</h4>
-        </div>
-        <div class="card-body">
-            <div *ngIf="error">
-                <h4>Unable to connect to server.
-                    <a class="btn btn-primary btn-sm" (click)="getCpdDetails()">Try again</a>
-                </h4>
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <div class="flex flex-col gap-1" *ngIf="object != null">
+        <div class="flex gap-2  items-center">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg">{{object.topic}}</h3>
+            <div class="flex gap-2 items-baseline">
+              <span><span class="font-light text-primary">Year:</span>
+                {{object.date}} </span>
+              <span><span class="font-light text-primary"> Provider:</span>
+                {{object.provider_name}}</span>
+              <span><span class="font-light text-primary">Category:</span>{{object.category}}</span>
+              <span><span class="font-light text-primary">Credits:</span> {{object.credits}}</span>
             </div>
-            <app-loading *ngIf="is_loading">
-            </app-loading>
-            <div *ngIf="is_loaded">
-                <h4>{{cpd.topic}}
-                </h4>
 
-                <a mat-raised-button routerLink="'/cpd/edit/{{id}}'" color="primary" class="btn btn-sm btn-primary"> <mat-icon>edit</mat-icon> Edit</a>
 
-                |
-                <i class="feather icon-user"></i>
-                <b>
-                    <a routerLink="/cpd_facility/{{cpd.facility_id}}">{{cpd.facility_name}}</a>
-                </b> &nbsp;
-                <span class="text-success">
-                    <i class="feather icon-phone"></i>
-                    <b>{{cpd.phone}}</b>
-                </span> |
-                <span class="text-success">
-                    <i class="feather icon-mail"></i>
-                    <b>{{cpd.email}}</b>
-                </span>
-                <b class="pull-right"><span class="text-danger">Category:</span> {{cpd.category}} || <span
-                        class="text-danger">Credits:</span>: {{cpd.credits}} credits </b>
-            </div>
+          </div>
+
         </div>
 
-    </div>
+      </div>
+      <div class="" *ngIf="errorLoadingData">
+        <b>Error loading data. Please try again</b>
+        <button mat-raised-button (click)="getCpdDetails()">Reload</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-    <div class="row">
-        <div class="col-md-4">
+  <mat-tab-group *ngIf="object != null">
+    <mat-tab label="Details">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-key-value-display *ngIf="object" [object]="object"
+              [displayedColumns]="displayedColumns"></app-key-value-display>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Attendance">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-cpd-attendance *ngIf="object" [cpdUuid]="object.uuid"></app-cpd-attendance>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
 
-            <div class="" *ngIf="current_session == null">
-                <h5>Sessions</h5>
-                <app-cpd-session [cpd]="cpd" (onSelect)="sessionSelected($event)" *ngIf="is_loaded"></app-cpd-session>
-            </div>
-
-
-            <h5>Add Attendees</h5>
-
-            <div class="" *ngIf="current_session != null && can_edit">
-                <i class="fa fa-calendar"></i>: {{current_session.date}}
-                <i class="fa fa-map-marker"></i> {{current_session.venue}} ({{current_session.region}})
-                <a class="btn btn-warning btn-xs" (click)="current_session = null;">Change venue & date</a>
-                <hr>
-                <label><input type="radio" checked name="add_by" value="manually" [(ngModel)]="add_by"> Enter numbers
-                    manually</label>
-
-                <label><input type="radio" name="add_by" value="files" [(ngModel)]="add_by"> Upload Excel file</label>
-
-                <div class="card " *ngIf="add_by == 'files'">
-                    <div class="card-header">
-                        The file must be a csv file. For how to convert an excel file to csv format, please
-                        go to google. <br>
-                        The only information needed is the registration numbers. Names and other information
-                        will be ignored if present. <br> Indicate here which column in the spreadsheet contains the
-                        doctors'
-                        registration numbers: <br>
-                        <input type="number" name="col" [(ngModel)]="excel_col">
-                    </div>
-                    <div class="card-body">
-                        <input type="file" name="filename" (change)="uploadFile($event)" placeholder="Select csv file"
-                            [(ngModel)]="filename" accept=".csv">
-                    </div>
-                </div>
-
-                <label>Select group </label>
-                <select [(ngModel)]="type">
-                    <option value="Doctors">Doctors</option>
-                    <option value="Physician Assistants">Physician Assistants</option>
-                </select>
-
-                <app-select-object type="search" *ngIf="add_by == 'manually'" [url]="getSearchUrl()" (selectionChanged)="addAttendee($event)" ></app-select-object>
-                
-
-            </div>
-            <div class="" *ngIf="current_session == null  && can_edit">
-                <span class="text-danger">Select a sesion above to add attendance</span>
-            </div>
-            <!-- <input type="date" *ngIf="is_loaded" [(ngModel)]="attendance_date" min="{{cpd.date}}" max="{{cpd.end_date}}" name="date" value=""> -->
-        </div>
-
-
-
-        <div class="col-md-8">
-            <div class="well sticky" *ngIf="is_loaded_attendees && selected.length > 0">
-                <!-- <a class="btn btn-info" (click)="viewSummary()">View Summary</a> -->
-
-                <!-- <a class="btn btn-info" *ngIf="!all_selected" (click)="selectAll()">Select All</a>
-                  <a class="btn btn-warning" (click)="deSelectAll()" *ngIf="all_selected || selected.length > 0">Deselect All</a>
-                  <b>With selected ({{selected.length}}): </b>
-                  <label>Range: </label>
-                  <input (keyup)="selectRange()" (change)="selectRange()" 
-                  min="1" type="number" size="5" [(ngModel)]="range_start"> -
-  
-                  <input type="number" size="5" (keyup)="selectRange()" (change)="selectRange()"
-                   max="{{attendees.length}}" [(ngModel)]="range_end"> -->
-
-                <button *ngIf="can_delete" class="btn btn-sm btn-warning" (click)="delete_multiple()">
-                    <i class="feather icon x"></i> Delete</button>
-                <button *ngIf="can_delete" title="move attendees to a different cpd topic"
-                    class="btn btn-sm btn-primary" >
-                    Migrate</button>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h5>Attendees ({{view_type}})
-                        <span *ngIf="is_loaded_attendees">({{attendees.length}})
-                            <button class="btn btn-primary btn-sm" (click)="getAttendees()"> <i
-                                    class="feather icon-refresh-cw"></i> </button>
-
-                        </span>
-                    </h5>
-
-                    <button class="btn btn-info btn-sm" (click)="changeView('All')">View all
-                        ({{all_attendees.length}})</button>
-
-                    <!-- <button class="btn btn-info btn-sm" (click)="changeView('Doctor')">View only Doctors
-                        ({{(all_attendees | filter:'type':'doctor').length}})</button>
-                    <button class="btn btn-info btn-sm" (click)="changeView('Physician Assistant')">View only Physician Assistants
-                        ({{(all_attendees | filter:'type':'pa').length}})</button> -->
-
-                </div>
-                <div class="card-body">
-                    <div *ngIf="error_attendees">
-                        <h4>Unable to connect to server.
-                            <button class="btn btn-primary btn-sm" (click)="getAttendees()">Try again</button>
-                        </h4>
-                    </div>
-                    <app-loading *ngIf="is_loading_attendees">
-                    </app-loading>
-                    <div class="table-responsive" *ngIf="is_loaded_attendees">
-
-                        <!-- <button class=" btn btn-primary btn-sm" (click)="show_pics = !show_pics">Show/Hide Pictures</button> -->
-                        <app-export-table [objects]="attendees"></app-export-table>
-                        <hr>
-
-
-                        <!-- <ag-grid-angular #agGrid
-                            style="width: 100%; height: 400px; font-family: 'Muli'; font-size: 15px;"
-                            class="ag-theme-balham" [rowData]="attendees" [columnDefs]="columnDefs"
-                            (selectionChanged)="onSelectionChanged($event)" (gridReady)="onGridReady($event)"
-                            rowSelection="multiple">
-                        </ag-grid-angular>
-                        <app-export-to-excel [objects]="attendees"></app-export-to-excel> -->
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
+  </mat-tab-group>
 </div>
 
 
 
 
-<div class="modal fade" id="migrate_cpd_attendees_modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="smallModalLabel">Migrate Attendees </h4>
-            </div>
-            <div class="modal-body">
-                <form class="" ngNativeValidate #n="ngForm" (ngSubmit)="migrateSelected()">
 
-                    <!-- <app-select-cpd (onFinish)="setMigrationCpd($event)"></app-select-cpd> -->
 
-                    <div *ngIf="migration_cpd != null">
-                        <label>Date</label>
-                        <br>
-                        <input type="date" name="migration_date" [(ngModel)]="migration_date">
-                        <hr>
-                        <label>Venue</label>
-                        <br>
-                        <input type="text" name="migration_venue" [(ngModel)]="migration_venue">
-                        <hr>
-                        <input type="submit" class="btn btn-primary" value="submit">
-                    </div>
+<!-- <div class="modal fade" id="migrate_cpd_attendees_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="smallModalLabel">Migrate Attendees </h4>
+      </div>
+      <div class="modal-body">
+        <form class="" ngNativeValidate #n="ngForm" (ngSubmit)="migrateSelected()">
 
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-warning waves-effect" data-dismiss="modal">CLOSE</button>
-            </div>
-        </div>
+
+          <div *ngIf="migration_cpd != null">
+            <label>Date</label>
+            <br>
+            <input type="date" name="migration_date" [(ngModel)]="migration_date">
+            <hr>
+            <label>Venue</label>
+            <br>
+            <input type="text" name="migration_venue" [(ngModel)]="migration_venue">
+            <hr>
+            <input type="submit" class="btn btn-primary" value="submit">
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning waves-effect" data-dismiss="modal">CLOSE</button>
+      </div>
     </div>
-</div>
+  </div>
+</div> -->

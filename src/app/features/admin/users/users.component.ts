@@ -12,7 +12,7 @@ import { getToday } from 'src/app/shared/utils/dates';
 })
 export class UsersComponent {
 
-  constructor(private dbService: HttpService, private notify:NotifyService) {
+  constructor(private dbService: HttpService, private notify: NotifyService) {
     this.updateTimestampEvent.subscribe(() => {
       this.updateTimestamp();
     });
@@ -46,7 +46,7 @@ export class UsersComponent {
 
   getActions = (user: User): DataActionsButton[] => {
     const actions: DataActionsButton[] = [];
-    if (user.status !== null) {
+    if (user.deleted_at) {
       actions.push(
         { label: "Activate Account", type: "button", onClick: (user: User) => this.activate(user) }
       )
@@ -63,7 +63,7 @@ export class UsersComponent {
     return actions;
   }
 
-  updateTimestamp(){
+  updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
 
@@ -72,35 +72,38 @@ export class UsersComponent {
   deactivate(user: User) {
     const reason = window.prompt("Please state a reason for deactivating this user");
     const data = reason ? { "reason": reason } : {}
-    this.dbService.put<{message: string}>(`admin/users/${user.id}/deactivate`, data).subscribe({
+    this.dbService.put<{ message: string }>(`admin/users/${user.id}/deactivate`, data).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
-  deleteUser (user: User) {
+  deleteUser(user: User) {
     if (!window.confirm('Are you sure you want to deactivate this user? This will prevent the account from being used until you re-activate it')) {
       return;
     }
-    this.dbService.delete<{message:string}>("admin/users/" + user.id).subscribe({
+    this.dbService.delete<{ message: string }>("admin/users/" + user.id).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 
-  activate (user: User) {
+  activate(user: User) {
     if (!window.confirm('Are you sure you want to activate this user? This will allow the user to login to the system')) {
       return;
     }
-    this.dbService.put<{message:string}>("admin/users/" + user.id + "/activate", { "active": 1 }).subscribe({
+    this.dbService.put<{ message: string }>("admin/users/" + user.id + "/activate", { "active": 1 }).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-         this.updateTimestamp(); },
-      error: error => {  }
+        this.updateTimestamp();
+      },
+      error: error => { }
     })
   }
 }

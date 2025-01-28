@@ -20,7 +20,7 @@ import { getAnalytics } from "firebase/analytics";
   providers: [GoogleTagManagerService],
 })
 export class AppComponent implements OnInit {
-  appName = 'MDC Management System';
+  appName = 'Management System';
   title = '';
   isLoggedIn: boolean;
   user = this.authService.currentUser;
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
 
           root = root.firstChild!;
         }
-        this.title = titles.join('/ '); console.log(this.title)
+        this.title = titles.join('/ ');
       }
     });
     const app = initializeApp(firebaseConfig);

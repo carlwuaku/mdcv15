@@ -27,7 +27,7 @@ export class FileUploaderComponent implements OnChanges {
   @Input() uploadButtonLabel: string = "Confirm";
   @Input() cancelButtonLabel: string = "Cancel";
   @Input() chooseButtonLabel: string = "Select File";
-  @Input() accept: string = "image/*"
+  @Input() accept: string = ""
   @Input() showPreview: boolean = true;
   @Input() previewHeight: string = "100";
 

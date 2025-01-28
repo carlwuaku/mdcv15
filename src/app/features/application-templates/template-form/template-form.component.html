@@ -182,6 +182,26 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+              <div>
+                <label for="">Select roles that can move applications to this status</label>
+                <app-select-object (selectionChanged)="setRoles($event)" [url]="'admin/roles'" [keyProperty]="'role_id'"
+                  [labelProperty]="'role_name'" [type]="'select'" [selection_mode]="'multiple'"
+                  [formControlName]="'role_id'"></app-select-object>
+              </div>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Allowed Transitions</mat-label>
+                <mat-select formControlName="allowedTransitions" multiple>
+                  <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('id')?.value"
+                    [disabled]="i === j">
+                    {{s.get('name')?.value}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              api_url: "admin/roles",
+              apiKeyProperty: "role_id",
+              apiLabelProperty: "role_name",
+              apiType: "select",
 
               <!-- Actions -->
               <div class="flex flex-col gap-2 p-1" formArrayName="actions">

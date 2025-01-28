@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddCpdFacilityComponent } from './add-cpd-facility.component';
+import { ProvidersFormComponent } from './providers-form.component';
 
-describe('AddCpdFacilityComponent', () => {
-  let component: AddCpdFacilityComponent;
-  let fixture: ComponentFixture<AddCpdFacilityComponent>;
+describe('ProvidersFormComponent', () => {
+  let component: ProvidersFormComponent;
+  let fixture: ComponentFixture<ProvidersFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddCpdFacilityComponent ]
+      declarations: [ ProvidersFormComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddCpdFacilityComponent);
+    fixture = TestBed.createComponent(ProvidersFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,12 @@
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems">
+  <ng-template #header>
+    <form class="flex gap-1">
+      <mat-form-field appearance="fill" class="flex-auto">
+        <mat-label>Year </mat-label>
+        <input matInput type="text" name="year" [(ngModel)]="year" />
+        <button matSuffix mat-raised-button color="primary" (click)="setUrl()">Get Data</button>
+      </mat-form-field>
+
+    </form>
+  </ng-template>
+</app-load-data-list>

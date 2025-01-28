@@ -20,7 +20,7 @@
           </span>
         </div>
 
-        <ng-container *ngTemplateOutlet="editorControls; context: { $implicit: field }"></ng-container>
+        <ng-container *ngTemplateOutlet="editorRowControls; context: { $implicit: field }"></ng-container>
 
       </div>
       <div *ngIf="isFormField(field)" [ngClass]="{'selected': field === selectedItem}">
@@ -163,14 +163,28 @@
 
   <ng-template #editorControls let-field>
     <div class="flex flex-grow-0 gap-1 border-dashed ">
-      <button mat-icon-button color="primary" (click)="moveFieldUp(field)" pTooltip="Move this field up">
+      <button mat-icon-button color="primary" (click)="moveFieldUp(field)" matTooltip="Move this field up">
         <mat-icon>arrow_upward</mat-icon>
       </button>
-      <button mat-icon-button color="primary" (click)="moveFieldDown(field)" pTooltip="Move this field down">
+      <button mat-icon-button color="primary" (click)="moveFieldDown(field)" matTooltip="Move this field down">
         <mat-icon>arrow_downward</mat-icon>
       </button>
-      <button mat-icon-button color="danger" pTooltip="Delete this field" (click)="deleteField(field)">
-        <mat-icon>remove</mat-icon>
+      <button mat-icon-button color="warn" matTooltip="Delete this field" (click)="deleteField(field)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #editorRowControls let-row>
+    <div class="flex flex-grow-0 gap-1 border-dashed ">
+      <button mat-icon-button color="primary" (click)="moveRowUp(row)" matTooltip="Move this row up">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" (click)="moveRowDown(row)" matTooltip="Move this row down">
+        <mat-icon>arrow_downward</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" matTooltip="Delete this row" (click)="deleteRow(row)">
+        <mat-icon>close</mat-icon>
       </button>
     </div>
   </ng-template>

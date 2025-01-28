@@ -4,7 +4,7 @@
 
   <div class="wrap-text">
     <div mat-dialog-content>
-      <app-file-uploader (onFilesSelected)="onFileSelected($event)"></app-file-uploader>
+      <app-file-uploader [accept]="'image/*'" (onFilesSelected)="onFileSelected($event)"></app-file-uploader>
     </div>
   </div>
 </div>

@@ -8,12 +8,13 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ImageModule } from 'primeng/image';
-import { getLabelFromKey, replaceSpaceWithUnderscore } from '../../utils/helper';
+import { getLabelFromKey, isArray, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from '../dialog-form/dialog-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { ApiResponseObject } from '../../types/ApiResponseObject';
 
 @Component({
   selector: 'app-load-data-list',
@@ -34,13 +35,14 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   destroy$: Subject<boolean> = new Subject();
   @Input() url: string = "";
-  loading: boolean = false;
-  error: boolean = false;
-  error_message: string = "";
+  @Input() loading: boolean = false;
+  @Input() error: boolean = false;
+  @Input() error_message: string = "";
   @Input() module = "admin"
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
+  @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
+  @Output() dataDownloaded = new EventEmitter();
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
 
@@ -80,6 +82,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() showFilterButton: boolean = true;
   @Input() showSort: boolean = true;
   @Input() hint: string = "";
+  @Input() showReset: boolean = true;
+  @Input() emitDownload: boolean = false;
+  /** in some cases the array to display is nested in the data key of the response. this key shows what that key
+   *  is
+   */
+  @Input() dataKey: string = "data";
 
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute) {
     //if there's a query param, set the searchParam
@@ -95,12 +103,17 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnInit(): void {
-    this.selection.changed.subscribe((data) => {
+    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.onSelect.emit(data.source.selected)
     })
-    // if(this.searchParam.trim()){
-    //   this.search();
-    // }
+    this.ar.queryParams
+      .pipe(takeUntil(this.destroy$)).subscribe(params => {
+        const searchQuery = params['searchParam'];
+        if (searchQuery) {
+          this.searchParam = searchQuery;
+          this.search();
+        }
+      });
   }
 
   ngAfterViewInit() {
@@ -111,7 +124,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(this.filters)
     if (this.preload) {
       this.offset = 0;
       this.currentPage = 1;
@@ -123,6 +135,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
 
   }
+
+
 
   setPage(args: number) {
     this.currentPage = args;
@@ -193,36 +207,38 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     })
     this.tableTitle = tableTitleArray.join(", ");
 
-    this.dbService.get<{
-      data: { [key: string]: any }[], total: number, columnLabels: any,
-      displayColumns: string[], columnFilters?: IFormGenerator[]
-    }>(url).pipe(takeUntil(this.destroy$))
+    this.dbService.get<ApiResponseObject<any>>(url).pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data) => {
-          const derivedHeaders = [];
-          data.data.map(item => {
+        next: (response) => {
+          const data: { [key: string]: any }[] = this.dataKey && !isArray(response.data) ? response.data[this.dataKey] : response.data;
+          data.map(item => {
             item['actions'] = this.getActions(item);
           })
-          this.dataSource = new MatTableDataSource(data.data);
+          if (this.emitDownload) {
+            this.dataDownloaded.emit(response);
+          }
+          this.dataSource = new MatTableDataSource(data);
 
           this.error = false;
-          this.totalRows = data.total;
-          this.sortColumns = data.displayColumns;
+          this.totalRows = response.total;
+          this.sortColumns = response.displayColumns;
           this.displayedColumns = ['#'];
           if (this.rowSelection == 'multiple') {
             this.displayedColumns.push('select');
           }
-          this.displayedColumns.push(...["actions", ...data.displayColumns])
-          this.columnLabels = data.columnLabels
+          this.displayedColumns.push(...["actions", ...response.displayColumns])
+          this.columnLabels = response.columnLabels
           this.showTable = true;
           this.dataSource.sort = this.sort;
-          if (data.columnFilters && data.columnFilters.length > 0) {
+          if (response.columnFilters && response.columnFilters.length > 0) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
-            this.filters = data.columnFilters.map(filter => {
+            this.filters = response.columnFilters.map(filter => {
               const existingFilter = this.filters.find(x => x.name == filter.name);
               if (existingFilter) {
                 filter.value = existingFilter.value;
               }
+              //filters cannot be required
+              filter.required = false;
               return filter;
             })
 
@@ -290,7 +306,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   setFilters(args: IFormGenerator[]) {
     this.filters = args;
-    console.log(this.filters)
+
     this.getData();
   }
 
@@ -325,6 +341,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
         this.getData();
       }
     });
+  }
+
+  removeFilter(filter: IFormGenerator) {
+    filter.value = "";
+    this.getData();
   }
 
   reset() {

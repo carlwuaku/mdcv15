@@ -6,6 +6,7 @@ import { DashboardComponent } from './core/pages/dashboard/dashboard.component';
 import { LoginComponent } from './core/pages/login/login.component';
 import { UserResolver } from './core/resolvers/userResolver.service';
 import { SearchComponent } from './core/pages/search/search.component';
+import { PageNotFoundComponent } from './core/pages/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -29,10 +30,10 @@ const routes: Routes = [
     data: { title: 'Search' }
   },
   {
-    path: 'cpd',
+    path: 'cpd', data: { title: 'Continuous Professional Development' },
     loadChildren: () => import('./features/cpd/cpd.module').then(m => m.CpdModule)
   },
-  { path: 'practitioners', data: { title: 'Practitioners' }, loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },
+  // { path: 'practitioners', data: { title: 'Practitioners' }, loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },
   { path: 'admin', data: { title: "Admin" }, resolve: { userData: UserResolver }, loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   { path: 'settings', data: { title: 'Settings' }, loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule) },
   { path: 'activities', data: { title: 'Activities' }, loadChildren: () => import('./features/activities/activities.module').then(m => m.ActivitiesModule) },
@@ -41,7 +42,7 @@ const routes: Routes = [
   { path: 'licenses', data: { title: 'Licenses' }, loadChildren: () => import('./features/licenses/licenses.module').then(m => m.LicensesModule) },
   {
     path: '**',
-    redirectTo: '',
+    component: PageNotFoundComponent
   },
 ];
 

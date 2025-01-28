@@ -1,9 +1,9 @@
-import {CpdFacilityObject} from './cpd_facility_model'
-export interface CpdStaffObject{
+import { CpdProviderObject } from './cpd_facility_model'
+export interface CpdStaffObject {
   id: string;
   name: string;
   email: string;
-  facility:CpdFacilityObject;
-  phone:string;
-  username:string;
+  facility: CpdProviderObject;
+  phone: string;
+  username: string;
 }

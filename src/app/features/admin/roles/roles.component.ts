@@ -5,6 +5,7 @@ import { Role } from '../models/roles.model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-roles',
@@ -12,8 +13,25 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
   styleUrls: ['./roles.component.scss']
 })
 export class RolesComponent {
+  canDelete: boolean = false;
+  canActivate: boolean = true;
+  canEdit: boolean = false;
+  canEditPermissions: boolean = false;
+  constructor(private dbService: HttpService, private notify: NotifyService, private authService: AuthService) {
+    if (this.authService.currentUser?.permissions.includes("Delete_User_Role")) {
+      this.canDelete = true;
+    }
+    if (this.authService.currentUser?.permissions.includes("Create_Or_Edit_User_Role")) {
+      this.canActivate = true;
+    }
+    if (this.authService.currentUser?.permissions.includes("Create_Or_Edit_User_Role")) {
+      this.canEdit = true;
+    }
+    if (this.authService.currentUser?.permissions.includes("Create_Or_Delete_User_Permissions")) {
+      this.canEditPermissions = true;
+    }
 
-  constructor(private dbService: HttpService, private notify: NotifyService) { }
+  }
   baseUrl: string = "admin/roles";
   url: string = "admin/roles";
   ts: string = "";
@@ -24,17 +42,29 @@ export class RolesComponent {
 
     ];
 
-    if (role.deleted_at) {
+    if (role.deleted_at && this.canActivate) {
       actions.push(
         { label: "Activate", type: "button", onClick: (role: Role) => this.activate(role) }
       )
     }
     else {
-      actions.push(
-        { label: "Edit details", type: "link", link: `admin/role-form/`, linkProp: 'role_id' },
-        { label: "Edit permissions", type: "link", link: `admin/role-permissions/`, linkProp: 'role_id' },
-        { label: "Deactivate", type: "button", onClick: (role: Role) => this.deleteRole(role) }
-      )
+      if (this.canDelete) {
+        actions.push(
+          { label: "Deactivate", type: "button", onClick: (role: Role) => this.deleteRole(role) }
+        )
+      }
+
+      if (this.canEdit) {
+        actions.push(
+          { label: "Edit details", type: "link", link: `admin/role-form/`, linkProp: 'role_id' }
+        )
+      }
+
+      if (this.canEditPermissions) {
+        actions.push(
+          { label: "Edit permissions", type: "link", link: `admin/role-permissions/`, linkProp: 'role_id' }
+        )
+      }
     }
     return actions;
   }

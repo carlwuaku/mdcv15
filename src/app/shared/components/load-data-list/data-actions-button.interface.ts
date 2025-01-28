@@ -6,4 +6,5 @@ export interface DataActionsButton {
   link?: string,
   linkProp?: string
   urlParams?: { [key: string]: any }
+  disabled?: boolean
 }

@@ -73,7 +73,7 @@ export class UserFormComponent {
       name: "picture",
       hint: "",
       options: [],
-      type: "text",
+      type: "picture",
       value: "",
       required: false
     },
@@ -88,14 +88,14 @@ export class UserFormComponent {
     },
     {
       label: "Role",
-      name: "role_id",
+      name: "role_name",
       hint: "",
       options: [],
       type: "api",
       value: "",
       required: true,
       api_url: "admin/roles",
-      apiKeyProperty: "role_id",
+      apiKeyProperty: "role_name",
       apiLabelProperty: "role_name",
       apiType: "select",
     },
@@ -103,7 +103,7 @@ export class UserFormComponent {
   ];
   fieldsTemplate: string = "TrainingInstitutionFormTemplate";
   id: string;
-  constructor(ar: ActivatedRoute, private router:Router) {
+  constructor(ar: ActivatedRoute, private router: Router) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
       this.title = "Edit user";
@@ -112,11 +112,11 @@ export class UserFormComponent {
 
       //if editing, the passwords should be optional
       this.fields.map(field => {
-        if(field.name === "password"){
+        if (field.name === "password") {
           field.required = false;
           field.hint = "Leave it blank if you don't intend to change this user's password. Else you can enter a new password"
         }
-        if(field.name === "password_confirm"){
+        if (field.name === "password_confirm") {
           field.required = false;
         }
       })
@@ -126,7 +126,7 @@ export class UserFormComponent {
   ngOnInit(): void {
   }
 
-  formSubmitted(args:boolean) {
+  formSubmitted(args: boolean) {
     if (args) {
       this.router.navigate(['/admin/users'])
     }

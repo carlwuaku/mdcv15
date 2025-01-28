@@ -49,9 +49,9 @@ export class RolePermissionsComponent implements OnInit {
     }
     this.notify.showLoading();
     const data = new FormData();
-    data.append("role_id", this.role!.role_id);
-    data.append("permission_id", permission.permission_id)
-    this.dbService.post<{ message:string }>(`admin/rolePermissions`, data).subscribe(
+    data.append("role", this.role!.role_name);
+    data.append("permission", permission.name)
+    this.dbService.post<{ message: string }>(`admin/rolePermissions`, data).subscribe(
       {
         next: data => {
           this.getData();
@@ -68,10 +68,7 @@ export class RolePermissionsComponent implements OnInit {
       return;
     }
     this.notify.showLoading();
-    const data = new FormData();
-    data.append("role_id", this.role!.role_id);
-    data.append("permission_id", permission.permission_id)
-    this.dbService.delete<{ message:string }>(`admin/rolePermissions/${this.role!.role_id}/${permission.permission_id}`).subscribe(
+    this.dbService.delete<{ message: string }>(`admin/rolePermissions/${this.role!.role_name}/${permission.name}`).subscribe(
       {
         next: data => {
           this.getData();

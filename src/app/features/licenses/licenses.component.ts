@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { LicenseObject } from './models/license_model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
@@ -6,19 +6,60 @@ import { getToday } from 'src/app/shared/utils/dates';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppService } from 'src/app/app.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-licenses',
   templateUrl: './licenses.component.html',
   styleUrls: ['./licenses.component.scss']
 })
-export class LicensesComponent {
-  constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
+export class LicensesComponent implements OnInit, OnDestroy {
+
   baseUrl: string = "licenses/details";
   @Input() url: string = "licenses/details";
   ts: string = "";
   @Input() showSearch: boolean = true;
+  @Input() licenseType: string = "";
+  @Input() showSelectLicenseType: boolean = true;
+  @Input() showAddButton: boolean = true;
+  destroy$: Subject<boolean> = new Subject();
+  constructor(private dbService: HttpService, private notify: NotifyService,
+    public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
+    private router: Router) {
 
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+  ngOnInit(): void {
+    if (this.licenseType) {
+      this.updateUrl();
+    }
+    else {
+      this.ar.queryParams
+        .pipe(takeUntil(this.destroy$)).subscribe(params => {
+          this.licenseType = params['licenseType'];
+          if (this.licenseType) {
+            this.updateUrl();
+          }
+        });
+    }
+
+
+  }
+
+  onLicenseTypeChange(selectedValue: string) {
+    this.router.navigate(['licenses'], { queryParams: { licenseType: selectedValue } });
+  }
+
+  updateUrl() {
+    console.log(this.licenseType)
+
+    this.url = `${this.baseUrl}` + (this.licenseType ? `?licenseType=${this.licenseType}` : "");
+  }
   getActions = (license: LicenseObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [

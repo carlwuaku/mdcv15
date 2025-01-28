@@ -44,13 +44,14 @@ export class ErrorInterceptor implements HttpInterceptor {
               errorMessage += `${key}: ${error.error.errors[key]}\n`
             }
           }
-          else if ('message' in error) {//this will be something like Http failure response for http://localhost:8080/licenses/details: 400 Bad Request
-            errorMessage = error.message;
-          }
+
           else {
             errorMessage = JSON.stringify(error.error)
           }
 
+        }
+        else if ('message' in error) {//this will be something like Http failure response for http://localhost:8080/licenses/details: 400 Bad Request
+          errorMessage = error.message;
         }
 
         else {
