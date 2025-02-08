@@ -34,6 +34,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
     "leaflet": "^1.9.4",
+    "ng-recaptcha-2": "^15.0.3-rc2",
     "rxjs": "7.4.0",
     "rxjs-marbles": "7.0.1",
     "tslib": "2.3.0",
