@@ -8,10 +8,10 @@ import { AppService } from 'src/app/app.service';
 import { NotifyService } from '../../services/notify/notify.service';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: false
 })
 export class LoginComponent implements OnInit {
   message: string = "";
@@ -95,7 +95,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  resolved(response: string) {
+  resolved(response: string | null) {
+    if (response == null) {
+      this.recaptchaVerified = false;
+      this.error_message = "Recaptcha verification failed. Try again";
+      return;
+    }
     const body = { 'g-recaptcha-response': response };
     this.dbService.post<{ message: string }>(API_PATH + '/verify-recaptcha', body).subscribe({
       next: (res) => {

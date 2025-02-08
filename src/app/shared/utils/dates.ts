@@ -450,10 +450,6 @@ export function setDates(quick_option: string): startEndDates {
       start_date = formatDate(new Date(2015, 0, 1));
       end_date = getToday();
       break;
-    case "today":
-      start_date = getToday();
-      end_date = getToday();
-      break;
     case "yesterday":
       start_date = formatDate(addDaystoDate(-1, getToday()));
       end_date = formatDate(addDaystoDate(-1, getToday()));

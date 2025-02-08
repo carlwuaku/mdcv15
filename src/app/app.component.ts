@@ -2,23 +2,20 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router';
 import { GoogleTagManagerService } from "angular-google-tag-manager";
 import { AnalyticsService } from "./core/services/analytics/analytics.service";
-import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
 import { AuthService } from './core/auth/auth.service';
 import { HttpService } from './core/services/http/http.service';
-import { API_PATH } from './shared/utils/constants';
 import { ActivatedRoute } from '@angular/router';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppService } from './app.service';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    //check the injector for ProductService when implement api call
-    providers: [GoogleTagManagerService],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  //check the injector for ProductService when implement api call
+  providers: [GoogleTagManagerService],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   appName = 'Management System';

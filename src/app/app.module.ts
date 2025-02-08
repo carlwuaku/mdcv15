@@ -4,73 +4,59 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { gtmContainerId } from "./app-config";
 import { CoreModule } from './core/core.module';
-import { TranslateModule, TranslateLoader, TranslateService } from "@ngx-translate/core";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { LocationStrategy, HashLocationStrategy, DatePipe } from "@angular/common";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
+import { ToastModule } from 'primeng/toast';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(
-    http,
-    "./assets/i18n/",
-    ".json?cb=" + new Date().getTime()
-  );
-}
 
-export function appInitializerTranslationsFactory(translate: TranslateService) {
-  return () => new Promise<any>((resolve: any) => {
-    const langToSet: string = navigator.language.split("-")[0];
-    translate.setDefaultLang("en");
-    translate.use(langToSet).subscribe(() => { }, err => { }, () => {
-      resolve(null);
-    });
-  });
-}
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        CoreModule,
-        AppRoutingModule,
-        FormsModule,
-        SharedModule,
-        ToastModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        }),
-        MatNativeDateModule], providers: [
-        provideAppInitializer(() => {
-        const initializerFn = (appInitializerTranslationsFactory)(inject(TranslateService), inject(Injector));
-        return initializerFn();
-      }),
-        MessageService,
-        { provide: "googleTagManagerId", useValue: gtmContainerId },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HeadersInterceptorInterceptor,
-            multi: true,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ErrorInterceptor,
-            multi: true,
-        },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-        DatePipe,
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,
+    AppRoutingModule,
+    FormsModule,
+    SharedModule,
+    MatNativeDateModule,
+    ToastModule
+  ],
+  providers: [
+
+
+    { provide: "googleTagManagerId", useValue: gtmContainerId },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeadersInterceptorInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true,
+    },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    })
+  ]
+})
 export class AppModule { }

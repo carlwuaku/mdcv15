@@ -1,16 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotifyService {
 
-  constructor(private messageService: MessageService, private snackBar: MatSnackBar) { }
+  constructor(@Inject(MessageService) private messageService: MessageService) { }
 
   showNotification(message: string, type: "success" | "info" | "warn" | "error", delay?: number) {
-    
+
     this.messageService.add({
       severity: type, summary: type,
       detail: message
@@ -21,11 +20,11 @@ export class NotifyService {
     this.showNotification("Unable to send data to server. Please try again or contact admin", "error", 3000);
   }
 
-  successNotification(text:string) {
+  successNotification(text: string) {
     this.showNotification(text, "success", 3000);
   }
 
-  failNotification(text:string) {
+  failNotification(text: string) {
     this.showNotification(text, "error", 3000);
   }
 
@@ -34,7 +33,8 @@ export class NotifyService {
   }
 
   showLoading() {
-    this.messageService.add({key: 'loading',
+    this.messageService.add({
+      key: 'loading',
       severity: 'info', summary: 'Loading'
     });
   }
@@ -43,8 +43,8 @@ export class NotifyService {
     this.messageService.clear('loading');
   }
 
-  infoNotification(text:string) {
+  infoNotification(text: string) {
     this.showNotification(text, "info", 3000);
   }
-  
+
 }

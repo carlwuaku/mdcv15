@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
-import { PrimeNgUiComponentsModule } from './prime-ng-ui-components/prime-ng-ui-components.module';
 import { LoxamDatePipe } from './pipes/date/loxam-date.pipe';
-import { RemoteDataModule } from 'ngx-remotedata';
 import { ClipboardCopyDirective } from "./directives/clipboard-copy.directive";
-import { TranslateModule } from "@ngx-translate/core";
-import { DialogModule } from 'primeng/dialog';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { MaterialComponentsModule } from './material-components/material-components.module';
 import { PreviousUrlDirective } from './directives/previous-url.directive';
@@ -15,7 +11,6 @@ import { ApiCountComponent } from './components/api-count/api-count.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { LogoComponent } from './components/logo/logo.component';
 import { LoadDataListComponent } from './components/load-data-list/load-data-list.component';
-import { AgGridModule } from 'ag-grid-angular';
 import { ExportTableComponent } from './components/export-table/export-table.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { JsonDisplayComponent } from './components/json-display/json-display.component';
@@ -45,6 +40,9 @@ import { ProgressDialogComponent } from './components/progress-dialog/progress-d
 import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
 import { SelectLicenseTypeComponent } from './components/select-license-type/select-license-type.component';
 import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
+import { ImageModule } from 'primeng/image';
+import { DeferModule } from 'primeng/defer';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -88,19 +86,12 @@ import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
     FilterEmptyValuesPipe,
   ],
   imports: [
-    PrimeNgUiComponentsModule,
-    RemoteDataModule,
-    TranslateModule,
-    DialogModule,
     MaterialComponentsModule,
-    AgGridModule,
     CKEditorModule,
     FormsModule,
     ReactiveFormsModule
   ],
   exports: [
-    PrimeNgUiComponentsModule,
-    TranslateModule,
     MaterialComponentsModule,
     ClipboardCopyDirective,
     LoxamDatePipe,
@@ -109,7 +100,6 @@ import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
     RefreshPageDirective,
     AssetImageComponent,
     LvisUTCDatePipe,
-    AgGridModule,
     ExportTableComponent,
     PaginationComponent,
     JsonDisplayComponent,
@@ -136,7 +126,10 @@ import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
     DashboardTileComponent,
     GhanaMapComponent,
     SelectLicenseTypeComponent,
-    FilterEmptyValuesPipe
+    FilterEmptyValuesPipe,
+    ImageModule,
+    DeferModule,
+    MessageModule
   ],
   providers: [
     ClipboardCopyDirective
