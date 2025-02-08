@@ -4,7 +4,7 @@ import { ApplicationFormObject, ApplicationTypeCounts } from '../models/applicat
 import { ApplicationFormService } from '../application-form.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, take, takeUntil } from 'rxjs';
-import { ApplicationTemplateObject } from '../../application-templates/models/application-template.model';
+import { ApplicationTemplateObject } from '../../../shared/types/application-template.model';
 
 
 

@@ -207,13 +207,9 @@ export class FormEditorComponent implements OnInit {
   }
 
 
-  // saveField() {
-  //   // Find the index of the selected field
-  //   const index = this.fields.findIndex((field) => field === this.selectedItem);
-  //   // If the index is found
-  //   if (index !== -1) {
-  //     // Replace the field in the fields array with the selected field
-  //     this.fields[index] = this.selectedItem;
-  //   }
-  // }
+  setNameIfEmpty() {
+    if (this.selectedItem && this.selectedItem.name.trim() === "") {
+      this.selectedItem.name = this.selectedItem.label.toLowerCase().replace(/ /g, "_");
+    }
+  }
 }

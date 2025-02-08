@@ -6,7 +6,7 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { ApplicationTemplatesService } from '../application-templates.service';
-import { ApplicationTemplateStageObject } from '../models/application-template.model';
+import { ApplicationTemplateStageObject } from '../../../shared/types/application-template.model';
 
 @Component({
   selector: 'app-template-form',
@@ -126,7 +126,7 @@ export class TemplateFormComponent implements OnInit {
                   subject: [action.config.subject],
                   endpoint: [action.config.endpoint,],//should be a valid url
                   method: [action.config.method],
-                  recipient_field: [action.config.recipient_field, [Validators.email]]
+                  admin_email: [action.config.admin_email, [Validators.email]]
                 })
               })
 
@@ -293,7 +293,7 @@ export class TemplateFormComponent implements OnInit {
         subject: [''],
         endpoint: [''],
         method: [''],
-        recipient_field: ['']
+        admin_email: ['']
       })
     });
 

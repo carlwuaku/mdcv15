@@ -1,0 +1,14 @@
+<app-loading *ngIf="loading"></app-loading>
+<mat-card *ngIf="data">
+  <mat-card-content class="flex flex-col gap-4">
+    <div class="flex flex-col items-center">
+      <app-logo [height]="90"></app-logo>
+      <div class="text-xl">{{title}}</div>
+      <div [innerHTML]="data.header"></div>
+
+    </div>
+
+    <app-form-generator [url]="'applications/details/'+data.form_name" [fields]="data.data"></app-form-generator>
+    <div [innerHTML]="footer"></div>
+  </mat-card-content>
+</mat-card>

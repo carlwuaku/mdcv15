@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { ApplicationTemplatesService } from '../application-templates.service';
-import { ApplicationTemplateObject } from '../../../shared/types/application-template.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ApplicationTemplateObject } from 'src/app/shared/types/application-template.model';
+import { ApplicationsService } from './applications.service';
 
 @Component({
-  selector: 'app-preview-template',
-  templateUrl: './preview-template.component.html',
-  styleUrls: ['./preview-template.component.scss']
+  selector: 'app-applications',
+  templateUrl: './applications.component.html',
+  styleUrls: ['./applications.component.scss']
 })
-export class PreviewTemplateComponent implements OnInit {
-  title: string = "Add a new practitioner";
+export class ApplicationsComponent implements OnInit {
   formUrl: string = "applications/templates";
   existingUrl: string = "applications/templates";
 
@@ -23,7 +22,8 @@ export class PreviewTemplateComponent implements OnInit {
   on_submit_email: SafeHtml = "";
   on_submit_message: SafeHtml = "";
   guidelines: SafeHtml = "";
-  constructor(ar: ActivatedRoute, private templateService: ApplicationTemplatesService, private sanitizer: DomSanitizer) {
+  title: string = "";
+  constructor(ar: ActivatedRoute, private applicationsService: ApplicationsService, private sanitizer: DomSanitizer) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
       this.title = "Edit application template";
@@ -38,7 +38,7 @@ export class PreviewTemplateComponent implements OnInit {
 
   loadData() {
     this.loading = true;
-    this.templateService.getTemplate(this.id).subscribe({
+    this.applicationsService.getTemplate(this.id).subscribe({
       next: response => {
         this.loading = false;
         this.data = response.data;
@@ -47,6 +47,7 @@ export class PreviewTemplateComponent implements OnInit {
         this.on_submit_email = this.sanitizer.bypassSecurityTrustHtml(this.data.on_submit_email);
         this.on_submit_message = this.sanitizer.bypassSecurityTrustHtml(this.data.on_submit_message);
         this.guidelines = this.sanitizer.bypassSecurityTrustHtml(this.data.guidelines);
+        this.title = response.data.form_name
       },
       error: error => {
         this.loading = false;
@@ -54,4 +55,5 @@ export class PreviewTemplateComponent implements OnInit {
       }
     })
   }
+
 }

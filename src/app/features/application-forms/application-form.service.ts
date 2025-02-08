@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, switchMap, throwError } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { ApplicationTemplateObject } from '../application-templates/models/application-template.model';
+import { ApplicationTemplateObject } from '../../shared/types/application-template.model';
 import { ApplicationFormObject, ApplicationTypeCounts } from './models/application-form.model';
 
 @Injectable({
