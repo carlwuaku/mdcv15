@@ -3,6 +3,8 @@
     <mat-card-content>
       <app-select-application-template [formType]="formType" (onFormTypeSelected)="formTypeSelected($event)">
       </app-select-application-template>
+      <a [disabled]="!formType" mat-raised-button routerLink="/applications/{{formType}}" color="accent">Fill a copy of
+        this form</a>
     </mat-card-content>
   </mat-card>
   <div class="flex justify-center items-center">

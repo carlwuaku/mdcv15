@@ -131,6 +131,7 @@ export class FormGeneratorComponent implements OnInit {
 
   private submit(): void {
     const allFields = this.fields.flat();
+    console.log(allFields)
     this.notify.showLoading();
     const data = new FormData();
     allFields.forEach(field => {

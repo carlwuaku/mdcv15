@@ -42,7 +42,7 @@
 
       <mat-form-field appearance="fill">
         <label>Label</label>
-        <input matInput [(ngModel)]="selectedItem.label" />
+        <input matInput [(ngModel)]="selectedItem.label" (ngModelChange)="setNameIfEmpty()" />
       </mat-form-field>
       <mat-form-field appearance="fill">
         <label>Name</label>

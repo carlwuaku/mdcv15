@@ -8,32 +8,23 @@
     </mat-card-content>
   </mat-card>
 
-  <div class="flex flex-wrap justify-between  gap-2">
+  <div class="flex flex-wrap gap-2">
     <ng-container *ngFor="let item of menuItems">
       <app-dashboard-tile class="w-[32%] min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
         [counterText]="item.apiCountText" [description]="item.description"
         [counterUrl]="item.apiCountUrl"></app-dashboard-tile>
     </ng-container>
-
-    <!-- <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'person_outlined'" [title]="'Licenses'"
-            [description]="'Manage Practitioner Licenses'" [counterUrl]="'licenses/count'"></app-dashboard-tile>
-          <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'list_alt'" [title]="'Applications'"
-            [counterUrl]="'applications/count'" [description]="'Manage Practitioner Licenses'"
-            [counterText]="'New Applications'"></app-dashboard-tile>
-          <app-dashboard-tile class="w-[32%] min-w-[300px]" [icon]="'list_alt'" [title]="'Renewals'"
-            [counterUrl]="'practitioners/renewal-count?status=Pending Approval'"
-            [description]="'Manage Practitioner Licenses'" [counterText]="'Pending Approval'"></app-dashboard-tile> -->
   </div>
 
 
-  <mat-card>
+  <!-- <mat-card>
     <mat-card-header>
       <mat-card-title> Facilities Distribution</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <app-ghana-map></app-ghana-map>
     </mat-card-content>
-  </mat-card>
+  </mat-card> -->
 
 
   <!-- <div class="flex flex-wrap justify-between gap-2">

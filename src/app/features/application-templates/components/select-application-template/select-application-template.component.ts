@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ApplicationTemplateObject } from '../../models/application-template.model';
+import { ApplicationTemplateObject } from '../../../../shared/types/application-template.model';
 import { ApplicationTemplatesService } from '../../application-templates.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
