@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -36,51 +36,43 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
   });
 }
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    CoreModule,
-    AppRoutingModule,
-    FormsModule,
-    SharedModule,
-    ToastModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    MatNativeDateModule
-
-  ],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerTranslationsFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    },
-    MessageService,
-    { provide: "googleTagManagerId", useValue: gtmContainerId },
-
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HeadersInterceptorInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true,
-    },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-    DatePipe
-  ],
-  bootstrap: [AppComponent],
-})
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        CoreModule,
+        AppRoutingModule,
+        FormsModule,
+        SharedModule,
+        ToastModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        MatNativeDateModule], providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: appInitializerTranslationsFactory,
+            deps: [TranslateService, Injector],
+            multi: true
+        },
+        MessageService,
+        { provide: "googleTagManagerId", useValue: gtmContainerId },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeadersInterceptorInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true,
+        },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+        DatePipe,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

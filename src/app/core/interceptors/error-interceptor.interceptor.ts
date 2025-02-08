@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpHeaderResponse,
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpHeaderResponse, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, retry, throwError } from 'rxjs';
 import { NotifyService } from '../services/notify/notify.service';
 

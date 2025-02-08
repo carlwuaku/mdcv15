@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -122,16 +122,10 @@ const modules = [
   TableModule,
   DeferModule
 ]
-@NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    ...modules
-  ],
-  exports: [
-    CommonModule,
-    ...modules
-  ],
-})
+@NgModule({ declarations: [],
+    exports: [
+        CommonModule,
+        ...modules
+    ], imports: [CommonModule,
+        ...modules], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class PrimeNgUiComponentsModule {}
