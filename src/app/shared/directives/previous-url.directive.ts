@@ -2,7 +2,8 @@ import { Directive, HostListener } from '@angular/core';
 import { Location } from '@angular/common';
 
 @Directive({
-  selector: '[appPreviousUrl]'
+    selector: '[appPreviousUrl]',
+    standalone: false
 })
 export class PreviousUrlDirective {
   @HostListener("click")

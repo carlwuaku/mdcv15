@@ -9,9 +9,10 @@ import { EditAdditionalQualificationComponent } from './edit-additional-qualific
 import { LicenseObject } from '../../models/license_model';
 
 @Component({
-  selector: 'app-additional-qualifications',
-  templateUrl: './additional-qualifications.component.html',
-  styleUrls: ['./additional-qualifications.component.scss']
+    selector: 'app-additional-qualifications',
+    templateUrl: './additional-qualifications.component.html',
+    styleUrls: ['./additional-qualifications.component.scss'],
+    standalone: false
 })
 export class AdditionalQualificationsComponent implements OnChanges {
   @Input() practitioner!: LicenseObject;

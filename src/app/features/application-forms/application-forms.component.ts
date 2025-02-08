@@ -11,9 +11,10 @@ import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialo
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 
 @Component({
-  selector: 'app-application-forms',
-  templateUrl: './application-forms.component.html',
-  styleUrls: ['./application-forms.component.scss']
+    selector: 'app-application-forms',
+    templateUrl: './application-forms.component.html',
+    styleUrls: ['./application-forms.component.scss'],
+    standalone: false
 })
 export class ApplicationFormsComponent implements OnInit {
   baseUrl: string = "applications/details";

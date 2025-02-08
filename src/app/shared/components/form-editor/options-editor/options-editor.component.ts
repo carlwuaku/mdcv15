@@ -2,9 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-options-editor',
-  templateUrl: './options-editor.component.html',
-  styleUrls: ['./options-editor.component.scss']
+    selector: 'app-options-editor',
+    templateUrl: './options-editor.component.html',
+    styleUrls: ['./options-editor.component.scss'],
+    standalone: false
 })
 export class OptionsEditorComponent {
   newkey:string = "";

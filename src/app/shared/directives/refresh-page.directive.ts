@@ -1,7 +1,8 @@
 import { Directive, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appRefreshPage]'
+    selector: '[appRefreshPage]',
+    standalone: false
 })
 export class RefreshPageDirective {
   @HostListener("click")

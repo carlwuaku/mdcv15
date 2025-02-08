@@ -4,9 +4,10 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { API_ACCOUNTS_PATH, API_ADMIN_PATH, API_CPD_PATH, API_DOCTOR_PATH, API_INTERN_PATH } from '../../utils/constants';
 
 @Component({
-  selector: 'app-api-count',
-  templateUrl: './api-count.component.html',
-  styleUrls: ['./api-count.component.scss']
+    selector: 'app-api-count',
+    templateUrl: './api-count.component.html',
+    styleUrls: ['./api-count.component.scss'],
+    standalone: false
 })
 export class ApiCountComponent implements OnInit {
   @Input() url: string = '';

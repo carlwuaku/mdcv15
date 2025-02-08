@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { getLabelFromKey, isArray, isObject } from '../../utils/helper';
 
 @Component({
-  selector: 'app-key-value-display',
-  templateUrl: './key-value-display.component.html',
-  styleUrls: ['./key-value-display.component.scss']
+    selector: 'app-key-value-display',
+    templateUrl: './key-value-display.component.html',
+    styleUrls: ['./key-value-display.component.scss'],
+    standalone: false
 })
 export class KeyValueDisplayComponent implements OnInit{
   @Input() object: any = null;

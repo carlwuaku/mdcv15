@@ -2,9 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 @Component({
-  selector: 'app-mat-datepicker',
-  templateUrl: './mat-datepicker.component.html',
-  styleUrls: ['./mat-datepicker.component.scss']
+    selector: 'app-mat-datepicker',
+    templateUrl: './mat-datepicker.component.html',
+    styleUrls: ['./mat-datepicker.component.scss'],
+    standalone: false
 })
 export class MatDatepickerComponent implements OnChanges {
   @Input() label: string = 'Date';

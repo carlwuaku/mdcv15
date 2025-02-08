@@ -2,9 +2,10 @@ import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard-tile',
-  templateUrl: './dashboard-tile.component.html',
-  styleUrls: ['./dashboard-tile.component.scss']
+    selector: 'app-dashboard-tile',
+    templateUrl: './dashboard-tile.component.html',
+    styleUrls: ['./dashboard-tile.component.scss'],
+    standalone: false
 })
 export class DashboardTileComponent {
   @Input() title: string = '';

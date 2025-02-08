@@ -17,9 +17,10 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiResponseObject } from '../../types/ApiResponseObject';
 
 @Component({
-  selector: 'app-load-data-list',
-  templateUrl: './load-data-list.component.html',
-  styleUrls: ['./load-data-list.component.scss']
+    selector: 'app-load-data-list',
+    templateUrl: './load-data-list.component.html',
+    styleUrls: ['./load-data-list.component.scss'],
+    standalone: false
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;

@@ -3,9 +3,10 @@ import * as FileSaver from 'file-saver';
 import { extractKeys, getLabelFromKey } from '../../utils/helper';
 
 @Component({
-  selector: 'app-export-table',
-  templateUrl: './export-table.component.html',
-  styleUrls: ['./export-table.component.scss']
+    selector: 'app-export-table',
+    templateUrl: './export-table.component.html',
+    styleUrls: ['./export-table.component.scss'],
+    standalone: false
 })
 export class ExportTableComponent implements OnChanges {
   

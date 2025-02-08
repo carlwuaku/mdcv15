@@ -48,7 +48,8 @@ import { DialogConfig } from "./dialog-config.model";
 @Component({
     selector: "loxam-dialog",
     templateUrl: "./dialog.component.html",
-    styleUrls: ["./dialog.component.scss"]
+    styleUrls: ["./dialog.component.scss"],
+    standalone: false
 })
 export class DialogComponent {
     closeOnTimer: boolean = true;

@@ -11,9 +11,10 @@ import { ProgressItem } from '../progress-dialog/progress-dialog.component';
 import { FileUploadResponse, FileUploadService } from 'src/app/core/services/http/file-upload.service';
 
 @Component({
-  selector: 'app-form-generator',
-  templateUrl: './form-generator.component.html',
-  styleUrls: ['./form-generator.component.css']
+    selector: 'app-form-generator',
+    templateUrl: './form-generator.component.html',
+    styleUrls: ['./form-generator.component.css'],
+    standalone: false
 })
 export class FormGeneratorComponent implements OnInit {
   @Input() fields: (IFormGenerator | IFormGenerator[])[] = [];

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-array-editor',
-  templateUrl: './array-editor.component.html',
-  styleUrls: ['./array-editor.component.scss']
+    selector: 'app-array-editor',
+    templateUrl: './array-editor.component.html',
+    styleUrls: ['./array-editor.component.scss'],
+    standalone: false
 })
 export class ArrayEditorComponent {
   @Input() objects:any[] = [];

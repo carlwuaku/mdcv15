@@ -20,8 +20,9 @@ import { Subscription } from "rxjs";
 //                                          See localisationService for predefined date formats.
 
 @Pipe({
-  name: "loxamDate",
-  pure: false
+    name: "loxamDate",
+    pure: false,
+    standalone: false
 })
 export class LoxamDatePipe implements PipeTransform, OnDestroy {
   private subscription!: Subscription;

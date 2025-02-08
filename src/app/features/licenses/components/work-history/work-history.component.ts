@@ -8,9 +8,10 @@ import { PractitionerWorkHistory } from './work_history_model';
 import { EditWorkHistoryComponent } from './edit-work-history/edit-work-history.component';
 import { LicenseObject } from '../../models/license_model';
 @Component({
-  selector: 'app-work-history',
-  templateUrl: './work-history.component.html',
-  styleUrls: ['./work-history.component.scss']
+    selector: 'app-work-history',
+    templateUrl: './work-history.component.html',
+    styleUrls: ['./work-history.component.scss'],
+    standalone: false
 })
 export class WorkHistoryComponent implements OnChanges {
   @Input() practitioner!: LicenseObject;

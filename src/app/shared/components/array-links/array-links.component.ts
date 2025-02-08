@@ -2,9 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { ICellRendererAngularComp } from "ag-grid-angular";
 
 @Component({
-  selector: 'array-links',
-  templateUrl: './array-links.component.html',
-  styleUrls: ['./array-links.component.scss']
+    selector: 'array-links',
+    templateUrl: './array-links.component.html',
+    styleUrls: ['./array-links.component.scss'],
+    standalone: false
 })
 export class ArrayLinksComponent {
   params:any;

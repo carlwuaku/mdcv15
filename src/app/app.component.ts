@@ -13,11 +13,12 @@ import { AppService } from './app.service';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  //check the injector for ProductService when implement api call
-  providers: [GoogleTagManagerService],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    //check the injector for ProductService when implement api call
+    providers: [GoogleTagManagerService],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   appName = 'Management System';

@@ -4,9 +4,10 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { AppService } from 'src/app/app.service';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: false
 })
 export class SearchComponent implements OnInit, OnDestroy, OnChanges {
   searchType: string = "Doctors";

@@ -7,9 +7,10 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { ApiResponseObject } from 'src/app/shared/types/ApiResponseObject';
 
 @Component({
-  selector: 'app-license-cpd-history',
-  templateUrl: './license-cpd-history.component.html',
-  styleUrls: ['./license-cpd-history.component.scss']
+    selector: 'app-license-cpd-history',
+    templateUrl: './license-cpd-history.component.html',
+    styleUrls: ['./license-cpd-history.component.scss'],
+    standalone: false
 })
 export class LicenseCpdHistoryComponent implements OnInit, DataListComponentInterface<CpdAttendanceObject> {
 

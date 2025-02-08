@@ -2,9 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import { ICellRendererAngularComp } from "ag-grid-angular";
 
 @Component({
-  selector: 'app-link-name',
-  templateUrl: './link-name.component.html',
-  styleUrls: ['./link-name.component.scss']
+    selector: 'app-link-name',
+    templateUrl: './link-name.component.html',
+    styleUrls: ['./link-name.component.scss'],
+    standalone: false
 })
 export class LinkNameComponent {
   params:any;

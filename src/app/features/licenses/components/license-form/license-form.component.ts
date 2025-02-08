@@ -7,9 +7,10 @@ import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGenera
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
-  selector: 'app-license-form',
-  templateUrl: './license-form.component.html',
-  styleUrls: ['./license-form.component.scss']
+    selector: 'app-license-form',
+    templateUrl: './license-form.component.html',
+    styleUrls: ['./license-form.component.scss'],
+    standalone: false
 })
 export class LicenseFormComponent implements OnInit, FormGeneratorComponentInterface {
   public action: string;

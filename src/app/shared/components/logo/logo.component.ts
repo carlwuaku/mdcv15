@@ -3,9 +3,10 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppService } from 'src/app/app.service';
 
 @Component({
-  selector: 'app-logo',
-  templateUrl: './logo.component.html',
-  styleUrls: ['./logo.component.scss']
+    selector: 'app-logo',
+    templateUrl: './logo.component.html',
+    styleUrls: ['./logo.component.scss'],
+    standalone: false
 })
 export class LogoComponent implements OnInit, OnDestroy {
   logo: string = "";

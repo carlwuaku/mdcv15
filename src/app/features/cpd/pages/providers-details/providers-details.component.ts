@@ -5,9 +5,10 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-providers-details',
-  templateUrl: './providers-details.component.html',
-  styleUrls: ['./providers-details.component.scss']
+    selector: 'app-providers-details',
+    templateUrl: './providers-details.component.html',
+    styleUrls: ['./providers-details.component.scss'],
+    standalone: false
 })
 export class ProvidersDetailsComponent implements OnInit {
   id: string;

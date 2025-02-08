@@ -4,9 +4,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
 
 @Component({
-  selector: 'app-providers-form',
-  templateUrl: './providers-form.component.html',
-  styleUrls: ['./providers-form.component.scss']
+    selector: 'app-providers-form',
+    templateUrl: './providers-form.component.html',
+    styleUrls: ['./providers-form.component.scss'],
+    standalone: false
 })
 export class ProvidersFormComponent implements OnInit, FormGeneratorComponentInterface {
   id?: string;

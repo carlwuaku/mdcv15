@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-inline-editor',
-  templateUrl: './inline-editor.component.html',
-  styleUrls: ['./inline-editor.component.scss']
+    selector: 'app-inline-editor',
+    templateUrl: './inline-editor.component.html',
+    styleUrls: ['./inline-editor.component.scss'],
+    standalone: false
 })
 export class InlineEditorComponent {
   @Input() text: any;

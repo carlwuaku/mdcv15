@@ -8,9 +8,10 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 import { getToday } from 'src/app/shared/utils/dates';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    standalone: false
 })
 export class SettingsComponent {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }

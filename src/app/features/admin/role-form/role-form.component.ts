@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 
 @Component({
-  selector: 'app-role-form',
-  templateUrl: './role-form.component.html',
-  styleUrls: ['./role-form.component.scss']
+    selector: 'app-role-form',
+    templateUrl: './role-form.component.html',
+    styleUrls: ['./role-form.component.scss'],
+    standalone: false
 })
 export class RoleFormComponent {
   title: string = "Add a new role";

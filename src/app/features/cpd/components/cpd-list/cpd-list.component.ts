@@ -7,9 +7,10 @@ import { CpdObject } from '../../models/cpd_model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 
 @Component({
-  selector: 'app-cpd-list',
-  templateUrl: './cpd-list.component.html',
-  styleUrls: ['./cpd-list.component.scss']
+    selector: 'app-cpd-list',
+    templateUrl: './cpd-list.component.html',
+    styleUrls: ['./cpd-list.component.scss'],
+    standalone: false
 })
 export class CpdListComponent implements OnInit {
   can_edit: boolean = false;

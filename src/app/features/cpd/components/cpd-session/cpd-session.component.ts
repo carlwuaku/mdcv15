@@ -9,9 +9,10 @@ import { CpdObject } from '../../models/cpd_model';
 import { CpdSessionObject, newCpdSessionObject } from '../../models/cpd_session_model';
 
 @Component({
-  selector: 'app-cpd-session',
-  templateUrl: './cpd-session.component.html',
-  styleUrls: ['./cpd-session.component.scss']
+    selector: 'app-cpd-session',
+    templateUrl: './cpd-session.component.html',
+    styleUrls: ['./cpd-session.component.scss'],
+    standalone: false
 })
 export class CpdSessionComponent implements OnInit {
   @Input() session!: CpdSessionObject;

@@ -11,9 +11,10 @@ import { LicenseObject } from '../../../models/license_model';
 import { RenewalService } from '../../../renewal.service';
 
 @Component({
-  selector: 'app-renewal-form',
-  templateUrl: './renewal-form.component.html',
-  styleUrls: ['./renewal-form.component.scss']
+    selector: 'app-renewal-form',
+    templateUrl: './renewal-form.component.html',
+    styleUrls: ['./renewal-form.component.scss'],
+    standalone: false
 })
 export class RenewalFormComponent {
   title: string = "Renew a license";

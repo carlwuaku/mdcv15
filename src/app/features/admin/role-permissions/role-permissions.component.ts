@@ -6,9 +6,10 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { Permissions } from '../models/permissions.model';
 
 @Component({
-  selector: 'app-role-permissions',
-  templateUrl: './role-permissions.component.html',
-  styleUrls: ['./role-permissions.component.scss']
+    selector: 'app-role-permissions',
+    templateUrl: './role-permissions.component.html',
+    styleUrls: ['./role-permissions.component.scss'],
+    standalone: false
 })
 export class RolePermissionsComponent implements OnInit {
   id: string;

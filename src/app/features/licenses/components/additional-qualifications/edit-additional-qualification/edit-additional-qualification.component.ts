@@ -7,9 +7,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { LicenseObject } from '../../../models/license_model';
 
 @Component({
-  selector: 'app-edit-additional-qualification',
-  templateUrl: './edit-additional-qualification.component.html',
-  styleUrls: ['./edit-additional-qualification.component.scss']
+    selector: 'app-edit-additional-qualification',
+    templateUrl: './edit-additional-qualification.component.html',
+    styleUrls: ['./edit-additional-qualification.component.scss'],
+    standalone: false
 })
 export class EditAdditionalQualificationComponent {
   formUrl: string = "practitioners/qualifications";

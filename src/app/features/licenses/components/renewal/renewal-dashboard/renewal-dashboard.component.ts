@@ -5,9 +5,10 @@ import { AppService } from 'src/app/app.service';
 import { RenewalStageItems } from 'src/app/shared/utils/data';
 
 @Component({
-  selector: 'app-renewal-dashboard',
-  templateUrl: './renewal-dashboard.component.html',
-  styleUrls: ['./renewal-dashboard.component.scss']
+    selector: 'app-renewal-dashboard',
+    templateUrl: './renewal-dashboard.component.html',
+    styleUrls: ['./renewal-dashboard.component.scss'],
+    standalone: false
 })
 export class RenewalDashboardComponent implements OnInit, OnDestroy {
   menuItems: RenewalStageItems[] = []

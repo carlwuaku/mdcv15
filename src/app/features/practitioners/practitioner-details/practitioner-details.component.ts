@@ -8,9 +8,10 @@ import { replaceSpaceWithUnderscore } from 'src/app/shared/utils/helper';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 
 @Component({
-  selector: 'app-practitioner-details',
-  templateUrl: './practitioner-details.component.html',
-  styleUrls: ['./practitioner-details.component.scss']
+    selector: 'app-practitioner-details',
+    templateUrl: './practitioner-details.component.html',
+    styleUrls: ['./practitioner-details.component.scss'],
+    standalone: false
 })
 export class PractitionerDetailsComponent implements OnInit {
   id: string | null = null;

@@ -6,9 +6,10 @@ import { CpdService } from '../../cpd.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
-  selector: 'app-providers-list',
-  templateUrl: './providers-list.component.html',
-  styleUrls: ['./providers-list.component.scss']
+    selector: 'app-providers-list',
+    templateUrl: './providers-list.component.html',
+    styleUrls: ['./providers-list.component.scss'],
+    standalone: false
 })
 export class ProvidersListComponent implements DataListComponentInterface<CpdProviderObject> {
 

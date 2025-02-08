@@ -13,9 +13,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 @Component({
-  selector: 'app-manage-renewals',
-  templateUrl: './manage-renewals.component.html',
-  styleUrls: ['./manage-renewals.component.scss']
+    selector: 'app-manage-renewals',
+    templateUrl: './manage-renewals.component.html',
+    styleUrls: ['./manage-renewals.component.scss'],
+    standalone: false
 })
 export class ManageRenewalsComponent {
   baseUrl: string = "licenses/renewal";

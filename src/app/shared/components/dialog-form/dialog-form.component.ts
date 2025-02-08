@@ -3,9 +3,10 @@ import { IFormGenerator } from '../form-generator/form-generator-interface';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-dialog-form',
-  templateUrl: './dialog-form.component.html',
-  styleUrls: ['./dialog-form.component.scss']
+    selector: 'app-dialog-form',
+    templateUrl: './dialog-form.component.html',
+    styleUrls: ['./dialog-form.component.scss'],
+    standalone: false
 })
 export class DialogFormComponent {
   formType:"submit"|"filter" = "submit";

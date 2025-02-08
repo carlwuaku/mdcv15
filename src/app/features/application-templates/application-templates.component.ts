@@ -11,9 +11,10 @@ import { RenewalService } from '../licenses/renewal.service';
 import { ApplicationTemplatesService } from './application-templates.service';
 
 @Component({
-  selector: 'app-application-templates',
-  templateUrl: './application-templates.component.html',
-  styleUrls: ['./application-templates.component.scss']
+    selector: 'app-application-templates',
+    templateUrl: './application-templates.component.html',
+    styleUrls: ['./application-templates.component.scss'],
+    standalone: false
 })
 export class ApplicationTemplatesComponent {
   baseUrl: string = "applications/templates";

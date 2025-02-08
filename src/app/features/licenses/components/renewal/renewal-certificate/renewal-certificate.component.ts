@@ -6,9 +6,10 @@ import { PractitionerAdditionalQualification } from '../../additional-qualificat
 import { getToday } from 'src/app/shared/utils/dates';
 
 @Component({
-  selector: 'app-renewal-certificate',
-  templateUrl: './renewal-certificate.component.html',
-  styleUrls: ['./renewal-certificate.component.scss']
+    selector: 'app-renewal-certificate',
+    templateUrl: './renewal-certificate.component.html',
+    styleUrls: ['./renewal-certificate.component.scss'],
+    standalone: false
 })
 export class RenewalCertificateComponent implements OnInit {
   object: RenewalObject | null = null;

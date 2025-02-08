@@ -4,9 +4,10 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppService } from 'src/app/app.service';
 
 @Component({
-  selector: 'app-search-widget',
-  templateUrl: './search-widget.component.html',
-  styleUrls: ['./search-widget.component.scss']
+    selector: 'app-search-widget',
+    templateUrl: './search-widget.component.html',
+    styleUrls: ['./search-widget.component.scss'],
+    standalone: false
 })
 export class SearchWidgetComponent implements OnInit, OnDestroy {
   types: { label: string, key: string, url: string }[] = [];

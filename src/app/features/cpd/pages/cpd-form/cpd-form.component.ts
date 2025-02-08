@@ -4,9 +4,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
 
 @Component({
-  selector: 'app-cpd-form',
-  templateUrl: './cpd-form.component.html',
-  styleUrls: ['./cpd-form.component.scss']
+    selector: 'app-cpd-form',
+    templateUrl: './cpd-form.component.html',
+    styleUrls: ['./cpd-form.component.scss'],
+    standalone: false
 })
 export class CpdFormComponent implements OnInit, FormGeneratorComponentInterface {
   title: string = "Add a new cpd topic";

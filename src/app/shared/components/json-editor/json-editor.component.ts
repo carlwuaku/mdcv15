@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { isObject } from '../../utils/helper';
 
 @Component({
-  selector: 'app-json-editor',
-  templateUrl: './json-editor.component.html',
-  styleUrls: ['./json-editor.component.scss']
+    selector: 'app-json-editor',
+    templateUrl: './json-editor.component.html',
+    styleUrls: ['./json-editor.component.scss'],
+    standalone: false
 })
 export class JsonEditorComponent {
   isObject = isObject;

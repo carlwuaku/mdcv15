@@ -8,9 +8,10 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
-  selector: 'app-roles',
-  templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.scss']
+    selector: 'app-roles',
+    templateUrl: './roles.component.html',
+    styleUrls: ['./roles.component.scss'],
+    standalone: false
 })
 export class RolesComponent {
   canDelete: boolean = false;

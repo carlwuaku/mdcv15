@@ -6,9 +6,10 @@ import { CpdService } from '../../cpd.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
-  selector: 'app-cpd-attendance',
-  templateUrl: './cpd-attendance.component.html',
-  styleUrls: ['./cpd-attendance.component.scss']
+    selector: 'app-cpd-attendance',
+    templateUrl: './cpd-attendance.component.html',
+    styleUrls: ['./cpd-attendance.component.scss'],
+    standalone: false
 })
 export class CpdAttendanceComponent implements OnInit, DataListComponentInterface<CpdAttendanceObject> {
 

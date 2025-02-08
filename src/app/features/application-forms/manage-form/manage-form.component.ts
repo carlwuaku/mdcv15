@@ -4,9 +4,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { ApplicationFormService } from '../application-form.service';
 
 @Component({
-  selector: 'app-manage-form',
-  templateUrl: './manage-form.component.html',
-  styleUrls: ['./manage-form.component.scss']
+    selector: 'app-manage-form',
+    templateUrl: './manage-form.component.html',
+    styleUrls: ['./manage-form.component.scss'],
+    standalone: false
 })
 export class ManageFormComponent {
   title: string = "Application form";

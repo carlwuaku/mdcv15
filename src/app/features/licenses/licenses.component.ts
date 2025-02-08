@@ -11,9 +11,10 @@ import { AppService } from 'src/app/app.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-licenses',
-  templateUrl: './licenses.component.html',
-  styleUrls: ['./licenses.component.scss']
+    selector: 'app-licenses',
+    templateUrl: './licenses.component.html',
+    styleUrls: ['./licenses.component.scss'],
+    standalone: false
 })
 export class LicensesComponent implements OnInit, OnDestroy {
 

@@ -5,9 +5,10 @@ import { API_INTERN_PATH } from 'src/app/shared/utils/constants';
 import { menuItems, DashboardItem } from 'src/app/shared/utils/data';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    standalone: false
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   menuItems: DashboardItem[] = []// dashboardItems

@@ -9,9 +9,10 @@ import { ApplicationTemplatesService } from '../application-templates.service';
 import { ApplicationTemplateStageObject } from '../../../shared/types/application-template.model';
 
 @Component({
-  selector: 'app-template-form',
-  templateUrl: './template-form.component.html',
-  styleUrls: ['./template-form.component.scss']
+    selector: 'app-template-form',
+    templateUrl: './template-form.component.html',
+    styleUrls: ['./template-form.component.scss'],
+    standalone: false
 })
 export class TemplateFormComponent implements OnInit {
   title: string = "Add a new practitioner";

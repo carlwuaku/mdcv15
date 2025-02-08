@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 @Component({
-  selector: 'app-ckeditor',
-  templateUrl: './ckeditor.component.html',
-  styleUrls: ['./ckeditor.component.scss']
+    selector: 'app-ckeditor',
+    templateUrl: './ckeditor.component.html',
+    styleUrls: ['./ckeditor.component.scss'],
+    standalone: false
 })
 export class CkeditorComponent {
   public Editor = Editor.Editor;

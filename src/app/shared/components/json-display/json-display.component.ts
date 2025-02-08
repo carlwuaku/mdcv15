@@ -3,9 +3,10 @@ import { ICellRendererAngularComp } from "ag-grid-angular";
 import { isArray, isObject } from '../../utils/helper';
 
 @Component({
-  selector: 'app-json-display',
-  templateUrl: './json-display.component.html',
-  styleUrls: ['./json-display.component.scss']
+    selector: 'app-json-display',
+    templateUrl: './json-display.component.html',
+    styleUrls: ['./json-display.component.scss'],
+    standalone: false
 })
 export class JsonDisplayComponent implements OnInit {
 

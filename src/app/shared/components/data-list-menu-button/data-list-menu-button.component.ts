@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-data-list-menu-button',
-  templateUrl: './data-list-menu-button.component.html',
-  styleUrls: ['./data-list-menu-button.component.scss']
+    selector: 'app-data-list-menu-button',
+    templateUrl: './data-list-menu-button.component.html',
+    styleUrls: ['./data-list-menu-button.component.scss'],
+    standalone: false
 })
 export class DataListMenuButtonComponent {
   params: any;

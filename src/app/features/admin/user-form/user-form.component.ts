@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator, PractitionerCategories, monthsOptions } from 'src/app/shared/components/form-generator/form-generator-interface';
 
 @Component({
-  selector: 'app-user-form',
-  templateUrl: './user-form.component.html',
-  styleUrls: ['./user-form.component.scss']
+    selector: 'app-user-form',
+    templateUrl: './user-form.component.html',
+    styleUrls: ['./user-form.component.scss'],
+    standalone: false
 })
 export class UserFormComponent {
   title: string = "Add a new user";

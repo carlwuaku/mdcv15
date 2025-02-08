@@ -8,9 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 
 @Component({
-  selector: 'app-practitioners',
-  templateUrl: './practitioners.component.html',
-  styleUrls: ['./practitioners.component.scss']
+    selector: 'app-practitioners',
+    templateUrl: './practitioners.component.html',
+    styleUrls: ['./practitioners.component.scss'],
+    standalone: false
 })
 export class PractitionersComponent {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }

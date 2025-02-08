@@ -7,9 +7,10 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 @Component({
-  selector: 'app-edit-settings',
-  templateUrl: './edit-settings.component.html',
-  styleUrls: ['./edit-settings.component.scss']
+    selector: 'app-edit-settings',
+    templateUrl: './edit-settings.component.html',
+    styleUrls: ['./edit-settings.component.scss'],
+    standalone: false
 })
 export class EditSettingsComponent  implements OnInit{
   public Editor = Editor.Editor;

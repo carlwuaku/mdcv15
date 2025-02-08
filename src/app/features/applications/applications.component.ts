@@ -6,9 +6,10 @@ import { ApplicationTemplateObject } from 'src/app/shared/types/application-temp
 import { ApplicationsService } from './applications.service';
 
 @Component({
-  selector: 'app-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+    selector: 'app-applications',
+    templateUrl: './applications.component.html',
+    styleUrls: ['./applications.component.scss'],
+    standalone: false
 })
 export class ApplicationsComponent implements OnInit {
   formUrl: string = "applications/templates";

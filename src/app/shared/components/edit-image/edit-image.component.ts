@@ -6,9 +6,10 @@ import { take } from "rxjs";
 import { FileUploadResponse, FileUploadService } from "src/app/core/services/http/file-upload.service";
 
 @Component({
-  selector: 'app-edit-image',
-  templateUrl: './edit-image.component.html',
-  styleUrls: ['./edit-image.component.scss']
+    selector: 'app-edit-image',
+    templateUrl: './edit-image.component.html',
+    styleUrls: ['./edit-image.component.scss'],
+    standalone: false
 })
 export class EditImageComponent {
   images = new Map<string, File>();

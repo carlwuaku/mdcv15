@@ -6,9 +6,10 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { PractitionerWorkHistory } from '../work_history_model';
 import { LicenseObject } from '../../../models/license_model';
 @Component({
-  selector: 'app-edit-work-history',
-  templateUrl: './edit-work-history.component.html',
-  styleUrls: ['./edit-work-history.component.scss']
+    selector: 'app-edit-work-history',
+    templateUrl: './edit-work-history.component.html',
+    styleUrls: ['./edit-work-history.component.scss'],
+    standalone: false
 })
 export class EditWorkHistoryComponent {
   formUrl: string = "practitioners/workhistory";

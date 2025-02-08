@@ -5,9 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
 
 @Component({
-  selector: 'app-select-application-template',
-  templateUrl: './select-application-template.component.html',
-  styleUrls: ['./select-application-template.component.scss']
+    selector: 'app-select-application-template',
+    templateUrl: './select-application-template.component.html',
+    styleUrls: ['./select-application-template.component.scss'],
+    standalone: false
 })
 export class SelectApplicationTemplateComponent implements OnInit {
   formTypes: ApplicationTemplateObject[] = [];

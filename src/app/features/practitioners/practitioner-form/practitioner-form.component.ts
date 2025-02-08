@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { findFormField, IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 
 @Component({
-  selector: 'app-practitioner-form',
-  templateUrl: './practitioner-form.component.html',
-  styleUrls: ['./practitioner-form.component.scss']
+    selector: 'app-practitioner-form',
+    templateUrl: './practitioner-form.component.html',
+    styleUrls: ['./practitioner-form.component.scss'],
+    standalone: false
 })
 export class PractitionerFormComponent {
   title: string = "Add a new practitioner";

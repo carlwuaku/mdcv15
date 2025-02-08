@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { Injector, NgModule, inject, provideAppInitializer } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,12 +52,10 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
             }
         }),
         MatNativeDateModule], providers: [
-        {
-            provide: APP_INITIALIZER,
-            useFactory: appInitializerTranslationsFactory,
-            deps: [TranslateService, Injector],
-            multi: true
-        },
+        provideAppInitializer(() => {
+        const initializerFn = (appInitializerTranslationsFactory)(inject(TranslateService), inject(Injector));
+        return initializerFn();
+      }),
         MessageService,
         { provide: "googleTagManagerId", useValue: gtmContainerId },
         {

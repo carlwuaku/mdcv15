@@ -10,9 +10,10 @@ import { AppService } from 'src/app/app.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-details',
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+    selector: 'app-details',
+    templateUrl: './details.component.html',
+    styleUrls: ['./details.component.scss'],
+    standalone: false
 })
 export class DetailsComponent {
   id: string | null = null;

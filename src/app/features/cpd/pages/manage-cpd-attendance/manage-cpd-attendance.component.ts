@@ -6,9 +6,10 @@ import { LicenseObject } from 'src/app/features/licenses/models/license_model';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
-  selector: 'app-manage-cpd-attendance',
-  templateUrl: './manage-cpd-attendance.component.html',
-  styleUrls: ['./manage-cpd-attendance.component.scss']
+    selector: 'app-manage-cpd-attendance',
+    templateUrl: './manage-cpd-attendance.component.html',
+    styleUrls: ['./manage-cpd-attendance.component.scss'],
+    standalone: false
 })
 export class ManageCpdAttendanceComponent implements OnInit {
   cpdUuid: string;

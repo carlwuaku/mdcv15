@@ -6,9 +6,10 @@ import { DataActionsButton } from 'src/app/shared/components/load-data-list/data
 import { getToday } from 'src/app/shared/utils/dates';
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+    selector: 'app-users',
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss'],
+    standalone: false
 })
 export class UsersComponent {
 

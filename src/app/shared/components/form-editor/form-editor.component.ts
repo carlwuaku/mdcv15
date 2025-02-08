@@ -4,9 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { OptionsEditorComponent } from './options-editor/options-editor.component';
 
 @Component({
-  selector: 'app-form-editor',
-  templateUrl: './form-editor.component.html',
-  styleUrls: ['./form-editor.component.scss']
+    selector: 'app-form-editor',
+    templateUrl: './form-editor.component.html',
+    styleUrls: ['./form-editor.component.scss'],
+    standalone: false
 })
 export class FormEditorComponent implements OnInit {
   @Input() fields: (FormField | FormField[])[] = [];

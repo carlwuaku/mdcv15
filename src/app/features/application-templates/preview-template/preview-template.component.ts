@@ -6,9 +6,10 @@ import { ApplicationTemplateObject } from '../../../shared/types/application-tem
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-preview-template',
-  templateUrl: './preview-template.component.html',
-  styleUrls: ['./preview-template.component.scss']
+    selector: 'app-preview-template',
+    templateUrl: './preview-template.component.html',
+    styleUrls: ['./preview-template.component.scss'],
+    standalone: false
 })
 export class PreviewTemplateComponent implements OnInit {
   title: string = "Add a new practitioner";

@@ -3,9 +3,10 @@ import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { PointExpression } from 'leaflet';
 @Component({
-  selector: 'app-ghana-map',
-  templateUrl: './ghana-map.component.html',
-  styleUrls: ['./ghana-map.component.scss']
+    selector: 'app-ghana-map',
+    templateUrl: './ghana-map.component.html',
+    styleUrls: ['./ghana-map.component.scss'],
+    standalone: false
 })
 export class GhanaMapComponent implements AfterViewInit, OnInit {
   private map!: L.Map;

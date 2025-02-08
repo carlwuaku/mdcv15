@@ -5,9 +5,10 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
-  selector: 'app-select-object',
-  templateUrl: './select-object.component.html',
-  styleUrls: ['./select-object.component.scss']
+    selector: 'app-select-object',
+    templateUrl: './select-object.component.html',
+    styleUrls: ['./select-object.component.scss'],
+    standalone: false
 })
 export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";

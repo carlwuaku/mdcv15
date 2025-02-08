@@ -9,9 +9,10 @@ import { ApplicationTemplateObject } from '../../../shared/types/application-tem
 
 
 @Component({
-  selector: 'app-select-form-type',
-  templateUrl: './select-form-type.component.html',
-  styleUrls: ['./select-form-type.component.scss']
+    selector: 'app-select-form-type',
+    templateUrl: './select-form-type.component.html',
+    styleUrls: ['./select-form-type.component.scss'],
+    standalone: false
 })
 export class SelectFormTypeComponent implements OnInit, OnDestroy {
   baseUrl: string = "applications/statusCounts";

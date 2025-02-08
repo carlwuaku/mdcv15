@@ -4,9 +4,10 @@ import { DialogFormComponent } from '../dialog-form/dialog-form.component';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
 
 @Component({
-  selector: 'app-dialog-key-value-display',
-  templateUrl: './dialog-key-value-display.component.html',
-  styleUrls: ['./dialog-key-value-display.component.scss']
+    selector: 'app-dialog-key-value-display',
+    templateUrl: './dialog-key-value-display.component.html',
+    styleUrls: ['./dialog-key-value-display.component.scss'],
+    standalone: false
 })
 export class DialogKeyValueDisplayComponent {
   object: {[key:string]:any} = {};

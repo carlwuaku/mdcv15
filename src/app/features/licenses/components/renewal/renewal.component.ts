@@ -10,9 +10,10 @@ import { RenewalService } from '../../renewal.service';
 import { LicenseObject } from '../../models/license_model';
 
 @Component({
-  selector: 'app-renewal',
-  templateUrl: './renewal.component.html',
-  styleUrls: ['./renewal.component.scss']
+    selector: 'app-renewal',
+    templateUrl: './renewal.component.html',
+    styleUrls: ['./renewal.component.scss'],
+    standalone: false
 })
 export class RenewalComponent implements OnInit, OnChanges {
   baseUrl: string = "licenses/renewal";

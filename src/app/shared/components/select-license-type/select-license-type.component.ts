@@ -5,9 +5,10 @@ import { AppService } from 'src/app/app.service';
 import { getLabelFromKey } from '../../utils/helper';
 
 @Component({
-  selector: 'app-select-license-type',
-  templateUrl: './select-license-type.component.html',
-  styleUrls: ['./select-license-type.component.scss']
+    selector: 'app-select-license-type',
+    templateUrl: './select-license-type.component.html',
+    styleUrls: ['./select-license-type.component.scss'],
+    standalone: false
 })
 export class SelectLicenseTypeComponent implements OnInit, OnDestroy {
   @Input() licenseType: string = "";
