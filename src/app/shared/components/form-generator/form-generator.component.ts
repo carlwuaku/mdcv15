@@ -42,6 +42,8 @@ export class FormGeneratorComponent implements OnInit {
   @Input() autoGenerateFields: boolean = false;
   @Input() autoGenerateFieldsKey: string = "";//the key in the data to use to generate fields
   @Input() autoGenerateFieldsExclude: string[] = ["id", "uuid"];//fields to exclude from auto generation
+
+  @Input() dataKey: string = "";// dot-separated key to get the data from the response
   isFormField = isFormField;
   isRow = isRow;
 
@@ -63,20 +65,32 @@ export class FormGeneratorComponent implements OnInit {
     this.dbService.get<any>(`${this.existingObjectUrl}`).subscribe(
       {
         next: data => {
+          let source = data.data;
+
           if (this.autoGenerateFields) {
             this.fields = [];
-            const source = this.autoGenerateFieldsKey ? data.data[this.autoGenerateFieldsKey] : data.data;
+            source = this.autoGenerateFieldsKey ? source[this.autoGenerateFieldsKey] : source;
             this.fields = generateFormFieldsFromObject(source, this.autoGenerateFieldsExclude);
           } //if autoGenerateFields is true, the fields will be generated from the data
           //for each key, find the corresponding field and set the value
           else {
+            //separate the datakey by dots and use subsequent keys to get the data
+
+            if (this.dataKey) {
+              const keys = this.dataKey.split(".");
+
+              keys.forEach(key => {
+                source = source[key];
+              });
+            }
+
             this.fields.map(field => {
               if (this.isFormField(field)) {
-                field.value = data.data[field.name] === "null" ? null : data.data[field.name];
+                field.value = source[field.name] === "null" ? null : source[field.name];
               }
               else if (this.isRow(field)) {
                 field.map(rowField => {
-                  rowField.value = data.data[rowField.name] === "null" ? null : data.data[rowField.name];
+                  rowField.value = source[rowField.name] === "null" ? null : source[rowField.name];
                 })
               }
             })
@@ -87,10 +101,10 @@ export class FormGeneratorComponent implements OnInit {
             //check if there's already an extra data object with a key matching the field
             const index = this.extraData.findIndex(data => data.key === field);
             if (index > -1) {
-              this.extraData[index].value = data.data[field];
+              this.extraData[index].value = source[field];
             }
             else {
-              this.extraData.push({ key: field, value: data.data[field] })
+              this.extraData.push({ key: field, value: source[field] })
             }
           });
 

@@ -78,6 +78,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() filters: IFormGenerator[] = [];
   @Input() tableTitle: string = "";
   @ContentChild('header') header!: TemplateRef<any>;
+  @ContentChild('selectionOptions') selectionOptions!: TemplateRef<any>;
   @Input() showDeleted: boolean = true;
   @Input() showFilterButton: boolean = true;
   @Input() showSort: boolean = true;
@@ -88,7 +89,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
    *  is
    */
   @Input() dataKey: string = "data";
-
+  /** */
+  urlFilterKeys: string[] = [];
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute) {
     //if there's a query param, set the searchParam
     const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { ApplicationFormService } from '../application-form.service';
+import { goBack } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-manage-form',
@@ -18,7 +19,7 @@ export class ManageFormComponent {
   extraFormData: { key: string, value: any }[] = [];
   autoGenerateFields: boolean = true;
   loaded: boolean = false;
-  constructor(ar: ActivatedRoute, private router: Router, private service: ApplicationFormService) {
+  constructor(private ar: ActivatedRoute, private router: Router, private service: ApplicationFormService) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
       this.title = "Edit application";
@@ -49,7 +50,8 @@ export class ManageFormComponent {
 
   formSubmitted(args: boolean) {
     if (args) {
-      this.router.navigate(['/applications'])
+      //go back
+      goBack()
     }
   }
 

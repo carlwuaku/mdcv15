@@ -53,6 +53,8 @@
         <em>{{selection.selected.length}} Selected:</em>
         <app-export-table [objects]="selection.selected"></app-export-table>
       </span>
+      <ng-container *ngTemplateOutlet="selectionOptions">
+      </ng-container>
     </div>
     <div class="flex flex-row gap-2 align-middle items-center flex-wrap">
       <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"

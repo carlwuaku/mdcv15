@@ -7,13 +7,15 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageFormComponent } from './manage-form/manage-form.component';
 import { SelectFormTypeComponent } from './select-form-type/select-form-type.component';
 import { ApplicationTemplatesModule } from '../application-templates/application-templates.module';
+import { ApplicationStatusManagerComponent } from './application-status-manager/application-status-manager.component';
 
 
 @NgModule({
   declarations: [
     ApplicationFormsComponent,
     ManageFormComponent,
-    SelectFormTypeComponent
+    SelectFormTypeComponent,
+    ApplicationStatusManagerComponent
   ],
   imports: [
     CommonModule,
