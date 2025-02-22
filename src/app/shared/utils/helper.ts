@@ -76,6 +76,10 @@ export function goBackHome(message?: string) {
   window.location.assign('/')
 }
 
+export function goBack() {
+  window.history.back();
+}
+
 export function replaceSpaceWithUnderscore(str: string | null, stringifyNull: boolean = true): string {
   if (!str) {
     return stringifyNull ? "null" : "";

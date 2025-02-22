@@ -25,8 +25,6 @@ export class TemplateFormComponent implements OnInit {
   footer: string = "";
   on_submit_email: string = "";
   on_submit_message: string = "";
-  on_approve_email_template: string = "";
-  on_deny_email_template: string = "";
   id: string;
   extraFormData: { key: string, value: any }[] = [];
   generalFormGroup = new FormGroup({
@@ -57,7 +55,7 @@ export class TemplateFormComponent implements OnInit {
     on_deny_email_template: new FormControl("", Validators.required),
   });
   workflowFormGroup: FormGroup = new FormGroup({
-    stages: this.fb.array<any[]>([], Validators.required),
+    stages: this.fb.array<ApplicationTemplateStageObject[]>([], Validators.required),
     initialStage: new FormControl("", Validators.required),
     finalStage: new FormControl("", Validators.required)
   });
@@ -77,8 +75,41 @@ export class TemplateFormComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    if (this.id)
+    if (this.id) {
       this.loadData();
+    }
+    else {
+      //the first name, last name and email fields are added by default, but may be removed
+      this.fields = [
+        {
+          name: "first_name",
+          type: "text",
+          required: true,
+          hint: "Enter your first name",
+          label: "First Name",
+          options: [],
+          value: ""
+        },
+        {
+          name: "last_name",
+          type: "text",
+          required: true,
+          hint: "Enter your last name",
+          label: "Last Name",
+          options: [],
+          value: ""
+        },
+        {
+          name: "email",
+          type: "email",
+          required: true,
+          hint: "Enter your email",
+          label: "Email",
+          options: [],
+          value: ""
+        }
+      ];
+    }
   }
 
   loadData() {
@@ -91,8 +122,6 @@ export class TemplateFormComponent implements OnInit {
         this.footer = response.data.footer;
         this.on_submit_email = response.data.on_submit_email;
         this.on_submit_message = response.data.on_submit_message;
-        this.on_approve_email_template = response.data.on_approve_email_template;
-        this.on_deny_email_template = response.data.on_deny_email_template;
 
         this.generalFormGroup.get("form_name")?.setValue(response.data.form_name);
         this.generalFormGroup.get("open_date")?.setValue(response.data.open_date);
@@ -104,20 +133,18 @@ export class TemplateFormComponent implements OnInit {
         this.footerFormGroup.get("footer")?.setValue(response.data.footer);
         this.onSubmitFormGroup.get("on_submit_email")?.setValue(response.data.on_submit_email);
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
-        this.onFinishFormGroup.get("on_approve_email_template")?.setValue(response.data.on_approve_email_template);
-        this.onFinishFormGroup.get("on_deny_email_template")?.setValue(response.data.on_deny_email_template);
         this.workflowFormGroup.get("initialStage")?.setValue(response.data.initialStage);
         this.workflowFormGroup.get("finalStage")?.setValue(response.data.finalStage);
-        const stagesData = JSON.parse(response.data.stages);
+        const stagesData: ApplicationTemplateStageObject[] = JSON.parse(response.data.stages);
 
 
         // Add new FormControls to the FormArray for each stage
         stagesData.forEach((stage: any) => {
           this.stages.push(this.fb.group({
-            id: [stage.id, Validators.required],
             name: [stage.name, Validators.required],
             description: [stage.description],
             allowedTransitions: [stage.allowedTransitions],
+            allowedUserRoles: [stage.allowedUserRoles],
             actions: this.fb.array(stage.actions.map((action: any) => {
               return this.fb.group({
                 type: [action.type, Validators.required],
@@ -222,7 +249,6 @@ export class TemplateFormComponent implements OnInit {
       if (this.onFinishFormGroup.get("on_deny_email_template")?.value)
         data.append("on_deny_email_template", this.onFinishFormGroup.get("on_deny_email_template")?.value!);
     }
-    console.log(this.workflowFormGroup.controls, this.workflowFormGroup.valid, this.workflowFormGroup.get("finalStage")?.value)
     if (this.workflowFormGroup.valid) {
       if (this.workflowFormGroup.get("initialStage")?.value) { data.append("initialStage", this.workflowFormGroup.get("initialStage")?.value!); }
       else {
@@ -304,7 +330,7 @@ export class TemplateFormComponent implements OnInit {
     this.getActions(stageIndex).removeAt(actionIndex);
   }
 
-  setRoles(args: any[]) {
-    console.log(args)
+  setRoles(args: any[], index: number) {
+    this.stages.at(index).get('allowedUserRoles')?.setValue(args);
   }
 }

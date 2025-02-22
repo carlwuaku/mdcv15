@@ -37,4 +37,6 @@ export class ApplicationsService {
   getApplicationFormTypes(): Observable<{ data: ApplicationTemplateObject[] }> {
     return this.dbService.get(`applications/types/form_type`)
   }
+
+
 }

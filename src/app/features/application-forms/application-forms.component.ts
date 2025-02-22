@@ -20,10 +20,10 @@ export class ApplicationFormsComponent implements OnInit {
   url: string = "applications/details";
   ts: string = "";
   @Input() filters: IFormGenerator[] = [];
-  practitioner_type: any;
   status: any;
   form_type: any;
   hint: string = "Click the 'Filter' button to filter the list of applications";
+  selectedApplications: ApplicationFormObject[] = [];
   // practitioner_type: string = "";
   // status: string = "";
   // form_type: string | null;
@@ -41,6 +41,12 @@ export class ApplicationFormsComponent implements OnInit {
         options: [],
         required: false
       });
+      if (key === "form_type") {
+        this.form_type = this.ar.snapshot.queryParamMap.get(key);
+      }
+      if (key === "status") {
+        this.status = this.ar.snapshot.queryParamMap.get(key);
+      }
     });
 
   }
@@ -51,25 +57,11 @@ export class ApplicationFormsComponent implements OnInit {
     // this.setUrl();
   }
 
-  // setUrl() {
-  //   let queryParams = `?practitioner_type=${this.practitioner_type}`;
-  //   if (this.status) {
-  //     queryParams += `&status=${this.status}`
-  //   }
-  //   if (this.form_type) {
-  //     queryParams += `&form_type=${this.form_type}`
-  //   }
-
-  //   this.url = this.baseUrl + queryParams;
-
-  // }
 
   getActions = (object: ApplicationFormObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
       { label: "View Details", type: "button", onClick: (object: ApplicationFormObject) => this.view(object) },
-      { label: "Approve", type: "button", onClick: (object: ApplicationFormObject) => this.finish(object, "approve") },
-      { label: "Deny", type: "button", onClick: (object: ApplicationFormObject) => this.finish(object, "deny") },
       { label: "Edit", type: "link", link: `applications/application/`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: ApplicationFormObject) => this.delete(object) }
 
@@ -162,22 +154,13 @@ export class ApplicationFormsComponent implements OnInit {
       }, error: error => {
         this.submitFinish(object, decision, {});
       }
-    })
+    });
 
 
-    //get the email template setting
-    // this.applicationService.getApplicationForm(object.form_type).subscribe({
-    //   next: response => {
-    //     const emailTemplate = response.data.on_approve_email_template;
-    //     //show dialog to confirm/update the email template
-    //     showDialog(emailTemplate || "");
 
-    //   },
-    //   error: error => {
-    //     showDialog("");
-    //   }
-    // })
+  }
 
-
+  setSelectedApplications(applications: ApplicationFormObject[]) {
+    this.selectedApplications = applications;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, switchMap, throwError } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { ApplicationTemplateObject } from '../../shared/types/application-template.model';
+import { ApplicationTemplateObject, ApplicationTemplateStageObject } from '../../shared/types/application-template.model';
 import { ApplicationFormObject, ApplicationTypeCounts } from './models/application-form.model';
 
 @Injectable({
@@ -57,5 +57,14 @@ export class ApplicationFormService {
 
   getFormStatusCounts(url: string): Observable<{ data: ApplicationTypeCounts[], displayColumns: string[] }> {
     return this.dbService.get(url)
+  }
+
+  getApplicationTemplateStatuses(formType: string): Observable<{ data: ApplicationTemplateStageObject[] }> {
+    return this.dbService.get(`applications/status/${formType}`)
+  }
+
+  updateApplicationsStatus(form_type: string, applicationIds: string[], status: string): Observable<{ message: string }> {
+    const data = { form_type, applicationIds, status }
+    return this.dbService.put(`applications/status`, data)
   }
 }

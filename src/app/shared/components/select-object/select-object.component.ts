@@ -13,14 +13,14 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";
   @Input() labelProperty: string = "name";
   @Input() keyProperty: string = "id";
-  @Input() initialValue: string = "";
+  @Input() initialValue: string | string[] = "";
   @Input() type: "search" | "select" | "datalist" = "select";
   isLoaded: boolean = false;
   loading: boolean = false;
   error: boolean = false;
   error_message: string = "";
   objects: any[] = []
-  selectedItem: string = ""
+  selectedItem: string | string[] = ""
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
 
@@ -41,7 +41,6 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     if (((changes['url']?.currentValue !== changes['url']?.previousValue)
       || (changes['type']?.currentValue !== changes['type']?.previousValue))
       && (this.type === "datalist" || this.type === "select")) {
-      console.log(this.type)
       this.getData();
     }
   }

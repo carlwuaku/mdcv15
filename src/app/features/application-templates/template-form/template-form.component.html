@@ -116,30 +116,7 @@
     </form>
   </mat-step>
 
-  <mat-step [stepControl]="onFinishFormGroup">
-    <ng-template matStepLabel>On Approve/Deny Email Templates</ng-template>
-    <form [formGroup]="onFinishFormGroup">
-      <label for="">Email to send to user after form is approved</label>
-      <app-ckeditor [name]="'on_approve_email_template'" [value]="on_approve_email_template"
-        (valueChange)="setFormField('on_finish', 'on_approve_email_template', $event)"></app-ckeditor>
-      <mat-error
-        *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_approve_email_template')?.hasError('required')">Required
-        field</mat-error>
 
-      <label for="">Message to display after form is denied</label>
-      <app-ckeditor [name]="'on_deny_email_template'" [value]="on_deny_email_template"
-        (valueChange)="setFormField('on_finish','on_deny_email_template', $event)"></app-ckeditor>
-      <mat-error
-        *ngIf="onFinishFormGroup && onFinishFormGroup.get('on_deny_email_template')?.hasError('required')">Required
-        field</mat-error>
-
-      <div class="flex gap-1 mt-1">
-        <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
-
-      </div>
-    </form>
-  </mat-step>
   <mat-step [stepControl]="workflowFormGroup">
     <ng-template matStepLabel>Workflow</ng-template>
     <form [formGroup]="workflowFormGroup" class="flex flex-col gap-1 p-2">
@@ -157,10 +134,10 @@
 
             <!-- Stage Details -->
             <div class="stage-details">
-              <mat-form-field appearance="fill">
+              <!-- <mat-form-field appearance="fill">
                 <mat-label>Stage ID</mat-label>
                 <input matInput formControlName="id" placeholder="e.g., pending_verification">
-              </mat-form-field>
+              </mat-form-field> -->
 
               <mat-form-field appearance="fill">
                 <mat-label>Stage Name</mat-label>
@@ -176,7 +153,7 @@
               <mat-form-field appearance="fill">
                 <mat-label>Allowed Transitions</mat-label>
                 <mat-select formControlName="allowedTransitions" multiple>
-                  <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('id')?.value"
+                  <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('name')?.value"
                     [disabled]="i === j">
                     {{s.get('name')?.value}}
                   </mat-option>
@@ -184,20 +161,12 @@
               </mat-form-field>
               <div>
                 <label for="">Select roles that can move applications to this status</label>
-                <app-select-object (selectionChanged)="setRoles($event)" [url]="'admin/roles'" [keyProperty]="'role_id'"
-                  [labelProperty]="'role_name'" [type]="'select'" [selection_mode]="'multiple'"
-                  [formControlName]="'role_id'"></app-select-object>
+                <app-select-object (selectionChanged)="setRoles($event, i)" [url]="'admin/roles'"
+                  [keyProperty]="'role_name'" [initialValue]="stage.get('allowedUserRoles')?.value"
+                  [labelProperty]="'role_name'" [type]="'select'" [selection_mode]="'multiple'"></app-select-object>
               </div>
 
-              <mat-form-field appearance="fill">
-                <mat-label>Allowed Transitions</mat-label>
-                <mat-select formControlName="allowedTransitions" multiple>
-                  <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('id')?.value"
-                    [disabled]="i === j">
-                    {{s.get('name')?.value}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+
               <!-- Actions -->
               <div class="flex flex-col gap-2 p-1" formArrayName="actions">
                 <h4>Actions</h4>
@@ -291,7 +260,7 @@
         <mat-label>Initial Stage</mat-label>
         <mat-select formControlName="initialStage">
           <mat-option value="">Select one</mat-option>
-          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('id')?.value">
+          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('name')?.value">
             {{stage.get('name')?.value}}
           </mat-option>
         </mat-select>
@@ -300,7 +269,7 @@
         <mat-label>Final Stage</mat-label>
         <mat-select formControlName="finalStage">
           <mat-option value="">Select one</mat-option>
-          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('id')?.value">
+          <mat-option *ngFor="let stage of stages.controls" [value]="stage.get('name')?.value">
             {{stage.get('name')?.value}}
           </mat-option>
         </mat-select>

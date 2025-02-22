@@ -15,8 +15,6 @@ export interface ApplicationTemplateObject {
   created_on: string,
   deleted_at: string,
   actions?: any[],
-  on_approve_email_template: string,
-  on_deny_email_template: string,
   approve_url: string,
   deny_url: string,
   initialStage: string,
@@ -26,9 +24,9 @@ export interface ApplicationTemplateObject {
 
 
 export interface ApplicationTemplateStageObject {
-  id: string,
   name: string,
   description: string,
   allowedTransitions: string[],
+  allowedUserRoles: string[],
   actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[]
 }

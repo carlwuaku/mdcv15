@@ -45,6 +45,7 @@ import { ProgressDialogComponent } from './components/progress-dialog/progress-d
 import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
 import { SelectLicenseTypeComponent } from './components/select-license-type/select-license-type.component';
 import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
     GhanaMapComponent,
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
+    ErrorMessageComponent,
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -136,7 +138,8 @@ import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
     DashboardTileComponent,
     GhanaMapComponent,
     SelectLicenseTypeComponent,
-    FilterEmptyValuesPipe
+    FilterEmptyValuesPipe,
+    ErrorMessageComponent
   ],
   providers: [
     ClipboardCopyDirective
