@@ -41,6 +41,7 @@ const routes: Routes = [
   { path: 'application-templates', resolve: { userData: UserResolver }, data: { title: 'Application templates' }, loadChildren: () => import('./features/application-templates/application-templates.module').then(m => m.ApplicationTemplatesModule) },
   { path: 'licenses', resolve: { userData: UserResolver }, data: { title: 'Licenses' }, loadChildren: () => import('./features/licenses/licenses.module').then(m => m.LicensesModule) },
   { path: 'applications', resolve: { userData: UserResolver }, loadChildren: () => import('./features/applications/applications.module').then(m => m.ApplicationsModule) },
+  { path: 'messaging', loadChildren: () => import('./features/messaging/messaging.module').then(m => m.MessagingModule) },
   {
     path: '**',
     component: PageNotFoundComponent

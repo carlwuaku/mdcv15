@@ -394,8 +394,8 @@ body {
   border-radius: 5px;
 }
 
-.light-blue-bg {
-  background-color: #cce5ff;
+.bg-light-blue {
+  background-color: #cce5ff !important;
 }
 
 .fixed_card {
@@ -497,20 +497,6 @@ body {
   color: #fff;
 }
 
-.bg-blue .content .text,
-.bg-blue .content .number {
-  color: #fff !important;
-}
-
-.bg-light-blue {
-  background-color: #03A9F4 !important;
-  color: #fff;
-}
-
-.bg-light-blue .content .text,
-.bg-light-blue .content .number {
-  color: #fff !important;
-}
 
 .bg-cyan {
   background-color: #00BCD4 !important;
@@ -543,14 +529,10 @@ body {
 }
 
 .bg-light-green {
-  background-color: #8BC34A !important;
-  color: #fff;
+  background-color: #f2ffe2 !important;
 }
 
-.bg-light-green .content .text,
-.bg-light-green .content .number {
-  color: #fff !important;
-}
+
 
 .bg-lime {
   background-color: #CDDC39 !important;
@@ -943,4 +925,12 @@ tr:nth-child(even) {
 
 .active {
   background-color: mat-color($my-app-primary, 100) !important;
+}
+
+.bg-light-yellow {
+  background-color: #fff7e0 !important;
+}
+
+.bg-light-red {
+  background-color: #ffebe5 !important;
 }

@@ -186,9 +186,10 @@
 
 
 
-            <span *ngSwitchDefault [innerHTML]="element[column]"
-              [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))">
-
+            <span *ngSwitchDefault>
+              <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
+              <div *ngIf="!isLink(element[column])" class="truncate ellipsis" [innerHTML]="element[column]"
+                [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))"></div>
             </span>
           </span>
 
@@ -196,13 +197,16 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'strikethrough': row.deleted_at }"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getRowClasses(row)"></tr>
 
     </table>
 
   </div>
 </div>
 
+<ng-template #linkTemplate>
+
+</ng-template>
 
 
 <ng-template #sortDialog>

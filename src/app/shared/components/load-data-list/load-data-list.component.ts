@@ -91,6 +91,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() dataKey: string = "data";
   /** */
   urlFilterKeys: string[] = [];
+  @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
+
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute) {
     //if there's a query param, set the searchParam
     const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
@@ -130,10 +132,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.offset = 0;
       this.currentPage = 1;
       this.getData();
-    }
-    //if the searchParam changed, search
-    if (changes['searchParam']?.currentValue.trim()) {
-      this.search();
     }
 
   }
@@ -179,7 +177,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.sortBy) {
       extra += `&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`
     }
-    console.log(this.filters)
     if (this.filters.length > 0) {
       this.filters.forEach(filter => {
 
@@ -352,5 +349,35 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   reset() {
     window.location.reload();
+  }
+
+  public reload() {
+    if (this.preload) {
+      this.offset = 0;
+      this.currentPage = 1;
+      this.getData();
+      this.clearSelection();
+    }
+  }
+
+  public clearSelection() {
+    this.selection.clear();
+  }
+
+  isLink(content: string | null): boolean {
+    return content && typeof content === 'string' ? content.startsWith('http') || content.startsWith('www') : false;
+  }
+
+  getRowClasses(row: any) {
+    const classes: { [key: string]: boolean } = {
+      'strikethrough': row.deleted_at
+    };
+
+    // Apply custom rules from parent
+    for (const className in this.customClassRules) {
+      classes[className] = this.customClassRules[className](row);
+    }
+
+    return classes;
   }
 }
