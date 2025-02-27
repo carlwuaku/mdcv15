@@ -83,7 +83,7 @@ export class HttpService {
     return this.httpClient.put<T>(this.constructURL(url), data)
   }
 
-  public delete<T>(url: string, data?: FormData): Observable<T> {
+  public delete<T>(url: string, data?: any): Observable<T> {
     const options = {
       body: data
     };

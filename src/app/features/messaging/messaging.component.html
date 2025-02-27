@@ -1,0 +1,7 @@
+<div class="flex flex-wrap gap-2">
+  <ng-container *ngFor="let item of menuItems">
+    <app-dashboard-tile class="w-[32%] min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
+      [counterText]="item.apiCountText" [description]="item.description"
+      [counterUrl]="item.apiCountUrl"></app-dashboard-tile>
+  </ng-container>
+</div>

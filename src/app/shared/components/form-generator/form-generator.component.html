@@ -1,6 +1,6 @@
 <button *ngIf="enableShowHideButton" class="btn btn-sm btn-primary" (click)="showOrHide()">{{show ? 'Hide' : 'Show'}}
   {{showHideButtonTitle}}</button>
-<form *ngIf="show" ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
+<form *ngIf="show" #form ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
   class=" flex flex-col gap-1">
 
 

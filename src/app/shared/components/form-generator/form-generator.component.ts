@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { IFormGenerator, isFormField, isRow } from './form-generator-interface';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -20,7 +20,7 @@ export class FormGeneratorComponent implements OnInit {
   @Input() extraData: { key: string, value: any }[] = []
   @Input() url: string = "";
   @Input() id: string | undefined | null;
-
+  @ViewChild('form') form!: HTMLFormElement;
   @Output() onSubmit = new EventEmitter();
 
   @Input() existingObjectUrl: string = "";
@@ -273,6 +273,10 @@ export class FormGeneratorComponent implements OnInit {
           console.error('Error uploading files', error);
         }
       });
+  }
+
+  public resetForm() {
+    this.form.reset();
   }
 
 
