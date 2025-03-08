@@ -85,6 +85,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() hint: string = "";
   @Input() showReset: boolean = true;
   @Input() emitDownload: boolean = false;
+  @Input() showPrint: boolean = true;
   /** in some cases the array to display is nested in the data key of the response. this key shows what that key
    *  is
    */

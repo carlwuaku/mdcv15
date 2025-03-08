@@ -1,0 +1,32 @@
+<button mat-raised-button color="primary" (click)="print()" [disabled]="objects.length  < 1">Print
+</button>
+
+<ng-template #printDialog>
+  <h2 mat-dialog-title>Select Template</h2>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-select (selectionChange)="onTemplateChange($event)" [(ngModel)]="selectedTemplateId"
+        placeholder="Select Template">
+        <mat-option *ngFor="let template of templates" [value]="template.id">{{template.template_name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flex flex-row gap-2">
+      <div class="h-[500px] overflow-auto">
+        <mat-list>
+          <mat-list-item *ngFor="let object of objects">
+            <div mat-line>{{object.name}}</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div>
+        <div class="h-[500px] w-[500px] overflow-auto" [innerHTML]="selectedTemplate?.template_content"></div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="{ templateId: selectedTemplate?.id }">Print</button>
+  </mat-dialog-actions>
+
+
+</ng-template>

@@ -46,7 +46,7 @@ import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
 import { SelectLicenseTypeComponent } from './components/select-license-type/select-license-type.component';
 import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
-
+import { PrintTableComponent } from './components/print-table/print-table.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -88,6 +88,7 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
+    PrintTableComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -139,7 +140,8 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
     GhanaMapComponent,
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    PrintTableComponent
   ],
   providers: [
     ClipboardCopyDirective

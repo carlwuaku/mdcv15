@@ -49,9 +49,10 @@
       </span>
 
 
-      <span *ngIf="showExport">
+      <span class="flex gap-1 items-center">
         <em>{{selection.selected.length}} Selected:</em>
-        <app-export-table [objects]="selection.selected"></app-export-table>
+        <app-export-table *ngIf="showExport" [objects]="selection.selected"></app-export-table>
+        <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
       </span>
       <ng-container *ngTemplateOutlet="selectionOptions">
       </ng-container>
@@ -102,7 +103,7 @@
             </th>
           </span>
           <span *ngSwitchCase="'#'">
-            <th mat-header-cell *matHeaderCellDef>#</th>
+            <th sticky mat-header-cell *matHeaderCellDef>#</th>
           </span>
           <span *ngSwitchCase="'actions'">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
