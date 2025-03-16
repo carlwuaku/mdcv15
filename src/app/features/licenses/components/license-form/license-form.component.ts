@@ -1,36 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { goBackHome } from 'src/app/shared/utils/helper';
 import { LicensesService } from '../../licenses.service';
 import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { Subject, takeUntil, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-license-form',
   templateUrl: './license-form.component.html',
   styleUrls: ['./license-form.component.scss']
 })
-export class LicenseFormComponent implements OnInit, FormGeneratorComponentInterface {
+export class LicenseFormComponent implements OnInit, FormGeneratorComponentInterface, OnDestroy {
   public action: string;
   public id: string | undefined = undefined;
-  public type: string | undefined = undefined;
+  public licenseType: string | undefined = undefined;
   public title: string = "";
   public existingUrl: string = "";
   public fields: (IFormGenerator | IFormGenerator[])[] = [];
   public extraFormData: { key: string, value: any }[] = []
   public formUrl: string = "licenses/details"
   public loaded: boolean = false;
-  constructor(private service: LicensesService, ar: ActivatedRoute, private router: Router, private notify: NotifyService) {
+  destroy$: Subject<boolean> = new Subject();
+  queryParams: { [key: string]: string } = {};
+  constructor(private service: LicensesService, private ar: ActivatedRoute, private router: Router, private notify: NotifyService) {
     this.id = ar.snapshot.params['id'];
     this.action = ar.snapshot.params['action'];
-    this.type = ar.snapshot.params['type'];
+    this.licenseType = ar.snapshot.params['type'];
     if (this.action === "create") {
-      if (!this.type) {
+      if (!this.licenseType) {
         goBackHome("No license type defined");
         return;
       }
-      this.title = `Add new license (${this.type})`;
+      this.title = `Add new license (${this.licenseType})`;
     }
     else if (this.action === "update") {
       if (!this.id) {
@@ -44,9 +47,26 @@ export class LicenseFormComponent implements OnInit, FormGeneratorComponentInter
     }
 
   }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
   ngOnInit(): void {
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.queryParams = queryParams;
+      this.licenseType = params.get('type') ?? undefined;
+
+      if (this.licenseType) {
+        this.getFormFields(this.licenseType);
+      }
+    });
     this.loaded = false;
-    this.getFormFields(this.type!)
+    this.getFormFields(this.licenseType!)
 
   }
 
