@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.current_url = event.url
+        this.current_url = event.url.split('?')[0]
       }
     });
   }

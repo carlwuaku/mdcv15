@@ -5,13 +5,13 @@
 
     <h1 class="example-app-name">{{appName}}</h1>
     <span class="spacer"></span>
-    <button mat-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon> {{user?.email}}
+    <button mat-stroked-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon> {{user?.email}}
       <mat-icon>keyboard_arrow_down</mat-icon> </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item>Change Password</button>
       <button mat-menu-item>View Profile</button>
     </mat-menu>
-    <button mat-button (click)="logout()"><mat-icon>exit_to_app</mat-icon> Logout</button>
+    <button mat-stroked-button (click)="logout()"><mat-icon>exit_to_app</mat-icon> Logout</button>
   </mat-toolbar>
 
   <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">

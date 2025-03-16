@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-content>
+    <app-form-generator [url]="formUrl" [fields]="fields" [existingObjectUrl]="existingUrl"
+      (onSubmit)="formSubmitted($event)" [id]="id" [sendAsJson]="true">
+
+      <ng-template fieldTemplate="template_content" let-field let-onChange="onChange">
+        <div class="flex flex-col gap-2">
+          <p>You can upload a word document or enter the template below.</p>
+
+          <button mat-raised-button color="primary" type="button" (click)="triggerFileInput()">Select Word
+            Document</button>
+
+          <input class="hidden" [accept]="" #fileInput type="file" (change)="uploadDocx($event)">
+          <app-ckeditor #editor [value]="field.value" [name]="field.name"
+            (valueChange)="setContent($event)"></app-ckeditor>
+        </div>
+      </ng-template>
+
+
+
+    </app-form-generator>
+  </mat-card-content>
+</mat-card>

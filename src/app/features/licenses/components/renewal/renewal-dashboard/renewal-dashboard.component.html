@@ -5,7 +5,7 @@
     license</a>
   <mat-card>
     <mat-card-content>
-      <app-select-license-type [licenseType]="licenseType"
+      <app-select-license-type [emptyOption]="'None'" [licenseType]="licenseType"
         (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
     </mat-card-content>
   </mat-card>
@@ -17,6 +17,16 @@
       </mat-card-content>
     </mat-card>
   </div>
+  <div *ngIf="licenseType">
+    <mat-card>
+
+      <mat-card-content>
+        <app-form-generator (onSubmit)="filterSubmitted($event)" [submitButtonText]="'Filter'" [fields]="filterFields"
+          [formType]="'filter'"></app-form-generator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
   <div *ngIf="licenseType" class="flex flex-wrap justify-between  gap-2">
 
     <ng-container *ngFor="let item of menuItems">

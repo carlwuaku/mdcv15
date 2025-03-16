@@ -42,6 +42,7 @@ const routes: Routes = [
   { path: 'licenses', resolve: { userData: UserResolver }, data: { title: 'Licenses' }, loadChildren: () => import('./features/licenses/licenses.module').then(m => m.LicensesModule) },
   { path: 'applications', resolve: { userData: UserResolver }, loadChildren: () => import('./features/applications/applications.module').then(m => m.ApplicationsModule) },
   { path: 'messaging', loadChildren: () => import('./features/messaging/messaging.module').then(m => m.MessagingModule) },
+  { path: 'print-templates', loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
   {
     path: '**',
     component: PageNotFoundComponent

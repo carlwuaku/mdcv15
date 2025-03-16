@@ -3,37 +3,38 @@
 <form *ngIf="show" #form ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
   class=" flex flex-col gap-1">
 
+  <div class="flex gap-1" [class.flex-col]="layout === 'vertical'" [class.flex-row]="layout === 'horizontal'">
 
-  <ng-container *ngFor="let field of fields; let i = index">
-    <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
-      <div *ngFor="let subField of field" class="flex-col gap-1 flex-auto">
-        <label>{{subField.label}} <span *ngIf="subField.required">*</span></label>
-        <div class="text-muted">{{subField.hint}}</div>
-        <div *ngIf="subField.showOnly === true;">
-          <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
+    <ng-container *ngFor="let field of fields; let i = index">
+      <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
+        <div *ngFor="let subField of field" class="flex-col gap-1 flex-auto">
+          <label>{{subField.label}} <span *ngIf="subField.required">*</span></label>
+          <div class="text-muted">{{subField.hint}}</div>
+          <div *ngIf="subField.showOnly === true;">
+            <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
+          </div>
+          <div *ngIf="!subField.showOnly">
+            <ng-container *ngTemplateOutlet="renderField; context: { $implicit: subField }"></ng-container>
+          </div>
         </div>
-        <div *ngIf="!subField.showOnly">
-          <ng-container *ngTemplateOutlet="renderField; context: { $implicit: subField }"></ng-container>
+      </div>
+      <div *ngIf="isFormField(field)" class="flex flex-col gap-1">
+
+        <div class="text-muted">{{field.hint}}</div>
+        <div *ngIf="field.showOnly === true;">
+          <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
+        </div>
+        <div *ngIf="!field.showOnly">
+          <ng-container *ngTemplateOutlet="renderField; context: { $implicit: field }"></ng-container>
         </div>
       </div>
-    </div>
-    <div *ngIf="isFormField(field)" class="flex flex-col gap-1">
 
-      <div class="text-muted">{{field.hint}}</div>
-      <div *ngIf="field.showOnly === true;">
-        <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
-      </div>
-      <div *ngIf="!field.showOnly">
-        <ng-container *ngTemplateOutlet="renderField; context: { $implicit: field }"></ng-container>
-      </div>
-    </div>
-
-  </ng-container>
-
+    </ng-container>
+  </div>
 
   <div class="flex gap-1">
     <ng-content select="[submitButton]"></ng-content>
-    <button type="reset" mat-button color="warn">{{resetButtonText}}</button>
+    <button type="button" mat-stroked-button color="warn" (click)="resetForm()">{{resetButtonText}}</button>
 
     <button type="submit" mat-raised-button color="primary">{{submitButtonText}}</button>
 
@@ -43,7 +44,11 @@
   {{field.value}}
 </ng-template>
 <ng-template #renderField let-field>
-  <ng-container [ngSwitch]="field.type">
+  <ng-container *ngIf="getCustomTemplate(field.name) as customTemplate">
+    <ng-container
+      *ngTemplateOutlet="customTemplate; context: { $implicit: field, onChange: setFieldValue.bind(this) }"></ng-container>
+  </ng-container>
+  <ng-container *ngIf="!getCustomTemplate(field.name)" [ngSwitch]="field.type">
     <div *ngSwitchCase="'radio'">
       <span *ngFor="let option of field.options">
         <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
@@ -82,7 +87,8 @@
 
     <app-json-editor (valueChange)="setFieldValue($event, field)" *ngSwitchCase="'json'"></app-json-editor>
     <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!" [labelProperty]="field.apiLabelProperty || '' "
-      [keyProperty]="field.apiKeyProperty || ''" [type]="field.apiType!" [initialValue]="field.value"
+      [keyProperty]="field.apiKeyProperty || ''" [type]="field.apiType!"
+      [selection_mode]="field.selection_mode || 'single'" [initialValue]="field.value"
       (selectionChanged)="setFieldValue($event, field)" [fieldLabel]="field.label">
     </app-select-object>
 
@@ -93,6 +99,35 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+
+    <mat-form-field appearance="fill" *ngSwitchCase="'datetime'">
+      <mat-label>{{field.label}}</mat-label>
+      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
+      <mat-hint>DD/MM/YYYY HH:MM</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" *ngSwitchCase="'time'">
+      <mat-label>{{field.label}}</mat-label>
+      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
+      <mat-hint>HH:MM</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" *ngSwitchCase="'date-range'">
+      <mat-label>{{field.label}}</mat-label>
+      <mat-date-range-input [rangePicker]="rangepicker">
+        <input matStartDate #start [value]="getDateRangeValue(field).start" placeholder="Start date">
+        <input matEndDate #end [value]="getDateRangeValue(field).end" (dateChange)="onDateChange(field, start, end)"
+          placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>DD/MM/YYYY - DD/MM/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="rangepicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangepicker></mat-date-range-picker>
+    </mat-form-field>
+
 
     <mat-form-field class="flex-auto" *ngSwitchDefault>
       <mat-label>{{field.label}}</mat-label>

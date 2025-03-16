@@ -1,38 +1,48 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { RenewalObject } from './renewal.model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RenewalService } from '../../renewal.service';
 import { LicenseObject } from '../../models/license_model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-renewal',
   templateUrl: './renewal.component.html',
   styleUrls: ['./renewal.component.scss']
 })
-export class RenewalComponent implements OnInit, OnChanges {
+export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   baseUrl: string = "licenses/renewal";
   url: string = "licenses/renewal";
   ts: string = "";
   @Input() license: LicenseObject | undefined = undefined;
   queryParams: { [key: string]: string } = {};
+  licenseType: string = "";
+  inlineFilters: string[] = ["start_date", "end_date"];
+  destroy$: Subject<boolean> = new Subject();
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
-    private renewalService: RenewalService, private ar: ActivatedRoute) {
-    //get query params for status and license_type
-    this.ar.queryParams.subscribe(params => {
-      this.queryParams = params;
-    });
+    private renewalService: RenewalService, private ar: ActivatedRoute, private router: Router) {
 
 
   }
   ngOnInit(): void {
-    this.setUrl();
+    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+
+      this.queryParams = params;
+      this.licenseType = params['license_type'];
+      this.setUrl();
+    });
+    if (this.license) {
+      this.licenseType = this.license.type
+    }
   }
   ngOnChanges(changes: SimpleChanges): void {
+
+
     this.setUrl();
   }
 
@@ -115,5 +125,29 @@ export class RenewalComponent implements OnInit, OnChanges {
       },
       error: error => { }
     })
+  }
+
+  onLicenseTypeChange(selectedValue: string) {
+    this.router.navigate(['licenses/renewals'], { queryParams: { license_type: selectedValue } });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  filterSubmitted = (params: string) => {
+
+    //split the params by & and then by =
+    const paramsArray = params.split("&");
+    const paramsObject: { [key: string]: string } = {};
+    paramsArray.forEach(param => {
+      const [key, value] = param.split("=");
+      paramsObject[key] = value;
+    });
+
+    paramsObject['license_type'] = this.licenseType;
+
+    this.router.navigate(['licenses/renewals'], { queryParams: paramsObject });
+
   }
 }

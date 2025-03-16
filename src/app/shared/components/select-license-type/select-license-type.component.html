@@ -1,6 +1,7 @@
 <mat-form-field>
-  <mat-select [value]="licenseType" placeholder="Select License Type" (selectionChange)="onLicenseTypeChange($event)">
-    <mat-option value="">Choose one</mat-option>
+  <mat-label>{{label}}</mat-label>
+  <mat-select [value]="licenseType" (selectionChange)="onLicenseTypeChange($event)">
+    <mat-option value="">{{emptyOption}}</mat-option>
     <mat-option *ngFor="let type of licenseTypes" [value]="type.value">{{type.key}}</mat-option>
   </mat-select>
 </mat-form-field>

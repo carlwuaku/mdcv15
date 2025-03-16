@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ContentChild, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -13,9 +13,9 @@ import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from '../dialog-form/dialog-form.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponseObject } from '../../types/ApiResponseObject';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
@@ -24,6 +24,7 @@ import { ApiResponseObject } from '../../types/ApiResponseObject';
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('sortDialog') sortDialog!: TemplateRef<any>;
+  @ViewChild('filtersContainer') filtersContainer!: ElementRef;
 
   is_loading = false;
   // pagination things
@@ -85,6 +86,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() hint: string = "";
   @Input() showReset: boolean = true;
   @Input() emitDownload: boolean = false;
+  @Input() showPrint: boolean = true;
   /** in some cases the array to display is nested in the data key of the response. this key shows what that key
    *  is
    */
@@ -92,8 +94,13 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   /** */
   urlFilterKeys: string[] = [];
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
+  @Input() showAllFilters: boolean = false;
+  @Input() onFilterSubmitted: (params: string) => void = () => { };
+  queryParams: { [key: string]: string } = {};
+  isOverflowing: boolean = false;
 
-  constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute) {
+  constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
+    private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
     const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
     if (searchQuery) {
@@ -112,12 +119,33 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     })
     this.ar.queryParams
       .pipe(takeUntil(this.destroy$)).subscribe(params => {
+        this.queryParams = params;
         const searchQuery = params['searchParam'];
+        //assign the param values to the filters
+        this.filters.forEach(filter => {
+          if (params[filter.name]) {
+            filter.value = params[filter.name];
+          }
+        })
         if (searchQuery) {
           this.searchParam = searchQuery;
           this.search();
         }
       });
+
+    // Add resize observer to check overflow on container size changes
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        this.checkOverflow();
+      });
+
+      // Start observing after view init
+      setTimeout(() => {
+        if (this.filtersContainer) {
+          resizeObserver.observe(this.filtersContainer.nativeElement);
+        }
+      });
+    }
   }
 
   ngAfterViewInit() {
@@ -125,6 +153,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.search();
     }
     this.dataSource.sort = this.sort;
+    this.checkOverflow();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -180,8 +209,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.filters.length > 0) {
       this.filters.forEach(filter => {
 
-        if (filter.value) {
-          extra += `&${filter.name}=${filter.value}`
+        //add the filter to the url if it's not already in the url query params
+        if (filter.value && !this.queryParams[filter.name]) {
+
+          extra += filter.type === "date" ? `&${filter.name}=${this.formatDate(filter.value)}` : `&${filter.name}=${filter.value}`
         }
       });
     }
@@ -199,6 +230,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     let tableTitleArray: string[] = [];
     //splitUrl should return a string like param=123&limit=10&page=1. apart from page and limit,
     //split every key=value into key: value, separated by commas
+
     const params = splitUrl[1].split("&").filter(param => !param.includes("page=") && !param.includes("limit=")
       && !param.includes("sortBy=") && !param.includes("sortOrder=")).map(x => x.split("="));
     params.map(param => {
@@ -235,6 +267,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
               const existingFilter = this.filters.find(x => x.name == filter.name);
               if (existingFilter) {
                 filter.value = existingFilter.value;
+              }
+
+              //check if any of the fiter fields is set in the url query params
+              if (this.queryParams[filter.name]) {
+                filter.value = this.queryParams[filter.name];
               }
               //filters cannot be required
               filter.required = false;
@@ -321,8 +358,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     dialogRef.afterClosed().subscribe((result: IFormGenerator[] | false) => {
 
       if (result) {
-        //make sure some values were set
-        this.setFilters(result.filter(x => x.value));
+        this.setFilters(result);
+        //for those that are dates, format them
+
       }
 
     });
@@ -379,5 +417,38 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
 
     return classes;
+  }
+
+  formatDate(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
+  }
+
+  filterSubmitted(params: string) {
+    this.onFilterSubmitted(params);
+  }
+
+  /**
+   *
+   * @param filter the object that contains the filter details
+   * @param value the value of the filter
+   * @returns the value of the filter in the format that the form generator expects
+   */
+  parseFilterValue(filter: IFormGenerator, value: any) {
+    if (filter.type === "date-range") {
+      //change the format of the date to the format that the form generator expects
+      const dateRange = value.split(" to ");
+      return {
+        startDate: this.formatDate(new Date(dateRange[0])),
+        endDate: this.formatDate(new Date(dateRange[1]))
+      }
+    }
+    return value;
+  }
+
+  checkOverflow() {
+    if (this.filtersContainer) {
+      const element = this.filtersContainer.nativeElement;
+      this.isOverflowing = element.scrollWidth > element.clientWidth;
+    }
   }
 }

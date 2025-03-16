@@ -1,0 +1,14 @@
+<app-load-data-list #dataList [url]="url" [timestamp]="ts" [getActions]="getActions"
+  (selectionChanged)="setSelectedItems">
+
+</app-load-data-list>
+
+<ng-template #previewTemplate>
+  <h2 mat-dialog-title>{{selectedTemplate?.template_name}}</h2>
+  <mat-dialog-content>
+    <div [innerHTML]="safeTemplateContent"></div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-template>

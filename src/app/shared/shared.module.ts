@@ -25,7 +25,7 @@ import { PrepMessagingComponent } from './components/prep-messaging/prep-messagi
 import { LinkNameComponent } from './components/link-name/link-name.component';
 import { SelectObjectComponent } from './components/select-object/select-object.component';
 import { DataListMenuButtonComponent } from './components/data-list-menu-button/data-list-menu-button.component';
-import { FormGeneratorComponent } from './components/form-generator/form-generator.component';
+import { FieldTemplateDirective, FormGeneratorComponent } from './components/form-generator/form-generator.component';
 import { FileUploaderComponent } from './components/file-uploader/file-uploader.component';
 import { KeyValueDisplayComponent } from './components/key-value-display/key-value-display.component';
 import { ArrayEditorComponent } from './components/array-editor/array-editor.component';
@@ -46,7 +46,7 @@ import { GhanaMapComponent } from './components/ghana-map/ghana-map.component';
 import { SelectLicenseTypeComponent } from './components/select-license-type/select-license-type.component';
 import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
-
+import { PrintTableComponent } from './components/print-table/print-table.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -88,6 +88,8 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
+    PrintTableComponent,
+    FieldTemplateDirective
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -139,7 +141,9 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
     GhanaMapComponent,
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    PrintTableComponent,
+    FieldTemplateDirective
   ],
   providers: [
     ClipboardCopyDirective

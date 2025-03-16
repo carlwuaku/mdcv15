@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ContentChildren, QueryList, TemplateRef, Directive } from '@angular/core';
 
 import { IFormGenerator, isFormField, isRow } from './form-generator-interface';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -9,6 +9,15 @@ import { generateFormFieldsFromObject } from '../../utils/helper';
 import { DatePipe } from '@angular/common';
 import { ProgressItem } from '../progress-dialog/progress-dialog.component';
 import { FileUploadResponse, FileUploadService } from 'src/app/core/services/http/file-upload.service';
+
+// Add a directive to mark field templates
+@Directive({
+  selector: '[fieldTemplate]'
+})
+export class FieldTemplateDirective {
+  @Input('fieldTemplate') fieldName!: string;
+  constructor(public template: TemplateRef<any>) { }
+}
 
 @Component({
   selector: 'app-form-generator',
@@ -22,6 +31,7 @@ export class FormGeneratorComponent implements OnInit {
   @Input() id: string | undefined | null;
   @ViewChild('form') form!: HTMLFormElement;
   @Output() onSubmit = new EventEmitter();
+  @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
 
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
@@ -48,6 +58,9 @@ export class FormGeneratorComponent implements OnInit {
   isRow = isRow;
 
   imageFieldsFiles: Map<string, File> = new Map();
+  private templateMap = new Map<string, TemplateRef<any>>();
+  @Input() sendAsJson: boolean = false;
+  @Input() layout: "vertical" | "horizontal" = "vertical";
   constructor(private notify: NotifyService,
     private dbService: HttpService, private datePipe: DatePipe, private fileUploadService: FileUploadService) {
     this.formId = uuidv4();
@@ -58,6 +71,16 @@ export class FormGeneratorComponent implements OnInit {
     if (this.id) {
       this.getExistingObject()
     }
+  }
+
+  ngAfterContentInit() {
+    this.fieldTemplates.forEach(item => {
+      this.templateMap.set(item.fieldName, item.template);
+    });
+  }
+
+  getCustomTemplate(fieldName: string): TemplateRef<any> | null {
+    return this.templateMap.get(fieldName) || null;
   }
 
   getExistingObject() {
@@ -116,13 +139,15 @@ export class FormGeneratorComponent implements OnInit {
   }
 
   generateFilterUrl() {
+
     let params: string[] = [];
     const allFields = this.fields.flat();
     allFields.forEach(field => {
-      if (field.value) { params.push(`${field.name}=${field.value}`); }
+      if (field.value) {
+        const value = field.type === "date" ? this.formatDate(field.value) : field.value;
 
-
-
+        params.push(`${field.name}=${value}`);
+      }
     });
     this.onSubmit.emit(params.join("&"));
     this.emitFields.emit(this.fields);
@@ -145,23 +170,52 @@ export class FormGeneratorComponent implements OnInit {
 
   private submit(): void {
     const allFields = this.fields.flat();
-    console.log(allFields)
+
     this.notify.showLoading();
-    const data = new FormData();
+    let data: any;
+    if (this.sendAsJson) {
+      data = {};
+    }
+    else {
+      data = new FormData();
+    }
+
     allFields.forEach(field => {
 
 
       if (field.type === "date") {
-        data.append(field.name, this.formatDate(field.value) || "");
+        if (this.sendAsJson) {
+          data[field.name] = this.formatDate(field.value) || "";
+        }
+        else {
+          data.append(field.name, this.formatDate(field.value) || "");
+        }
       }
-      else { data.append(field.name, field.value || ""); }
+      else {
+        if (this.sendAsJson) {
+          data[field.name] = field.value || "";
+        }
+        else {
+          data.append(field.name, field.value || "");
+        }
+      }
     });
     this.extraData.forEach(item => {
-      data.append(item.key, item.value)
+      if (this.sendAsJson) {
+        data[item.key] = item.value
+      }
+      else {
+        data.append(item.key, item.value)
+      }
     });
     let dbCall = this.dbService.post<any>(this.url, data)
     if (this.id) {
-      data.append("id", this.id)
+      if (this.sendAsJson) {
+        data["id"] = this.id
+      }
+      else {
+        data.append("id", this.id)
+      }
       dbCall = this.dbService.put<any>(this.url, data);
     }
 
@@ -276,8 +330,52 @@ export class FormGeneratorComponent implements OnInit {
   }
 
   public resetForm() {
-    this.form.reset();
+
+    this.fields.forEach(field => {
+      if (this.isFormField(field)) {
+        field.value = null;
+      }
+      else if (this.isRow(field)) {
+        field.map(rowField => {
+          rowField.value = null;
+        })
+      }
+    });
   }
 
+  onDateChange(field: IFormGenerator, start: any, end: any) {
+
+    const dates = [];
+    if (start.value) {
+      // const startDate = this.datePipe.transform(start.value, 'dd/MM/yyyy');
+      dates.push(this.parseDate(start.value));
+    }
+    if (end.value) {
+      // const endDate = this.datePipe.transform(end.value, 'dd/MM/yyyy');
+      dates.push(this.parseDate(end.value));
+    }
+    field.value = dates.join(" to ");
+  }
+
+  // Add new properties for date range
+  getDateRangeValue(field: IFormGenerator): { start: Date | null, end: Date | null } {
+    if (!field.value) return { start: null, end: null };
+
+    try {
+      const [startStr, endStr] = field.value.split(" to ");
+      const start = startStr ? new Date(this.parseDate(startStr)) : null;
+      const end = endStr ? new Date(this.parseDate(endStr)) : null;
+      return { start, end };
+    } catch (e) {
+      console.error('Error parsing date range:', e);
+      return { start: null, end: null };
+    }
+  }
+
+  private parseDate(dateStr: string): string {
+    // Convert DD/MM/YYYY to YYYY-MM-DD for Date constructor
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month}-${day}`;
+  }
 
 }

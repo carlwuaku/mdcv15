@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+import { Component, ContentChild, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -6,7 +6,8 @@ import { RouterLink } from '@angular/router';
   templateUrl: './dashboard-tile.component.html',
   styleUrls: ['./dashboard-tile.component.scss']
 })
-export class DashboardTileComponent {
+export class DashboardTileComponent implements OnChanges {
+
   @Input() title: string = '';
   @Input() icon: string = '';
   @Input() url: string = '';
@@ -16,4 +17,10 @@ export class DashboardTileComponent {
   @Input() description?: string = '';
   @Input() urlParams?: any;
   @ContentChild('count') count!: TemplateRef<any>;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['urlParams']) {
+      this.urlParams = { ...this.urlParams, ...changes['urlParams'].currentValue };
+    }
+  }
 }

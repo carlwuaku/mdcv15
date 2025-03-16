@@ -14,17 +14,18 @@ export interface IFormGenerator {
   apiLabelProperty?: string;
   apiKeyProperty?: string;
   apiType?: "search" | "select" | "datalist";
+  selection_mode?: "single" | "multiple";
   apiInitialValue?: string;
   apiModule?: string;
-  onChange?: (...value:string[]) => void | undefined;
+  onChange?: (...value: string[]) => void | undefined;
   minLength?: number;
   maxLength?: number;
-  customValidation?: {fieldsMatch: string[]};
+  customValidation?: { fieldsMatch: string[] };
   disabled?: "" | "disabled";
   hidden?: "" | "hidden";
-  showOnly? :boolean;
-  key?:string;
-
+  showOnly?: boolean;
+  key?: string;
+  customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
 }
 
 export class FormField implements IFormGenerator {
@@ -44,15 +45,15 @@ export class FormField implements IFormGenerator {
   apiType?: "search" | "select" | "datalist";
   apiInitialValue?: string;
   apiModule?: string;
-  onChange?: (...value:string[]) => void | undefined;
+  onChange?: (...value: string[]) => void | undefined;
   minLength?: number;
   maxLength?: number;
-  customValidation?: {fieldsMatch: string[]};
+  customValidation?: { fieldsMatch: string[] };
   disabled?: "" | "disabled";
   hidden?: "" | "hidden";
-  showOnly? :boolean;
-
-  constructor(type:string) {
+  showOnly?: boolean;
+  customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
+  constructor(type: string) {
     this.type = type;
     this.key = uuidv4();
   }
@@ -89,11 +90,11 @@ export const PractitionerCategories = [
   { key: "Physician Assistant", value: "Physician Assistant" },
 ]
 
-export function isRow(value: IFormGenerator | IFormGenerator[]):value is IFormGenerator[] {
+export function isRow(value: IFormGenerator | IFormGenerator[]): value is IFormGenerator[] {
   return (value as IFormGenerator[]).length !== undefined;
 }
 
-export function isFormField(value: IFormGenerator | IFormGenerator[]):value is IFormGenerator {
+export function isFormField(value: IFormGenerator | IFormGenerator[]): value is IFormGenerator {
   return (value as IFormGenerator).label !== undefined;
 }
 
@@ -102,9 +103,9 @@ export function findFormField(fields: (IFormGenerator | IFormGenerator[])[], nam
     if (isFormField(field) && field.name === name) {
       return field;
     }
-    else if(isRow(field)){
+    else if (isRow(field)) {
       const found = field.find(f => f.name === name);
-      if(found){
+      if (found) {
         return found;
       }
     }
