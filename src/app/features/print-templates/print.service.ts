@@ -10,17 +10,23 @@ export class PrintService {
   constructor(private dbService: HttpService) { }
 
   getTemplates() {
-    return this.dbService.get<{ data: Template[] }>('templates');
+    return this.dbService.get<{ data: Template[] }>('print-queue/templates');
   }
 
-  createTemplate(template: Template) {
-    return this.dbService.post<{ data: Template }>('templates', template);
-  }
+
 
   uploadDocx(file: File) {
     const formData = new FormData();
     formData.append('docxFile', file);
-    return this.dbService.post<{ data: string }>('templates/upload-docx', formData);
+    return this.dbService.post<{ data: string }>('print-queue/templates/upload-docx', formData);
+  }
+
+  deleteTemplate(uuid: string) {
+    return this.dbService.delete(`print-queue/templates/${uuid}`);
+  }
+
+  printSelection(objects: any[], template_uuid: string) {
+    return this.dbService.post(`print-queue/templates/${template_uuid}/print-selection`, { objects });
   }
 
 

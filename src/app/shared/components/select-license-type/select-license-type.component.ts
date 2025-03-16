@@ -14,6 +14,8 @@ export class SelectLicenseTypeComponent implements OnInit, OnDestroy {
   licenseTypes: { key: string, value: string }[] = [];
   destroy$: Subject<boolean> = new Subject();
   @Output() licenseTypeChanged: EventEmitter<string> = new EventEmitter();
+  @Input() label: string = "Select license type";
+  @Input() emptyOption: string = "Choose one";
   constructor(private appService: AppService) {
   }
   ngOnInit(): void {

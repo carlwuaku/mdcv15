@@ -14,6 +14,7 @@ export interface IFormGenerator {
   apiLabelProperty?: string;
   apiKeyProperty?: string;
   apiType?: "search" | "select" | "datalist";
+  selection_mode?: "single" | "multiple";
   apiInitialValue?: string;
   apiModule?: string;
   onChange?: (...value: string[]) => void | undefined;

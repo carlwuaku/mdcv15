@@ -1,10 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LicenseObject } from '../../../models/license_model';
 import { RenewalService } from '../../../renewal.service';
 import { RenewalObject } from '../renewal.model';
@@ -12,12 +12,13 @@ import { AppService } from 'src/app/app.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-manage-renewals',
   templateUrl: './manage-renewals.component.html',
   styleUrls: ['./manage-renewals.component.scss']
 })
-export class ManageRenewalsComponent {
+export class ManageRenewalsComponent implements OnInit, OnDestroy {
   baseUrl: string = "licenses/renewal";
   url: string = "licenses/renewal";
   ts: string = "";
@@ -29,20 +30,24 @@ export class ManageRenewalsComponent {
   requiredFields: IFormGenerator[] = [];
   canApprove: boolean = false;
   providedData: IFormGenerator[] = [];
+  destroy$: Subject<boolean> = new Subject();
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private appService: AppService,
-    private authService: AuthService) {
-    //get query params for status and license_type
-    this.ar.queryParams.subscribe(params => {
-      this.queryParams = params;
-    });
+    private authService: AuthService, private router: Router) {
+
 
 
   }
   ngOnInit(): void {
-    this.setUrl();
-    this.appService.appSettings.subscribe(data => {
-      const stageConfig = data?.licenseTypes[this.queryParams['license_type']]?.renewalStages[this.queryParams['status']];
+    //get query params for status and license_type
+    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      this.queryParams = params
+      this.licenseType = params['license_type'];
+      this.setUrl();
+    });
+
+    this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      const stageConfig = data?.licenseTypes[this.licenseType]?.renewalStages[this.queryParams['status']];
       if (!stageConfig) {
         return;
       }
@@ -111,7 +116,7 @@ export class ManageRenewalsComponent {
     return actions;
   }
   delete(object: RenewalObject) {
-    this.renewalService.delete(object.uuid).subscribe({
+    this.renewalService.delete(object.uuid).pipe(takeUntil(this.destroy$)).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
         this.updateTimestamp();
@@ -128,7 +133,7 @@ export class ManageRenewalsComponent {
     if (!window.confirm('Are you sure you want to update this entry? ')) {
       return;
     }
-    this.renewalService.update(object.uuid, data).subscribe({
+    this.renewalService.update(object.uuid, data).pipe(takeUntil(this.destroy$)).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
         this.updateTimestamp();
@@ -177,7 +182,7 @@ export class ManageRenewalsComponent {
       });
     });
 
-    this.renewalService.updateBulkForStage(data, this.action).subscribe({
+    this.renewalService.updateBulkForStage(data, this.action).pipe(takeUntil(this.destroy$)).subscribe({
       next: response => {
         let successful = 0;
         let failed = 0;
@@ -199,5 +204,14 @@ export class ManageRenewalsComponent {
       },
       error: error => { }
     })
+  }
+
+  onLicenseTypeChange(selectedValue: string) {
+    this.router.navigate(['licenses/renewals-manage'], { queryParams: { license_type: selectedValue } });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 }

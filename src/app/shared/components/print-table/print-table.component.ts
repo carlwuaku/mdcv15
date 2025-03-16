@@ -27,6 +27,7 @@ export class PrintTableComponent implements OnInit, OnDestroy {
   selectedTemplateId: string | null = null;
   selectedTemplate: Template | null = null;
   @ViewChild('printDialog') printDialog!: TemplateRef<any>;
+  templateVariables: string[] = [];
   constructor(private dbService: HttpService, private dialog: MatDialog) {
   }
   ngOnInit(): void {
@@ -55,7 +56,18 @@ export class PrintTableComponent implements OnInit, OnDestroy {
 
   onTemplateChange(event: any) {
     this.selectedTemplateId = event.value;
-    this.selectedTemplate = this.templates.find(t => t.id === this.selectedTemplateId) || null;
+    this.selectedTemplate = this.templates.find(t => t.uuid === this.selectedTemplateId) || null;
+    //get the variables from the template. these are underscore_separated words wrapped in square brackets
+    this.templateVariables = this.selectedTemplate?.template_content.match(/(\[\w+\])/g) || [];
+  }
+
+  printSelection() {
+    this.dbService.post<{ data: string }>(`print-queue/templates/${this.selectedTemplateId}/print-selection`, { objects: this.objects }).subscribe((res) => {
+      const newWindow = window.open('', '', 'width=800,height=600');
+      if (newWindow) {
+        newWindow.document.write(res.data);
+      }
+    });
   }
 
 }

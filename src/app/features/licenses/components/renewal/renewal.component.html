@@ -1,10 +1,16 @@
 <div class=" flex flex-col gap-1">
-
-
-  <mat-card>
+  <mat-card *ngIf="!license">
     <mat-card-content>
-      <app-load-data-list [showDeleted]="false" [showExport]="false" [showInfo]="false" [showSort]="false"
-        [showFilterButton]="false" [timestamp]="ts" [url]="url" [getActions]="getActions">
+      <app-select-license-type [licenseType]="licenseType"
+        (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="licenseType">
+    <mat-card-content>
+      <app-load-data-list [showDeleted]="false" [showExport]="!license" [showInfo]="false" [showSort]="!license"
+        [showFilterButton]="!license" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted" [timestamp]="ts"
+        [url]="url" [getActions]="getActions">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

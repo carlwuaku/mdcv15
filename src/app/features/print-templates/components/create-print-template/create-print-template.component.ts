@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
@@ -13,6 +13,7 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
   title: string = "Add a new template";
   formUrl: string = "print-queue/templates";
   existingUrl: string = "print-queue/templates";
+  @ViewChild('fileInput') fileInput!: ElementRef;
   fields: IFormGenerator[] = [
     {
       label: "Template name",
@@ -38,6 +39,20 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
       api_url: "",
       apiKeyProperty: "",
       apiLabelProperty: "",
+    },
+    {
+      label: "Allowed roles",
+      name: "allowed_roles",
+      hint: "",
+      options: [],
+      type: "api",
+      value: [],
+      required: true,
+      api_url: "admin/roles",
+      apiKeyProperty: "role_name",
+      apiLabelProperty: "role_name",
+      apiType: "select",
+      selection_mode: "multiple",
     }
 
 
@@ -70,6 +85,12 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
 
   //we also want the user to be able to upload a docx file
   uploadDocx(event: any) {
+    //if there's a content already, warn the user that it will be overwritten
+    if (this.fields.find(field => field.name === 'template_content')!.value) {
+      if (!window.confirm("This will overwrite the existing content.")) {
+        return;
+      }
+    }
     const file = event.target.files[0];
     this.printService.uploadDocx(file).subscribe((res) => {
       //set the template_content to the response
@@ -77,4 +98,15 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
     });
   }
 
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  setContent(event: any) {
+    this.fields.find(field => field.name === 'template_content')!.value = event;
+  }
+
+  setRoles(event: any, index: number) {
+    this.fields.find(field => field.name === 'allowed_roles')!.value = event;
+  }
 }

@@ -25,7 +25,7 @@ import { PrepMessagingComponent } from './components/prep-messaging/prep-messagi
 import { LinkNameComponent } from './components/link-name/link-name.component';
 import { SelectObjectComponent } from './components/select-object/select-object.component';
 import { DataListMenuButtonComponent } from './components/data-list-menu-button/data-list-menu-button.component';
-import { FormGeneratorComponent } from './components/form-generator/form-generator.component';
+import { FieldTemplateDirective, FormGeneratorComponent } from './components/form-generator/form-generator.component';
 import { FileUploaderComponent } from './components/file-uploader/file-uploader.component';
 import { KeyValueDisplayComponent } from './components/key-value-display/key-value-display.component';
 import { ArrayEditorComponent } from './components/array-editor/array-editor.component';
@@ -88,7 +88,8 @@ import { PrintTableComponent } from './components/print-table/print-table.compon
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
-    PrintTableComponent
+    PrintTableComponent,
+    FieldTemplateDirective
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -141,7 +142,8 @@ import { PrintTableComponent } from './components/print-table/print-table.compon
     SelectLicenseTypeComponent,
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
-    PrintTableComponent
+    PrintTableComponent,
+    FieldTemplateDirective
   ],
   providers: [
     ClipboardCopyDirective

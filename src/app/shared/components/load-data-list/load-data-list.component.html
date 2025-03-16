@@ -27,9 +27,13 @@
 
 
     <div class="flex  gap-2  items-center flex-wrap">
-      <button *ngIf="showFilterButton" mat-flat-button color="accent" [disabled]="filters.length < 1"
+      <button *ngIf="showFilterButton && !showAllFilters" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
-      <mat-chip-set aria-label="Filters">
+      <div *ngIf="showFilterButton && showAllFilters" class="allFilters">
+        <app-form-generator layout="horizontal" (onSubmit)="filterSubmitted($event)" [formType]="'filter'"
+          [fields]="filters" [formType]="'filter'"></app-form-generator>
+      </div>
+      <mat-chip-set *ngIf="showFilterButton && !showAllFilters" aria-label="Filters">
         <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
           {{filter.label}} :
           {{filter.value}}
