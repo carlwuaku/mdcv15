@@ -8,7 +8,8 @@ import { RenewalFormComponent } from './components/renewal/renewal-form/renewal-
 import { RenewalComponent } from './components/renewal/renewal.component';
 import { RenewalDashboardComponent } from './components/renewal/renewal-dashboard/renewal-dashboard.component';
 import { ManageRenewalsComponent } from './components/renewal/manage-renewals/manage-renewals.component';
-
+import { ReportsComponent } from './components/reports/reports.component';
+import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
 const routes: Routes = [
   { path: '', component: LicensesComponent },
   { path: 'list', component: LicensesComponent },
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path: 'renewal-form/:id', data: { title: 'Edit Renewal' }, component: RenewalFormComponent },
   { path: 'renewal-certificate/:id', data: { title: 'Print Renewal Certificate' }, component: RenewalCertificateComponent },
   { path: 'renewal-dashboard', data: { title: 'Manage Renewals' }, component: RenewalDashboardComponent },
-
+  { path: 'reports', data: { title: 'Basic Reports' }, component: ReportsComponent },
+  { path: 'advanced-reports', data: { title: 'Advanced Reports' }, component: AdvancedReportsComponent },
 ];
 
 @NgModule({

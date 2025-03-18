@@ -8,8 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
-import { Subject, takeUntil } from 'rxjs';
-
+import { Subject, take, takeUntil } from 'rxjs';
+import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 @Component({
   selector: 'app-licenses',
   templateUrl: './licenses.component.html',
@@ -25,6 +25,8 @@ export class LicensesComponent implements OnInit, OnDestroy {
   @Input() showSelectLicenseType: boolean = true;
   @Input() showAddButton: boolean = true;
   destroy$: Subject<boolean> = new Subject();
+  filters: IFormGenerator[] = [];
+  queryParams: { [key: string]: string } = {};
   constructor(private dbService: HttpService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
@@ -42,7 +44,14 @@ export class LicensesComponent implements OnInit, OnDestroy {
       this.ar.queryParams
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
           this.licenseType = params['licenseType'];
+          this.queryParams = params;
           if (this.licenseType) {
+            this.appService.appSettings.pipe(take(1)).subscribe(data => {
+              this.filters = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields;
+              this.filters.forEach(filter => {
+                filter.value = params[`child_${filter.name}`];
+              });
+            })
             this.updateUrl();
           }
         });
@@ -56,9 +65,8 @@ export class LicensesComponent implements OnInit, OnDestroy {
   }
 
   updateUrl() {
-    console.log(this.licenseType)
 
-    this.url = `${this.baseUrl}` + (this.licenseType ? `?licenseType=${this.licenseType}` : "");
+    this.url = `${this.baseUrl}` + "?" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
   }
   getActions = (license: LicenseObject): DataActionsButton[] => {
 
@@ -146,4 +154,22 @@ export class LicensesComponent implements OnInit, OnDestroy {
       "register_type-Full": "badge bg-success",
     }
     ;
+
+  filterSubmitted = (params: string) => {
+
+    //split the params by & and then by =
+    const paramsArray = params.split("&");
+    const paramsObject: { [key: string]: string } = {};
+    paramsArray.forEach(param => {
+      const [key, value] = param.split("=");
+      paramsObject["child_" + key] = value;
+    });
+
+    paramsObject['licenseType'] = this.licenseType;
+
+
+    this.router.navigate(['licenses'], { queryParams: paramsObject });
+
+  }
+
 }

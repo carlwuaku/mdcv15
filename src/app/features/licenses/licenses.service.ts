@@ -40,5 +40,21 @@ export class LicensesService {
     return this.dbService.get(`licenses/config/${type}`)
   }
 
+  getBasicReports(licenseType: string, queryParams: { [key: string]: string }): Observable<{ data: { [key: string]: { data: any[], label: string, type: string, labelProperty: string, valueProperty: string, chartTitle: string, xAxisLabel: string, yAxisLabel: string } } }> {
+    const baseUrl = `licenses/reports/basic-statistics/${licenseType}`;
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.get(baseUrl + "?" + paramArray.join("&"))
+  }
+
+  getCount(queryParams: { [key: string]: string }): Observable<{ data: string }> {
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.get(`licenses/count?${paramArray.join("&")}`)
+  }
 
 }

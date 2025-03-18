@@ -47,6 +47,10 @@ import { SelectLicenseTypeComponent } from './components/select-license-type/sel
 import { FilterEmptyValuesPipe } from './pipes/filter-empty-values.pipe';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { PrintTableComponent } from './components/print-table/print-table.component';
+import { ChartComponent } from './components/chart/chart.component';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartModule } from 'primeng/chart';
+import { TableComponent } from './components/table/table.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -89,7 +93,9 @@ import { PrintTableComponent } from './components/print-table/print-table.compon
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
     PrintTableComponent,
-    FieldTemplateDirective
+    FieldTemplateDirective,
+    ChartComponent,
+    TableComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -100,7 +106,10 @@ import { PrintTableComponent } from './components/print-table/print-table.compon
     AgGridModule,
     CKEditorModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgChartsModule,
+    ChartModule
+
   ],
   exports: [
     PrimeNgUiComponentsModule,
@@ -143,7 +152,8 @@ import { PrintTableComponent } from './components/print-table/print-table.compon
     FilterEmptyValuesPipe,
     ErrorMessageComponent,
     PrintTableComponent,
-    FieldTemplateDirective
+    FieldTemplateDirective,
+    ChartComponent
   ],
   providers: [
     ClipboardCopyDirective

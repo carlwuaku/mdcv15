@@ -60,7 +60,7 @@ export class FormGeneratorComponent implements OnInit {
   imageFieldsFiles: Map<string, File> = new Map();
   private templateMap = new Map<string, TemplateRef<any>>();
   @Input() sendAsJson: boolean = false;
-  @Input() layout: "vertical" | "horizontal" = "vertical";
+  @Input() layout: "vertical" | "horizontal" | "grid" = "vertical";
   constructor(private notify: NotifyService,
     private dbService: HttpService, private datePipe: DatePipe, private fileUploadService: FileUploadService) {
     this.formId = uuidv4();
