@@ -19,6 +19,8 @@ import { RenewalCertificateComponent } from './components/renewal/renewal-certif
 import { RenewalDashboardComponent } from './components/renewal/renewal-dashboard/renewal-dashboard.component';
 import { ManageRenewalsComponent } from './components/renewal/manage-renewals/manage-renewals.component';
 import { CpdModule } from '../cpd/cpd.module';
+import { ReportsComponent } from './components/reports/reports.component';
+import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { CpdModule } from '../cpd/cpd.module';
     RenewalCertificateComponent,
     RenewalDashboardComponent,
     ManageRenewalsComponent,
+    ReportsComponent,
+    AdvancedReportsComponent,
   ],
   imports: [
     CommonModule,

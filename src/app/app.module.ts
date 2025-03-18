@@ -17,6 +17,7 @@ import { HeadersInterceptorInterceptor } from './core/interceptors/headers-inter
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { LocationStrategy, HashLocationStrategy, DatePipe } from "@angular/common";
+import { NgChartsModule } from 'ng2-charts';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
@@ -54,7 +55,7 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
         deps: [HttpClient]
       }
     }),
-    MatNativeDateModule
+    MatNativeDateModule,
 
   ],
   providers: [

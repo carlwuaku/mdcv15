@@ -22,7 +22,9 @@ interface AppSettings {
       renewalStages: {
         [key: string]: RenewalStageItems
       },
-      renewalFilterFields: IFormGenerator[]
+      renewalFilterFields: IFormGenerator[],
+      advancedStatisticsFields: IFormGenerator[],
+      basicStatisticsFilterFields: IFormGenerator[]
     },
 
   }

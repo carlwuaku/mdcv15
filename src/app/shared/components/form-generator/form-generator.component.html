@@ -3,7 +3,8 @@
 <form *ngIf="show" #form ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
   class=" flex flex-col gap-1">
 
-  <div class="flex gap-1" [class.flex-col]="layout === 'vertical'" [class.flex-row]="layout === 'horizontal'">
+  <div class="flex gap-1" [class.flex-col]="layout === 'vertical'" [class.flex-row]="layout === 'horizontal'"
+    [class.grid]="layout === 'grid'" [class.grid-cols-3]="layout === 'grid'">
 
     <ng-container *ngFor="let field of fields; let i = index">
       <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">

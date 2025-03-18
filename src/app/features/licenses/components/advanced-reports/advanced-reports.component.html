@@ -1,0 +1,15 @@
+<div class=" flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <app-select-license-type [licenseType]="licenseType"
+        (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
+    </mat-card-content>
+  </mat-card>
+
+
+  <app-load-data-list *ngIf="licenseType" #advancedReportsList [preload]="true" [showSearch]="false"
+    [url]="AdvancedReportsUrl" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted"
+    [filters]="AdvancedReportsFilters" [filtersLayout]="'grid'" [useResponseFilters]="false">
+  </app-load-data-list>
+
+</div>

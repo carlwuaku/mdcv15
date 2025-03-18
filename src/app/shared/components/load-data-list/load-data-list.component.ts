@@ -54,7 +54,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() exclusionKeys = ['id', 'created_by', 'modified_on', 'deleted',
     'deleted_by', 'password_hash', 'last_ip']
   showTable: boolean = false;
-  displayedColumns: string[] = [];
+  @Input() displayedColumns: string[] = [];
   sortColumns: string[] = [];
   // @Input() actions: DataActionsButton[] = [];
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
@@ -98,7 +98,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() onFilterSubmitted: (params: string) => void = () => { };
   queryParams: { [key: string]: string } = {};
   isOverflowing: boolean = false;
-
+  @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "horizontal";
+  @Input() useResponseFilters: boolean = true;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -162,7 +163,6 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.currentPage = 1;
       this.getData();
     }
-
   }
 
 
@@ -210,7 +210,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.filters.forEach(filter => {
 
         //add the filter to the url if it's not already in the url query params
-        if (filter.value && !this.queryParams[filter.name]) {
+        if (filter.value && !this.queryParams[filter.name] && !this.queryParams[`child_${filter.name}`]) {
 
           extra += filter.type === "date" ? `&${filter.name}=${this.formatDate(filter.value)}` : `&${filter.name}=${filter.value}`
         }
@@ -261,7 +261,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.columnLabels = response.columnLabels
           this.showTable = true;
           this.dataSource.sort = this.sort;
-          if (response.columnFilters && response.columnFilters.length > 0) {
+          if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
             this.filters = response.columnFilters.map(filter => {
               const existingFilter = this.filters.find(x => x.name == filter.name);
