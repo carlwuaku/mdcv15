@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LicenseObject } from './models/license_model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { Subject, take, takeUntil } from 'rxjs';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
 @Component({
   selector: 'app-licenses',
   templateUrl: './licenses.component.html',
@@ -26,6 +27,7 @@ export class LicensesComponent implements OnInit, OnDestroy {
   @Input() showAddButton: boolean = true;
   destroy$: Subject<boolean> = new Subject();
   filters: IFormGenerator[] = [];
+  @ViewChild('dataList') dataList!: LoadDataListComponent;
   queryParams: { [key: string]: string } = {};
   constructor(private dbService: HttpService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
@@ -37,25 +39,28 @@ export class LicensesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
   ngOnInit(): void {
-    if (this.licenseType) {
-      this.updateUrl();
-    }
-    else {
-      this.ar.queryParams
-        .pipe(takeUntil(this.destroy$)).subscribe(params => {
-          this.licenseType = params['licenseType'];
-          this.queryParams = params;
-          if (this.licenseType) {
-            this.appService.appSettings.pipe(take(1)).subscribe(data => {
-              this.filters = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields;
-              this.filters.forEach(filter => {
-                filter.value = params[`child_${filter.name}`];
-              });
-            })
+    // if (this.licenseType) {
+    //   this.updateUrl();
+    // }
+    // else {
+    this.ar.queryParams
+      .pipe(takeUntil(this.destroy$)).subscribe(params => {
+
+        this.licenseType = params['licenseType'];
+        this.queryParams = params;
+        if (this.licenseType) {
+          this.appService.appSettings.pipe(take(1)).subscribe(data => {
+            this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields;
+            this.filters.forEach(filter => {
+              filter.value = params[`child_${filter.name}`];
+            });
             this.updateUrl();
-          }
-        });
-    }
+            // this.dataList?.getData();
+          })
+
+        }
+      });
+    // }
 
 
   }

@@ -9,8 +9,8 @@
   <mat-card *ngIf="licenseType">
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="!license" [showInfo]="false" [showSort]="!license"
-        [showFilterButton]="!license" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted" [timestamp]="ts"
-        [url]="url" [getActions]="getActions">
+        [showFilterButton]="!license" [showAllFilters]="true" [showSearch]="!license" [showReset]="!license"
+        [onFilterSubmitted]="filterSubmitted" [timestamp]="ts" [url]="url" [getActions]="getActions">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

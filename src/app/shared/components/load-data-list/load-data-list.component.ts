@@ -100,6 +100,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   isOverflowing: boolean = false;
   @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "horizontal";
   @Input() useResponseFilters: boolean = true;
+  @Input() showTableTitle: boolean = true;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -118,21 +119,23 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.onSelect.emit(data.source.selected)
     })
-    this.ar.queryParams
-      .pipe(takeUntil(this.destroy$)).subscribe(params => {
-        this.queryParams = params;
-        const searchQuery = params['searchParam'];
-        //assign the param values to the filters
-        this.filters.forEach(filter => {
-          if (params[filter.name]) {
-            filter.value = params[filter.name];
+    if (this.useResponseFilters) {
+      this.ar.queryParams
+        .pipe(takeUntil(this.destroy$)).subscribe(params => {
+          this.queryParams = params;
+          const searchQuery = params['searchParam'];
+          //assign the param values to the filters
+          this.filters.forEach(filter => {
+            if (params[filter.name]) {
+              filter.value = params[filter.name];
+            }
+          })
+          if (searchQuery) {
+            this.searchParam = searchQuery;
+            this.search();
           }
-        })
-        if (searchQuery) {
-          this.searchParam = searchQuery;
-          this.search();
-        }
-      });
+        });
+    }
 
     // Add resize observer to check overflow on container size changes
     if (typeof ResizeObserver !== 'undefined') {
@@ -229,7 +232,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     const splitUrl = url.split("?");
     let tableTitleArray: string[] = [];
     //splitUrl should return a string like param=123&limit=10&page=1. apart from page and limit,
-    //split every key=value into key: value, separated by commas
+    //split every key=value into key: value, separated by commas.
 
     const params = splitUrl[1].split("&").filter(param => !param.includes("page=") && !param.includes("limit=")
       && !param.includes("sortBy=") && !param.includes("sortOrder=")).map(x => x.split("="));

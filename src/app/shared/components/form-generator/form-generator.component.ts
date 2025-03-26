@@ -333,11 +333,11 @@ export class FormGeneratorComponent implements OnInit {
 
     this.fields.forEach(field => {
       if (this.isFormField(field)) {
-        field.value = null;
+        field.value = "";
       }
       else if (this.isRow(field)) {
         field.map(rowField => {
-          rowField.value = null;
+          rowField.value = "";
         })
       }
     });

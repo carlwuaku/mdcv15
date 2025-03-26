@@ -5,11 +5,11 @@
   <div *ngIf="!url && searchType && searchTypes.length">Misconfigured url. Please refresh the page</div>
   <div *ngIf="url" [ngSwitch]="searchType">
     <div *ngSwitchCase="'facilities'">
-      <app-licenses [showAddButton]="false" [showSelectLicenseType]="false" [url]="finalUrl" [licenseType]="searchType"
-        [showSearch]="false"></app-licenses>
+      <!-- <app-licenses [showAddButton]="false" [showSelectLicenseType]="false" [url]="finalUrl" [licenseType]="searchType"
+        [showSearch]="false"></app-licenses> -->
     </div>
     <div *ngSwitchCase="'practitioners'">
-      <app-licenses [url]="finalUrl" [licenseType]="searchType" [showSearch]="false"></app-licenses>
+      <!-- <app-licenses [url]="finalUrl" [licenseType]="searchType" [showSearch]="false"></app-licenses> -->
     </div>
     <div *ngSwitchDefault>
       <p>Search for something</p>

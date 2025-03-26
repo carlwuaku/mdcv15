@@ -4,7 +4,8 @@
   class=" flex flex-col gap-1">
 
   <div class="flex gap-1" [class.flex-col]="layout === 'vertical'" [class.flex-row]="layout === 'horizontal'"
-    [class.grid]="layout === 'grid'" [class.grid-cols-3]="layout === 'grid'">
+    [class.items-end]="layout === 'horizontal'" [class.grid]="layout === 'grid'"
+    [class.grid-cols-3]="layout === 'grid'">
 
     <ng-container *ngFor="let field of fields; let i = index">
       <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
@@ -33,7 +34,7 @@
     </ng-container>
   </div>
 
-  <div class="flex gap-1">
+  <div class="flex gap-1" [ngClass]="{'sticky left-0': layout === 'horizontal'}">
     <ng-content select="[submitButton]"></ng-content>
     <button type="button" mat-stroked-button color="warn" (click)="resetForm()">{{resetButtonText}}</button>
 
@@ -130,9 +131,9 @@
     </mat-form-field>
 
 
-    <mat-form-field class="flex-auto" *ngSwitchDefault>
+    <mat-form-field *ngSwitchDefault>
       <mat-label>{{field.label}}</mat-label>
-      <input matInput class="flex-auto" [required]="field.required" type="{{field.type}}" [(ngModel)]="field.value"
+      <input matInput [required]="field.required" type="{{field.type}}" [(ngModel)]="field.value"
         name="{{field.name}}" />
     </mat-form-field>
 
