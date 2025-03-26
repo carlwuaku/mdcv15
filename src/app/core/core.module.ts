@@ -7,7 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { RecaptchaModule } from "ng-recaptcha";
 import { SearchComponent } from './pages/search/search.component';
 import { LicensesModule } from '../features/licenses/licenses.module';
-import { PractitionersModule } from '../features/practitioners/practitioners.module';
+// import { PractitionersModule } from '../features/practitioners/practitioners.module';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 
@@ -23,7 +23,7 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
     CommonModule,
     SharedModule,
     RecaptchaModule,
-    PractitionersModule,
+    // PractitionersModule,
     LicensesModule,
   ],
   exports: [LoginComponent]

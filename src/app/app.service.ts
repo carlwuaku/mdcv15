@@ -24,10 +24,12 @@ interface AppSettings {
       },
       renewalFilterFields: IFormGenerator[],
       advancedStatisticsFields: IFormGenerator[],
-      basicStatisticsFilterFields: IFormGenerator[]
+      basicStatisticsFilterFields: IFormGenerator[],
+      searchFormFields: IFormGenerator[]
     },
 
-  }
+  },
+  cpdFilterFields: IFormGenerator[]
 
 }
 @Injectable({
@@ -44,6 +46,7 @@ export class AppService {
     dashboardMenu: [],
     searchTypes: [],
     licenseTypes: {},
+    cpdFilterFields: [],
   });
   constructor(private authService: AuthService,
     private dbService: HttpService,) {

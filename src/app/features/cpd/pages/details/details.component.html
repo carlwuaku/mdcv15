@@ -42,7 +42,7 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-            <app-cpd-attendance *ngIf="object" [cpdUuid]="object.uuid"></app-cpd-attendance>
+            <app-cpd-attendance *ngIf="object" [showYear]="false" [cpdUuid]="object.uuid"></app-cpd-attendance>
           </mat-card-content>
         </mat-card>
       </ng-template>

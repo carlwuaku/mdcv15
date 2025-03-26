@@ -26,6 +26,7 @@ export interface IFormGenerator {
   showOnly?: boolean;
   key?: string;
   customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
+  placeholder?: string;
 }
 
 export class FormField implements IFormGenerator {
@@ -53,6 +54,7 @@ export class FormField implements IFormGenerator {
   hidden?: "" | "hidden";
   showOnly?: boolean;
   customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
+  placeholder?: string;
   constructor(type: string) {
     this.type = type;
     this.key = uuidv4();

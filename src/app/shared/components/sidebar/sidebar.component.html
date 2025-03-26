@@ -10,12 +10,12 @@
         </mat-expansion-panel-header>
         <mat-nav-list>
           <a mat-list-item [ngClass]="{'active shadow-sm rounded-sm': isActiveChild(link)}" [routerLink]="link.url"
-            *ngFor="let link of item.children">{{ link.title }}</a>
+            [queryParams]="link.urlParams" *ngFor="let link of item.children">{{ link.title }}</a>
         </mat-nav-list>
       </mat-expansion-panel>
     </ng-container>
     <ng-template #noChildren>
-      <a mat-list-item [routerLink]="item.url">
+      <a mat-list-item [routerLink]="item.url" [queryParams]="item.urlParams">
         <span class="flex items-center gap-1.5  text-[16px] font-light">
           <mat-icon color="primary">{{ item.icon }}</mat-icon>
           {{ item.title }}

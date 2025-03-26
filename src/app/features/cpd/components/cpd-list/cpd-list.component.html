@@ -1,12 +1,7 @@
-<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems">
-  <ng-template #header>
-    <form class="flex gap-1">
-      <mat-form-field appearance="fill" class="flex-auto">
-        <mat-label>Year </mat-label>
-        <input matInput type="text" name="year" [(ngModel)]="year" />
-        <button matSuffix mat-raised-button color="primary" (click)="setUrl()">Get Data</button>
-      </mat-form-field>
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems"
+  [preload]="true" [showSearch]="false" (onSelect)="setSelectedItems($event)"
+  (selectionChanged)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
+  [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false" [filters]="filters" [showAllFilters]="true"
+  [showSort]="false" [showSearch]="false" [showTableTitle]="false">
 
-    </form>
-  </ng-template>
 </app-load-data-list>
