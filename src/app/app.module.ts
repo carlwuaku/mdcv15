@@ -11,31 +11,14 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { gtmContainerId } from "./app-config";
 import { CoreModule } from './core/core.module';
-import { TranslateModule, TranslateLoader, TranslateService } from "@ngx-translate/core";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { HeadersInterceptorInterceptor } from './core/interceptors/headers-interceptor.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { LocationStrategy, HashLocationStrategy, DatePipe } from "@angular/common";
 import { NgChartsModule } from 'ng2-charts';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(
-    http,
-    "./assets/i18n/",
-    ".json?cb=" + new Date().getTime()
-  );
-}
 
-export function appInitializerTranslationsFactory(translate: TranslateService) {
-  return () => new Promise<any>((resolve: any) => {
-    const langToSet: string = navigator.language.split("-")[0];
-    translate.setDefaultLang("en");
-    translate.use(langToSet).subscribe(() => { }, err => { }, () => {
-      resolve(null);
-    });
-  });
-}
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,23 +31,11 @@ export function appInitializerTranslationsFactory(translate: TranslateService) {
     SharedModule,
     ToastModule,
     HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
     MatNativeDateModule,
 
   ],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerTranslationsFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    },
+
     MessageService,
     { provide: "googleTagManagerId", useValue: gtmContainerId },
 

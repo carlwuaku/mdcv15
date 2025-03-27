@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PrimeNgUiComponentsModule } from './prime-ng-ui-components/prime-ng-ui-components.module';
 import { LoxamDatePipe } from './pipes/date/loxam-date.pipe';
-import { RemoteDataModule } from 'ngx-remotedata';
 import { ClipboardCopyDirective } from "./directives/clipboard-copy.directive";
-import { TranslateModule } from "@ngx-translate/core";
 import { DialogModule } from 'primeng/dialog';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { MaterialComponentsModule } from './material-components/material-components.module';
@@ -99,8 +97,6 @@ import { TableComponent } from './components/table/table.component';
   ],
   imports: [
     PrimeNgUiComponentsModule,
-    RemoteDataModule,
-    TranslateModule,
     DialogModule,
     MaterialComponentsModule,
     AgGridModule,
@@ -113,7 +109,6 @@ import { TableComponent } from './components/table/table.component';
   ],
   exports: [
     PrimeNgUiComponentsModule,
-    TranslateModule,
     MaterialComponentsModule,
     ClipboardCopyDirective,
     LoxamDatePipe,
