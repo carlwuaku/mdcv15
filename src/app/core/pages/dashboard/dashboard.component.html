@@ -1,17 +1,13 @@
 <div class="flex flex-col gap-2 w-full">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title> <mat-icon>search</mat-icon> Search</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-search-widget></app-search-widget>
-    </mat-card-content>
-  </mat-card>
+  <div>
+    <h1 class="text-3xl font-light">Welcome, {{user?.email}}</h1>
+  </div>
+
 
   <div class="flex flex-wrap gap-2">
     <ng-container *ngFor="let item of menuItems">
-      <app-dashboard-tile class="w-[32%] min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
-        [counterText]="item.apiCountText" [description]="item.description"
+      <app-dashboard-tile class="w-[32%] min-w-[300px] min-h-[100px]" [url]="item.url" [icon]="item.icon"
+        [title]="item.title" [counterText]="item.apiCountText" [description]="item.description"
         [counterUrl]="item.apiCountUrl"></app-dashboard-tile>
     </ng-container>
   </div>

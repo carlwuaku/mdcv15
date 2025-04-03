@@ -1,46 +1,41 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { HttpService } from 'src/app/core/services/http/http.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { RenewalObject } from './renewal.model';
+import { RenewalObject } from '../renewal.model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getToday } from 'src/app/shared/utils/dates';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RenewalService } from '../../renewal.service';
-import { LicenseObject } from '../../models/license_model';
 import { Subject, take, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { AppService } from 'src/app/app.service';
 import { openHtmlInNewWindow } from 'src/app/shared/utils/helper';
-import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
-import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { RenewalService } from '../../../renewal.service';
+
 
 @Component({
-  selector: 'app-renewal',
-  templateUrl: './renewal.component.html',
-  styleUrls: ['./renewal.component.scss']
+  selector: 'app-renewal-print-queue',
+  templateUrl: './renewal-print-queue.component.html',
+  styleUrls: ['./renewal-print-queue.component.scss']
 })
-export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
+export class RenewalPrintQueueComponent implements OnInit, OnDestroy {
   baseUrl: string = "licenses/renewal";
   url: string = "licenses/renewal";
   ts: string = "";
-  @Input() license: LicenseObject | undefined = undefined;
   queryParams: { [key: string]: string } = {};
   licenseType: string = "";
   inlineFilters: string[] = ["start_date", "end_date"];
   destroy$: Subject<boolean> = new Subject();
   canPrint: boolean = false;
   selectedItems: RenewalObject[] = [];
-  constructor(private authService: AuthService, private notify: NotifyService, public dialog: MatDialog,
-    private renewalService: RenewalService, private ar: ActivatedRoute, private router: Router,
+
+  constructor(private authService: AuthService, private notify: NotifyService,
+    private ar: ActivatedRoute, private router: Router, private renewalService: RenewalService,
     private appService: AppService) {
 
 
   }
+
   ngOnInit(): void {
-    if (this.license) {
-      this.licenseType = this.license.type
-    }
+
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
@@ -53,70 +48,38 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     });
 
   }
-  ngOnChanges(changes: SimpleChanges): void {
-
-
-    this.setUrl();
-  }
-
   setUrl() {
     let queryParams = "";
-    Object.keys(this.queryParams).forEach(key => {
+    const queryParamsKeys = Object.keys(this.queryParams);
+    queryParamsKeys.forEach(key => {
       queryParams += queryParams === "" ? "?" : "&";
       queryParams += `${key}=${this.queryParams[key]}`;
     });
-    if (this.license) {
-      this.url = this.baseUrl + "/license/" + this.license.uuid + queryParams;
+    //make sure the in_print_queue is set to 1
+    if (!queryParamsKeys.includes("in_print_queue") || this.queryParams["in_print_queue"] !== "1") {
+      queryParams += queryParams === "" ? "?" : "&";
+      queryParams += `in_print_queue=1`;
     }
-    else {
-      this.url = this.baseUrl + queryParams;
-    }
+    this.url = this.baseUrl + queryParams;
   }
 
   getActions = (object: RenewalObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
-      { label: "Edit", type: "link", link: `licenses/renewal-form/`, linkProp: 'uuid' },
-      { label: "Delete", type: "button", onClick: (object: RenewalObject) => this.delete(object) }
     ];
-    if (!this.license) {
-      actions.unshift(
-        { label: "View license", type: "link", link: `licenses/license-details/`, linkProp: 'license_uuid' }
-      )
-    }
 
 
     return actions;
   }
-  delete(object: RenewalObject) {
-    this.renewalService.delete(object.uuid).subscribe({
-      next: response => {
-        this.notify.successNotification(response.message);
-        this.updateTimestamp();
-      },
-      error: error => { }
-    })
-  }
+
 
   updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
 
-  update(object: RenewalObject, data: { [key: string]: string }) {
-    if (!window.confirm('Are you sure you want to update this entry? ')) {
-      return;
-    }
-    this.renewalService.update(object.uuid, data).subscribe({
-      next: response => {
-        this.notify.successNotification(response.message);
-        this.updateTimestamp();
-      },
-      error: error => { }
-    })
-  }
 
   onLicenseTypeChange(selectedValue: string) {
-    this.router.navigate(['licenses/renewals'], { queryParams: { license_type: selectedValue } });
+    this.router.navigate(['licenses/renewal-print-queue'], { queryParams: { license_type: selectedValue, in_print_queue: 1 } });
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -132,9 +95,14 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
+    //maintain the license_type and in_print_queue params
+    paramsObject["license_type"] = this.licenseType;
+    if (!paramsObject["in_print_queue"]) {
+      paramsObject["in_print_queue"] = "1";
+    }
 
 
-    this.router.navigate(['licenses/renewals'], { queryParams: paramsObject });
+    this.router.navigate(['licenses/renewal-print-queue'], { queryParams: paramsObject });
 
   }
 
@@ -142,80 +110,20 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedItems = selected;
   }
 
-  private itemsCanBePrinted(items: RenewalObject[]) { }
 
-  setPrintTemplates() {
-    const fields = [
-      {
-        label: "Print Template",
-        name: "print_template",
-        hint: "The template to use for printing by admins",
-        options: [],
-        type: "api",
-        value: "",
-        required: true,
-        api_url: "print-queue/templates",
-        apiKeyProperty: "template_name",
-        apiLabelProperty: "template_name",
-        apiType: "select"
-      },
-      {
-        label: "Online Certificate Template",
-        name: "online_print_template",
-        hint: "The template to use for online certificate printing by practitioners",
-        options: [],
-        type: "api",
-        value: "",
-        required: false,
-        api_url: "print-queue/templates",
-        apiKeyProperty: "template_name",
-        apiLabelProperty: "template_name",
-        apiType: "select"
-      }
-    ];
-    this.dialog.open(DialogFormComponent, {
-      data: {
-        fields: fields, title: `Select the templates. This will apply to all ${this.selectedItems.length} selected item(s)`,
-        formType: "filter"
-      },
-      height: '90vh',
-      width: '90vw'
-    }).afterClosed().subscribe((data: IFormGenerator[]) => {
-      //get an object of the name and value of the fields
-      if (!data) {
-        this.notify.failNotification("Please provide the required data");
-        return;
-      }
-      const renewalData = this.selectedItems.map(item => {
-        return {
-          uuid: item.uuid,
-          print_template: data.find(field => field.name === "print_template")?.value,
-          online_print_template: data.find(field => field.name === "online_print_template")?.value,
-          license_type: item.license_type,
-          license_number: item.license_number,
-          status: item.status
-        }
-      });
-      this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
-        next: (res) => {
-          this.notify.successNotification("Items added to print queue");
-          this.updateTimestamp();
-          this.selectedItems = [];
-        }
-      });
-    })
-  }
 
   updatePrintQueue = (state: number) => {
     if (!this.selectedItems.length) {
       alert("Please select at least one item to add to the print queue");
       return;
     }
+    //make sure all the selected items are at the correct stage and have the templates set
     const message = state === 1 ? "Add to print queue" : "Remove from print queue";
     if (!window.confirm(`Are you sure you want to ${message} for the selected items?`)) {
       return;
     }
     //make sure all the selected items are at the correct stage and have the templates set
+    //get the printable statuses from the app settings
     const printableStatuses: string[] = [];
     this.appService.appSettings?.pipe(take(1)).subscribe(data => {
       const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
@@ -259,7 +167,6 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         next: (res) => {
           this.notify.successNotification("Items added to print queue");
           this.updateTimestamp();
-          this.selectedItems = [];
         }
       });
     });
@@ -333,7 +240,6 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
 
           this.renewalService.printRenewals(renewalPrintData).subscribe((res) => {
             openHtmlInNewWindow(res.data);
-            this.selectedItems = [];
           });
           // Check if the response contains the templates}
         },

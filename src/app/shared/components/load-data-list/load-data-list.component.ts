@@ -8,7 +8,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ImageModule } from 'primeng/image';
-import { getLabelFromKey, isArray, replaceSpaceWithUnderscore } from '../../utils/helper';
+import { getLabelFromKey, isArray, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import { DialogFormComponent } from '../dialog-form/dialog-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponseObject } from '../../types/ApiResponseObject';
 import { DatePipe } from '@angular/common';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
@@ -193,6 +194,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   search() {
     this.offset = 0;
+    this.currentPage = 1;
     this.getData();
   }
 
@@ -321,13 +323,14 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
+  toggleAllRows(event: MatCheckboxChange) {
+    event.checked ? this.selection.select(...this.dataSource.data) : this.selection.clear();
+    // if (this.isAllSelected()) {
+    //   this.selection.clear();
+    //   return;
+    // }
 
-    this.selection.select(...this.dataSource.data);
+    // this.selection.select(...this.dataSource.data);
   }
 
   /** The label for the checkbox on the passed row */
@@ -378,6 +381,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       if (result) {
         this.sortBy = result.sortBy;
         this.sortOrder = result.sortOrder;
+        this.offset = 0;
+        this.currentPage = 1;
+        this.clearSelection();
         this.getData();
       }
     });
@@ -407,6 +413,28 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   isLink(content: string | null): boolean {
     return content && typeof content === 'string' ? content.startsWith('http') || content.startsWith('www') : false;
+  }
+
+  isHtml(content: string): boolean {
+    const containsHtmlTagsRegex = /<[a-z][\s\S]*>/i;
+
+    // Method 2: More complete HTML tag regex
+    const htmlRegex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
+
+    // Method 3: Check for common HTML tags or entities
+    const commonHtmlElements = /<(html|body|div|span|h[1-6]|p|br|table|tr|td|ul|ol|li|a|img)[^>]*>|&[a-z]+;/i;
+
+    // Method 4: Check for doctype declaration
+    const docType = /<!DOCTYPE html>/i;
+
+    // Method 5: Check for specific HTML structure elements
+    const htmlStructure = /<html[^>]*>[\s\S]*<\/html>/i;
+
+    return htmlRegex.test(content);
+    // containsHtmlTagsRegex.test(str)  ||
+    // commonHtmlElements.test(str) ||
+    // docType.test(str) ||
+    // htmlStructure.test(str);
   }
 
   getRowClasses(row: any) {
@@ -453,5 +481,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       const element = this.filtersContainer.nativeElement;
       this.isOverflowing = element.scrollWidth > element.clientWidth;
     }
+  }
+
+  viewHtml(html: string) {
+    openHtmlInNewWindow(html);
   }
 }

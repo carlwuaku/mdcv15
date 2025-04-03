@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { Template } from './Template.model';
 import { Subject, takeUntil } from 'rxjs';
+import { openHtmlInNewWindow } from '../../utils/helper';
 /**
  * This component is used to print a list of objects. the objects are received from the parent component
  * and the template is selected from the database. a template id may be passed if we only want to have one
@@ -63,10 +64,11 @@ export class PrintTableComponent implements OnInit, OnDestroy {
 
   printSelection() {
     this.dbService.post<{ data: string }>(`print-queue/templates/${this.selectedTemplateId}/print-selection`, { objects: this.objects }).subscribe((res) => {
-      const newWindow = window.open('', '', 'width=800,height=600');
-      if (newWindow) {
-        newWindow.document.write(res.data);
-      }
+      openHtmlInNewWindow(res.data);
+      // const newWindow = window.open('', '', 'width=800,height=600');
+      // if (newWindow) {
+      //   newWindow.document.g(res.data);
+      // }
     });
   }
 
