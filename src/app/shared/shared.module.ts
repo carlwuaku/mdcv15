@@ -51,6 +51,7 @@ import { ChartComponent } from './components/chart/chart.component';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartModule } from 'primeng/chart';
 import { TableComponent } from './components/table/table.component';
+import { ViewHtmlContentComponent } from './components/view-html-content/view-html-content.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -95,7 +96,8 @@ import { TableComponent } from './components/table/table.component';
     PrintTableComponent,
     FieldTemplateDirective,
     ChartComponent,
-    TableComponent
+    TableComponent,
+    ViewHtmlContentComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,

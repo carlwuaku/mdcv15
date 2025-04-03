@@ -1,18 +1,20 @@
 <div class=" flex flex-col gap-1">
-  <app-search-widget [searchType]="searchType" [param]="param"></app-search-widget>
+  <div class="flex flex-wrap gap-2">
+    <ng-container *ngFor="let item of searchTypes">
+      <app-dashboard-tile class="w-[32%] min-w-[300px]  min-h-[100px]" [url]="item.url!" [icon]="item.icon!"
+        [title]="item.title!" [urlParams]="item.urlParams"></app-dashboard-tile>
+    </ng-container>
+  </div>
 
-  <div *ngIf="!searchTypes.length"><app-loading></app-loading> Fetching configuration</div>
+  <!-- <div *ngIf="!searchTypes.length"><app-loading></app-loading> Fetching configuration</div>
   <div *ngIf="!url && searchType && searchTypes.length">Misconfigured url. Please refresh the page</div>
   <div *ngIf="url" [ngSwitch]="searchType">
     <div *ngSwitchCase="'facilities'">
-      <!-- <app-licenses [showAddButton]="false" [showSelectLicenseType]="false" [url]="finalUrl" [licenseType]="searchType"
-        [showSearch]="false"></app-licenses> -->
     </div>
     <div *ngSwitchCase="'practitioners'">
-      <!-- <app-licenses [url]="finalUrl" [licenseType]="searchType" [showSearch]="false"></app-licenses> -->
     </div>
     <div *ngSwitchDefault>
       <p>Search for something</p>
     </div>
-  </div>
+  </div> -->
 </div>

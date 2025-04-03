@@ -141,6 +141,21 @@ export function getClassFromState(state: string): string {
   };
   return classes[state] || "text-black";
 }
+export function openHtmlInNewWindow(htmlContent: string): void {
+  // Create a Blob containing the HTML content
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+
+  // Create a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Open a new window with the URL
+  window.open(url, '_blank');
+
+  // Optional: Release the URL object when done
+  // You might want to do this in ngOnDestroy or another appropriate lifecycle hook
+  // URL.revokeObjectURL(url);
+}
+
 
 
 

@@ -50,7 +50,7 @@ export class LicensesComponent implements OnInit, OnDestroy {
         this.queryParams = params;
         if (this.licenseType) {
           this.appService.appSettings.pipe(take(1)).subscribe(data => {
-            this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields;
+            this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
             this.filters.forEach(filter => {
               filter.value = params[`child_${filter.name}`];
             });

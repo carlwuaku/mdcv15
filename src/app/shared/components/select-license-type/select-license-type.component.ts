@@ -21,7 +21,9 @@ export class SelectLicenseTypeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.licenseTypes = Object.keys(data.licenseTypes).map(_key => ({ key: getLabelFromKey(_key), value: _key }));
-      if (this.licenseType == "") {
+
+      if (!this.licenseType && this.licenseTypes.length > 0) {
+        this.licenseType = this.licenseTypes[0]?.value;
         this.licenseTypeChanged.emit(this.licenseTypes[0]?.value)
       }
     })

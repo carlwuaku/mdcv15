@@ -21,6 +21,8 @@ import { ManageRenewalsComponent } from './components/renewal/manage-renewals/ma
 import { CpdModule } from '../cpd/cpd.module';
 import { ReportsComponent } from './components/reports/reports.component';
 import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
+import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-queue/renewal-print-queue.component';
+import { GazetteComponent } from './components/renewal/gazette/gazette.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { AdvancedReportsComponent } from './components/advanced-reports/advanced
     ManageRenewalsComponent,
     ReportsComponent,
     AdvancedReportsComponent,
+    RenewalPrintQueueComponent,
+    GazetteComponent,
   ],
   imports: [
     CommonModule,

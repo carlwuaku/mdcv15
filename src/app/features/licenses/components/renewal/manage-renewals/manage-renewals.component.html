@@ -7,14 +7,19 @@
   </mat-card>
 
   <mat-card>
-    <mat-card-header>
-      With selected: <span *ngIf="!canApprove"></span> <button mat-raised-button color="primary"
-        [disabled]="selectedItems.length === 0" (click)="approve()">Set to: {{action}}</button>
-    </mat-card-header>
+
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="false" [showInfo]="false" [showSort]="false"
         [showFilterButton]="false" [timestamp]="ts" [url]="url" [getActions]="getActions"
         (onSelect)="setSelectedItems($event)">
+        <ng-template #selectionOptions>
+          <div class="inline-flex gap-1">
+            <button *ngFor="let status of allStatuses" mat-raised-button color="primary"
+              [disabled]="selectedItems.length === 0" (click)="approve(status)">Set to:
+              {{status.title}}</button>
+          </div>
+
+        </ng-template>
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

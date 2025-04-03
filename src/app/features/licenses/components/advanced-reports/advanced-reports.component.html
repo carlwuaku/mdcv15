@@ -9,7 +9,7 @@
 
   <app-load-data-list *ngIf="licenseType" #advancedReportsList [preload]="true" [showSearch]="false"
     [url]="AdvancedReportsUrl" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted"
-    [filters]="AdvancedReportsFilters" [filtersLayout]="'grid'" [useResponseFilters]="false">
+    [filters]="AdvancedReportsFilters" [filtersLayout]="'grid'" [useResponseFilters]="false" [showTableTitle]="false">
   </app-load-data-list>
 
 </div>

@@ -12,7 +12,8 @@ import { AppService } from 'src/app/app.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
+import { RenewalStageItems } from 'src/app/shared/utils/data';
 @Component({
   selector: 'app-manage-renewals',
   templateUrl: './manage-renewals.component.html',
@@ -24,13 +25,15 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
   ts: string = "";
   @Input() license: LicenseObject | undefined = undefined;
   queryParams: { [key: string]: string } = {};
-  action: string = "renewal";
+  actions: string[] = [];
   selectedItems: RenewalObject[] = [];
   licenseType: string = "";
   requiredFields: IFormGenerator[] = [];
   canApprove: boolean = false;
   providedData: IFormGenerator[] = [];
   destroy$: Subject<boolean> = new Subject();
+  status: string = "";
+  allStatuses: RenewalStageItems[] = [];
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private appService: AppService,
     private authService: AuthService, private router: Router) {
@@ -47,14 +50,22 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     });
 
     this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      const stageConfig = data?.licenseTypes[this.licenseType]?.renewalStages[this.queryParams['status']];
+
+      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
+      if (!stages) {
+        return;
+      }
+      this.status = this.queryParams['status'];
+      const stageConfig = stages[this.status];
+
       if (!stageConfig) {
         return;
       }
-      this.action = stageConfig.next;
-      this.requiredFields = stageConfig.fields;
-      //can approve if any of the stage config canApprovePermissions is in the user's permissions
-      this.canApprove = stageConfig.canApprovePermissions.some((permission: string) => this.authService.currentUser?.permissions.includes(permission));
+      const otherStatuses = Object.values(stages).filter((status) => status.title !== this.status);
+
+
+      this.allStatuses = otherStatuses.filter((status) => stageConfig.allowedTransitions.includes(status.title) && this.authService.currentUser?.permissions.includes(status.permission));
+
     })
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -86,31 +97,7 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
         { label: "View license", type: "link", link: `licenses/license-details/`, linkProp: 'license_uuid' }
       )
     }
-    if (object.status === "Approved") {
-      actions.push(
-        { label: "Print Certificate", type: "link", link: `licenses/renewal-certificate/`, linkProp: 'uuid' }
-      )
-    }
 
-    if (object.status === "Pending Approval") {
-      actions.push(
-        { label: "Set to Pending Payment", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Pending Payment", "license_number": object.license_number, "license_uuid": object.license_uuid }) }
-      )
-    }
-    if (object.status !== "Approved") {
-      actions.push(
-        { label: "Approve", type: "button", onClick: (object: RenewalObject) => this.update(object, { "status": "Approved", "license_number": object.license_number, "license_uuid": object.license_uuid }) }
-      )
-    }
-
-    if (object.status === "Pending Payment") {
-      actions.push(
-        {
-          label: "Set to Pending Approval", type: "button", onClick: (object: RenewalObject) => this.update(object,
-            { "status": "Pending Approval", "license_number": object.license_number, "license_uuid": object.license_uuid })
-        }
-      )
-    }
 
 
     return actions;
@@ -146,9 +133,10 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     this.selectedItems = items;
   }
 
-  approve() {
+  approve(status: RenewalStageItems) {
+    this.requiredFields = status.fields
     //if there are required fields, show the dialog form
-    if (this.requiredFields.length) {
+    if (this.requiredFields.length > 0) {
       this.dialog.open(DialogFormComponent, {
         data: {
           fields: this.requiredFields, title: `Please provide the following data. This will apply to all ${this.selectedItems.length} selected item(s)`, formType: "filter"
@@ -158,17 +146,20 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
       }).afterClosed().subscribe((data: IFormGenerator[]) => {
         //get an object of the name and value of the fields
         if (!data) {
+          this.notify.failNotification("Please provide the required data");
           return;
         }
         this.providedData = data;
-        this.submit();
-
-
+        this.submit(status.title);
       })
     }
+    else {
+      this.submit(status.title);
+    }
+
   }
 
-  submit() {
+  submit(status: string) {
     const data: Record<string, any>[] = [];
     const supplementaryData = this.providedData.reduce((acc: Record<string, any>, curr) => {
       acc[curr.name] = curr.value;
@@ -176,13 +167,13 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     }, {});
     this.selectedItems.forEach(item => {
       data.push({
-        uuid: item.uuid, status: this.action,
+        uuid: item.uuid, status: status,
         license_type: item.license_type, license_number: item.license_number,
         id: item.id, ...supplementaryData
       });
     });
 
-    this.renewalService.updateBulkForStage(data, this.action).pipe(takeUntil(this.destroy$)).subscribe({
+    this.renewalService.updateBulkRenewals(data, status).pipe(takeUntil(this.destroy$)).subscribe({
       next: response => {
         let successful = 0;
         let failed = 0;

@@ -23,4 +23,7 @@ export interface RenewalObject {
   picture: string;
 
   license_type: string;
+  print_template: string;
+  online_print_template: string;
+  in_print_queue: boolean;
 }

@@ -10,6 +10,7 @@ import { RenewalDashboardComponent } from './components/renewal/renewal-dashboar
 import { ManageRenewalsComponent } from './components/renewal/manage-renewals/manage-renewals.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
+import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-queue/renewal-print-queue.component';
 const routes: Routes = [
   { path: '', component: LicensesComponent },
   { path: 'list', component: LicensesComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'license-details/:id', component: DetailsComponent, data: { title: "License details" } },
   { path: 'renewals', data: { title: 'Renewals' }, component: RenewalComponent },
   { path: 'renewals-manage', data: { title: 'Manage Renewals' }, component: ManageRenewalsComponent },
+  { path: 'renewal-print-queue', data: { title: 'Renewals Print Queue' }, component: RenewalPrintQueueComponent },
   { path: 'renewal', redirectTo: 'renewals-manage' },
 
   { path: 'renewal-form', data: { title: 'Create Renewal' }, component: RenewalFormComponent },

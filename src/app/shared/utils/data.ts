@@ -18,12 +18,10 @@ export interface DashboardItem extends MenuItem {
 }
 
 export interface RenewalStageItems extends DashboardItem {
-  canViewPermissions: string[],
-  canEditPermissions: string[],
-  canDeletePermissions: string[],
-  canApprovePermissions: string[],
+  permission: string,
   printable: boolean,
-  next: string,
+  online_certificate_printable: boolean,
+  allowedTransitions: string[],
   fields: IFormGenerator[]
 }
 

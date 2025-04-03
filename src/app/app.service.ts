@@ -13,7 +13,8 @@ interface AppSettings {
   recaptchaSiteKey: string,
   sidebarMenu: MenuItem[],
   dashboardMenu: MenuItem[],
-  searchTypes: { label: string, key: string, url: string }[],
+
+  searchTypes: MenuItem[],
   licenseTypes: {
     [key: string]: {
       table: string,
