@@ -24,7 +24,10 @@ export class LoginComponent implements OnInit {
   appName: string = "";
   logo: string = "";
   recaptchaVerified: boolean = false;
-  recaptchaSiteKey: string = ""
+  recaptchaSiteKey: string = "";
+  twoFactorAuthMode: boolean = false;
+  twoFactorCode: string = "";
+  twoFactorToken: string = "";
   constructor(public authService: AuthService,
     private dbService: HttpService, private appService: AppService, private notify: NotifyService) {
     this.appService.appSettings.subscribe(data => {
@@ -59,10 +62,44 @@ export class LoginComponent implements OnInit {
     data.append('email', this.username);
     data.append('password', this.password);
     data.append('device_name', 'admin portal');
-    this.dbService.post<{ token: string, user: User }>(`${API_PATH}/mobile-login`, data)
+    this.dbService.post<{ token: string, requires_2fa: boolean, user: User, message: string }>(`${API_PATH}/mobile-login`, data)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
+          if (response.requires_2fa) {
+            this.twoFactorAuthMode = true;
+            this.twoFactorToken = response.token;
+            this.loading = false;
+            this.error = false;
+            this.error_message = "";
+            return;
+          }
+          localStorage.setItem(LOCAL_USER_TOKEN, response.token);
+          // this.authService.currentUser = response.user;
+          window.location.assign('/');
+        },
+        error: (err) => {
+          this.error = true;
+          this.error_message = err.error.message
+          this.loading = false;
+        },
+      });
+  }
+
+  submit2FA() {
+    this.loading = true;
+    this.error = false;
+
+    let data = new FormData();
+    data.append('code', this.twoFactorCode);
+    data.append('token', this.twoFactorToken);
+    data.append('device_name', 'admin portal');
+    data.append('verification_mode', '2fa');
+    this.dbService.post<{ token: string, requires_2fa: boolean, user: User, message: string }>(`${API_PATH}/mobile-login`, data)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+
           localStorage.setItem(LOCAL_USER_TOKEN, response.token);
           // this.authService.currentUser = response.user;
           window.location.assign('/');
