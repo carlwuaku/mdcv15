@@ -22,7 +22,12 @@ export class AuthService {
     return this.currentUser ? this.currentUser.permissions.includes(permission) : false;
   }
 
-
+  // Add an observable-based hasPermission method
+  hasPermissionAsync(permission: string): Observable<boolean> {
+    return this.getUser().pipe(
+      map(user => user.permissions.includes(permission))
+    );
+  }
 
   public logout(): void {
     localStorage.removeItem(LOCAL_USER_TOKEN);

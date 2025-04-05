@@ -1,5 +1,6 @@
 export class User {
   id: string;
+  uuid: string;
   display_name: string;
   email: string;
   permissions: string[];
@@ -15,6 +16,7 @@ export class User {
   phone: string;
   deleted_at: string | null;
   status: string;
+  google_authenticator_setup: string;
 
   constructor(data?: IUser) {
     this.id = data?.id || "";
@@ -33,6 +35,8 @@ export class User {
     this.deleted_at = "";
     this.status = "";
     this.role_name = "";
+    this.google_authenticator_setup = "no";
+    this.uuid = data?.uuid || "";
   }
 }
 
@@ -50,4 +54,6 @@ export interface IUser {
   active: string;
   phone: string;
   permissions: string[];
+  google_authenticator_setup: string;
+  uuid: string;
 }
