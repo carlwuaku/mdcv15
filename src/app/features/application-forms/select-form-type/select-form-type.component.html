@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-1">
   <mat-card>
-    <mat-card-content>
+    <mat-card-content class="flex gap-2 items-baseline">
       <app-select-application-template [formType]="formType" (onFormTypeSelected)="formTypeSelected($event)">
       </app-select-application-template>
       <a [disabled]="!formType" mat-raised-button routerLink="/applications/{{formType}}" color="accent">Fill a copy of

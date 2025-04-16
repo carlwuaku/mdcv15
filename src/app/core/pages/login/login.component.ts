@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { catchError, take } from 'rxjs';
-import { API_ADMIN_PATH, API_PATH, LOCAL_USER_ID, LOCAL_USER_KEY, LOCAL_USER_TOKEN, LOGIN_FLASH_MESSSAGE } from 'src/app/shared/utils/constants';
+import { take } from 'rxjs';
+import { API_PATH, LOCAL_USER_TOKEN, LOGIN_FLASH_MESSSAGE } from 'src/app/shared/utils/constants';
 import { AuthService } from '../../auth/auth.service';
 import { IUser, User } from '../../models/user.model';
 import { HttpService } from '../../services/http/http.service';
@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
     data.append('email', this.username);
     data.append('password', this.password);
     data.append('device_name', 'admin portal');
+    data.append('user_type', 'admin');
     this.dbService.post<{ token: string, requires_2fa: boolean, user: User, message: string }>(`${API_PATH}/mobile-login`, data)
       .pipe(take(1))
       .subscribe({
@@ -94,6 +95,7 @@ export class LoginComponent implements OnInit {
     data.append('code', this.twoFactorCode);
     data.append('token', this.twoFactorToken);
     data.append('device_name', 'admin portal');
+    data.append('user_type', 'admin');
     data.append('verification_mode', '2fa');
     this.dbService.post<{ token: string, requires_2fa: boolean, user: User, message: string }>(`${API_PATH}/mobile-login`, data)
       .pipe(take(1))

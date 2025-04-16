@@ -7,6 +7,7 @@ import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { ApplicationTemplatesService } from '../application-templates.service';
 import { ApplicationTemplateStageObject } from '../../../shared/types/application-template.model';
+import { FileUploadService } from 'src/app/core/services/http/file-upload.service';
 
 @Component({
   selector: 'app-template-form',
@@ -29,6 +30,8 @@ export class TemplateFormComponent implements OnInit {
   extraFormData: { key: string, value: any }[] = [];
   generalFormGroup = new FormGroup({
     form_name: new FormControl("", Validators.required),
+    picture: new FormControl(""),
+    available_externally: new FormControl(""),
     open_date: new FormControl("", Validators.required),
     close_date: new FormControl("", Validators.required)
   });
@@ -47,24 +50,20 @@ export class TemplateFormComponent implements OnInit {
     footer: new FormControl("", Validators.required),
   });
   onSubmitFormGroup = new FormGroup({
-    on_submit_email: new FormControl("", Validators.required),
     on_submit_message: new FormControl("", Validators.required),
   });
-  onFinishFormGroup = new FormGroup({
-    on_approve_email_template: new FormControl("", Validators.required),
-    on_deny_email_template: new FormControl("", Validators.required),
-  });
+
   workflowFormGroup: FormGroup = new FormGroup({
     stages: this.fb.array<ApplicationTemplateStageObject[]>([], Validators.required),
     initialStage: new FormControl("", Validators.required),
     finalStage: new FormControl("", Validators.required)
   });
   loading: boolean = false;
-
+  imageFieldsFiles: Map<string, File> = new Map();
 
 
   constructor(ar: ActivatedRoute, private router: Router, private notify: NotifyService, private dbService: HttpService,
-    private templateService: ApplicationTemplatesService, @Inject(FormBuilder) private fb: FormBuilder
+    private templateService: ApplicationTemplatesService, @Inject(FormBuilder) private fb: FormBuilder, private fileUploadService: FileUploadService
   ) {
     this.id = ar.snapshot.params['id'];
     if (this.id) {
@@ -124,6 +123,8 @@ export class TemplateFormComponent implements OnInit {
         this.on_submit_message = response.data.on_submit_message;
 
         this.generalFormGroup.get("form_name")?.setValue(response.data.form_name);
+        this.generalFormGroup.get("picture")?.setValue(response.data.picture);
+        this.generalFormGroup.get("available_externally")?.setValue(response.data.available_externally);
         this.generalFormGroup.get("open_date")?.setValue(response.data.open_date);
         this.generalFormGroup.get("close_date")?.setValue(response.data.close_date);
         this.guidlinesFormGroup.get("guidelines")?.setValue(response.data.guidelines);
@@ -131,7 +132,6 @@ export class TemplateFormComponent implements OnInit {
         this.dataFormGroup.get("data")?.setValue(JSON.stringify(response.data.data));
         this.headerFormGroup.get("header")?.setValue(response.data.header);
         this.footerFormGroup.get("footer")?.setValue(response.data.footer);
-        this.onSubmitFormGroup.get("on_submit_email")?.setValue(response.data.on_submit_email);
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
         this.workflowFormGroup.get("initialStage")?.setValue(response.data.initialStage);
         this.workflowFormGroup.get("finalStage")?.setValue(response.data.finalStage);
@@ -193,9 +193,7 @@ export class TemplateFormComponent implements OnInit {
       case "on_submit":
         form = this.onSubmitFormGroup;
         break;
-      case "on_finish":
-        form = this.onFinishFormGroup;
-        break;
+
     }
     if (form) {
       const formControl = form.get(name);
@@ -203,13 +201,46 @@ export class TemplateFormComponent implements OnInit {
     }
   }
 
-  submit(): void {
+  onFileSelected(files: File[]) {
+    if (files.length > 0) {
+      this.imageFieldsFiles.set('picture', files[0]);
+    }
+  }
 
+  private uploadFiles() {
+    const uploadUrl = 'file-server/new/applications';
+    this.fileUploadService.uploadFiles(this.imageFieldsFiles, uploadUrl)
+      .subscribe({
+        next: (results) => {
+          this.generalFormGroup.get("picture")?.setValue(results[0].response.fullPath);
+          // set the image url to the field value
+
+          this.imageFieldsFiles.clear();
+          this.submit();
+        },
+        error: (error) => {
+          console.error('Error uploading files', error);
+        }
+      });
+  }
+
+  submit(): void {
+    //if there are files to upload, upload them first
+    if (this.imageFieldsFiles.size > 0) {
+      this.uploadFiles();
+      return;
+    }
 
     const data = new FormData();
     if (this.generalFormGroup.valid) {
       if (this.generalFormGroup.get("form_name")?.value) {
         data.append("form_name", this.generalFormGroup.get("form_name")!.value!);
+      }
+      if (this.generalFormGroup.get("picture")?.value) {
+        data.append("picture", this.generalFormGroup.get("picture")!.value!);
+      }
+      if (this.generalFormGroup.get("available_externally")?.value) {
+        data.append("available_externally", this.generalFormGroup.get("available_externally")!.value!);
       }
 
       if (this.generalFormGroup.get("open_date")?.value)
@@ -243,12 +274,7 @@ export class TemplateFormComponent implements OnInit {
       if (this.onSubmitFormGroup.get("on_submit_message")?.value)
         data.append("on_submit_message", this.onSubmitFormGroup.get("on_submit_message")?.value!);
     }
-    if (this.onFinishFormGroup.valid) {
-      if (this.onFinishFormGroup.get("on_approve_email_template")?.value)
-        data.append("on_approve_email_template", this.onFinishFormGroup.get("on_approve_email_template")?.value!);
-      if (this.onFinishFormGroup.get("on_deny_email_template")?.value)
-        data.append("on_deny_email_template", this.onFinishFormGroup.get("on_deny_email_template")?.value!);
-    }
+
     if (this.workflowFormGroup.valid) {
       if (this.workflowFormGroup.get("initialStage")?.value) { data.append("initialStage", this.workflowFormGroup.get("initialStage")?.value!); }
       else {
@@ -297,7 +323,6 @@ export class TemplateFormComponent implements OnInit {
 
   addStage() {
     const stageGroup = this.fb.group({
-      id: ['', Validators.required],
       name: ['', Validators.required],
       description: [''],
       allowedTransitions: [[]],

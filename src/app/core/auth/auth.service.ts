@@ -43,18 +43,6 @@ export class AuthService {
   checkLogin(url: string): boolean {
     const token = this.getCookie(LOCAL_USER_TOKEN);
     if (token !== null) {
-      //check to see if logged in from the backend
-      // this.dbService.get<{ status: string }>(`${API_PATH}/isLoggedIn`).subscribe(data => {
-      //   if (data.status !== "1") {
-      //     this.router.navigate(['/logout']);
-      //     this.isLoggedIn$.next(false);
-      //     return false;
-      //   }
-      //   else {
-      //     this.isLoggedIn$.next(true);
-      //     return true;
-      //   }
-      // });
       return true;
     }
 

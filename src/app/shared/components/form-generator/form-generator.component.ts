@@ -7,7 +7,6 @@ import { take } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { generateFormFieldsFromObject } from '../../utils/helper';
 import { DatePipe } from '@angular/common';
-import { ProgressItem } from '../progress-dialog/progress-dialog.component';
 import { FileUploadResponse, FileUploadService } from 'src/app/core/services/http/file-upload.service';
 
 // Add a directive to mark field templates
@@ -109,7 +108,7 @@ export class FormGeneratorComponent implements OnInit {
 
             this.fields.map(field => {
               if (this.isFormField(field)) {
-                field.value = source[field.name] === "null" ? null : source[field.name];
+                field.value = source[field.name] === "null" ? null : source[field.name] ?? "";
               }
               else if (this.isRow(field)) {
                 field.map(rowField => {
@@ -301,7 +300,6 @@ export class FormGeneratorComponent implements OnInit {
   }
 
   onFileSelected(files: File[], field: IFormGenerator) {
-    console.log('Files selected:', field.name);
     if (files.length > 0) {
       field.value = files[0];
       this.imageFieldsFiles.set(field.name, files[0]);
@@ -341,6 +339,17 @@ export class FormGeneratorComponent implements OnInit {
         })
       }
     });
+    if (this.formType === "filter") {
+      this.generateFilterUrl();
+    }
+  }
+
+  public isFilterFormValid(): boolean {
+    if (this.formType !== "filter") {
+      return true;
+    }
+    const allFields = this.fields.flat();
+    return allFields.some(field => field.value !== null && field.value !== "");
   }
 
   onDateChange(field: IFormGenerator, start: any, end: any) {

@@ -9,6 +9,28 @@
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required
             field</mat-error>
         </mat-form-field>
+
+        <div class="flex flex-col gap-1">
+          <label>Cover Image</label>
+          <p class="text-sm text-gray-400">This picture will be displayed as a cover image for users who would be
+            filling the form</p>
+          <app-file-uploader (onFilesSelected)="onFileSelected($event)"
+            [existingImage]="generalFormGroup.get('picture')?.value || null"></app-file-uploader>
+        </div>
+
+
+        <div class="flex flex-col gap-1">
+          <label>Available externally</label>
+          <mat-form-field class="flex-auto">
+            <mat-select formControlName="available_externally" name="available_externally" appearance="outline">
+              <mat-option value="1">Yes</mat-option>
+              <mat-option value="0">No</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+
         <div class="flex flex-col gap-1">
           <app-mat-datepicker [label]="'Open From'"
             [initialDate]="generalFormGroup.get('open_date')?.value || undefined"
@@ -97,11 +119,7 @@
   <mat-step [stepControl]="onSubmitFormGroup">
     <ng-template matStepLabel>On Submit Templates</ng-template>
     <form [formGroup]="onSubmitFormGroup">
-      <label for="">Email to send to user after form is submitted</label>
-      <app-ckeditor [name]="'on_submit_email'" [value]="on_submit_email"
-        (valueChange)="setFormField('on_submit', 'on_submit_email', $event)"></app-ckeditor>
-      <mat-error *ngIf="onSubmitFormGroup && onSubmitFormGroup.get('on_submit_email')?.hasError('required')">Required
-        field</mat-error>
+
 
       <label for="">Message to display after form is submitted</label>
       <app-ckeditor [name]="'on_submit_message'" [value]="on_submit_message"
@@ -159,7 +177,7 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <div>
+              <div class="flex flex-col gap-1">
                 <label for="">Select roles that can move applications to this status</label>
                 <app-select-object (selectionChanged)="setRoles($event, i)" [url]="'admin/roles'"
                   [keyProperty]="'role_name'" [initialValue]="stage.get('allowedUserRoles')?.value"

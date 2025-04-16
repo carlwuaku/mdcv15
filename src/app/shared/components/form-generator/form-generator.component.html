@@ -11,7 +11,7 @@
       <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
         <div *ngFor="let subField of field" class="flex-col gap-1 flex-auto">
           <label>{{subField.label}} <span *ngIf="subField.required">*</span></label>
-          <div class="text-muted">{{subField.hint}}</div>
+          <div class="text-gray-500 text-sm">{{subField.hint}}</div>
           <div *ngIf="subField.showOnly === true;">
             <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
           </div>
@@ -22,7 +22,8 @@
       </div>
       <div *ngIf="isFormField(field)" class="flex flex-col gap-1">
 
-        <div class="text-muted">{{field.hint}}</div>
+        <label>{{field.label}} <span *ngIf="field.required">*</span></label>
+        <div class="text-gray-500 text-sm">{{field.hint}}</div>
         <div *ngIf="field.showOnly === true;">
           <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
         </div>
@@ -38,7 +39,8 @@
     <ng-content select="[submitButton]"></ng-content>
     <button type="button" mat-stroked-button color="warn" (click)="resetForm()">{{resetButtonText}}</button>
 
-    <button type="submit" mat-raised-button color="primary">{{submitButtonText}}</button>
+    <button type="submit" mat-raised-button color="primary"
+      [disabled]="!isFilterFormValid()">{{submitButtonText}}</button>
 
   </div>
 </form>
@@ -57,14 +59,13 @@
         {{option.key}}</span>
     </div>
     <mat-form-field class="flex-auto" *ngSwitchCase="'select'">
-      <mat-label>{{field.label}}</mat-label>
       <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
         <mat-option value="">None</mat-option>
         <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
-      <mat-label>{{field.label}}</mat-label>
+
       <textarea class="flex-auto" [required]="field.required" matInput [(ngModel)]="field.value"
         name="{{field.name}}"></textarea>
     </mat-form-field>
@@ -95,7 +96,7 @@
     </app-select-object>
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
-      <mat-label>{{field.label}}</mat-label>
+
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -103,7 +104,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" *ngSwitchCase="'datetime'">
-      <mat-label>{{field.label}}</mat-label>
+
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY HH:MM</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -111,7 +112,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" *ngSwitchCase="'time'">
-      <mat-label>{{field.label}}</mat-label>
+
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>HH:MM</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -119,7 +120,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date-range'">
-      <mat-label>{{field.label}}</mat-label>
+
       <mat-date-range-input [rangePicker]="rangepicker">
         <input matStartDate #start [value]="getDateRangeValue(field).start" placeholder="Start date">
         <input matEndDate #end [value]="getDateRangeValue(field).end" (dateChange)="onDateChange(field, start, end)"
@@ -132,7 +133,7 @@
 
 
     <mat-form-field *ngSwitchDefault>
-      <mat-label>{{field.label}}</mat-label>
+
       <input matInput [required]="field.required" type="{{field.type}}" [(ngModel)]="field.value"
         name="{{field.name}}" />
     </mat-form-field>

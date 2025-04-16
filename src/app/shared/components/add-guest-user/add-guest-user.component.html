@@ -1,0 +1,24 @@
+<button mat-raised-button color="primary" [disabled]="objects.length  < 1" (click)="addGuestUser()"> Create user
+  profiles </button>
+<ng-template #addGuestUserDialog>
+  <h1 mat-dialog-title>Grant {{objects.length}} accounts acess to the public portal</h1>
+  <div mat-dialog-content>
+    <p>Adding these accounts will allow them to log in to the public portal.</p>
+    <p>Each person's {{usernameFieldLabel}} will be used as their username. Passwords will need to be
+      set individually either from the user management section or by the account holder. If you need to
+      revoke access this can be done from the user management section </p>
+    <h3 class="mat-h2">Two-factor authentication</h3>
+    <p>Two-factor authentication is enabled by default. The instructions on how to set it up can
+      be sent to each user from the user management section at any time. </p>
+    <p>
+      You need to choose a deadline by which the users need to set up their two-factor authentication.
+      After this date, the users will not be able to log in until they set up their two-factor authentication.
+      The deadline can be changed at any time from the user management section.
+    </p>
+    <app-form-generator></app-form-generator>
+  </div>
+  <div mat-dialog-actions>
+    <!-- <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button> -->
+  </div>
+</ng-template>

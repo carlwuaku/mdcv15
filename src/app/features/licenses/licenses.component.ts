@@ -29,6 +29,7 @@ export class LicensesComponent implements OnInit, OnDestroy {
   filters: IFormGenerator[] = [];
   @ViewChild('dataList') dataList!: LoadDataListComponent;
   queryParams: { [key: string]: string } = {};
+  selectedItems: LicenseObject[] = [];
   constructor(private dbService: HttpService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
@@ -141,7 +142,9 @@ export class LicensesComponent implements OnInit, OnDestroy {
     this.ts = getToday("timestamp_string");
   }
 
-  setSelectedItems(objects: LicenseObject[]) { }
+  setSelectedItems(objects: LicenseObject[]) {
+    this.selectedItems = objects;
+  }
 
   specialClasses: { [key: string]: string } =
     {

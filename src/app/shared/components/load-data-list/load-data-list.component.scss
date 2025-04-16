@@ -27,6 +27,23 @@
 
 .allFilters {
   // max-height: 135px;
-  overflow-y: auto;
+  overflow-x: auto;
   max-width: calc(100vw - 300px);
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  /* Light gray border */
+}
+
+/* Optional: Remove double borders between cells */
+.mat-mdc-row,
+.mat-mdc-header-row {
+  border-bottom-width: 0;
+}
+
+/* Optional: Add outer border to the whole table */
+.mat-mdc-table {
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }

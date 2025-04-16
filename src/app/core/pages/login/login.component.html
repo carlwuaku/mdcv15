@@ -35,11 +35,11 @@
               {{flash_message}}
             </div>
             <mat-form-field class="w-full" appearance="fill">
-              <mat-label>Email</mat-label> <br>
+              <mat-label>Email</mat-label>
               <input [(ngModel)]="username" type="text" name="email" class="form-control" required matInput>
             </mat-form-field>
             <mat-form-field class="w-full" appearance="fill">
-              <label>Password*</label> <br>
+              <mat-label>Password*</mat-label> <br>
               <input type="password" name="password" [(ngModel)]="password" class="form-control" required matInput>
             </mat-form-field>
             <re-captcha *ngIf="recaptchaSiteKey" (errored)="recaptchaError()" (resolved)="resolved($event)" type="image"
