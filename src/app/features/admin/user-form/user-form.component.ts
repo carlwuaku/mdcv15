@@ -11,11 +11,55 @@ export class UserFormComponent {
   title: string = "Add a new user";
   formUrl: string = "admin/users";
   existingUrl: string = "admin/users";
+  userTypeChanged = (userType: string) => {
+    //if it's admin, set required on role_name to true, else false
+    if (userType === "admin") {
+      this.fields.map(field => {
+        if (field.name === "role_name") {
+          field.required = true;
+          field.disabled = ""
+
+        }
+      })
+    }
+    else {
+      this.fields.map(field => {
+        if (field.name === "role_name") {
+          field.required = false;
+          field.disabled = "disabled"
+        }
+      })
+    }
+  }
+
   fields: IFormGenerator[] = [
+    {
+      label: "User type",
+      name: "user_type",
+      hint: "",
+      options: [],
+      type: "api",
+      value: "",
+      required: true,
+      api_url: "admin/users/types",
+      apiKeyProperty: "value",
+      apiLabelProperty: "key",
+      apiType: "select",
+      onChange: this.userTypeChanged
+    },
     {
       label: "Username",
       name: "username",
       hint: "the name of the user",
+      options: [],
+      type: "text",
+      value: "",
+      required: true
+    },
+    {
+      label: "Display name",
+      name: "display_name",
+      hint: "typically the full name of the user",
       options: [],
       type: "text",
       value: "",
@@ -99,6 +143,15 @@ export class UserFormComponent {
       apiLabelProperty: "role_name",
       apiType: "select",
     },
+    {
+      label: "Deadline for two factor authentication",
+      name: "two_fa_deadline",
+      hint: "a date when the user will be required to use 2-factor authentication. If this is set and the user misses the date they will no longer be able to log in till the admin resets the 2-factor authentication",
+      options: [],
+      type: "date",
+      value: "",
+      required: true
+    },
 
   ];
   fieldsTemplate: string = "TrainingInstitutionFormTemplate";
@@ -131,4 +184,6 @@ export class UserFormComponent {
       this.router.navigate(['/admin/users'])
     }
   }
+
+
 }

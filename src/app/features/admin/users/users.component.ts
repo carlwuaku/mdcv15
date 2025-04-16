@@ -50,7 +50,7 @@ export class UsersComponent {
 
   getActions = (user: User): DataActionsButton[] => {
     const actions: DataActionsButton[] = [];
-    if (user.deleted_at) {
+    if (user.status) {
       actions.push(
         { label: "Activate Account", type: "button", onClick: (user: User) => this.activate(user) }
       )

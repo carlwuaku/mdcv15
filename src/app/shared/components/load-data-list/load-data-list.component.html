@@ -20,9 +20,9 @@
         </mat-form-field>
 
       </form>
-      <button *ngIf="preload && showReset" (click)="reset()" mat-stroked-button
+      <!-- <button *ngIf="preload && showReset" (click)="reset()" mat-stroked-button
         color="error"><mat-icon>refresh</mat-icon> Reset
-      </button>
+      </button> -->
     </div>
 
 
@@ -33,13 +33,14 @@
       <div *ngIf="showFilterButton && showAllFilters" [class.allFilters]="filtersLayout === 'horizontal'"
         [class.w-full]="filtersLayout === 'grid'">
         <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)" [formType]="'filter'"
-          [fields]="filters" [formType]="'filter'"></app-form-generator>
+          [fields]="filters" [formType]="'filter'" [resetButtonText]="'Clear all filters'"
+          [submitButtonText]="'Apply'"></app-form-generator>
       </div>
       <mat-chip-set *ngIf="showFilterButton && !showAllFilters" aria-label="Filters">
         <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
           {{filter.label}} :
-          {{filter.value}}
-          <button matChipRemove>
+          <b>{{filter.value}}</b>
+          <button matChipRemove *ngIf="!filterIsInQueryParams(filter.name)">
             <mat-icon>cancel</mat-icon>
           </button>
 
@@ -48,11 +49,11 @@
       <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
 
-      <span *ngIf="showDeleted">
+      <!-- <span *ngIf="showDeleted">
         <label>
           <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
         </label>
-      </span>
+      </span> -->
 
 
       <span class="flex gap-1 items-center">

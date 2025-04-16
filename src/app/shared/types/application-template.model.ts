@@ -3,6 +3,8 @@ import { IFormGenerator } from "src/app/shared/components/form-generator/form-ge
 export interface ApplicationTemplateObject {
   uuid: string,
   form_name: string,
+  picture: string,
+  available_externally: string,
   header: string,
   footer: string,
   guidelines: string,

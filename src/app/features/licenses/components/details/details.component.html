@@ -7,18 +7,21 @@
           <h3>{{object.name}}</h3>
           <small>(<em><b>{{object.license_number}} </b> </em>) </small>
         </div>
+        <a mat-raised-button color="accent"
+          routerLink="/licenses/form/update/{{object.type}}/{{object.uuid}}"><mat-icon>edit</mat-icon> Edit
+          Details</a>
+        <button mat-raised-button color="accent" (click)="editImage()"><mat-icon>image</mat-icon> Change
+          Picture</button>
 
       </div>
-      <div class="flex gap-1 flex-wrap items-center">
-        <div class="bg-white text-black rounded shadow-sm p-1 flex gap-1" *ngFor="let tab of headerTabs">
+      <div class="flex gap-3 flex-wrap items-center">
+        <div class="bg-white text-black rounded shadow-sm p-1 flex gap-3" *ngFor="let tab of headerTabs">
           <span class="text-gray-600 font-thin">{{tab.label}}</span>
           <span [ngClass]="getClassFromState(object[tab.key])"
             class="border-l border-l-black pl-1 ">{{object[tab.key]}}</span>
         </div>
 
-        <a mat-raised-button color="primary" routerLink="/licenses/form/update/{{object.type}}/{{object.uuid}}">Edit
-          Details</a>
-        <button mat-raised-button color="primary" (click)="editImage()">Change Picture</button>
+
 
       </div>
     </div>

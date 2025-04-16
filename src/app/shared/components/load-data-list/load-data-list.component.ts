@@ -486,4 +486,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   viewHtml(html: string) {
     openHtmlInNewWindow(html);
   }
+
+  filterIsInQueryParams(key: string): boolean {
+    return Object.keys(this.queryParams).includes(key) || Object.keys(this.queryParams).includes(`child_${key}`);
+  }
 }
