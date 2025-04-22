@@ -1,6 +1,6 @@
 <button *ngIf="enableShowHideButton" class="btn btn-sm btn-primary" (click)="showOrHide()">{{show ? 'Hide' : 'Show'}}
   {{showHideButtonTitle}}</button>
-<form *ngIf="show" #form ngNativeValidate (submit)="formType === 'submit' ? startSubmit() : generateFilterUrl()"
+<form *ngIf="show" #form ngNativeValidate (submit)="formType === 'filter' ?  generateFilterUrl() : startSubmit() "
   class=" flex flex-col gap-1">
 
   <div class="flex gap-1" [class.flex-col]="layout === 'vertical'" [class.flex-row]="layout === 'horizontal'"
@@ -76,7 +76,7 @@
     </div>
     <!-- if it's only a label just show the label. this will be used to display some text that does not represent anything the user is suppposed to submit data for -->
     <div *ngSwitchCase="'label'" class="flex flex-col gap-1">
-      <label for="">{{field.label}}</label>
+
     </div>
     <div *ngSwitchCase="'file'" class="flex flex-col gap-1">
       <label for="">{{field.label}}</label>
@@ -89,11 +89,24 @@
       *ngSwitchCase="'html'"></app-ckeditor>
 
     <app-json-editor (valueChange)="setFieldValue($event, field)" *ngSwitchCase="'json'"></app-json-editor>
-    <app-select-object *ngSwitchCase="'api'" [url]="field.api_url!" [labelProperty]="field.apiLabelProperty || '' "
-      [keyProperty]="field.apiKeyProperty || ''" [type]="field.apiType!"
-      [selection_mode]="field.selection_mode || 'single'" [initialValue]="field.value"
-      (selectionChanged)="setFieldValue($event, field)" [fieldLabel]="field.label">
-    </app-select-object>
+    <div *ngSwitchCase="'api'">
+      <!-- if it's a search, once a selection is made show the selected item and hide the selection thing till the user clears it -->
+      <div *ngIf="field.value && field.apiType === 'search'">
+        <div class="flex gap-1 items-center">
+
+          <span>{{field.value}}</span>
+          <button mat-icon-button color="warn" (click)="clearFieldValue(field)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <app-select-object *ngIf="!field.value || field.apiType !== 'search'" [url]="field.api_url!"
+        [labelProperty]="field.apiLabelProperty || '' " [keyProperty]="field.apiKeyProperty || ''"
+        [type]="field.apiType!" [selection_mode]="field.selection_mode || 'single'" [initialValue]="field.value"
+        (selectionChanged)="setFieldValue($event, field)" [fieldLabel]="field.label">
+      </app-select-object>
+    </div>
+
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
 

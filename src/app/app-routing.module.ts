@@ -43,6 +43,7 @@ const routes: Routes = [
   { path: 'applications', resolve: { userData: UserResolver }, loadChildren: () => import('./features/applications/applications.module').then(m => m.ApplicationsModule) },
   { path: 'messaging', loadChildren: () => import('./features/messaging/messaging.module').then(m => m.MessagingModule) },
   { path: 'print-templates', loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
+  { path: 'housemanship', loadChildren: () => import('./features/housemanship/housemanship.module').then(m => m.HousemanshipModule) },
   {
     path: '**',
     component: PageNotFoundComponent

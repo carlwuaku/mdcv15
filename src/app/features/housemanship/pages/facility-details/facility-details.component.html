@@ -1,0 +1,72 @@
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <div class="flex flex-col gap-1" *ngIf="object != null">
+        <div class="flex gap-2  items-center">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg">{{object.name}}</h3>
+            <div class="flex gap-2 items-baseline">
+              <span><span class="font-light text-primary">Phone:</span>
+                {{object.phone}} </span>
+              <span><span class="font-light text-primary"> Email:</span>
+                {{object.email}}</span>
+              <span><span class="font-light text-primary">Location:</span>{{object.location}}</span>
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="" *ngIf="errorLoadingData">
+        <b>Error loading data. Please try again</b>
+        <button mat-raised-button (click)="getDetails()">Reload</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-tab-group *ngIf="object != null">
+    <mat-tab label="Availability for selection">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-header></mat-card-header>
+          <mat-card-content>
+            <app-housemanship-facility-availability
+              [facilityName]="object.name"></app-housemanship-facility-availability>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Capacities for discplines">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-header></mat-card-header>
+          <mat-card-content>
+            <app-housemanship-facility-capacities [facilityName]="object.name"></app-housemanship-facility-capacities>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Posting history">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Users">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

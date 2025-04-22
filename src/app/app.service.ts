@@ -3,36 +3,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { AuthService } from './core/auth/auth.service';
 import { HttpService } from './core/services/http/http.service';
 import { API_PATH } from './shared/utils/constants';
-import { MenuItem, RenewalStageItems } from './shared/utils/data';
-import { IFormGenerator } from './shared/components/form-generator/form-generator-interface';
-interface AppSettings {
-  appName: string,
-  appVersion: string,
-  appLongName: string,
-  logo: string,
-  recaptchaSiteKey: string,
-  sidebarMenu: MenuItem[],
-  dashboardMenu: MenuItem[],
+import { AppSettings } from './shared/types/AppSettings.model';
 
-  searchTypes: MenuItem[],
-  licenseTypes: {
-    [key: string]: {
-      table: string,
-      detailsPageHeaderTabs: { label: string, key: string }[],
-      renewalFields: IFormGenerator[],
-      renewalStages: {
-        [key: string]: RenewalStageItems
-      },
-      renewalFilterFields: IFormGenerator[],
-      advancedStatisticsFields: IFormGenerator[],
-      basicStatisticsFilterFields: IFormGenerator[],
-      searchFormFields: IFormGenerator[]
-    },
-
-  },
-  cpdFilterFields: IFormGenerator[]
-
-}
 @Injectable({
   providedIn: 'root'
 })
@@ -48,8 +20,11 @@ export class AppService {
     searchTypes: [],
     licenseTypes: {},
     cpdFilterFields: [],
+    housemanship: {
+      availabilityCategories: []
+    },
   });
-  constructor(private authService: AuthService,
+  constructor(
     private dbService: HttpService,) {
     this.dbService.get<AppSettings>(API_PATH + '/app-settings').subscribe({
       next: (response) => {

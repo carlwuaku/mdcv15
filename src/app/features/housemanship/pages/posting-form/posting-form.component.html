@@ -1,0 +1,8 @@
+<mat-card>
+  <mat-card-content>
+    <app-loading *ngIf="!loaded"></app-loading>
+    <app-form-generator *ngIf="loaded" [url]="formUrl" [fields]="fields" [existingObjectUrl]="existingUrl"
+      (onSubmit)="formSubmitted($event)" [extraData]="extraFormData" formType="emit">
+    </app-form-generator>
+  </mat-card-content>
+</mat-card>

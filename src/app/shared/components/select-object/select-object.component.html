@@ -6,8 +6,8 @@
     [multiple]="selection_mode === 'multiple'">
     <mat-option>None</mat-option>
     <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
-    <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] ||
-      object}} </mat-option>
+    <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{
+      getLabel(object)}} </mat-option>
   </mat-select>
 </mat-form-field>
 
@@ -18,7 +18,7 @@
   <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem"
     (change)="selectionMade()" (keyup)="selectionMade()">
   <datalist id="{{dataListId}}">
-    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{object[labelProperty] || object}}
+    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{getLabel(object)}}
     </option>
   </datalist>
 </mat-form-field>
@@ -29,11 +29,12 @@
     <mat-label>{{fieldLabel}}</mat-label>
     <input matInput type="text" class="form-control" [(ngModel)]="search_param" (ngModelChange)="selectionMade()"
       (keyup.enter)="search()">
-    <button mat-icon-button matSuffix (click)="search()"><mat-icon>search</mat-icon> </button>
+    <button type="button" color="primary" mat-raised-button matSuffix (click)="search()"><mat-icon>search</mat-icon>
+      Search</button>
   </mat-form-field>
 
   <mat-card *ngIf="search_param && objects.length > 0" [ngClass]="{'absolute z-10': !embedSearchResults }">
-    <div class="flex justify-end">
+    <div class="flex justify-end" *ngIf="selection_mode === 'multiple'">
       <button mat-raised-button color="primary" (click)="saveSearchSelection()">
         <mat-icon>check</mat-icon>
         Done</button>
@@ -43,11 +44,15 @@
     </div>
     <mat-card-content class="overflow-auto max-h-[350px]">
 
-      <mat-selection-list [(ngModel)]="selectedSearchItems">
+      <mat-selection-list [(ngModel)]="selectedSearchItems" *ngIf="selection_mode === 'multiple'">
         <mat-list-option *ngFor="let object of objects; let i = index" [value]="object">
-          {{i+1 +". "+object[labelProperty]}}
+          {{i+1 +". "+getLabel(object)}}
         </mat-list-option>
       </mat-selection-list>
+      <mat-action-list *ngIf="selection_mode !== 'multiple'">
+        <button mat-list-item *ngFor="let object of objects; let i = index" (click)="singleItemSelected(object)">{{i+1
+          +". "+getLabel(object)}}</button>
+      </mat-action-list>
     </mat-card-content>
 
 

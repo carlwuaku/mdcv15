@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";
-  @Input() labelProperty: string = "name";
+  @Input() labelProperty: string = "name"; //this can be a comma-separated list of properties
   @Input() keyProperty: string = "id";
   @Input() initialValue: string | string[] = "";
   @Input() type: "search" | "select" | "datalist" = "select";
@@ -117,6 +117,21 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     this.selectionChanged.emit(this.selectedSearchItems);
     this.objects = [];
     this.search_param = "";
+  }
+
+  singleItemSelected(object: any) {
+    this.selectionChanged.emit(object[this.keyProperty]);
+    this.objects = [];
+    this.search_param = "";
+  }
+
+  getLabel(object: any) {
+    if (this.labelProperty.includes(",")) {
+      const labels = this.labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+      return labels;
+    } else {
+      return object[this.labelProperty];
+    }
   }
 }
 

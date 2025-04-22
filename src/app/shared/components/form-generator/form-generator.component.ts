@@ -35,7 +35,7 @@ export class FormGeneratorComponent implements OnInit {
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
   @Input() resetButtonText: string = "Reset";
-  @Input() formType: "submit" | "filter" = "submit";
+  @Input() formType: "submit" | "filter" | "emit" = "submit";//emit is used to return the fields to the parent component
   @Input() show: boolean = true;
   @Input() enableShowHideButton: boolean = false;
   @Input() formClass: string = "vertical";
@@ -167,9 +167,15 @@ export class FormGeneratorComponent implements OnInit {
 
   }
 
-  private submit(): void {
-    const allFields = this.fields.flat();
 
+
+  private submit(): void {
+
+    const allFields = this.fields.flat();
+    if (this.formType === "emit") {
+      this.onSubmit.emit(allFields);
+      return;
+    }
     this.notify.showLoading();
     let data: any;
     if (this.sendAsJson) {
@@ -238,6 +244,12 @@ export class FormGeneratorComponent implements OnInit {
 
   setFieldValue(args: any, action: IFormGenerator) {
     action.value = args;
+    //run the onChange function
+    if (action.onChange) { action.onChange(action.value); }
+  }
+
+  clearFieldValue(action: IFormGenerator) {
+    action.value = "";
     //run the onChange function
     if (action.onChange) { action.onChange(action.value); }
   }

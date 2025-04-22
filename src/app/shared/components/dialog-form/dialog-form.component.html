@@ -2,7 +2,8 @@
   <h1 [innerHTML]="title"></h1>
 </div>
 <div mat-dialog-content>
-  <app-form-generator [fields]="fields" [formType]="formType" (emitFields)="formSubmitted($event)">
+  <app-form-generator [url]="url" [fields]="fields" [formType]="formType" (emitFields)="formSubmitted($event)"
+    (onSubmit)="formSubmitted($event)" [id]="id">
     <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
       Cancel
     </button>

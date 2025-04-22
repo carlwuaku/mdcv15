@@ -25,6 +25,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 const modules = [
   MatDialogModule,
   MatCardModule,
@@ -49,7 +51,8 @@ const modules = [
   MatToolbarModule,
   MatSidenavModule,
   MatChipsModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatSlideToggleModule
 ];
 @NgModule({
   declarations: [
