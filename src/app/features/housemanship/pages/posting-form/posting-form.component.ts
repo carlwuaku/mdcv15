@@ -19,7 +19,7 @@ export class PostingFormComponent {
   public loaded: boolean = false;
   extraFormData: { key: string; value: any; }[] = [];
   destroy$: Subject<boolean> = new Subject();
-
+  id: string = "";
   constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService) {
 
   }
@@ -27,9 +27,25 @@ export class PostingFormComponent {
   ngOnInit(): void {
     this.ar.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.session = params.get('session') || "1";
-      this.getFormFields(this.session);
+      this.id = params.get('id') || "";
+      if (this.id) {
+        this.existingUrl = `housemanship/posting/${this.id}`;
+        this.formUrl = `housemanship/posting/${this.id}`;
+        this.extraFormData = [{ key: "uuid", value: this.id }]
+        //in this case we get the session from the existing posting data. we wait for the form generator to load the existing data and then we get the session from the data
+        this.loaded = true;
+      }
+      else {
+        this.getFormFields(this.session);
+      }
+
     })
 
+  }
+
+  existingDataLoaded(data: any) {
+    this.session = data.session;
+    this.getFormFields(data.session);
   }
 
   formSubmitted(args: IFormGenerator[]) {
@@ -56,7 +72,8 @@ export class PostingFormComponent {
 
     formData['details'] = detailsArray;
     formData['session'] = this.session;
-    this.service.createPosting(formData).subscribe(
+    const dbcall = this.id ? this.service.updatePosting(formData, this.id) : this.service.createPosting(formData);
+    dbcall.subscribe(
       {
         next: data => {
           this.router.navigate([`/housemanship/postings`]);

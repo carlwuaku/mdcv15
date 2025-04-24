@@ -95,7 +95,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
             this.selectedItem = this.initialValue
           }
           if (this.objects.length === 1) {
-            this.selectionChanged.emit(this.objects[0])
+            this.selectionChanged.emit(this.objects[0][this.keyProperty] || this.objects[0]);
           }
           this.isLoaded = true;
           this.error = false;

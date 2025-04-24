@@ -57,7 +57,7 @@ export class HousemanshipPostingsListComponent {
   getActions = (object: HousemanshipPosting): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
-      { label: "Edit", type: "link", link: `housemanship/posting/edit/`, linkProp: 'uuid' },
+      { label: "Edit", type: "link", link: `housemanship/postings/edit/`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: HousemanshipPosting) => this.delete(object) }
     ];
 
@@ -68,11 +68,11 @@ export class HousemanshipPostingsListComponent {
 
 
 
-  delete(license: HousemanshipPosting) {
+  delete(object: HousemanshipPosting) {
     if (!window.confirm('Are you sure you want to delete this posting?')) {
       return;
     }
-    this.dbService.deletePosting(license.id).subscribe({
+    this.dbService.deletePosting(object.uuid).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
         this.updateTimestamp();
@@ -102,7 +102,7 @@ export class HousemanshipPostingsListComponent {
 
 
 
-    this.router.navigate(['housemanship/posting'], { queryParams: paramsObject });
+    this.router.navigate(['housemanship/postings'], { queryParams: paramsObject });
 
   }
 }

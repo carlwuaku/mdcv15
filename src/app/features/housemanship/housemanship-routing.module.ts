@@ -17,6 +17,7 @@ const routes: Routes = [{ path: '', component: HousemanshipComponent },
 { path: 'disciplines', data: { title: "Manage housemanship disciplines" }, component: DisciplinesComponent },
 { path: 'postings', data: { title: "Manage housemanship postings" }, component: PostingsComponent },
 { path: 'postings/add/:session', data: { title: "New housemanship posting" }, component: PostingFormComponent },
+{ path: 'postings/edit/:id', data: { title: "Edit housemanship posting" }, component: PostingFormComponent },
 ];
 
 @NgModule({

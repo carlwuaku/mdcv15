@@ -95,7 +95,14 @@ export class HousemanshipService {
   }
 
   createPosting(data: { [key: string]: string }): Observable<{ message: string }> {
-
     return this.dbService.post(`housemanship/posting`, data);
+  }
+
+  updatePosting(data: { [key: string]: string }, uuid: string): Observable<{ message: string }> {
+    return this.dbService.put(`housemanship/posting/${uuid}`, data);
+  }
+
+  getPosting(uuid: string): Observable<{ data: { [key: string]: any }, displayColumns: string[] }> {
+    return this.dbService.get(`housemanship/posting/${uuid}`);
   }
 }

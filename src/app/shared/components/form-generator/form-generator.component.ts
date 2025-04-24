@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ContentChildren, QueryList, TemplateRef, Directive } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ContentChildren, QueryList, TemplateRef, Directive, OnChanges, AfterContentInit, SimpleChanges } from '@angular/core';
 
 import { IFormGenerator, isFormField, isRow } from './form-generator-interface';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -23,13 +23,14 @@ export class FieldTemplateDirective {
   templateUrl: './form-generator.component.html',
   styleUrls: ['./form-generator.component.css']
 })
-export class FormGeneratorComponent implements OnInit {
+export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentInit {
   @Input() fields: (IFormGenerator | IFormGenerator[])[] = [];
   @Input() extraData: { key: string, value: any }[] = []
   @Input() url: string = "";
   @Input() id: string | undefined | null;
   @ViewChild('form') form!: HTMLFormElement;
   @Output() onSubmit = new EventEmitter();
+  @Output() onExistingDataLoaded = new EventEmitter();
   @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
 
   @Input() existingObjectUrl: string = "";
@@ -55,7 +56,7 @@ export class FormGeneratorComponent implements OnInit {
   @Input() dataKey: string = "";// dot-separated key to get the data from the response
   isFormField = isFormField;
   isRow = isRow;
-
+  existingObject: Record<string, any> | null = null;
   imageFieldsFiles: Map<string, File> = new Map();
   private templateMap = new Map<string, TemplateRef<any>>();
   @Input() sendAsJson: boolean = false;
@@ -69,6 +70,13 @@ export class FormGeneratorComponent implements OnInit {
     //if an id was provided, get the existing object
     if (this.id) {
       this.getExistingObject()
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    //if the form fields change, reassign the existing object
+    if (changes['fields'] && this.fields.length > 0 && this.existingObject) {
+      this.fillFieldsWithExistingData(this.existingObject);
     }
   }
 
@@ -105,17 +113,9 @@ export class FormGeneratorComponent implements OnInit {
                 source = source[key];
               });
             }
-
-            this.fields.map(field => {
-              if (this.isFormField(field)) {
-                field.value = source[field.name] === "null" ? null : source[field.name] ?? "";
-              }
-              else if (this.isRow(field)) {
-                field.map(rowField => {
-                  rowField.value = source[rowField.name] === "null" ? null : source[rowField.name];
-                })
-              }
-            })
+            this.onExistingDataLoaded.emit(source);
+            this.existingObject = source;
+            this.fillFieldsWithExistingData(source);
           }
 
           this.notify.hideLoading();
@@ -135,6 +135,19 @@ export class FormGeneratorComponent implements OnInit {
           this.notify.failNotification("Error loading data. Please try again")
         }
       })
+  }
+
+  public fillFieldsWithExistingData(source: Record<string, any>) {
+    this.fields.map(field => {
+      if (this.isFormField(field)) {
+        field.value = source[field.name] === "null" ? null : source[field.name] ?? "";
+      }
+      else if (this.isRow(field)) {
+        field.map(rowField => {
+          rowField.value = source[rowField.name] === "null" ? null : source[rowField.name];
+        })
+      }
+    })
   }
 
   generateFilterUrl() {
@@ -171,7 +184,7 @@ export class FormGeneratorComponent implements OnInit {
 
   private submit(): void {
 
-    const allFields = this.fields.flat();
+    const allFields = this.fields.flat().filter(field => field.name !== "");
     if (this.formType === "emit") {
       this.onSubmit.emit(allFields);
       return;
