@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { Pager } from './Pager.interface';
@@ -96,12 +96,15 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   urlFilterKeys: string[] = [];
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
   @Input() showAllFilters: boolean = false;
-  @Input() onFilterSubmitted: (params: string) => void = () => { };
+  @Input() onFilterSubmitted: ((params: string) => void) | ((params: IFormGenerator[]) => void) = () => { };
+  @Input() filterFormType: "filter" | "emit" = "filter";
   queryParams: { [key: string]: string } = {};
   isOverflowing: boolean = false;
   @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "horizontal";
   @Input() useResponseFilters: boolean = true;
   @Input() showTableTitle: boolean = true;
+  @Input() apiCallMethod: "get" | "post" = "get";
+  @Input() apiCallData: any = {};
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -167,6 +170,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.currentPage = 1;
       this.getData();
     }
+    if (changes['apiCallMethod'] || changes['apiCallData']) {// if the data is provided don't use the filters
+      this.offset = 0;
+      this.currentPage = 1;
+      this.getData(this.url);
+    }
+
   }
 
 
@@ -225,9 +234,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
 
-  getData(url?: string) {
+  public getData(url?: string) {
     this.loading = true;
     this.showTable = false;
+    //the api call may be passed in from the parent component if it's something other than a get request
+
     if (!url) {
       url = this.prepUrl();
     }
@@ -242,8 +253,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       tableTitleArray.push(this.getColumnLabel(param[0]) + ": " + param[1]);
     })
     this.tableTitle = tableTitleArray.join(", ");
+    let apiCall = this.dbService.get<ApiResponseObject<any>>(url);
+    if (this.apiCallMethod == "post") {
+      apiCall = this.dbService.post<ApiResponseObject<any>>(url, this.apiCallData);
+    }
 
-    this.dbService.get<ApiResponseObject<any>>(url).pipe(takeUntil(this.destroy$))
+    apiCall.pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           const data: { [key: string]: any }[] = this.dataKey && !isArray(response.data) ? response.data[this.dataKey] : response.data;
@@ -454,8 +469,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
-  filterSubmitted(params: string) {
-    this.onFilterSubmitted(params);
+  filterSubmitted(params: string | IFormGenerator[]) {
+    if (typeof params === 'string' || Array.isArray(params)) {
+      this.onFilterSubmitted(params as any);
+    }
   }
 
   /**

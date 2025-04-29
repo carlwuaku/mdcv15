@@ -21,7 +21,8 @@ export class AppService {
     licenseTypes: {},
     cpdFilterFields: [],
     housemanship: {
-      availabilityCategories: []
+      availabilityCategories: [],
+      sessions: {}
     },
   });
   constructor(

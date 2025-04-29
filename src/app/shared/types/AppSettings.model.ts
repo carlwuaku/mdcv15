@@ -29,7 +29,12 @@ export interface AppSettings {
   },
   cpdFilterFields: IFormGenerator[],
   housemanship: {
-    availabilityCategories: { value: string, key: string, available?: number }[]
+    availabilityCategories: { value: string, key: string, available?: number }[],
+    sessions: {
+      [key: string]: {
+        number_of_facilities: number, application_form_fields: IFormGenerator[], available_to: any[], allowRepeatRegion: boolean
+      }
+    }
   }
 
 }

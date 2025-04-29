@@ -64,6 +64,13 @@
         <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field class="flex-auto" multiple *ngSwitchCase="'multi-select'">
+      <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
+        <mat-option value="">Choose one</mat-option>
+        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
 
       <textarea class="flex-auto" [required]="field.required" matInput [(ngModel)]="field.value"

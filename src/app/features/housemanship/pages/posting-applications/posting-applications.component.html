@@ -1,0 +1,56 @@
+<div class="flex flex-col gap-1">
+  <div class="flex gap-1">
+    <a mat-raised-button color="primary" routerLink="/housemanship/posting-applications/add/1">Add year 1 posting
+      application</a>
+    <a mat-raised-button color="primary" routerLink="/housemanship/posting-applications/add/2">Add year 2 posting
+      application</a>
+  </div>
+
+  <app-posting-applications-list [url]="url" (selectionChanged)="selectionChanged($event)"
+    (filterSubmitted)="filterSubmitted($event)">
+    <div class="flex flex-col">
+      <b>Approve selection</b>
+      <app-error-message *ngIf="selectedItems.length < 1 ">Select at least one item to approve</app-error-message>
+      <div class="flex flex-col" *ngIf="selectedItems.length > 0">
+
+        <mat-radio-group *ngFor="let option of selectedOptions" (change)="setOption(option.index, $event.value)">
+          <mat-radio-button [name]="option.index.toString()" value="1">Approve first choice</mat-radio-button>
+          <mat-radio-button [name]="option.index.toString()" value="2">Approve second choice</mat-radio-button>
+          <mat-radio-button [name]="option.index.toString()" value="3">Post to other</mat-radio-button>
+          <app-select-object *ngIf="option.selectedOption === '3'" [url]="'housemanship/facilities/details'"
+            [labelProperty]="'name' " [keyProperty]="'name'" [type]="'select'" [selection_mode]=" 'single'"
+            (selectionChanged)="setOptionValue(option, $event)">
+          </app-select-object>
+        </mat-radio-group>
+
+
+        <button mat-raised-button>Save</button>
+      </div>
+    </div>
+  </app-posting-applications-list>
+</div>
+
+<ng-template #confirmSelection>
+  <h2 mat-dialog-title>Confirm posting selection</h2>
+  <mat-dialog-content>
+    <p>Are you sure you want to approve the selected posting applications?</p>
+    <mat-list>
+      <mat-list-item class="border hover:bg-slate-300" *ngFor="let item of selectedItems">
+        <div class="flex">
+          <div class="w-[40%]">
+            {{item.license_number}}
+          </div>
+          <div class="w-[60%]">
+            <b></b>
+          </div>
+        </div>
+      </mat-list-item>
+
+    </mat-list>
+
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Cancel</button>
+    <button mat-button [mat-dialog-close]="true" color="primary">Submit</button>
+  </mat-dialog-actions>
+</ng-template>

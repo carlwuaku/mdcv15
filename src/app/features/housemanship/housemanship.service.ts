@@ -93,6 +93,9 @@ export class HousemanshipService {
   getPostingFormConfig(session: string): Observable<{ data: IFormGenerator[] }> {
     return this.dbService.get(`housemanship/posting/form/${session}`)
   }
+  getPostingApplicationFormConfig(session: string): Observable<{ data: IFormGenerator[] }> {
+    return this.dbService.get(`housemanship/posting-application/form/${session}`)
+  }
 
   createPosting(data: { [key: string]: string }): Observable<{ message: string }> {
     return this.dbService.post(`housemanship/posting`, data);
@@ -104,5 +107,21 @@ export class HousemanshipService {
 
   getPosting(uuid: string): Observable<{ data: { [key: string]: any }, displayColumns: string[] }> {
     return this.dbService.get(`housemanship/posting/${uuid}`);
+  }
+
+  createPostingApplication(data: { [key: string]: string }): Observable<{ message: string }> {
+    return this.dbService.post(`housemanship/posting-application`, data);
+  }
+
+  updatePostingApplication(data: { [key: string]: string }, uuid: string): Observable<{ message: string }> {
+    return this.dbService.put(`housemanship/posting-application/${uuid}`, data);
+  }
+
+  getPostingApplication(uuid: string): Observable<{ data: { [key: string]: any }, displayColumns: string[] }> {
+    return this.dbService.get(`housemanship/posting-application/${uuid}`);
+  }
+
+  deletePostingApplication(id: string): Observable<{ message: string }> {
+    return this.dbService.delete(`housemanship/posting-application/${id}`);
   }
 }

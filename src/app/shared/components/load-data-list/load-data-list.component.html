@@ -32,9 +32,8 @@
         (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
       <div *ngIf="showFilterButton && showAllFilters" [class.allFilters]="filtersLayout === 'horizontal'"
         [class.w-full]="filtersLayout === 'grid'">
-        <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)" [formType]="'filter'"
-          [fields]="filters" [formType]="'filter'" [resetButtonText]="'Clear all filters'"
-          [submitButtonText]="'Apply'"></app-form-generator>
+        <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)" [formType]="filterFormType"
+          [fields]="filters" [resetButtonText]="'Clear all filters'" [submitButtonText]="'Apply'"></app-form-generator>
       </div>
       <mat-chip-set *ngIf="showFilterButton && !showAllFilters" aria-label="Filters">
         <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">

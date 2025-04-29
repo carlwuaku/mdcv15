@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LicensesService } from '../../licenses.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppService } from 'src/app/app.service';
+import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -62,15 +63,33 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
 
-  onBasicReportsFilterSubmitted(params: string) {
+  onBasicReportsFormSubmitted(params: IFormGenerator[]) {
+    const data: Record<string, any> = {};
+    params.forEach((param) => {
+      if (param.value && param.value.length > 0) {
+        data[`child_${param.name}`] = param.value;
+      }
 
-    const queryParams: { [key: string]: string } = {};
-    const urlParams = params.split("&").map(param => param.split("="));
-    urlParams.forEach(param => {
-      queryParams[`child_${param[0]}`] = param[1];
     });
-    queryParams['licenseType'] = this.licenseType;
-    this.router.navigate(['licenses/reports'], { queryParams: queryParams });
+    data['licenseType'] = this.licenseType;
+
+    this.licensesService.getFilteredCount(data).subscribe({
+      next: (res) => {
+        this.total = res.data;
+      }
+    });
+    this.basicReportsLoading = true;
+    this.licensesService.filterBasicReports(this.licenseType, data).subscribe({
+      next: (res) => {
+        this.basicReports = Object.values(res.data);
+        this.basicReportsLoading = false;
+      },
+      error: (err) => {
+        this.basicReportsLoading = false;
+        this.basicReports = [];
+      }
+    });
+
   }
 
   getTotal() {

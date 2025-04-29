@@ -26,6 +26,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 
 const modules = [
   MatDialogModule,
@@ -52,7 +53,8 @@ const modules = [
   MatSidenavModule,
   MatChipsModule,
   MatProgressBarModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatRadioModule
 ];
 @NgModule({
   declarations: [

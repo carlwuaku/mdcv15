@@ -126,13 +126,76 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   getLabel(object: any) {
-    if (this.labelProperty.includes(",")) {
-      const labels = this.labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
-      return labels;
-    } else {
-      return object[this.labelProperty];
+    if (typeof object === "object") {
+      if (this.labelProperty.includes(",")) {
+        const labels = this.labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+        return labels;
+      } else {
+        let value = object[this.labelProperty];
+        if (value === null || value === undefined) {
+          return "--Null--";
+        }
+        if (typeof value === "object") {
+          return JSON.stringify(value);
+        }
+        if (typeof value === "string" && value.trim() === "") {
+          return "--Empty Value--";
+        }
+        return value;
+      }
+    }
+    else {
+      if (object === null || object === undefined) {
+        return "--Null--";
+      }
+      if (typeof object === "string" && object.trim() === "") {
+        return "--Empty Value--";
+      }
+      return object;
     }
   }
+
+  getValue(object: any) {
+    if (typeof object === "object") {
+      if (this.keyProperty.includes(",")) {
+        const labels = this.keyProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+        return labels;
+      } else {
+        let value = object[this.keyProperty];
+        if (value === null || value === undefined) {
+          return "--Null--";
+        }
+        if (typeof value === "object") {
+          return JSON.stringify(value);
+        }
+        if (typeof value === "string" && value.trim() === "") {
+          return "--Empty Value--";
+        }
+        return value;
+      }
+    }
+    else {
+      if (object === null || object === undefined) {
+        return "--Null--";
+      }
+      if (typeof object === "string" && object.trim() === "") {
+        return "--Empty Value--";
+      }
+      return object;
+    }
+  }
+
+  selectAll() {
+    this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
+    this.selectionChanged.emit(this.selectedItem);
+  }
+
+  clearSelection() {
+    this.selectedItem = [];
+    this.selectionChanged.emit(this.selectedItem);
+  }
+
+
 }
 
 

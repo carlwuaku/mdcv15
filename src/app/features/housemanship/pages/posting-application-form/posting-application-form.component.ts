@@ -5,19 +5,18 @@ import { HousemanshipService } from '../../housemanship.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-posting-form',
-  templateUrl: './posting-form.component.html',
-  styleUrls: ['./posting-form.component.scss']
+  selector: 'app-posting-application-form',
+  templateUrl: './posting-application-form.component.html',
+  styleUrls: ['./posting-application-form.component.scss']
 })
-export class PostingFormComponent {
-
-  title: string = "Add a new housemanship posting";
-  formUrl: string = "housemanship/posting";
-  existingUrl: string = "housemanship/posting/";
+export class PostingApplicationFormComponent {
+  title: string = "Add a new housemanship posting application";
+  formUrl: string = "housemanship/posting-application";
+  existingUrl: string = "housemanship/posting-application/";
   fields: IFormGenerator[] = [];
   session: string = "1";
   public loaded: boolean = false;
-  extraFormData: { key: string; value: any; }[] = [];
+  extraFormData: { key: string; value: any; }[] = [];//any extra data to be sent with the form that's not included in the form fields
   destroy$: Subject<boolean> = new Subject();
   id: string = "";
   constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService) {
@@ -29,8 +28,8 @@ export class PostingFormComponent {
       this.session = params.get('session') || "1";
       this.id = params.get('id') || "";
       if (this.id) {
-        this.existingUrl = `housemanship/posting/${this.id}`;
-        this.formUrl = `housemanship/posting/${this.id}`;
+        this.existingUrl = `housemanship/posting-application/${this.id}`;
+        this.formUrl = `housemanship/posting-application/${this.id}`;
         this.extraFormData = [{ key: "uuid", value: this.id }]
         //in this case we get the session from the existing posting data. we wait for the form generator to load the existing data and then we get the session from the data
         this.loaded = true;
@@ -51,15 +50,15 @@ export class PostingFormComponent {
   formSubmitted(args: IFormGenerator[]) {
     const formData = args.reduce((acc: Record<string, any>, curr) => {
       //get the fields that are not posting_detail
-      if (!curr.name.includes('posting_detail')) { acc[curr.name] = curr.value; }
+      if (!curr.name.includes('posting_application_detail')) { acc[curr.name] = curr.value; }
       return acc;
     }, {});
     //get the posting_detail fields
-    const postingDetails = args.filter((field) => field.name.includes('posting_detail'));
+    const postingDetails = args.filter((field) => field.name.includes('posting_application_detail'));
     //remove posting_detail from the name and put them in arrays based on the suffix number
     const detailsArray: Record<string, any>[] = [];
     postingDetails.forEach((field) => {
-      const name = field.name.replace('posting_detail-', '');
+      const name = field.name.replace('posting_application_detail-', '');
       const [key, index] = name.split('-');
       const object: Record<string, any> = {};
       object[key] = field.value;
@@ -71,11 +70,11 @@ export class PostingFormComponent {
 
     formData['details'] = detailsArray;
     formData['session'] = this.session;
-    const dbcall = this.id ? this.service.updatePosting(formData, this.id) : this.service.createPosting(formData);
+    const dbcall = this.id ? this.service.updatePostingApplication(formData, this.id) : this.service.createPostingApplication(formData);
     dbcall.subscribe(
       {
         next: data => {
-          this.router.navigate([`/housemanship/postings`]);
+          this.router.navigate([`/housemanship/posting-applications`]);
         },
         error: error => {
           console.error(error);
@@ -85,7 +84,7 @@ export class PostingFormComponent {
   }
 
   getFormFields(session: string) {
-    this.service.getPostingFormConfig(session).subscribe(
+    this.service.getPostingApplicationFormConfig(session).subscribe(
       {
         next: data => {
           this.fields = data.data;

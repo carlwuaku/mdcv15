@@ -4,9 +4,14 @@
   <mat-label>{{fieldLabel}}</mat-label>
   <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()" appearance="outline"
     [multiple]="selection_mode === 'multiple'">
-    <mat-option>None</mat-option>
+    <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
+      <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
+
+      <button color="warn" mat-flat-button (click)="clearSelection()">Clear</button>
+    </div>
+    <mat-option>{{selection_mode === 'multiple' ? 'Choose one or more':'Choose one'}} </mat-option>
     <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
-    <mat-option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{
+    <mat-option *ngFor="let object of objects" [value]="getValue(object)">{{
       getLabel(object)}} </mat-option>
   </mat-select>
 </mat-form-field>
@@ -18,7 +23,7 @@
   <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem"
     (change)="selectionMade()" (keyup)="selectionMade()">
   <datalist id="{{dataListId}}">
-    <option *ngFor="let object of objects" [value]="object[keyProperty] || object">{{getLabel(object)}}
+    <option *ngFor="let object of objects" [value]="getValue(object)">{{getLabel(object)}}
     </option>
   </datalist>
 </mat-form-field>

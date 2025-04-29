@@ -156,9 +156,16 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
     const allFields = this.fields.flat();
     allFields.forEach(field => {
       if (field.value) {
-        const value = field.type === "date" ? this.formatDate(field.value) : field.value;
+        let value = field.type === "date" ? this.formatDate(field.value) : field.value;
+        if (Array.isArray(value) && value.length > 0) {
+          value = JSON.stringify(value);
+          params.push(`${field.name}=${value}`);
+        }
+        else if (!Array.isArray(value)) {
 
-        params.push(`${field.name}=${value}`);
+          params.push(`${field.name}=${value}`);
+        }
+
       }
     });
     this.onSubmit.emit(params.join("&"));

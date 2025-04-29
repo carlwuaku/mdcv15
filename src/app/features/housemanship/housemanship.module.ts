@@ -13,6 +13,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { FacilityDetailsComponent } from './pages/facility-details/facility-details.component';
 import { DisciplinesComponent } from './pages/disciplines/disciplines.component';
 import { PostingFormComponent } from './pages/posting-form/posting-form.component';
+import { PostingApplicationFormComponent } from './pages/posting-application-form/posting-application-form.component';
+import { PostingApplicationsComponent } from './pages/posting-applications/posting-applications.component';
+import { PostingApplicationsListComponent } from './components/posting-applications-list/posting-applications-list.component';
 
 
 @NgModule({
@@ -26,7 +29,10 @@ import { PostingFormComponent } from './pages/posting-form/posting-form.componen
     FacilityFormComponent,
     FacilityDetailsComponent,
     DisciplinesComponent,
-    PostingFormComponent
+    PostingFormComponent,
+    PostingApplicationFormComponent,
+    PostingApplicationsComponent,
+    PostingApplicationsListComponent
   ],
   imports: [
     CommonModule,
