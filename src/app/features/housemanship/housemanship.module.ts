@@ -16,6 +16,8 @@ import { PostingFormComponent } from './pages/posting-form/posting-form.componen
 import { PostingApplicationFormComponent } from './pages/posting-application-form/posting-application-form.component';
 import { PostingApplicationsComponent } from './pages/posting-applications/posting-applications.component';
 import { PostingApplicationsListComponent } from './components/posting-applications-list/posting-applications-list.component';
+import { ConfirmPostingsComponent } from './components/confirm-postings/confirm-postings.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 
 @NgModule({
@@ -32,12 +34,14 @@ import { PostingApplicationsListComponent } from './components/posting-applicati
     PostingFormComponent,
     PostingApplicationFormComponent,
     PostingApplicationsComponent,
-    PostingApplicationsListComponent
+    PostingApplicationsListComponent,
+    ConfirmPostingsComponent
   ],
   imports: [
     CommonModule,
     HousemanshipRoutingModule,
-    SharedModule
+    SharedModule,
+    MatButtonToggleModule
   ]
 })
 export class HousemanshipModule { }

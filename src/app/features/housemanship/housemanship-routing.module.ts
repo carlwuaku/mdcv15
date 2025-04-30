@@ -22,7 +22,7 @@ const routes: Routes = [{ path: '', component: HousemanshipComponent },
 { path: 'postings/edit/:id', data: { title: "Edit housemanship posting" }, component: PostingFormComponent },
 { path: 'posting-applications/add/:session', data: { title: "New housemanship posting application" }, component: PostingApplicationFormComponent },
 { path: 'posting-applications/edit/:id', data: { title: "New housemanship posting application" }, component: PostingApplicationFormComponent },
-{ path: 'posting-applications', data: { title: "Manage housemanship posting applications" }, component: PostingApplicationsComponent },
+{ path: 'posting-applications/:session', data: { title: "Manage housemanship posting applications" }, component: PostingApplicationsComponent },
 
 ];
 

@@ -6,4 +6,7 @@ export type HousemanshipApplication = {
   category: string;
   session: string;
   created_on: string;
+  year: string;
+  first_name?: string;
+  last_name?: string;
 }

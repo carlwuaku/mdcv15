@@ -12,8 +12,15 @@
 
 .mat-expansion-panel {
   border-radius: 0px;
-    box-shadow: none;
+  box-shadow: none;
 }
-.mat-expansion-panel-header{
+
+.mat-expansion-panel-header {
   padding: 0 16px;
+}
+
+.mdc-list-item__primary-text {
+  /* text-overflow: ellipsis; */
+  white-space: normal !important;
+  overflow: visible !important;
 }

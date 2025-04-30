@@ -53,6 +53,7 @@ import { ChartModule } from 'primeng/chart';
 import { TableComponent } from './components/table/table.component';
 import { ViewHtmlContentComponent } from './components/view-html-content/view-html-content.component';
 import { AddGuestUserComponent } from './components/add-guest-user/add-guest-user.component';
+import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -112,7 +113,8 @@ import { AddGuestUserComponent } from './components/add-guest-user/add-guest-use
     FormsModule,
     ReactiveFormsModule,
     NgChartsModule,
-    ChartModule
+    ChartModule,
+    RouterModule
 
   ],
   exports: [
@@ -158,7 +160,8 @@ import { AddGuestUserComponent } from './components/add-guest-user/add-guest-use
     PrintTableComponent,
     FieldTemplateDirective,
     ChartComponent,
-    AddGuestUserComponent
+    AddGuestUserComponent,
+    TableComponent
   ],
   providers: [
     ClipboardCopyDirective

@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Confirm postings</h2>
+<mat-dialog-content>
+  <app-select-object [url]="'print-queue/templates'" [labelProperty]="'template_name' " [keyProperty]="'template_name'"
+    [type]="'select'" [selection_mode]=" 'single'" (selectionChanged)="setLetterTemplate($event)">
+  </app-select-object>
+  <app-table [displayedColumns]="tableColumns" [dataSource]="dataSource"></app-table>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-button [mat-dialog-close]="true" color="primary">Submit</button>
+</mat-dialog-actions>
