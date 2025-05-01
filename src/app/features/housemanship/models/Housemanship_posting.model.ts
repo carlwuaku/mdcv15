@@ -14,3 +14,19 @@ export type HousemanshipPosting = {
   last_name?: string;
   year?: string;
 }
+
+export type HousemanshipPostingApplicationRequest = {
+  id?: string;
+  application_uuid: string;
+  license_number: string;
+  type: string;
+  category?: string;
+  session: string;
+  created_on?: string;
+  letter_template: string;
+  details?: HousemanshipPostingDetail[];
+  first_name?: string;
+  last_name?: string;
+  year?: string;
+  tags: string
+}

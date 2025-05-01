@@ -5,7 +5,7 @@ import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { HousemanshipApplication } from '../../models/Housemanship_application.model';
 import { AppService } from 'src/app/app.service';
-import { HousemanshipPosting } from '../../models/Housemanship_posting.model';
+import { HousemanshipPostingApplicationRequest } from '../../models/Housemanship_posting.model';
 import { ConfirmPostingsComponent } from '../../components/confirm-postings/confirm-postings.component';
 import { HousemanshipPostingDetail } from '../../models/Housemanship_posting_detail.model';
 
@@ -31,7 +31,7 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
   numberOfFacilities: number = 0;
   session: string = "1";
   selectedTemplate: string = "";
-  selectedApplications: HousemanshipPosting[] = []
+  selectedApplications: HousemanshipPostingApplicationRequest[] = []
   constructor(
     public dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private appService: AppService) {
@@ -44,9 +44,11 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
     ]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(([queryParams, params]) => {
+      this.selectedItems = [];
+      this.selectedOptions = [];
       this.session = params.get('session') || "0";
       this.queryParams = queryParams;
-      this.appService.appSettings.pipe(take(1)).subscribe(data => {
+      this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
         this.numberOfFacilities = data.housemanship.sessions[this.session]?.number_of_facilities || 0;
         //create an option for the number of facilities in selectedOptions
         this.selectedOptions = Array.from({ length: this.numberOfFacilities }, (_, index) => ({ index, selectedOption: "", value: "" }));
@@ -136,9 +138,10 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
         details: details,
         letter_template: "",
         type: item.type,
-        uuid: "",
+        application_uuid: item.uuid,
         first_name: item.first_name,
         last_name: item.last_name,
+        tags: item.tags
       }
     });
     //show the modal
@@ -150,25 +153,7 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        //send the data to the server
-        // this.appService.appSettings.pipe(take(1)).subscribe(data => {
-        //   const body = {
-        //     license_number: this.selectedItems[0].license_number,
-        //     session: this.session,
-        //     letter_template: this.selectedTemplate,
-        //     details: this.selectedApplications,
-        //     year: data.housemanship.sessions[this.session].year
-        //   }
-        //   this.dbService.approvePostingApplication(body).subscribe({
-        //     next: response => {
-        //       alert(response.message);
-        //       this.router.navigate(['housemanship/posting-applications']);
-        //     },
-        //     error: error => {
-        //       alert(error.message);
-        //     }
-        //   });
-        // });
+        window.location.reload();//TODO: change this to a better way of refreshing the page
       }
     });
   }

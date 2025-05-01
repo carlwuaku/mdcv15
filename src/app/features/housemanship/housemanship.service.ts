@@ -7,6 +7,7 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { HousemanshipFacilityAvailability } from './models/Housemanship_facility_availability.model';
 import { HousemanshipFacilityCapacity } from './models/Housemanship_facility_capacity.model';
 import { HousemanshipDiscipline } from './models/Housemanship_discipline.model';
+import { HousemanshipPosting, HousemanshipPostingApplicationRequest } from './models/Housemanship_posting.model';
 
 @Injectable({
   providedIn: 'root'
@@ -123,5 +124,9 @@ export class HousemanshipService {
 
   deletePostingApplication(id: string): Observable<{ message: string }> {
     return this.dbService.delete(`housemanship/posting-application/${id}`);
+  }
+
+  approvePostingApplication(data: { data: HousemanshipPostingApplicationRequest[] }): Observable<{ message: string, data: { successful: boolean, license_number: string }[] }> {
+    return this.dbService.post(`housemanship/posting-application/approve`, data);
   }
 }

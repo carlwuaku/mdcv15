@@ -9,4 +9,5 @@ export type HousemanshipApplication = {
   year: string;
   first_name?: string;
   last_name?: string;
+  tags: string;
 }
