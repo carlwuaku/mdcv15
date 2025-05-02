@@ -104,11 +104,12 @@ export class DisciplinesComponent implements OnInit {
   }
 
   showAddDialog(fields: IFormGenerator[], title: string, id?: string) {
+    const url = id ? `${this.baseUrl}/${id}` : this.baseUrl;
     this.dialog.open(DialogFormComponent, {
       data: {
         fields, title,
         formType: "submit",
-        url: id ? this.baseUrl + `/${id}` : this.baseUrl,
+        url: url,
         id: id
       },
       minWidth: '500px',

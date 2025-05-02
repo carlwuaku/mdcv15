@@ -91,6 +91,11 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
   }
 
   getExistingObject() {
+    //if no url was provided, return
+    if (!this.existingObjectUrl) {
+      console.error("No url provided to get existing object");//TODO: log this to analytics
+      return;
+    }
     this.notify.showLoading();
     this.dbService.get<any>(`${this.existingObjectUrl}`).subscribe(
       {

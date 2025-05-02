@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { HousemanshipService } from '../../housemanship.service';
 import { Subject, takeUntil } from 'rxjs';
+import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { goBack } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-posting-application-form',
@@ -19,7 +21,9 @@ export class PostingApplicationFormComponent {
   extraFormData: { key: string; value: any; }[] = [];//any extra data to be sent with the form that's not included in the form fields
   destroy$: Subject<boolean> = new Subject();
   id: string = "";
-  constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService) {
+  constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService, private notify: NotifyService) {
+    this.formUrl = `housemanship/posting-application`;
+    this.existingUrl = `housemanship/posting-application/`;
 
   }
 
@@ -74,7 +78,14 @@ export class PostingApplicationFormComponent {
     dbcall.subscribe(
       {
         next: data => {
-          this.router.navigate([`/housemanship/posting-applications`]);
+          this.notify.successNotification(data.message);
+          //if it was an edit, go back. else refresh the form
+          if (this.id) {
+            goBack();
+          }
+          else {
+            this.getFormFields(this.session)
+          }
         },
         error: error => {
           console.error(error);
