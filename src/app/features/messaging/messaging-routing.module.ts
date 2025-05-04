@@ -5,8 +5,8 @@ import { SendEmailComponent } from './send-email/send-email.component';
 import { EmailQueueComponent } from './email-queue/email-queue.component';
 
 const routes: Routes = [{ path: '', component: MessagingComponent },
-{ path: 'send_email', component: SendEmailComponent },
-{ path: 'email_queue', component: EmailQueueComponent }
+{ path: 'send_email', component: SendEmailComponent, data: { title: 'Send an email' } },
+{ path: 'email_queue', component: EmailQueueComponent, data: { title: 'Manage email queue' } }
 ];
 
 @NgModule({

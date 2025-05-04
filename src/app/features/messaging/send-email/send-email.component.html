@@ -1,6 +1,5 @@
 <mat-card>
   <mat-card-content>
-    <app-form-generator #form [url]="formUrl" [fields]="fields" (onSubmit)="formSubmitted($event)">
-    </app-form-generator>
+    <app-email-form [data]="existingData"></app-email-form>
   </mat-card-content>
 </mat-card>

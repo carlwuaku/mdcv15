@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { take, takeUntil } from 'rxjs';
+import { take } from 'rxjs';
 import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { v4 as uuidv4 } from 'uuid';
+import { getLabel } from '../../utils/helper';
 
 @Component({
   selector: 'app-select-object',
@@ -31,6 +32,9 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() embedSearchResults: boolean = false;
   searchRan: boolean = false;
   selectedSearchItems: any[] = [];
+  getLabel = getLabel;
+  @Output() dataDownloaded = new EventEmitter();
+  @Input() emitDownload: boolean = false;
   constructor(private dbService: HttpService, private dateService: DateService) {
 
   }
@@ -61,6 +65,9 @@ export class SelectObjectComponent implements OnInit, OnChanges {
           this.objects = data.data || data;
           if (this.initialValue) {
             this.selectedItem = this.initialValue
+          }
+          if (this.emitDownload) {
+            this.dataDownloaded.emit(this.objects);
           }
           this.isLoaded = true;
           this.error = false;
@@ -125,35 +132,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     this.search_param = "";
   }
 
-  getLabel(object: any) {
-    if (typeof object === "object") {
-      if (this.labelProperty.includes(",")) {
-        const labels = this.labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
-        return labels;
-      } else {
-        let value = object[this.labelProperty];
-        if (value === null || value === undefined) {
-          return "--Null--";
-        }
-        if (typeof value === "object") {
-          return JSON.stringify(value);
-        }
-        if (typeof value === "string" && value.trim() === "") {
-          return "--Empty Value--";
-        }
-        return value;
-      }
-    }
-    else {
-      if (object === null || object === undefined) {
-        return "--Null--";
-      }
-      if (typeof object === "string" && object.trim() === "") {
-        return "--Empty Value--";
-      }
-      return object;
-    }
-  }
+
 
   getValue(object: any) {
     if (typeof object === "object") {

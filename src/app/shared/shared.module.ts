@@ -54,6 +54,9 @@ import { TableComponent } from './components/table/table.component';
 import { ViewHtmlContentComponent } from './components/view-html-content/view-html-content.component';
 import { AddGuestUserComponent } from './components/add-guest-user/add-guest-user.component';
 import { RouterModule } from '@angular/router';
+import { SectionContainerComponent } from './components/section-container/section-container.component';
+import { SubSectionContainerComponent } from './components/sub-section-container/sub-section-container.component';
+import { EmailFormComponent } from './components/email-form/email-form.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -100,7 +103,10 @@ import { RouterModule } from '@angular/router';
     ChartComponent,
     TableComponent,
     ViewHtmlContentComponent,
-    AddGuestUserComponent
+    AddGuestUserComponent,
+    SectionContainerComponent,
+    SubSectionContainerComponent,
+    EmailFormComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -161,7 +167,10 @@ import { RouterModule } from '@angular/router';
     FieldTemplateDirective,
     ChartComponent,
     AddGuestUserComponent,
-    TableComponent
+    TableComponent,
+    SectionContainerComponent,
+    SubSectionContainerComponent,
+    EmailFormComponent,
   ],
   providers: [
     ClipboardCopyDirective

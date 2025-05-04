@@ -156,6 +156,48 @@ export function openHtmlInNewWindow(htmlContent: string): void {
   // URL.revokeObjectURL(url);
 }
 
+/**
+ * get the label text from an object using a provided key. replace underscores with spaces and capitalise
+ * @param {object} object any object
+ * @param {string} labelProperty the keys from the object to use as the label. can be a comma-separated list of keys
+ * @returns {string} string
+ */
+export function getLabel(object: any, labelProperty: string): string {
+  if (typeof object === "object") {
+    if (labelProperty.includes(",")) {
+      const labels = labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+      return getLabelFromKey(labels);
+    } else {
+      let value = object[labelProperty];
+      if (value === null || value === undefined) {
+        return "--Null--";
+      }
+      if (typeof value === "object") {
+        return getLabelFromKey(JSON.stringify(value));
+      }
+      if (typeof value === "string" && value.trim() === "") {
+        return "--Empty Value--";
+      }
+      return getLabelFromKey(value);
+    }
+  }
+  else {
+    if (object === null || object === undefined) {
+      return "--Null--";
+    }
+    if (typeof object === "string" && object.trim() === "") {
+      return "--Empty Value--";
+    }
+    return getLabelFromKey(object);
+  }
+}
+
+export function setFormFieldValue(form: IFormGenerator[], name: string, value: any) {
+  const field = form.find(f => f.name === name);
+  if (field) {
+    field.value = value;
+  }
+}
 
 
 

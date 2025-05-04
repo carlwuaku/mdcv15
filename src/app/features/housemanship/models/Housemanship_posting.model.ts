@@ -28,5 +28,6 @@ export type HousemanshipPostingApplicationRequest = {
   first_name?: string;
   last_name?: string;
   year?: string;
-  tags: string
+  tags: string;
+  email: string;
 }

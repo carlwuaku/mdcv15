@@ -5,35 +5,45 @@
     <a mat-raised-button color="primary" routerLink="/housemanship/posting-applications/add/2">Add year 2 posting
       application</a>
   </div>
+  <mat-card>
+    <mat-card-content>
+      <app-posting-applications-list [url]="url" (selectionChanged)="selectionChanged($event)"
+        (filterSubmitted)="filterSubmitted($event)">
+        <div class="flex gap-1 items-center">
+          <app-sub-section-container [title]="'Approve selection'" class="flex flex-col gap-1 ">
+            <app-error-message *ngIf="selectedItems.length < 1 ">Select at least one item to approve</app-error-message>
+            <div class="flex flex-col">
 
-  <app-posting-applications-list [url]="url" (selectionChanged)="selectionChanged($event)"
-    (filterSubmitted)="filterSubmitted($event)">
-    <div class="flex flex-col">
-      <b>Approve selection</b>
-      <app-error-message *ngIf="selectedItems.length < 1 ">Select at least one item to approve</app-error-message>
-      <div class="flex flex-col" *ngIf="selectedItems.length > 0">
+              <div class="flex flex-col gap-2" *ngFor="let option of selectedOptions">
+                <mat-radio-group [disabled]="selectedItems.length < 1" [(ngModel)]="option.selectedOption"
+                  (change)="setOption(option.index, $event.value)">
+                  <mat-radio-button [name]="option.index.toString()" value="1">Approve first choice</mat-radio-button>
+                  <mat-radio-button [name]="option.index.toString()" value="2">Approve second choice</mat-radio-button>
+                  <mat-radio-button [name]="option.index.toString()" value="3">Post to other</mat-radio-button>
 
-        <div class="flex gap-2" *ngFor="let option of selectedOptions">
-          <mat-radio-group [(ngModel)]="option.selectedOption" (change)="setOption(option.index, $event.value)">
-            <mat-radio-button [name]="option.index.toString()" value="1">Approve first choice</mat-radio-button>
-            <mat-radio-button [name]="option.index.toString()" value="2">Approve second choice</mat-radio-button>
-            <mat-radio-button [name]="option.index.toString()" value="3">Post to other</mat-radio-button>
+                </mat-radio-group>
+                <div class="flex flex-col gap-1" *ngIf="option.selectedOption === '3'">
+                  <label>Select a facility to post to</label>
+                  <app-select-object [url]="'housemanship/facilities/details'" [labelProperty]="'name' "
+                    [keyProperty]="'name'" [type]="'select'" [selection_mode]=" 'single'"
+                    (selectionChanged)="setOptionValue(option, $event)">
+                  </app-select-object>
+                </div>
 
-          </mat-radio-group>
-          <app-select-object *ngIf="option.selectedOption === '3'" [url]="'housemanship/facilities/details'"
-            [labelProperty]="'name' " [keyProperty]="'name'" [type]="'select'" [selection_mode]=" 'single'"
-            (selectionChanged)="setOptionValue(option, $event)">
-          </app-select-object>
+              </div>
+              <button [disabled]="!allOptionsSelected() && selectedItems.length < 1" mat-raised-button
+                [color]="'primary'" (click)="approveSelected()">Save</button>
+            </div>
+          </app-sub-section-container>
+
+          <app-prep-messaging [objects]="selectedItems" [emailField]="'email'"
+            [labelField]="'first_name,last_name'"></app-prep-messaging>
         </div>
 
+      </app-posting-applications-list>
+    </mat-card-content>
+  </mat-card>
 
-
-        <button mat-stroked-button [color]="'primary'" (click)="approveSelected()">Save</button>
-      </div>
-    </div>
-  </app-posting-applications-list>
 </div>
 
-<ng-template #confirmPostings>
-
-</ng-template>
+<app-prep-messaging [showButton]="false" #prepMessageComponent></app-prep-messaging>

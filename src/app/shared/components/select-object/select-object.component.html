@@ -12,7 +12,7 @@
     <mat-option>{{selection_mode === 'multiple' ? 'Choose one or more':'Choose one'}} </mat-option>
     <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
     <mat-option *ngFor="let object of objects" [value]="getValue(object)">{{
-      getLabel(object)}} </mat-option>
+      getLabel(object, labelProperty)}} </mat-option>
   </mat-select>
 </mat-form-field>
 
@@ -23,7 +23,7 @@
   <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem"
     (change)="selectionMade()" (keyup)="selectionMade()">
   <datalist id="{{dataListId}}">
-    <option *ngFor="let object of objects" [value]="getValue(object)">{{getLabel(object)}}
+    <option *ngFor="let object of objects" [value]="getValue(object)">{{getLabel(object, labelProperty)}}
     </option>
   </datalist>
 </mat-form-field>
@@ -51,12 +51,12 @@
 
       <mat-selection-list [(ngModel)]="selectedSearchItems" *ngIf="selection_mode === 'multiple'">
         <mat-list-option *ngFor="let object of objects; let i = index" [value]="object">
-          {{i+1 +". "+getLabel(object)}}
+          {{i+1 +". "+getLabel(object, labelProperty)}}
         </mat-list-option>
       </mat-selection-list>
       <mat-action-list *ngIf="selection_mode !== 'multiple'">
         <button mat-list-item *ngFor="let object of objects; let i = index" (click)="singleItemSelected(object)">{{i+1
-          +". "+getLabel(object)}}</button>
+          +". "+getLabel(object, labelProperty)}}</button>
       </mat-action-list>
     </mat-card-content>
 

@@ -30,11 +30,11 @@
     <div class="flex  gap-2  items-center flex-wrap">
       <button *ngIf="showFilterButton && !showAllFilters" mat-flat-button color="accent" [disabled]="filters.length < 1"
         (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
-      <div *ngIf="showFilterButton && showAllFilters" [class.allFilters]="filtersLayout === 'horizontal'"
-        [class.w-full]="filtersLayout === 'grid'">
+      <app-section-container [title]="'Filters'" *ngIf="showFilterButton && showAllFilters"
+        [class.allFilters]="filtersLayout === 'horizontal'" [class.w-full]="filtersLayout === 'grid'">
         <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)" [formType]="filterFormType"
           [fields]="filters" [resetButtonText]="'Clear all filters'" [submitButtonText]="'Apply'"></app-form-generator>
-      </div>
+      </app-section-container>
       <mat-chip-set *ngIf="showFilterButton && !showAllFilters" aria-label="Filters">
         <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
           {{filter.label}} :
@@ -53,15 +53,18 @@
           <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
         </label>
       </span> -->
+      <app-section-container [title]="'With selected items'" class="flex  gap-1">
+        <span class="flex gap-1 items-center">
+          <em>{{selection.selected.length}} Selected:</em>
+          <app-export-table *ngIf="showExport" [objects]="selection.selected"></app-export-table>
+          <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
+        </span>
+        <ng-container *ngTemplateOutlet="selectionOptions">
+        </ng-container>
+      </app-section-container>
 
 
-      <span class="flex gap-1 items-center">
-        <em>{{selection.selected.length}} Selected:</em>
-        <app-export-table *ngIf="showExport" [objects]="selection.selected"></app-export-table>
-        <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
-      </span>
-      <ng-container *ngTemplateOutlet="selectionOptions">
-      </ng-container>
+
     </div>
     <div class="flex flex-row gap-2 align-middle items-center flex-wrap">
       <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"

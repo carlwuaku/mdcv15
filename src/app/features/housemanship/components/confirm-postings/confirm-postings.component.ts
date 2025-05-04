@@ -67,15 +67,22 @@ export class ConfirmPostingsComponent {
         next: (res) => {
           this.notify.hideLoading();
           this.loading = false;
-          const failed = res.data.filter((item) => !item.successful);
-          if (failed.length > 0) {
-            this.notify.failNotification(`Failed to approve ${failed.length} application(s)`);
+          const failedApplications = this.data.filter((item) => {
+            return res.data.find((resItem) => resItem.license_number === item.license_number && !resItem.successful);
+          })
+          if (failedApplications.length > 0) {
+            this.notify.failNotification(`Failed to approve ${failedApplications.length} application(s)`);
           }
-          const successful = res.data.filter((item) => item.successful);
-          if (successful.length > 0) {
-            this.notify.successNotification(`Successfully approved ${successful.length} application(s)`);
+          const successfulApplications = this.data.filter((item) => {
+            return res.data.find((resItem) => resItem.license_number === item.license_number && resItem.successful);
+          })
+          if (successfulApplications.length > 0) {
+            this.notify.successNotification(`Successfully approved ${successfulApplications.length} application(s)`);
           }
-          this.dialogRef.close(true);
+          this.dialogRef.close({
+            successfulApplications,
+            failedApplications
+          });
         },
         error: (err) => {
           this.notify.hideLoading();

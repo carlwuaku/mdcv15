@@ -1,1 +1,44 @@
-<p>prep-messaging works!</p>
+<button *ngIf="showButton" mat-stroked-button color="primary" (click)="openDialog()"
+  [disabled]="objects.length  < 1">Send Email
+</button>
+
+<ng-template #emailDialog>
+  <h2 mat-dialog-title>Select/enter message</h2>
+  <mat-dialog-content class="flex flex-col gap-2">
+    <p class="italic">Select a template from the dropdown below or manually enter the email message. The email subject,
+      CC, BCC and other
+      fields can be set once you click on the "Continue" button. You can also select a template and edit it before
+      continuing.
+    </p>
+    <div class="flex flex-col gap-1">
+      <label>Template</label>
+      <app-select-object (dataDownloaded)="templatesLoaded($event)" [emitDownload]="true"
+        [url]="'print-queue/templates'" [labelProperty]="'template_name' " [keyProperty]="'template_name'"
+        [type]="'select'" [selection_mode]=" 'single'" (selectionChanged)="onTemplateChange($event)">
+      </app-select-object>
+    </div>
+
+    <!-- <div *ngIf="selectedTemplateId">
+      Available variables: <span class="m-1" *ngFor="let variable of templateVariables">{{variable}}</span>
+    </div> -->
+    <div class="flex flex-row gap-2">
+      <app-section-container title="Email recipients" childStyle="h-[600px] overflow-auto min-w-[300px]">
+        <mat-list>
+          <mat-list-item *ngFor="let object of mailList">
+            <span matListItemTitle>{{object.email}}</span>
+            <span matListItemLine>{{object.name}}</span>
+            <div mat-line></div>
+          </mat-list-item>
+        </mat-list>
+      </app-section-container>
+      <app-section-container title="Email" childStyle="w-[600px] h-[600px] overflow-auto">
+        <app-email-form [data]="existingData"></app-email-form>
+      </app-section-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button [color]="'warn'" mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+
+
+</ng-template>

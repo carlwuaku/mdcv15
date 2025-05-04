@@ -1,0 +1,27 @@
+._container {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.title-wrapper {
+  position: absolute;
+  top: -12px;
+  left: 15px;
+  background-color: #ebecf1;
+  padding: 0 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+._content {
+  margin-top: 5px;
+}

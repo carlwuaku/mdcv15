@@ -8,6 +8,7 @@ import { AppService } from 'src/app/app.service';
 import { HousemanshipPostingApplicationRequest } from '../../models/Housemanship_posting.model';
 import { ConfirmPostingsComponent } from '../../components/confirm-postings/confirm-postings.component';
 import { HousemanshipPostingDetail } from '../../models/Housemanship_posting_detail.model';
+import { PrepMessagingComponent } from 'src/app/shared/components/prep-messaging/prep-messaging.component';
 
 type SelectionOption = {
   index: number, selectedOption: string, value: string
@@ -32,6 +33,7 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
   session: string = "1";
   selectedTemplate: string = "";
   selectedApplications: HousemanshipPostingApplicationRequest[] = []
+  @ViewChild('prepMessageComponent') prepMessageComponent!: PrepMessagingComponent
   constructor(
     public dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private appService: AppService) {
@@ -93,8 +95,13 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
     this.selectedItems = items;
   }
 
+  /**
+   * set the selected option for a facility. if the value is 1, it means the first choice, if 2, it means the second choice. else it the user has to select the facility from the list
+   * @param index
+   * @param value
+   */
   setOption(index: number, value: string) {
-    this.selectedOptions[index] = { index, selectedOption: value, value: value };
+    this.selectedOptions[index] = { index, selectedOption: value, value: !["1", "2"].includes(value) ? "" : value };
   }
 
   setOptionValue(option: SelectionOption, value: string) {
@@ -141,7 +148,8 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
         application_uuid: item.uuid,
         first_name: item.first_name,
         last_name: item.last_name,
-        tags: item.tags
+        tags: item.tags,
+        email: item.email,
       }
     });
     //show the modal
@@ -152,8 +160,14 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
       minHeight: '600px',
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        window.location.reload();//TODO: change this to a better way of refreshing the page
+      if (result !== false) {
+        //prompt the user to send emails to the successful applications
+        this.prepMessageComponent.objects = result.successfulApplications;
+        this.prepMessageComponent.emailField = "email";
+        this.prepMessageComponent.labelField = "first_name, last_name";
+        this.prepMessageComponent.prepMailList();//uses the objects to get the emails
+        this.prepMessageComponent.openDialog();
+        // window.location.reload();//TODO: change this to a better way of refreshing the page
       }
     });
   }
@@ -176,5 +190,10 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
 
   setLetterTemplate(template: string) {
     this.selectedTemplate = template;
+  }
+
+  allOptionsSelected(): boolean {
+    //check if all the options are selected
+    return this.selectedOptions.every(option => option.value !== "");
   }
 }
