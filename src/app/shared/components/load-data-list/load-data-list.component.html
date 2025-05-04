@@ -9,58 +9,68 @@
       </ng-template>
 
     </div>
-    <div class="flex gap-1 items-center">
-      <form *ngIf="showSearch" ngNativeValidate (ngSubmit)="search()"
-        class="flex flex-row gap-1 align-middle items-center">
-        <mat-form-field [appearance]="'fill'" class="flex-auto">
-          <mat-label for="">Search</mat-label>
-          <input name="search" required matInput [(ngModel)]="searchParam" (change)="paramInputChanged()" type="search">
-          <button matSuffix type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search
-          </button>
-        </mat-form-field>
+    <div class="flex gap-2 ">
+      <app-section-container *ngIf="showSearch" [title]="'Search'">
+        <form ngNativeValidate (ngSubmit)="search()" class="flex flex-row gap-1 align-middle items-center">
+          <mat-form-field [appearance]="'fill'" class="flex-auto">
+            <mat-label for="">Search</mat-label>
+            <input name="search" required matInput [(ngModel)]="searchParam" (change)="paramInputChanged()"
+              type="search">
+            <button matSuffix type="submit" mat-raised-button color="primary"> <mat-icon>search</mat-icon> Search
+            </button>
+          </mat-form-field>
 
-      </form>
-      <!-- <button *ngIf="preload && showReset" (click)="reset()" mat-stroked-button
-        color="error"><mat-icon>refresh</mat-icon> Reset
-      </button> -->
+        </form>
+      </app-section-container>
+
+      <div class="flex-grow">
+        <app-section-container [title]="'Filters'" *ngIf="showFilterButton">
+          <button *ngIf="!showAllFilters" mat-flat-button color="accent" [disabled]="filters.length < 1"
+            (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
+
+          <mat-chip-set *ngIf="!showAllFilters" aria-label="Filters">
+            <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
+              {{filter.label}} :
+              <b>{{filter.value}}</b>
+              <button matChipRemove *ngIf="!filterIsInQueryParams(filter.name)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+
+            </mat-chip>
+          </mat-chip-set>
+
+          <div *ngIf="showAllFilters" [class.allFilters]="filtersLayout === 'horizontal'"
+            [class.w-full]="filtersLayout === 'grid'">
+            <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)"
+              [formType]="filterFormType" [fields]="filters" [resetButtonText]="'Clear all filters'"
+              [submitButtonText]="'Apply'"></app-form-generator>
+          </div>
+        </app-section-container>
+      </div>
+
+
     </div>
 
 
 
     <div class="flex  gap-2  items-center flex-wrap">
-      <button *ngIf="showFilterButton && !showAllFilters" mat-flat-button color="accent" [disabled]="filters.length < 1"
-        (click)="showFilterDialog()"><mat-icon>tune</mat-icon> Filter</button>
-      <app-section-container [title]="'Filters'" *ngIf="showFilterButton && showAllFilters"
-        [class.allFilters]="filtersLayout === 'horizontal'" [class.w-full]="filtersLayout === 'grid'">
-        <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)" [formType]="filterFormType"
-          [fields]="filters" [resetButtonText]="'Clear all filters'" [submitButtonText]="'Apply'"></app-form-generator>
-      </app-section-container>
-      <mat-chip-set *ngIf="showFilterButton && !showAllFilters" aria-label="Filters">
-        <mat-chip (removed)="removeFilter(filter)" *ngFor="let filter of filters | filterEmptyValues: 'value'">
-          {{filter.label}} :
-          <b>{{filter.value}}</b>
-          <button matChipRemove *ngIf="!filterIsInQueryParams(filter.name)">
-            <mat-icon>cancel</mat-icon>
-          </button>
 
-        </mat-chip>
-      </mat-chip-set>
-      <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
-        (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
+
 
       <!-- <span *ngIf="showDeleted">
         <label>
           <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
         </label>
       </span> -->
-      <app-section-container [title]="'With selected items'" class="flex  gap-1">
-        <span class="flex gap-1 items-center">
-          <em>{{selection.selected.length}} Selected:</em>
-          <app-export-table *ngIf="showExport" [objects]="selection.selected"></app-export-table>
-          <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
-        </span>
+      <app-section-container [title]="'With '+ selection.selected.length+' selected items'" class="flex  gap-1">
+
         <ng-container *ngTemplateOutlet="selectionOptions">
         </ng-container>
+        <!-- <span class="flex gap-1 items-center">
+
+                  <app-export-table *ngIf="showExport" [objects]="selection.selected"></app-export-table>
+                  <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
+                </span> -->
       </app-section-container>
 
 
@@ -69,6 +79,8 @@
     <div class="flex flex-row gap-2 align-middle items-center flex-wrap">
       <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"
         (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
+      <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
+        (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
 
 
       <!-- <span *ngIf="showSort" class="flex flex-row gap-1 items-center flex-wrap">
@@ -99,7 +111,10 @@
 
 
   <div class="overflow-auto flex-auto max-h-[500px]">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <app-table #table [dataSource]="dataSource" [displayedColumns]="displayedColumns" [columnLabels]="columnLabels"
+      [rowSelection]="rowSelection" [specialClasses]="specialClasses" [customClassRules]="customClassRules"
+      [offset]="offset"></app-table>
+    <!-- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
       <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
 
         <span [ngSwitch]="column">
@@ -129,18 +144,13 @@
 
         <td mat-cell *matCellDef="let element; let i = index;">
           <ng-template #imageTemplate>
-            <!-- <div pDefer>
-              <ng-template>
-                <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
-              </ng-template>
-            </div> -->
+
             <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
           </ng-template>
           <span [ngSwitch]="column">
             <span *ngSwitchCase="'#'">{{offset+ i + 1}}</span>
 
             <span *ngSwitchCase="'actions'">
-              <!-- if element.actions has only one item, show a single button. else display the menu button -->
               <span *ngIf="element.actions.length === 1; else menuButton">
                 <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
                   (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
@@ -212,7 +222,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getRowClasses(row)"></tr>
 
-    </table>
+    </table> -->
 
   </div>
 </div>

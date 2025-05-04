@@ -1,5 +1,5 @@
 <app-load-data-list #dataList [url]="url" [timestamp]="ts" [getActions]="getActions"
-  (selectionChanged)="setSelectedItems">
+  (onSelect)="setSelectedItems($event)">
 
 </app-load-data-list>
 

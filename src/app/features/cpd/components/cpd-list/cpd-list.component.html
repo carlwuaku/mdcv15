@@ -1,6 +1,5 @@
-<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (selectionChanged)="setSelectedItems"
-  [preload]="true" [showSearch]="false" (onSelect)="setSelectedItems($event)"
-  (selectionChanged)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
+  (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
   [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false" [filters]="filters" [showAllFilters]="true"
   [showSort]="false" [showSearch]="false" [showTableTitle]="false">
 

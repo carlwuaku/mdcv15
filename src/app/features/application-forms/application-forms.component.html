@@ -3,7 +3,7 @@
   <mat-card>
     <mat-card-content>
       <app-load-data-list [hint]="hint" [filters]="filters" [timestamp]="ts" [url]="url" [getActions]="getActions"
-        (selectionChanged)="setSelectedApplications($event)" (onSelect)="setSelectedApplications($event)">
+        (onSelect)="setSelectedApplications($event)">
         <ng-template #selectionOptions>
           <app-application-status-manager [selectedApplications]="selectedApplications" *ngIf="status && form_type"
             [applicationStatus]="status" [formType]="form_type"></app-application-status-manager>

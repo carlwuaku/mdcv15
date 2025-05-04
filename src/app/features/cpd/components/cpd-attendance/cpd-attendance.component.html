@@ -8,7 +8,7 @@
 <ng-container *ngIf="showYear && !year"></ng-container>
 <app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [showFilterButton]="false"
   [showSearch]="false" [showReset]="false" [showDeleted]="false" [showSort]="false"
-  (selectionChanged)="setSelectedItems">
+  (onSelect)="setSelectedItems($event)">
   <ng-template #header>
     {{title}}
   </ng-template>

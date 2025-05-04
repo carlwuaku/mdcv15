@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponseObject } from '../../types/ApiResponseObject';
 import { DatePipe } from '@angular/common';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { TableComponent } from '../table/table.component';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
@@ -43,7 +44,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() module = "admin"
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() timestamp: string = ""
-  @Output() selectionChanged = new EventEmitter();
+
   @Output() dataDownloaded = new EventEmitter();
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
@@ -105,6 +106,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() showTableTitle: boolean = true;
   @Input() apiCallMethod: "get" | "post" = "get";
   @Input() apiCallData: any = {};
+  @ViewChild('table') table!: TableComponent;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -120,9 +122,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnInit(): void {
-    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.onSelect.emit(data.source.selected)
-    })
+
     if (this.useResponseFilters) {
       this.ar.queryParams
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
@@ -162,6 +162,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
     this.dataSource.sort = this.sort;
     this.checkOverflow();
+    this.selection = this.table.selection;
+    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.onSelect.emit(data.source.selected)
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -318,11 +322,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     return getLabelFromKey(column, false);
   }
 
-  setSelected(args: any) {
-    this.selectedItems = args;
-    //emit it to any containing component
-    this.selectionChanged.emit(this.selectedItems)
-  }
+
 
 
   applyFilter(event: Event) {
@@ -330,31 +330,31 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
+  // /** Whether the number of selected elements matches the total number of rows. */
+  // isAllSelected() {
+  //   const numSelected = this.selection.selected.length;
+  //   const numRows = this.dataSource.data.length;
+  //   return numSelected === numRows;
+  // }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows(event: MatCheckboxChange) {
-    event.checked ? this.selection.select(...this.dataSource.data) : this.selection.clear();
-    // if (this.isAllSelected()) {
-    //   this.selection.clear();
-    //   return;
-    // }
+  // /** Selects all rows if they are not all selected; otherwise clear selection. */
+  // toggleAllRows(event: MatCheckboxChange) {
+  //   event.checked ? this.selection.select(...this.dataSource.data) : this.selection.clear();
+  //   // if (this.isAllSelected()) {
+  //   //   this.selection.clear();
+  //   //   return;
+  //   // }
 
-    // this.selection.select(...this.dataSource.data);
-  }
+  //   // this.selection.select(...this.dataSource.data);
+  // }
 
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: any): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
-  }
+  // /** The label for the checkbox on the passed row */
+  // checkboxLabel(row?: any): string {
+  //   if (!row) {
+  //     return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+  //   }
+  //   return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  // }
 
 
   getColumnClass(columnAndValue: string): string {
@@ -506,5 +506,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   filterIsInQueryParams(key: string): boolean {
     return Object.keys(this.queryParams).includes(key) || Object.keys(this.queryParams).includes(`child_${key}`);
+  }
+
+  selectionChanged(event: any) {
+    this.onSelect.emit(event);
   }
 }

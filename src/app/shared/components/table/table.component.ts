@@ -1,15 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
@@ -18,8 +19,15 @@ export class TableComponent {
   @Input() specialClasses: { [key: string]: string } = {};
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
   @Input() offset: number = 0;
+  destroy$: Subject<boolean> = new Subject();
+  @Output() onSelect = new EventEmitter();
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
   constructor() { }
+  ngOnInit(): void {
+    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.onSelect.emit(data.source.selected)
+    })
+  }
 
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -103,5 +111,9 @@ export class TableComponent {
 
   viewHtml(html: string) {
     openHtmlInNewWindow(html);
+  }
+
+  public clearSelection() {
+    this.selection.clear();
   }
 }

@@ -10,8 +10,8 @@
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="true" [showInfo]="false" [showSort]="true"
         [showAllFilters]="true" [showSearch]="true" [showReset]="false" [onFilterSubmitted]="filterSubmitted"
-        [timestamp]="ts" [url]="url" [getActions]="getActions" (selectionChanged)="selectionChanged($event)"
-        (onSelect)="selectionChanged($event)" [showPrint]="false">
+        [timestamp]="ts" [url]="url" [getActions]="getActions" (onSelect)="selectionChanged($event)"
+        [showPrint]="false">
         <ng-template #header>
           <div class="flex flex-col gap-1">
             <h2 class="text-lg">Gazette ({{licenseType}})</h2>

@@ -7,7 +7,7 @@
 <ng-container *ngIf=" !year"></ng-container>
 <app-load-data-list [dataKey]="'attendance'" [emitDownload]="true" (dataDownloaded)="onDataDownloaded($event)"
   [url]="url" [timestamp]="ts" [getActions]="getActions" [showFilterButton]="false" [showSearch]="false"
-  [showDeleted]="false" [showSort]="false" (selectionChanged)="setSelectedItems" [showReset]="false">
+  [showDeleted]="false" [showSort]="false" (onSelect)="setSelectedItems($event)" [showReset]="false">
   <ng-template #header>
     <h2 class="text-xl">Score: {{score}}</h2>
   </ng-template>
