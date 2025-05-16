@@ -7,7 +7,7 @@
   </div>
   <mat-card>
     <mat-card-content>
-      <app-posting-applications-list [url]="url" (selectionChanged)="selectionChanged($event)"
+      <app-posting-applications-list #applicationsList [url]="url" (selectionChanged)="selectionChanged($event)"
         (filterSubmitted)="filterSubmitted($event)">
         <div class="flex gap-1 items-center">
           <app-sub-section-container [title]="'Approve selection'" class="flex flex-col gap-1 ">

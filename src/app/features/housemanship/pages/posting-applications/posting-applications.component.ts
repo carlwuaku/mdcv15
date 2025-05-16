@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
@@ -9,6 +9,7 @@ import { HousemanshipPostingApplicationRequest } from '../../models/Housemanship
 import { ConfirmPostingsComponent } from '../../components/confirm-postings/confirm-postings.component';
 import { HousemanshipPostingDetail } from '../../models/Housemanship_posting_detail.model';
 import { PrepMessagingComponent } from 'src/app/shared/components/prep-messaging/prep-messaging.component';
+import { PostingApplicationsListComponent } from '../../components/posting-applications-list/posting-applications-list.component';
 
 type SelectionOption = {
   index: number, selectedOption: string, value: string
@@ -20,7 +21,7 @@ type SelectionOption = {
   templateUrl: './posting-applications.component.html',
   styleUrls: ['./posting-applications.component.scss']
 })
-export class PostingApplicationsComponent implements OnInit, OnDestroy {
+export class PostingApplicationsComponent implements OnInit, OnDestroy, AfterViewInit {
   baseUrl: string = "housemanship/posting-application";
   @Input() url: string = "housemanship/posting-application";
   destroy$: Subject<boolean> = new Subject();
@@ -34,10 +35,22 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
   selectedTemplate: string = "";
   selectedApplications: HousemanshipPostingApplicationRequest[] = []
   @ViewChild('prepMessageComponent') prepMessageComponent!: PrepMessagingComponent
+  @ViewChild('applicationsList') applicationsList!: PostingApplicationsListComponent;
   constructor(
     public dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private appService: AppService) {
 
+  }
+  ngAfterViewInit(): void {
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+
+      this.applicationsList.clearSelection();
+    });
   }
   ngOnInit(): void {
     combineLatest([
@@ -196,4 +209,6 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy {
     //check if all the options are selected
     return this.selectedOptions.every(option => option.value !== "");
   }
+
+
 }

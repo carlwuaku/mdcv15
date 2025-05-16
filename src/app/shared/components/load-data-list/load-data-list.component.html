@@ -39,8 +39,8 @@
             </mat-chip>
           </mat-chip-set>
 
-          <div *ngIf="showAllFilters" [class.allFilters]="filtersLayout === 'horizontal'"
-            [class.w-full]="filtersLayout === 'grid'">
+          <div *ngIf="showAllFilters"
+            [ngClass]="{'w-full overflow-auto': filtersLayout === 'grid' || filtersLayout === 'horizontal'}">
             <app-form-generator [layout]="filtersLayout" (onSubmit)="filterSubmitted($event)"
               [formType]="filterFormType" [fields]="filters" [resetButtonText]="'Clear all filters'"
               [submitButtonText]="'Apply'"></app-form-generator>

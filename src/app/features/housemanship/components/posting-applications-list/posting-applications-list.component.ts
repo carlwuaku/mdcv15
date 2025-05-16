@@ -25,6 +25,7 @@ export class PostingApplicationsListComponent {
   session: string = "1";
   @Output() selectionChanged = new EventEmitter<HousemanshipApplication[]>();
   @Output() filterSubmitted = new EventEmitter<string>();
+  @ViewChild('dataList') dataList!: LoadDataListComponent;
   constructor(private dbService: HousemanshipService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
@@ -76,5 +77,11 @@ export class PostingApplicationsListComponent {
 
   onFilterSubmitted = (params: string) => {
     this.filterSubmitted.emit(params);
+  }
+
+  public clearSelection() {
+    this.selectedItems = [];
+
+    this.dataList.clearSelection();
   }
 }

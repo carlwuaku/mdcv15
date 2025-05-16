@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LicenseObject } from './models/license_model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
@@ -16,7 +16,7 @@ import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/
   templateUrl: './licenses.component.html',
   styleUrls: ['./licenses.component.scss']
 })
-export class LicensesComponent implements OnInit, OnDestroy {
+export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   baseUrl: string = "licenses/details";
   @Input() url: string = "licenses/details";
@@ -35,6 +35,27 @@ export class LicensesComponent implements OnInit, OnDestroy {
     private router: Router) {
 
   }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.ar.queryParams
+        .pipe(takeUntil(this.destroy$)).subscribe(params => {
+
+          this.licenseType = params['licenseType'];
+          this.queryParams = params;
+          if (this.licenseType) {
+            this.appService.appSettings.pipe(take(1)).subscribe(data => {
+              this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
+              this.filters.forEach(filter => {
+                filter.value = params[`child_${filter.name}`];
+              });
+              this.updateUrl();
+              this.dataList?.getData(this.url);
+            })
+
+          }
+        });
+    })
+  }
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
@@ -44,23 +65,7 @@ export class LicensesComponent implements OnInit, OnDestroy {
     //   this.updateUrl();
     // }
     // else {
-    this.ar.queryParams
-      .pipe(takeUntil(this.destroy$)).subscribe(params => {
 
-        this.licenseType = params['licenseType'];
-        this.queryParams = params;
-        if (this.licenseType) {
-          this.appService.appSettings.pipe(take(1)).subscribe(data => {
-            this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
-            this.filters.forEach(filter => {
-              filter.value = params[`child_${filter.name}`];
-            });
-            this.updateUrl();
-            // this.dataList?.getData();
-          })
-
-        }
-      });
     // }
 
 

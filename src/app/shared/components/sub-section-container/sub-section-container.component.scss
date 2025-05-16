@@ -1,5 +1,4 @@
 ._container {
-  position: relative;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 20px;
@@ -7,13 +6,13 @@
 }
 
 .title-wrapper {
-  position: absolute;
-  top: -12px;
-  left: 15px;
+  position: relative;
+  top: -32px;
   background-color: #ebecf1;
   padding: 0 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: max-content;
 }
 
 .title {
@@ -24,4 +23,6 @@
 
 ._content {
   margin-top: 5px;
+  position: relative;
+  top: -32px;
 }

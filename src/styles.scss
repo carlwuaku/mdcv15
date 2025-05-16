@@ -19,12 +19,15 @@ $my-app-accent: mat-palette($mat-orange);
 $my-app-warn: mat-palette($mat-red);
 
 $my-app-secondary: mat-palette($mat-grey);
-
+$my-typography: mat-typography-config($font-family: 'Muli, sans-serif'
+  );
 // Create the theme object
 $my-app-theme: mat-light-theme((color: (primary: $my-app-primary,
         accent: $my-app-accent,
         warn: $my-app-warn,
-      )));
+      ),
+      typography: $my-typography ));
+
 
 // Include the theme styles in your application
 @include angular-material-theme($my-app-theme);
@@ -47,7 +50,7 @@ body {
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   background-color: #fefefe;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Muli, "Helvetica Neue", sans-serif !important;
 }
 
 
