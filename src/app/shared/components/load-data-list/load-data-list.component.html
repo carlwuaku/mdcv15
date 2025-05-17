@@ -62,7 +62,8 @@
           <input (change)="getData()" type="checkbox" name="withDeleted" [(ngModel)]="withDeleted"> Show deleted entries
         </label>
       </span> -->
-      <app-section-container [title]="'With '+ selection.selected.length+' selected items'" class="flex  gap-1">
+      <app-section-container *ngIf="showSelectionContainer"
+        [title]="'With '+ selection.selected.length+' selected items'" class="flex  gap-1">
 
         <ng-container *ngTemplateOutlet="selectionOptions">
         </ng-container>

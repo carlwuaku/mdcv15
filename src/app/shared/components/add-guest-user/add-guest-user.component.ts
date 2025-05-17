@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
@@ -14,6 +14,7 @@ export class AddGuestUserComponent {
   @Input() userType: string = "";
   @Input() usernameField: string = "username";
   @Input() usernameFieldLabel: string = "Username";
+  @ViewChild("addGuestUserDialog") addGuestUserDialog: TemplateRef<any> | null = null;
   formFields: IFormGenerator[] = [
     {
       label: "Two-factor authentication deadline",

@@ -1,3 +1,10 @@
 <button mat-raised-button color="primary" (click)="create()"><mat-icon>addd</mat-icon> Add New</button>
-<app-load-data-list [timestamp]="ts" [url]="url" [getActions]="getActions">
+<app-load-data-list [timestamp]="ts" [url]="url" [getActions]="getActions" (onSelect)="setSelectedItems($event)">
+  <ng-template #selectionOptions>
+    <div class="flex gap-1">
+      <app-export-table [objects]="selectedItems"></app-export-table>
+    </div>
+
+  </ng-template>
+
 </app-load-data-list>

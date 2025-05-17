@@ -31,7 +31,7 @@
                 </div>
 
               </div>
-              <button [disabled]="!allOptionsSelected() && selectedItems.length < 1" mat-raised-button
+              <button [disabled]="!allOptionsSelected() || selectedItems.length < 1" mat-raised-button
                 [color]="'primary'" (click)="approveSelected()">Save</button>
             </div>
           </app-sub-section-container>

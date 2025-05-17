@@ -30,8 +30,15 @@
 
               <app-load-data-list [showPagination]="false" [displayedColumns]="['select',report.labelProperty, 'count']"
                 [showDeleted]="false" [showInfo]="false" [showSort]="false" [showFilterButton]="false"
-                [showSearch]="false" [showReset]="false" [preload]="false"
-                [dataSource]="getTableData(report.data)"></app-load-data-list>
+                [showSearch]="false" [showReset]="false" [preload]="false" [dataSource]="getTableData(report.data)"
+                (onSelect)="setSelectedItems($event, report.labelProperty)">
+                <ng-template #selectionOptions>
+                  <div class="flex gap-1">
+                    <app-export-table [objects]="getSelectedItems(report.labelProperty)"></app-export-table>
+                  </div>
+
+                </ng-template>
+              </app-load-data-list>
             </div>
             <div class="w-1/2">
               <app-chart [type]="report.type" [data]="report.data" [labelProperty]="report.labelProperty"

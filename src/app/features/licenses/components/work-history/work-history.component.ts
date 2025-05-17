@@ -17,6 +17,7 @@ export class WorkHistoryComponent implements OnChanges {
   baseUrl: string = "practitioners/workhistory";
   url: string = "practitioners/workhistory";
   ts: string = "";
+  selectedItems: PractitionerWorkHistory[] = [];
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
   ngOnChanges(changes: SimpleChanges): void {
     this.url = `practitioners/workhistory?registration_number=${this.practitioner.license_number}`;
@@ -95,5 +96,9 @@ export class WorkHistoryComponent implements OnChanges {
 
   updateTimestamp() {
     this.ts = getToday("timestamp_string");
+  }
+
+  setSelectedItems(objects: PractitionerWorkHistory[]): void {
+    this.selectedItems = objects;
   }
 }

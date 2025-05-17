@@ -16,12 +16,13 @@
           <div class="inline-flex gap-1 flex-wrap">
             <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="onPrint()">Print</button>
-            <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="setPrintTemplates()">Set print templates</button>
-            <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="updatePrintQueue(1)">Add to print queue</button>
-            <button mat-raised-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            <button mat-stroked-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="updatePrintQueue(0)">Remove from print queue</button>
+            <app-export-table [objects]="selectedItems"></app-export-table>
           </div>
         </ng-template>
       </app-load-data-list>

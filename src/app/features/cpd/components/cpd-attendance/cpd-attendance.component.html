@@ -12,4 +12,11 @@
   <ng-template #header>
     {{title}}
   </ng-template>
+  <ng-template #selectionOptions>
+    <div class="flex gap-1 items-center">
+
+      <app-export-table [objects]="selectedItems"></app-export-table>
+    </div>
+
+  </ng-template>
 </app-load-data-list>

@@ -10,7 +10,12 @@
   <app-load-data-list *ngIf="licenseType" #advancedReportsList [preload]="false" [showSearch]="false"
     [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted" [apiCallMethod]="'post'" [apiCallData]="apiCallData"
     [filters]="AdvancedReportsFilters" [filtersLayout]="'grid'" [useResponseFilters]="false" [showTableTitle]="false"
-    [filterFormType]="'emit'" [url]="AdvancedReportsUrl">
+    [filterFormType]="'emit'" [url]="AdvancedReportsUrl" (onSelect)="setSelectedItems($event)">
+    <ng-template #selectionOptions>
+      <div class="flex gap-1 items-center">
+        <app-export-table [objects]="selectedItems"></app-export-table>
+      </div>
+    </ng-template>
   </app-load-data-list>
 
 </div>

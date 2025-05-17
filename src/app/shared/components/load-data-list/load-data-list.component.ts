@@ -107,6 +107,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() apiCallMethod: "get" | "post" = "get";
   @Input() apiCallData: any = {};
   @ViewChild('table') table!: TableComponent;
+  @Input() showSelectionContainer: boolean = true;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam

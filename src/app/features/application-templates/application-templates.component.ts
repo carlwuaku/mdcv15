@@ -19,6 +19,7 @@ export class ApplicationTemplatesComponent {
   baseUrl: string = "applications/templates";
   url: string = "applications/templates";
   ts: string = "";
+  selectedItems: ApplicationFormObject[] = [];
 
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private templateService: ApplicationTemplatesService, private ar: ActivatedRoute) {
@@ -76,5 +77,8 @@ export class ApplicationTemplatesComponent {
     this.ts = getToday("timestamp_string");
   }
 
+  setSelectedItems(objects: ApplicationFormObject[]) {
+    this.selectedItems = objects;
+  }
 
 }

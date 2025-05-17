@@ -1,14 +1,15 @@
 <div class="flex-col gap-4">
   <mat-card *ngIf="!id && !selectedLicense">
     <mat-card-header>
-      <mat-card-title>Select License</mat-card-title>
+      <!-- <mat-card-title>Select License</mat-card-title> -->
     </mat-card-header>
     <mat-card-content>
-      <label>Date: <input (change)="updateUrlYear()" (keyup)="updateUrlYear()" name="date" [(ngModel)]="date"
-          type="date"> </label>
-      <app-load-data-list [timestamp]="ts" [url]="licenseSearchUrl" [getActions]="getActions" [preload]="false"
-        [rowSelection]="'single'" [searchParam]="licenseUuid" [showExport]="false" [showInfo]="false"
-        [showPagination]="false">
+      <!-- <label>Date: <input (change)="updateUrlYear()" (keyup)="updateUrlYear()" name="date" [(ngModel)]="date"
+          type="date"> </label> -->
+      <app-mat-datepicker [label]="'Date'" (onFinish)="onDateChanged($event)" [initialDate]="date"></app-mat-datepicker>
+      <app-load-data-list [timestamp]="ts" [showSelectionContainer]="false" [url]="licenseSearchUrl"
+        [getActions]="getActions" [preload]="false" [rowSelection]="'single'" [searchParam]="licenseUuid"
+        [showExport]="false" [showInfo]="false" [showPagination]="false">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

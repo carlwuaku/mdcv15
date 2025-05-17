@@ -18,7 +18,7 @@ export class DisciplinesComponent implements OnInit {
   url: string = "";
   @Input() facilityName: string = "";
   ts: string = "";
-
+  selectedItems: HousemanshipDiscipline[] = [];
   constructor(private dbService: HousemanshipService, private notify: NotifyService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -118,5 +118,9 @@ export class DisciplinesComponent implements OnInit {
       //get an object of the name and value of the fields
       this.updateTimestamp();
     })
+  }
+
+  setSelectedItems(objects: HousemanshipDiscipline[]): void {
+    this.selectedItems = objects;
   }
 }

@@ -18,6 +18,7 @@ export class AdditionalQualificationsComponent implements OnChanges {
   baseUrl: string = "practitioners/qualifications";
   url: string = "practitioners/qualifications";
   ts: string = "";
+  selectedItems: PractitionerAdditionalQualification[] = [];
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) { }
   ngOnChanges(changes: SimpleChanges): void {
     this.url = `practitioners/qualifications?registration_number=${this.practitioner.license_number}`;
@@ -96,5 +97,9 @@ export class AdditionalQualificationsComponent implements OnChanges {
 
   updateTimestamp() {
     this.ts = getToday("timestamp_string");
+  }
+
+  setSelectedItems(objects: PractitionerAdditionalQualification[]): void {
+    this.selectedItems = objects;
   }
 }

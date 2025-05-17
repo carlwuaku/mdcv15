@@ -21,6 +21,7 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
   AdvancedReportsFilters: IFormGenerator[] = [];
   @ViewChild('advancedReportsList') advancedReportsList!: LoadDataListComponent;
   apiCallData: Record<string, any> = {};
+  selectedItems: any[] = [];
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
 
   }
@@ -63,5 +64,9 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
     });
     data['licenseType'] = this.licenseType;
     this.apiCallData = data;
+  }
+
+  setSelectedItems(objects: any[]): void {
+    this.selectedItems = objects;
   }
 }

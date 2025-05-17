@@ -18,6 +18,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   basicReportsLoading: boolean = false;
   basicReportsFilters: any[] = [];
   total: string = "0";
+  selectedItems: Record<string, any[]> = {};
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
 
   }
@@ -98,5 +99,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.total = res.data;
       }
     });
+  }
+
+  setSelectedItems(objects: any[], key: string): void {
+    this.selectedItems[key] = objects;
+  }
+
+  getSelectedItems(key: string): any[] {
+    return this.selectedItems[key] || [];
   }
 }

@@ -26,7 +26,7 @@ export class PrintTemplatesComponent {
   @ViewChild('dataList') dataList!: LoadDataListComponent;
   selectedTemplate: Template | null = null;
   safeTemplateContent: SafeHtml | null = null;
-
+  selectedItems: Template[] = [];
   constructor(
     private authService: AuthService,
     private dialog: MatDialog,
@@ -58,7 +58,7 @@ export class PrintTemplatesComponent {
     this.ts = new Date().getTime().toString();
   }
   setSelectedItems(objects: Template[]): void {
-    console.log(objects);
+
   }
   specialClasses: Record<string, string> = {};
 
