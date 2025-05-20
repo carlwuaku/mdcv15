@@ -7,14 +7,16 @@
         (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
     </mat-card-header>
     <mat-card-content>
-      <app-load-data-list #dataList *ngIf="licenseType" [preload]="true" [showSearch]="showSearch" [timestamp]="ts"
-        [url]="url" (onSelect)="setSelectedItems($event)" (selectionChanged)="setSelectedItems($event)"
-        [getActions]="getActions" [showReset]="false" [specialClasses]="specialClasses"
-        [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false" [filters]="filters" [showAllFilters]="true"
-        [showSearch]="false" [showTableTitle]="false">
+      <app-load-data-list #dataList *ngIf="licenseType" [preload]="false" [showSearch]="showSearch" [timestamp]="ts"
+        [url]="url" (onSelect)="setSelectedItems($event)" [getActions]="getActions" [showReset]="false"
+        [specialClasses]="specialClasses" [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false"
+        [filters]="filters" [showAllFilters]="true" [showSearch]="false" [showTableTitle]="false">
         <ng-template #selectionOptions>
-          <app-add-guest-user [objects]="selectedItems" [userType]="'license'" [usernameField]="'license_number'"
-            [profileTableName]="'licenses'"></app-add-guest-user>
+          <div class="flex gap-1 items-center">
+            <app-add-guest-user [objects]="selectedItems" [userType]="'license'" [usernameField]="'license_number'"
+              [profileTableName]="'licenses'"></app-add-guest-user>
+            <app-export-table [objects]="selectedItems"></app-export-table>
+          </div>
         </ng-template>
       </app-load-data-list>
     </mat-card-content>

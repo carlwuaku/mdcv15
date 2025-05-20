@@ -27,6 +27,7 @@ export class CpdListComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject();
   filters: IFormGenerator[] = [];
   queryParams: { [key: string]: string } = {};
+  selectedItems: CpdObject[] = [];
   constructor(private cpdService: CpdService, private appService: AppService,
     private notify: NotifyService, private authService: AuthService, private ar: ActivatedRoute, private router: Router) {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
@@ -55,7 +56,7 @@ export class CpdListComponent implements OnInit, OnDestroy {
     this.ts = new Date().getTime().toString();
   }
   setSelectedItems(objects: CpdObject[]): void {
-    // console.log(objects);
+    this.selectedItems = objects;
   }
   specialClasses: Record<string, string> = {};
 

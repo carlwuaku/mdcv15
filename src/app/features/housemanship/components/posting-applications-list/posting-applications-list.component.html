@@ -1,0 +1,6 @@
+<app-load-data-list #dataList [url]="url" [timestamp]="ts" [getActions]="getActions"
+  (onSelect)="setSelectedItems($event)" [showAllFilters]="true" [onFilterSubmitted]="onFilterSubmitted">
+  <ng-template #selectionOptions>
+    <ng-content></ng-content>
+  </ng-template>
+</app-load-data-list>

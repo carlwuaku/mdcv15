@@ -10,6 +10,7 @@
               Emails</button>
             <button [disabled]="selectedItems.length < 1" mat-raised-button color="primary" (click)="delete()">Delete
               Emails</button>
+            <app-export-table [objects]="selectedItems"></app-export-table>
           </div>
         </ng-template>
       </app-load-data-list>

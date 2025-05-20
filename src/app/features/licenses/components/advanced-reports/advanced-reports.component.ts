@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LicensesService } from '../../licenses.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppService } from 'src/app/app.service';
 import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { ApiResponseObject } from 'src/app/shared/types/ApiResponseObject';
 @Component({
   selector: 'app-advanced-reports',
   templateUrl: './advanced-reports.component.html',
@@ -15,10 +16,12 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
   queryParams: { [key: string]: string } = {};
   licenseType: string = "";
   destroy$: Subject<boolean> = new Subject();
-  AdvancedReportsBaseUrl: string = "licenses/details";
-  AdvancedReportsUrl: string = "licenses/details";
+  AdvancedReportsBaseUrl: string = "licenses/details/filter";
+  AdvancedReportsUrl: string = "licenses/details/filter";
   AdvancedReportsFilters: IFormGenerator[] = [];
   @ViewChild('advancedReportsList') advancedReportsList!: LoadDataListComponent;
+  apiCallData: Record<string, any> = {};
+  selectedItems: any[] = [];
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
 
   }
@@ -34,7 +37,7 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
             filter.value = this.queryParams[`child_${filter.name}`];
           });
         })
-        this.AdvancedReportsUrl = this.AdvancedReportsBaseUrl + "?" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+        this.AdvancedReportsUrl = this.AdvancedReportsBaseUrl + "?licenseType=" + this.licenseType;
         // this.advancedReportsList?.getData();
       }
 
@@ -51,15 +54,19 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
 
 
 
-  filterSubmitted = (params: string) => {
-    const queryParams: { [key: string]: string } = {};
-    const urlParams = params.split("&").map(param => param.split("="));
-    urlParams.forEach(param => {
-      queryParams[`child_${param[0]}`] = param[1];
+  filterSubmitted = (params: IFormGenerator[]) => {
+
+    const data: Record<string, any> = {};
+    params.forEach((param) => {
+      if (param.value && param.value.length > 0) {
+        data[`child_${param.name}`] = param.value;
+      }
     });
-    queryParams['licenseType'] = this.licenseType;
-    this.router.navigate(['licenses/advanced-reports'], { queryParams: queryParams });
+    data['licenseType'] = this.licenseType;
+    this.apiCallData = data;
+  }
 
-
+  setSelectedItems(objects: any[]): void {
+    this.selectedItems = objects;
   }
 }

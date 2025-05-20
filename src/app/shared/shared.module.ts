@@ -53,6 +53,11 @@ import { ChartModule } from 'primeng/chart';
 import { TableComponent } from './components/table/table.component';
 import { ViewHtmlContentComponent } from './components/view-html-content/view-html-content.component';
 import { AddGuestUserComponent } from './components/add-guest-user/add-guest-user.component';
+import { RouterModule } from '@angular/router';
+import { SectionContainerComponent } from './components/section-container/section-container.component';
+import { SubSectionContainerComponent } from './components/sub-section-container/sub-section-container.component';
+import { EmailFormComponent } from './components/email-form/email-form.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -99,7 +104,10 @@ import { AddGuestUserComponent } from './components/add-guest-user/add-guest-use
     ChartComponent,
     TableComponent,
     ViewHtmlContentComponent,
-    AddGuestUserComponent
+    AddGuestUserComponent,
+    SectionContainerComponent,
+    SubSectionContainerComponent,
+    EmailFormComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -112,7 +120,9 @@ import { AddGuestUserComponent } from './components/add-guest-user/add-guest-use
     FormsModule,
     ReactiveFormsModule,
     NgChartsModule,
-    ChartModule
+    ChartModule,
+    RouterModule,
+    ScrollingModule
 
   ],
   exports: [
@@ -158,7 +168,11 @@ import { AddGuestUserComponent } from './components/add-guest-user/add-guest-use
     PrintTableComponent,
     FieldTemplateDirective,
     ChartComponent,
-    AddGuestUserComponent
+    AddGuestUserComponent,
+    TableComponent,
+    SectionContainerComponent,
+    SubSectionContainerComponent,
+    EmailFormComponent,
   ],
   providers: [
     ClipboardCopyDirective

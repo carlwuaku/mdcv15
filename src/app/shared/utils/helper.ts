@@ -1,5 +1,12 @@
 import { IFormGenerator } from "../components/form-generator/form-generator-interface";
 
+/**
+ * Extracts the keys from an object but excludes the ones that are in the
+ * exclude array
+ * @param object any object
+ * @param exclude array of strings of keys that should be excluded
+ * @returns array of strings of object keys
+ */
 export function extractKeys(object: any, exclude: any[]) {
   const keys = [];
   for (const key in object) {
@@ -19,6 +26,17 @@ export function getLabelFromKey(key: string, capitalise?: boolean) {
   let fullName = replace_underscore(key, ' ');
   return capitalise ? fullName.toUpperCase() : fullName.charAt(0).toUpperCase() + fullName.split('').slice(1).join('');
 }
+
+/**
+ * Determines the input type based on the provided field name.
+ * Analyzes the name to identify common patterns and returns a
+ * corresponding input type string.
+ *
+ * @param name - The field name to analyze.
+ * @returns A string representing the input type, such as 'textarea',
+ * 'text', 'picture', 'date', 'file', 'email', 'password', 'tel', 'url',
+ * or 'number'. Defaults to 'text' if no specific type is determined.
+ */
 
 export function guessInputType(name: string): string {
   const lowerName = name.toLowerCase();
@@ -65,6 +83,12 @@ export function guessInputType(name: string): string {
   return 'text';
 }
 
+/**
+ * Replace all occurrences of underscore in a given string with a given substring
+ * @param str The string to replace the underscore in
+ * @param sub The substring to replace the underscore with
+ * @returns The string with all occurrences of underscore replaced
+ */
 export function replace_underscore(str: string, sub: string): string {
   return str.replace(/_/g, sub);
 }
@@ -156,6 +180,78 @@ export function openHtmlInNewWindow(htmlContent: string): void {
   // URL.revokeObjectURL(url);
 }
 
+/**
+ * get the label text from an object using a provided key. replace underscores with spaces and capitalise
+ * @param {object} object any object
+ * @param {string} labelProperty the keys from the object to use as the label. can be a comma-separated list of keys
+ * @returns {string} string
+ */
+export function getLabel(object: any, labelProperty: string): string {
+  if (typeof object === "object") {
+    if (labelProperty.includes(",")) {
+      const labels = labelProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+      return getLabelFromKey(labels);
+    } else {
+      let value = object[labelProperty];
+      if (value === null || value === undefined) {
+        return "--Null--";
+      }
+      if (typeof value === "object") {
+        return getLabelFromKey(JSON.stringify(value));
+      }
+      if (typeof value === "string" && value.trim() === "") {
+        return "--Empty Value--";
+      }
+      return getLabelFromKey(value);
+    }
+  }
+  else {
+    if (object === null || object === undefined) {
+      return "--Null--";
+    }
+    if (typeof object === "string" && object.trim() === "") {
+      return "--Empty Value--";
+    }
+    return getLabelFromKey(object);
+  }
+}
+
+/**
+ * Sets the value of a specific form field within a form.
+ *
+ * @param {IFormGenerator[]} form - The array of form fields.
+ * @param {string} name - The name of the field to be updated.
+ * @param {any} value - The new value to set for the specified field.
+ */
+
+export function setFormFieldValue(form: IFormGenerator[], name: string, value: any) {
+  const field = form.find(f => f.name === name);
+  if (field) {
+    field.value = value;
+  }
+}
+
+/**
+ * Updates a single query param value in a given url.
+ * @param {string} url The url to update
+ * @param {string} paramName The name of the query param to update
+ * @param {string} paramValue The new value for the query param
+ * @returns {string} The updated url
+ */
+export function updateUrlQueryParamValue(url: string, paramName: string, paramValue: string): string {
+  if (url.startsWith("http")) {
+    const urlObj = new URL(url);
+    urlObj.searchParams.set(paramName, paramValue);
+    return urlObj.toString();
+  }
+  else {
+    //treat as a normal string that might contain param-like values
+    const regex = new RegExp(`(${paramName}=)([^&]*)`);
+    const newUrl = url.replace(regex, `$1${paramValue}`);
+    return newUrl;
+  }
+
+}
 
 
 

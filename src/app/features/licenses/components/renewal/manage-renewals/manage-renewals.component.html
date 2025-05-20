@@ -17,6 +17,7 @@
             <button *ngFor="let status of allStatuses" mat-raised-button color="primary"
               [disabled]="selectedItems.length === 0" (click)="approve(status)">Set to:
               {{status.title}}</button>
+            <app-export-table [objects]="selectedItems"></app-export-table>
           </div>
 
         </ng-template>

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   name: "dev",
+  // host: "https://council-management-api-6f8zr.ondigitalocean.app/",
   host: "http://localhost:8080/",
   routeTracing: false,
   googleAnalyticsTrackingId: ""

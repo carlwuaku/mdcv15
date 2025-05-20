@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Confirm postings</h2>
+<mat-dialog-content class="flex flex-col gap-2">
+  <div class="flex flex-col gap-1">
+    <label>Select a letter template</label>
+    <p class="italic">The template will be used to generate
+      posting letters</p>
+
+    <app-select-object [url]="'print-queue/templates'" [labelProperty]="'template_name' "
+      [keyProperty]="'template_name'" [type]="'select'" [selection_mode]=" 'single'"
+      (selectionChanged)="setLetterTemplate($event)">
+    </app-select-object>
+  </div>
+
+  <app-table [displayedColumns]="tableColumns" [dataSource]="dataSource"></app-table>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="warn" [mat-dialog-close]="false">Cancel</button>
+  <button mat-raised-button (click)="approvePostings()" color="primary">Submit</button>
+</mat-dialog-actions>

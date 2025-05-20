@@ -1,13 +1,10 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { Pager } from './Pager.interface';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ImageModule } from 'primeng/image';
 import { getLabelFromKey, isArray, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
@@ -17,13 +14,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiResponseObject } from '../../types/ApiResponseObject';
 import { DatePipe } from '@angular/common';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { TableComponent } from '../table/table.component';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
   styleUrls: ['./load-data-list.component.scss']
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-  @ViewChild(MatSort) sort!: MatSort;
+
   @ViewChild('sortDialog') sortDialog!: TemplateRef<any>;
   @ViewChild('filtersContainer') filtersContainer!: ElementRef;
 
@@ -43,7 +41,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() module = "admin"
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() timestamp: string = ""
-  @Output() selectionChanged = new EventEmitter();
+
   @Output() dataDownloaded = new EventEmitter();
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
@@ -96,19 +94,24 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   urlFilterKeys: string[] = [];
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
   @Input() showAllFilters: boolean = false;
-  @Input() onFilterSubmitted: (params: string) => void = () => { };
+  @Input() onFilterSubmitted: ((params: string) => void) | ((params: IFormGenerator[]) => void) = () => { };
+  @Input() filterFormType: "filter" | "emit" = "filter";
   queryParams: { [key: string]: string } = {};
   isOverflowing: boolean = false;
-  @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "horizontal";
+  @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "grid";
   @Input() useResponseFilters: boolean = true;
   @Input() showTableTitle: boolean = true;
+  @Input() apiCallMethod: "get" | "post" = "get";
+  @Input() apiCallData: any = {};
+  @ViewChild('table') table!: TableComponent;
+  @Input() showSelectionContainer: boolean = true;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
-    const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
-    if (searchQuery) {
-      this.searchParam = searchQuery;
-    }
+    // const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
+    // if (searchQuery) {
+    //   this.searchParam = searchQuery;
+    // }
 
   }
   ngOnDestroy(): void {
@@ -117,9 +120,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngOnInit(): void {
-    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.onSelect.emit(data.source.selected)
-    })
+
     if (this.useResponseFilters) {
       this.ar.queryParams
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
@@ -157,8 +158,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.searchParam.trim()) {
       this.search();
     }
-    this.dataSource.sort = this.sort;
+
     this.checkOverflow();
+    this.selection = this.table.selection;
+    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.onSelect.emit(data.source.selected)
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -167,6 +172,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.currentPage = 1;
       this.getData();
     }
+    if (changes['apiCallMethod'] || changes['apiCallData']) {// if the data is provided don't use the filters
+      this.offset = 0;
+      this.currentPage = 1;
+      this.getData(this.url);
+    }
+
   }
 
 
@@ -174,6 +185,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   setPage(args: number) {
     this.currentPage = args;
     this.offset = (args - 1) * this.limit;
+    // const url = updateUrlQueryParamValue(this.url, "page", this.offset.toString());
     this.getData();
   }
 
@@ -181,6 +193,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.limit = args;
     this.currentPage = 1;
     this.offset = 0;
+    // let url = updateUrlQueryParamValue(this.url, "page", this.offset.toString());
+    // url = updateUrlQueryParamValue(url, "limit", this.limit.toString());
     this.getData();
   }
 
@@ -225,9 +239,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
 
-  getData(url?: string) {
+  public getData(url?: string) {
     this.loading = true;
     this.showTable = false;
+    //the api call may be passed in from the parent component if it's something other than a get request
+
     if (!url) {
       url = this.prepUrl();
     }
@@ -242,8 +258,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       tableTitleArray.push(this.getColumnLabel(param[0]) + ": " + param[1]);
     })
     this.tableTitle = tableTitleArray.join(", ");
+    let apiCall = this.dbService.get<ApiResponseObject<any>>(url);
+    if (this.apiCallMethod == "post") {
+      apiCall = this.dbService.post<ApiResponseObject<any>>(url, this.apiCallData);
+    }
 
-    this.dbService.get<ApiResponseObject<any>>(url).pipe(takeUntil(this.destroy$))
+    apiCall.pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           const data: { [key: string]: any }[] = this.dataKey && !isArray(response.data) ? response.data[this.dataKey] : response.data;
@@ -265,7 +285,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.displayedColumns.push(...["actions", ...response.displayColumns])
           this.columnLabels = response.columnLabels
           this.showTable = true;
-          this.dataSource.sort = this.sort;
+
           if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
             this.filters = response.columnFilters.map(filter => {
@@ -303,11 +323,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     return getLabelFromKey(column, false);
   }
 
-  setSelected(args: any) {
-    this.selectedItems = args;
-    //emit it to any containing component
-    this.selectionChanged.emit(this.selectedItems)
-  }
+
 
 
   applyFilter(event: Event) {
@@ -315,31 +331,31 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
+  // /** Whether the number of selected elements matches the total number of rows. */
+  // isAllSelected() {
+  //   const numSelected = this.selection.selected.length;
+  //   const numRows = this.dataSource.data.length;
+  //   return numSelected === numRows;
+  // }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows(event: MatCheckboxChange) {
-    event.checked ? this.selection.select(...this.dataSource.data) : this.selection.clear();
-    // if (this.isAllSelected()) {
-    //   this.selection.clear();
-    //   return;
-    // }
+  // /** Selects all rows if they are not all selected; otherwise clear selection. */
+  // toggleAllRows(event: MatCheckboxChange) {
+  //   event.checked ? this.selection.select(...this.dataSource.data) : this.selection.clear();
+  //   // if (this.isAllSelected()) {
+  //   //   this.selection.clear();
+  //   //   return;
+  //   // }
 
-    // this.selection.select(...this.dataSource.data);
-  }
+  //   // this.selection.select(...this.dataSource.data);
+  // }
 
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: any): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
-  }
+  // /** The label for the checkbox on the passed row */
+  // checkboxLabel(row?: any): string {
+  //   if (!row) {
+  //     return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+  //   }
+  //   return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  // }
 
 
   getColumnClass(columnAndValue: string): string {
@@ -454,8 +470,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
-  filterSubmitted(params: string) {
-    this.onFilterSubmitted(params);
+  filterSubmitted(params: string | IFormGenerator[]) {
+    if (typeof params === 'string' || Array.isArray(params)) {
+      this.onFilterSubmitted(params as any);
+    }
   }
 
   /**
@@ -489,5 +507,9 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   filterIsInQueryParams(key: string): boolean {
     return Object.keys(this.queryParams).includes(key) || Object.keys(this.queryParams).includes(`child_${key}`);
+  }
+
+  selectionChanged(event: any) {
+    this.onSelect.emit(event);
   }
 }

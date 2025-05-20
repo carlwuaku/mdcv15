@@ -17,7 +17,7 @@ import { HeadersInterceptorInterceptor } from './core/interceptors/headers-inter
 import { ErrorInterceptor } from './core/interceptors/error-interceptor.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { LocationStrategy, HashLocationStrategy, DatePipe } from "@angular/common";
-import { NgChartsModule } from 'ng2-charts';
+import { SectionContainerComponent } from './shared/components/section-container/section-container.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(

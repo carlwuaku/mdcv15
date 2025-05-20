@@ -425,4 +425,9 @@ export class RenewalFormComponent {
   updateTimestamp() {
     this.ts = getToday("timestamp_string");
   }
+
+  onDateChanged(date: string) {
+    this.date = date;
+    this.updateUrlYear();
+  }
 }

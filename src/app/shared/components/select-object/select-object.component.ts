@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { take, takeUntil } from 'rxjs';
+import { take } from 'rxjs';
 import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { v4 as uuidv4 } from 'uuid';
+import { getLabel } from '../../utils/helper';
 
 @Component({
   selector: 'app-select-object',
@@ -11,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";
-  @Input() labelProperty: string = "name";
+  @Input() labelProperty: string = "name"; //this can be a comma-separated list of properties
   @Input() keyProperty: string = "id";
   @Input() initialValue: string | string[] = "";
   @Input() type: "search" | "select" | "datalist" = "select";
@@ -31,6 +32,9 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() embedSearchResults: boolean = false;
   searchRan: boolean = false;
   selectedSearchItems: any[] = [];
+  getLabel = getLabel;
+  @Output() dataDownloaded = new EventEmitter();
+  @Input() emitDownload: boolean = false;
   constructor(private dbService: HttpService, private dateService: DateService) {
 
   }
@@ -61,6 +65,9 @@ export class SelectObjectComponent implements OnInit, OnChanges {
           this.objects = data.data || data;
           if (this.initialValue) {
             this.selectedItem = this.initialValue
+          }
+          if (this.emitDownload) {
+            this.dataDownloaded.emit(this.objects);
           }
           this.isLoaded = true;
           this.error = false;
@@ -95,7 +102,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
             this.selectedItem = this.initialValue
           }
           if (this.objects.length === 1) {
-            this.selectionChanged.emit(this.objects[0])
+            this.selectionChanged.emit(this.objects[0][this.keyProperty] || this.objects[0]);
           }
           this.isLoaded = true;
           this.error = false;
@@ -118,6 +125,56 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     this.objects = [];
     this.search_param = "";
   }
+
+  singleItemSelected(object: any) {
+    this.selectionChanged.emit(object[this.keyProperty]);
+    this.objects = [];
+    this.search_param = "";
+  }
+
+
+
+  getValue(object: any) {
+    if (typeof object === "object") {
+      if (this.keyProperty.includes(",")) {
+        const labels = this.keyProperty.split(",").map((prop: string) => object[prop.trim()]).join(" ");
+        return labels;
+      } else {
+        let value = object[this.keyProperty];
+        if (value === null || value === undefined) {
+          return "--Null--";
+        }
+        if (typeof value === "object") {
+          return JSON.stringify(value);
+        }
+        if (typeof value === "string" && value.trim() === "") {
+          return "--Empty Value--";
+        }
+        return value;
+      }
+    }
+    else {
+      if (object === null || object === undefined) {
+        return "--Null--";
+      }
+      if (typeof object === "string" && object.trim() === "") {
+        return "--Empty Value--";
+      }
+      return object;
+    }
+  }
+
+  selectAll() {
+    this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
+    this.selectionChanged.emit(this.selectedItem);
+  }
+
+  clearSelection() {
+    this.selectedItem = [];
+    this.selectionChanged.emit(this.selectedItem);
+  }
+
+
 }
 
 

@@ -4,6 +4,7 @@ import { Observable, switchMap, throwError } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { LicenseObject } from './models/license_model';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { ApiResponseObject } from 'src/app/shared/types/ApiResponseObject';
 @Injectable({
   providedIn: 'root'
 })
@@ -55,6 +56,20 @@ export class LicensesService {
       paramArray.push(`${key}=${queryParams[key]}`)
     })
     return this.dbService.get(`licenses/count?${paramArray.join("&")}`)
+  }
+
+  getFilteredCount(data: Record<string, any>): Observable<{ data: string }> {
+
+    return this.dbService.post(`licenses/count`, data)
+  }
+
+  filterBasicReports(licenseType: string, data: Record<string, any>): Observable<{ data: { [key: string]: { data: any[], label: string, type: string, labelProperty: string, valueProperty: string, chartTitle: string, xAxisLabel: string, yAxisLabel: string } } }> {
+    return this.dbService.post(`licenses/reports/basic-statistics/${licenseType}`, data)
+  }
+
+  postAdvancedReportsFilter(data: Record<string, any>): Observable<ApiResponseObject<any>> {
+
+    return this.dbService.post(`licenses/details/filter`, data)
   }
 
 }

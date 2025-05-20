@@ -12,8 +12,8 @@
     </div>
     <mat-card>
       <mat-card-content>
-        <app-form-generator [fields]="basicReportsFilters" [formType]="'filter'"
-          (onSubmit)="onBasicReportsFilterSubmitted($event)"></app-form-generator>
+        <app-form-generator [fields]="basicReportsFilters" [formType]="'emit'"
+          (onSubmit)="onBasicReportsFormSubmitted($event)" [layout]="'grid'"></app-form-generator>
       </mat-card-content>
     </mat-card>
     <div class="flex flex-col gap-2">
@@ -30,8 +30,15 @@
 
               <app-load-data-list [showPagination]="false" [displayedColumns]="['select',report.labelProperty, 'count']"
                 [showDeleted]="false" [showInfo]="false" [showSort]="false" [showFilterButton]="false"
-                [showSearch]="false" [showReset]="false" [preload]="false"
-                [dataSource]="getTableData(report.data)"></app-load-data-list>
+                [showSearch]="false" [showReset]="false" [preload]="false" [dataSource]="getTableData(report.data)"
+                (onSelect)="setSelectedItems($event, report.labelProperty)">
+                <ng-template #selectionOptions>
+                  <div class="flex gap-1">
+                    <app-export-table [objects]="getSelectedItems(report.labelProperty)"></app-export-table>
+                  </div>
+
+                </ng-template>
+              </app-load-data-list>
             </div>
             <div class="w-1/2">
               <app-chart [type]="report.type" [data]="report.data" [labelProperty]="report.labelProperty"

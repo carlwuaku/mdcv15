@@ -9,6 +9,7 @@ import { DialogKeyValueDisplayComponent } from 'src/app/shared/components/dialog
 import { ApplicationFormService } from './application-form.service';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-application-forms',
@@ -24,6 +25,7 @@ export class ApplicationFormsComponent implements OnInit {
   form_type: any;
   hint: string = "Click the 'Filter' button to filter the list of applications";
   selectedApplications: ApplicationFormObject[] = [];
+  destroy$: Subject<boolean> = new Subject();
   // practitioner_type: string = "";
   // status: string = "";
   // form_type: string | null;
@@ -31,27 +33,47 @@ export class ApplicationFormsComponent implements OnInit {
     private applicationService: ApplicationFormService, private ar: ActivatedRoute) {
     //get all query params and their values
     // const params:string[] = [];
-    this.ar.snapshot.queryParamMap.keys.forEach(key => {
-      this.filters.push({
-        name: key,
-        value: this.ar.snapshot.queryParamMap.get(key),
-        type: "text",
-        label: '',
-        hint: '',
-        options: [],
-        required: false
-      });
-      if (key === "form_type") {
-        this.form_type = this.ar.snapshot.queryParamMap.get(key);
-      }
-      if (key === "status") {
-        this.status = this.ar.snapshot.queryParamMap.get(key);
-      }
-    });
+
 
   }
   ngOnInit(): void {
-    // this.setUrl();
+    this.ar.queryParams
+      .pipe(takeUntil(this.destroy$)).subscribe(params => {
+        Object.keys(params).map(key => {
+          this.filters.push({
+            name: key,
+            value: params[key],
+            type: "text",
+            label: '',
+            hint: '',
+            options: [],
+            required: false
+          });
+          if (key === "form_type") {
+            this.form_type = params[key];
+          }
+          if (key === "status") {
+            this.status = params[key];
+          }
+        });
+      });
+    // this.ar.snapshot.queryParamMap.keys.forEach(key => {
+    //   this.filters.push({
+    //     name: key,
+    //     value: this.ar.snapshot.queryParamMap.get(key),
+    //     type: "text",
+    //     label: '',
+    //     hint: '',
+    //     options: [],
+    //     required: false
+    //   });
+    //   if (key === "form_type") {
+    //     this.form_type = this.ar.snapshot.queryParamMap.get(key);
+    //   }
+    //   if (key === "status") {
+    //     this.status = this.ar.snapshot.queryParamMap.get(key);
+    //   }
+    // });
   }
   ngOnChanges(changes: SimpleChanges): void {
     // this.setUrl();
@@ -162,5 +184,10 @@ export class ApplicationFormsComponent implements OnInit {
 
   setSelectedApplications(applications: ApplicationFormObject[]) {
     this.selectedApplications = applications;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 }

@@ -17,6 +17,7 @@ export class PractitionersComponent {
   baseUrl: string = "practitioners/details";
   url: string = "practitioners/details";
   ts: string = "";
+  selectedItems: PractitionerObject[] = [];
 
   getActions = (practitioner: PractitionerObject): DataActionsButton[] => {
 
@@ -85,7 +86,9 @@ export class PractitionersComponent {
     this.ts = getToday("timestamp_string");
   }
 
-  setSelectedItems(objects: PractitionerObject[]) { }
+  setSelectedItems(objects: PractitionerObject[]) {
+    this.selectedItems = objects;
+  }
 
   specialClasses: { [key: string]: string } =
     {
