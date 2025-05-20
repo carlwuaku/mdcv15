@@ -1,16 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
-
+import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, AfterViewInit {
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
@@ -21,8 +21,12 @@ export class TableComponent implements OnInit {
   @Input() offset: number = 0;
   destroy$: Subject<boolean> = new Subject();
   @Output() onSelect = new EventEmitter();
+  @ViewChild(MatSort) sort!: MatSort;
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
   constructor() { }
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+  }
   ngOnInit(): void {
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.onSelect.emit(data.source.selected)

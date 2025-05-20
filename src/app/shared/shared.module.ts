@@ -57,6 +57,7 @@ import { RouterModule } from '@angular/router';
 import { SectionContainerComponent } from './components/section-container/section-container.component';
 import { SubSectionContainerComponent } from './components/sub-section-container/sub-section-container.component';
 import { EmailFormComponent } from './components/email-form/email-form.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -120,7 +121,8 @@ import { EmailFormComponent } from './components/email-form/email-form.component
     ReactiveFormsModule,
     NgChartsModule,
     ChartModule,
-    RouterModule
+    RouterModule,
+    ScrollingModule
 
   ],
   exports: [

@@ -1,13 +1,10 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { Pager } from './Pager.interface';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+
 import { DataActionsButton } from './data-actions-button.interface';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ImageModule } from 'primeng/image';
 import { getLabelFromKey, isArray, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { columnFilterInterface } from './data-list-interface';
 import { IFormGenerator } from '../form-generator/form-generator-interface';
@@ -24,7 +21,7 @@ import { TableComponent } from '../table/table.component';
   styleUrls: ['./load-data-list.component.scss']
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-  @ViewChild(MatSort) sort!: MatSort;
+
   @ViewChild('sortDialog') sortDialog!: TemplateRef<any>;
   @ViewChild('filtersContainer') filtersContainer!: ElementRef;
 
@@ -101,7 +98,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() filterFormType: "filter" | "emit" = "filter";
   queryParams: { [key: string]: string } = {};
   isOverflowing: boolean = false;
-  @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "horizontal";
+  @Input() filtersLayout: "vertical" | "horizontal" | "grid" = "grid";
   @Input() useResponseFilters: boolean = true;
   @Input() showTableTitle: boolean = true;
   @Input() apiCallMethod: "get" | "post" = "get";
@@ -111,10 +108,10 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
-    const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
-    if (searchQuery) {
-      this.searchParam = searchQuery;
-    }
+    // const searchQuery = this.ar.snapshot.queryParamMap.get('searchParam');
+    // if (searchQuery) {
+    //   this.searchParam = searchQuery;
+    // }
 
   }
   ngOnDestroy(): void {
@@ -161,7 +158,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.searchParam.trim()) {
       this.search();
     }
-    this.dataSource.sort = this.sort;
+
     this.checkOverflow();
     this.selection = this.table.selection;
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
@@ -188,6 +185,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   setPage(args: number) {
     this.currentPage = args;
     this.offset = (args - 1) * this.limit;
+    // const url = updateUrlQueryParamValue(this.url, "page", this.offset.toString());
     this.getData();
   }
 
@@ -195,6 +193,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.limit = args;
     this.currentPage = 1;
     this.offset = 0;
+    // let url = updateUrlQueryParamValue(this.url, "page", this.offset.toString());
+    // url = updateUrlQueryParamValue(url, "limit", this.limit.toString());
     this.getData();
   }
 
@@ -285,7 +285,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.displayedColumns.push(...["actions", ...response.displayColumns])
           this.columnLabels = response.columnLabels
           this.showTable = true;
-          this.dataSource.sort = this.sort;
+
           if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
             this.filters = response.columnFilters.map(filter => {
