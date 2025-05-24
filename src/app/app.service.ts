@@ -17,6 +17,8 @@ export class AppService {
     recaptchaSiteKey: '',
     sidebarMenu: [],
     dashboardMenu: [],
+    renewalBasicStatisticsFilterFields: [],
+    basicStatisticsFilterFields: [],
     searchTypes: [],
     licenseTypes: {},
     cpdFilterFields: [],

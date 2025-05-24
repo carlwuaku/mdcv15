@@ -10,7 +10,8 @@ export interface AppSettings {
   recaptchaSiteKey: string,
   sidebarMenu: MenuItem[],
   dashboardMenu: MenuItem[],
-
+  renewalBasicStatisticsFilterFields: IFormGenerator[],
+  basicStatisticsFilterFields: IFormGenerator[],
   searchTypes: MenuItem[],
   licenseTypes: {
     [key: string]: {
@@ -20,10 +21,13 @@ export interface AppSettings {
       renewalStages: {
         [key: string]: RenewalStageItems
       },
+      basicStatisticsFields: BasicStatisticField[],
       renewalFilterFields: IFormGenerator[],
       advancedStatisticsFields: IFormGenerator[],
       basicStatisticsFilterFields: IFormGenerator[],
-      searchFormFields: IFormGenerator[]
+      searchFormFields: IFormGenerator[],
+      renewalBasicStatisticsFilterFields: IFormGenerator[],
+      renewalBasicStatisticsFields: BasicStatisticField[]
     },
 
   },
@@ -41,3 +45,10 @@ export interface AppSettings {
 
 export type HousemanshipSettings = AppSettings['housemanship'];
 export type HousemanshipAvailabilityCategories = HousemanshipSettings['availabilityCategories'];
+export type BasicStatisticField = {
+  label: string,
+  name: string,
+  type: string,
+  xAxisLabel: string,
+  yAxisLabel: string
+};

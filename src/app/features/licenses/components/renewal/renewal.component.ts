@@ -132,6 +132,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
+    paramsObject['license_type'] = this.licenseType;
 
 
     this.router.navigate(['licenses/renewals'], { queryParams: paramsObject });
