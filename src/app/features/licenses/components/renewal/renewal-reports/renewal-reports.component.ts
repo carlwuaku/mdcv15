@@ -34,8 +34,6 @@ export class RenewalReportsComponent implements OnInit, OnDestroy {
       this.queryParams = params;
       this.licenseType = params['license_type'];
       if (this.licenseType) {
-        // this.getBasicReports();
-        // this.getTotal();
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];
           this.availableFields = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFields;

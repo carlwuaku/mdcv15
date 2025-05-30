@@ -95,13 +95,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
     const data = this.formData;
     data['licenseType'] = this.licenseType;
     data['fields'] = [this.selectedField];//an array is expected. for performance reasons we are only sending one field at a time. if more fields are needed, we can change this
-    this.licensesService.getFilteredCount(data).pipe(takeUntil(this.destroy$)).subscribe({
+    this.licensesService.getFilteredCount(data).pipe(take(1)).subscribe({
       next: (res) => {
         this.total = res.data;
       }
     });
     this.basicReportsLoading = true;
-    this.licensesService.filterBasicReports(this.licenseType, data).pipe(takeUntil(this.destroy$)).subscribe({
+    this.licensesService.filterBasicReports(this.licenseType, data).pipe(take(1)).subscribe({
       next: (res) => {
         this.basicReports = Object.values(res.data);
         this.basicReportsLoading = false;

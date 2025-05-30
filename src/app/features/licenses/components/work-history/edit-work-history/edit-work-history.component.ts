@@ -44,7 +44,7 @@ export class EditWorkHistoryComponent {
       type: "api",
       value: "",
       required: false,
-      api_url: "admin/settings/Doctors.work_institution_types",
+      api_url: "admin/settings/Practitioners.work_institution_types",
       apiKeyProperty: "name",
       apiLabelProperty: "name",
       apiType: "datalist",

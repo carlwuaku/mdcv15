@@ -101,7 +101,7 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy, AfterVie
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
-    this.router.navigate(['housemanship/posting-applications'], { queryParams: paramsObject });
+    this.router.navigate([`housemanship/posting-applications/${this.session}`], { queryParams: paramsObject });
   }
 
   selectionChanged(items: HousemanshipApplication[]) {

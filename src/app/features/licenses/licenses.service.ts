@@ -72,6 +72,14 @@ export class LicensesService {
     return this.dbService.post(`licenses/details/filter`, data)
   }
 
+  postRenewalFilter(data: Record<string, any>, queryParams: { [key: string]: string }): Observable<ApiResponseObject<any>> {
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.post(`licenses/renewal/filter?${paramArray.join("&")}`, data)
+  }
+
   /**
    * Makes a GET request to the API to retrieve the basic statistics report
    * for a given license type and set of query parameters.

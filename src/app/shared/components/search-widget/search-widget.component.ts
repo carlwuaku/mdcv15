@@ -12,7 +12,7 @@ import { DashboardItem } from '../../utils/data';
 export class SearchWidgetComponent implements OnInit, OnDestroy {
   types: DashboardItem[] = [];
   @Input() param: string = "";
-  @Input() searchType: string = "Doctors";
+  @Input() searchType: string = "";
   destroy$: Subject<boolean> = new Subject();
   constructor(private router: Router, private ar: ActivatedRoute, private appService: AppService) {
 

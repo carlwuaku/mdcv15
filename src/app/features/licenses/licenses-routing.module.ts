@@ -12,6 +12,7 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
 import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-queue/renewal-print-queue.component';
 import { RenewalReportsComponent } from './components/renewal/renewal-reports/renewal-reports.component';
+import { GazetteComponent } from './components/renewal/gazette/gazette.component';
 const routes: Routes = [
   { path: '', component: LicensesComponent },
   { path: 'list', component: LicensesComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'reports', data: { title: 'Basic Reports' }, component: ReportsComponent },
   { path: 'advanced-reports', data: { title: 'Advanced Reports' }, component: AdvancedReportsComponent },
   { path: 'renewal-reports', data: { title: 'Renewal Basic Reports' }, component: RenewalReportsComponent },
+  { path: 'gazette', data: { title: 'Gazette' }, component: GazetteComponent },
 ];
 
 @NgModule({

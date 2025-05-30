@@ -105,6 +105,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() apiCallData: any = {};
   @ViewChild('table') table!: TableComponent;
   @Input() showSelectionContainer: boolean = true;
+  //make sure the filter is set only once per url
+  filterSet: boolean = false;
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -286,7 +288,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.columnLabels = response.columnLabels
           this.showTable = true;
 
-          if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0) {
+          if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0 && !this.filterSet) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
             this.filters = response.columnFilters.map(filter => {
               const existingFilter = this.filters.find(x => x.name == filter.name);
@@ -301,7 +303,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
               //filters cannot be required
               filter.required = false;
               return filter;
-            })
+            });
+            this.filterSet = true;
 
           }
         },
