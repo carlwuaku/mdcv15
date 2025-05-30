@@ -53,7 +53,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-
+            <app-housemanship-postings-list (onFilterSubmitted)="filterSubmitted($event)"
+              [queryParams]="postingHistoryQueryParams"></app-housemanship-postings-list>
           </mat-card-content>
         </mat-card>
       </ng-template>

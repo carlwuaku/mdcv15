@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { HousemanshipService } from '../../housemanship.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { HousemanshipPosting } from '../../models/Housemanship_posting.model';
   templateUrl: './housemanship-postings-list.component.html',
   styleUrls: ['./housemanship-postings-list.component.scss']
 })
-export class HousemanshipPostingsListComponent {
+export class HousemanshipPostingsListComponent implements OnDestroy, OnChanges {
   baseUrl: string = "housemanship/posting";
   @Input() url: string = "housemanship/posting";
   ts: string = "";
@@ -24,28 +24,29 @@ export class HousemanshipPostingsListComponent {
   destroy$: Subject<boolean> = new Subject();
   filters: IFormGenerator[] = [];
   @ViewChild('dataList') dataList!: LoadDataListComponent;
-  queryParams: { [key: string]: string } = {};
+  @Input() queryParams: { [key: string]: string } = {};
+  @Output() onFilterSubmitted: EventEmitter<{ [key: string]: string }> = new EventEmitter();
+
+  @Input() showFilters: boolean = true;
+  @Input() showSearch: boolean = true;
   selectedItems: HousemanshipPosting[] = [];
   constructor(private dbService: HousemanshipService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
 
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['queryParams']) {
+      this.queryParams = changes['queryParams'].currentValue;
+      this.updateUrl();
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-  ngOnInit(): void {
-    this.ar.queryParams
-      .pipe(takeUntil(this.destroy$)).subscribe(params => {
 
-        this.queryParams = params;
-        this.updateUrl();
-      });
-
-
-  }
 
   updateUrl() {
 
@@ -100,9 +101,7 @@ export class HousemanshipPostingsListComponent {
       paramsObject[key] = value;
     });
 
-
-
-    this.router.navigate(['housemanship/postings'], { queryParams: paramsObject });
+    this.onFilterSubmitted.emit(paramsObject);
 
   }
 }

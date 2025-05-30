@@ -55,7 +55,13 @@
     </mat-tab>
     <mat-tab label="Housemanship">
       <ng-template matTabContent>
-
+        <mat-card>
+          <mat-card-content>
+            <app-housemanship-postings-list [showFilters]="false" [showSearch]="false"
+              (onFilterSubmitted)="housemanshipPostingsListFilterSubmitted($event)"
+              [queryParams]="postingHistoryQueryParams"></app-housemanship-postings-list>
+          </mat-card-content>
+        </mat-card>
       </ng-template>
     </mat-tab>
     <mat-tab label="CPD History">

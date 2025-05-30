@@ -19,7 +19,7 @@
 
         <app-section-container [title]="'Report type'">
           <app-mat-select [fieldLabel]="'Select report to view'" [objects]="availableFields" [labelProperty]="'name'"
-            [selection_mode]="'single'" [keyProperty]="'name'" (selectedItemChange)="selectedFieldChange($event)"
+            [selection_mode]="'multiple'" [keyProperty]="'name'" (selectedItemChange)="selectedFieldChange($event)"
             [(selectedItem)]="selectedField"></app-mat-select>
         </app-section-container>
       </mat-card-content>
