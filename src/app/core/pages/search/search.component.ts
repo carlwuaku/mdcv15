@@ -10,7 +10,7 @@ import { MenuItem } from 'src/app/shared/utils/data';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  searchType: string = "Doctors";
+  searchType: string = "";
   param: string = "";
   url: string | undefined = "";
   destroy$: Subject<boolean> = new Subject();

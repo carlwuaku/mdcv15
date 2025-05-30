@@ -12,28 +12,33 @@
 
 
           <div class="flex flex-col justify-start flex-grow">
-            <div class="flex gap-1 ">
-              <div class="p-1 rounded-sm" *ngIf="item.icon"
-                [ngStyle]="{'background-color': item.color ? item.color : ''} " [ngClass]="{'bg-accent': !item.color}">
-                <mat-icon class="text-2xl w-[24px] h-[24px]  icon">{{item.icon}}</mat-icon>
+            <div class="flex flex-col gap-1 border-b items-start">
+              <div class="p-1 rounded-md shadow shadow-gray-500 bg-{{item.color}}" *ngIf="item.icon"
+                [ngClass]="{'bg-accent': !item.color}">
+                <mat-icon class="text-3xl w-[30px] h-[30px]  icon">{{item.icon}}</mat-icon>
               </div>
-              <h3 class="text-2xl font-light  text-primary">{{item.title}}</h3>
+              <div>
+                <h3 class="text-2xl font-light  text-primary">{{item.title}}</h3>
+                <p *ngIf="item.description" class="">{{item.description}}</p>
+              </div>
+
             </div>
 
 
-            <p *ngIf="item.description" class="">{{item.description}}</p>
+
 
 
           </div>
 
           <mat-list *ngIf="item.children">
-            <a mat-list-item class="border-b pl-0 pr-0 cursor-pointer" [routerLink]="link.url"
+            <a mat-list-item class="border-b pl-0 pr-0 cursor-pointer hover:bg-gray-100" [routerLink]="link.url"
               [queryParams]="link.urlParams" *ngFor="let link of item.children">
               <div class="flex gap-1 items-center">
                 <span class="inline-flex items-center text-pretty gap-1 flex-grow">
                   {{ link.title }}
                 </span>
-                <span class="inline-flex justify-center badge badge-warning" *ngIf="link.apiCountUrl">
+                <span class="inline-flex justify-center badge shadow shadow-gray-500  bg-{{item.color}}"
+                  *ngIf="link.apiCountUrl">
                   <app-api-count [url]="link.apiCountUrl"></app-api-count>
                 </span>
               </div>

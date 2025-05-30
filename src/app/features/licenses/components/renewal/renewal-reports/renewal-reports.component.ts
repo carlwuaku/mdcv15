@@ -5,37 +5,26 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AppService } from 'src/app/app.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { LicensesService } from '../../../licenses.service';
-import { RenewalObject } from '../renewal.model';
-import { getThisYear, getToday } from 'src/app/shared/utils/dates';
+import { BasicStatisticField } from 'src/app/shared/types/AppSettings.model';
 @Component({
-  selector: 'app-gazette',
-  templateUrl: './gazette.component.html',
-  styleUrls: ['./gazette.component.scss']
+  selector: 'app-renewal-reports',
+  templateUrl: './renewal-reports.component.html',
+  styleUrls: ['./renewal-reports.component.scss']
 })
-export class GazetteComponent implements OnInit, OnDestroy {
-
+export class RenewalReportsComponent implements OnInit, OnDestroy {
   queryParams: { [key: string]: string } = {};
   licenseType: string = "";
   destroy$: Subject<boolean> = new Subject();
+  basicReports: { data: any[], label: string, type: string, labelProperty: string, valueProperty: string, chartTitle: string, xAxisLabel: string, yAxisLabel: string }[] = [];
+  basicReportsLoading: boolean = false;
   basicReportsFilters: any[] = [];
-  dataSource: MatTableDataSource<RenewalObject> = new MatTableDataSource<any>([]);
+  total: string = "0";
   selectedItems: Record<string, any[]> = {};
   /** keep track of the fields that should have renewal_ appended to them. on the server these are treated specially */
   childFilterNames: string[] = [];
-  loading: boolean = false;
+  availableFields: BasicStatisticField[] = [];
+  selectedField: string[] = [];// this is used to keep track of the selected field in the filter dropdown
   formData: Record<string, any> = {};
-  offset: number = 0;
-  limit: number = 100;
-  totalRows: number = 0;
-  currentPage: any = 1;
-  displayedColumns: string[] = ['name', 'postal_address', 'qualification', 'qualification_date'];
-  columnLabels: Record<string, string> = {
-    name: 'Name',
-    postal_address: 'Postal Address',
-    qualification: 'Qualification',
-    qualification_date: 'Qualification Date'
-  }
-  getYear = (date: string) => { return getToday("year", date) }; // This is used to get the current year for the filter
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
 
   }
@@ -47,7 +36,8 @@ export class GazetteComponent implements OnInit, OnDestroy {
       if (this.licenseType) {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];
-
+          this.availableFields = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFields;
+          this.selectedField = [this.availableFields[0]?.name];
           this.childFilterNames = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields.map((filter) => filter.name);
           //populate the filters with the query param values
           this.basicReportsFilters.map((filter) => {
@@ -63,10 +53,11 @@ export class GazetteComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+
   }
 
   onLicenseTypeChange(selectedValue: string) {
-    this.router.navigate(['licenses/gazette'], { queryParams: { license_type: selectedValue } });
+    this.router.navigate(['licenses/renewal-reports'], { queryParams: { license_type: selectedValue } });
   }
 
 
@@ -98,33 +89,38 @@ export class GazetteComponent implements OnInit, OnDestroy {
   getData() {
     const data = this.formData;
     data['license_type'] = this.licenseType;
-    data['isGazette'] = true;
-    this.loading = true;
-    this.licensesService.postRenewalFilter(data, { limit: this.limit.toString(), page: this.offset.toString() }).pipe(take(1)).subscribe({
+    data['fields'] = this.selectedField;//an array is expected. for performance reasons we are only sending one field at a time. if more fields are needed, we can change this
+    this.licensesService.getRenewalFilteredCount(data).subscribe({
       next: (res) => {
-        this.dataSource = new MatTableDataSource(res.data);
-        this.totalRows = res.total;
-        this.loading = false;
+        this.total = res.data;
+      }
+    });
+    this.basicReportsLoading = true;
+    this.licensesService.filterRenewalBasicReports(this.licenseType, data).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.basicReports = Object.values(res.data);
+        this.basicReportsLoading = false;
       },
       error: (err) => {
-        this.loading = false;
-        this.totalRows = 0;
-        this.dataSource = new MatTableDataSource<RenewalObject>([]);
+        this.basicReportsLoading = false;
+        this.basicReports = [];
       }
     });
   }
 
-  setPage(page: number) {
-    this.currentPage = page;
-    this.offset = (page - 1) * this.limit;
+  selectedFieldChange(selectedValue: string[]) {
+    this.selectedField = selectedValue;
     this.getData();
   }
-  setLimit(limit: number) {
 
-    this.limit = limit;
-    this.currentPage = 1;
-    this.offset = 0;
-    this.getData();
+  setSelectedItems(objects: any[], key: string): void {
+    this.selectedItems[key] = objects;
   }
+
+  getSelectedItems(key: string): any[] {
+    return this.selectedItems[key] || [];
+  }
+
+
 
 }

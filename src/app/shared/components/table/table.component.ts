@@ -1,10 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
+import { FieldTemplateDirective } from '../form-generator/form-generator.component';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -23,9 +24,14 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Output() onSelect = new EventEmitter();
   @ViewChild(MatSort) sort!: MatSort;
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
+  private templateMap = new Map<string, TemplateRef<any>>();
+  @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
   constructor() { }
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
+    this.fieldTemplates.forEach(item => {
+      this.templateMap.set(item.fieldName, item.template);
+    });
   }
   ngOnInit(): void {
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
@@ -119,5 +125,9 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   public clearSelection() {
     this.selection.clear();
+  }
+
+  getCustomTemplate(fieldName: string): TemplateRef<any> | null {
+    return this.templateMap.get(fieldName) || null;
   }
 }

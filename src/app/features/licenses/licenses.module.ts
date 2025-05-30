@@ -23,6 +23,7 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { AdvancedReportsComponent } from './components/advanced-reports/advanced-reports.component';
 import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-queue/renewal-print-queue.component';
 import { GazetteComponent } from './components/renewal/gazette/gazette.component';
+import { RenewalReportsComponent } from './components/renewal/renewal-reports/renewal-reports.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { GazetteComponent } from './components/renewal/gazette/gazette.component
     AdvancedReportsComponent,
     RenewalPrintQueueComponent,
     GazetteComponent,
+    RenewalReportsComponent,
   ],
   imports: [
     CommonModule,

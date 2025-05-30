@@ -11,6 +11,9 @@
       <app-loading *ngIf="basicReportsLoading"></app-loading>
     </div>
     <mat-card>
+      <mat-card-header>
+        <mat-card-subtitle>Select any of these options and click the 'Submit' button.</mat-card-subtitle>
+      </mat-card-header>
       <mat-card-content class="flex flex-col gap-2">
         <app-section-container [title]="'Filters'">
           <app-form-generator [fields]="basicReportsFilters" [formType]="'emit'"
@@ -19,9 +22,10 @@
 
         <app-section-container [title]="'Report type'">
           <app-mat-select [fieldLabel]="'Select report to view'" [objects]="availableFields" [labelProperty]="'name'"
-            [selection_mode]="'single'" [keyProperty]="'name'" (selectedItemChange)="selectedFieldChange($event)"
+            [selection_mode]="'multiple'" [keyProperty]="'name'" (selectedItemChange)="selectedFieldChange($event)"
             [(selectedItem)]="selectedField"></app-mat-select>
         </app-section-container>
+
       </mat-card-content>
     </mat-card>
     <div class="flex flex-col gap-2">

@@ -9,7 +9,7 @@
   <mat-card *ngIf="licenseType">
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="true" [showInfo]="false" [showSort]="true"
-        [showAllFilters]="true" [showSearch]="true" [showReset]="false" [onFilterSubmitted]="filterSubmitted"
+        [showAllFilters]="true" [showSearch]="false" [showReset]="false" [onFilterSubmitted]="filterSubmitted"
         [timestamp]="ts" [url]="url" [getActions]="getActions" (onSelect)="selectionChanged($event)"
         [showPrint]="false">
         <ng-template #header>

@@ -42,9 +42,6 @@ export class DetailsComponent implements OnInit {
   displayedColumns: string[] = []
 
 
-  type: PractitionerTypes = PractitionerTypes.Doctors
-  //if we want to view only doctors or pa's or all
-  view_type = "All";
   headerTabs: { label: string, key: string }[] = [];
 
   constructor(private cpdService: CpdService, private notify: NotifyService,

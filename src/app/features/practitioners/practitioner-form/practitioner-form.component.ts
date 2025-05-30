@@ -11,7 +11,7 @@ export class PractitionerFormComponent {
   title: string = "Add a new practitioner";
   formUrl: string = "practitioners/details";
   existingUrl: string = "practitioners/details";
-  fields: (IFormGenerator|IFormGenerator[])[] = [
+  fields: (IFormGenerator | IFormGenerator[])[] = [
     {
       label: "Category",
       name: "category",
@@ -199,10 +199,10 @@ export class PractitionerFormComponent {
       name: "nationality",
       hint: "",
       options: [
-        {key:"Ghanaian",value:"Ghanaian"},
-        {key:"Nigerian",value:"Nigerian"},
-        {key:"U.S.A",value:"U.S.A"},
-        {key:"Togolese",value:"Togolose"},
+        { key: "Ghanaian", value: "Ghanaian" },
+        { key: "Nigerian", value: "Nigerian" },
+        { key: "U.S.A", value: "U.S.A" },
+        { key: "Togolese", value: "Togolose" },
       ],
       type: "text",
       value: "",
@@ -246,7 +246,7 @@ export class PractitionerFormComponent {
       type: "api",
       value: "",
       required: false,
-      api_url: "admin/settings/Doctors.work_institution_types",
+      api_url: "admin/settings/Practitioners.work_institution_types",
       apiKeyProperty: "name",
       apiLabelProperty: "name",
       apiType: "datalist",
@@ -264,9 +264,9 @@ export class PractitionerFormComponent {
       apiKeyProperty: "name",
       apiLabelProperty: "name",
       apiType: "select",
-      onChange: (value:string) => {
+      onChange: (value: string) => {
         const districtField = findFormField(this.fields, "district");
-        if(districtField) {districtField.api_url = `regions/districts/${value}`}
+        if (districtField) { districtField.api_url = `regions/districts/${value}` }
       }
     },
     {
@@ -335,9 +335,9 @@ export class PractitionerFormComponent {
       apiKeyProperty: "name",
       apiLabelProperty: "name",
       apiType: "select",
-      onChange: (value:string) => {
+      onChange: (value: string) => {
         const subspecialtiesField = findFormField(this.fields, "district");
-        if(subspecialtiesField) {subspecialtiesField.api_url = `specialties/subspecialties?specialty=${value}`}
+        if (subspecialtiesField) { subspecialtiesField.api_url = `specialties/subspecialties?specialty=${value}` }
       }
     },
     {

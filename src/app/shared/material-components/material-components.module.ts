@@ -27,6 +27,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectComponent } from './mat-select/mat-select.component';
 
 const modules = [
   MatDialogModule,
@@ -54,11 +55,13 @@ const modules = [
   MatChipsModule,
   MatProgressBarModule,
   MatSlideToggleModule,
-  MatRadioModule
+  MatRadioModule,
+  MatSelectModule,
 ];
 @NgModule({
   declarations: [
-    MatDatepickerComponent
+    MatDatepickerComponent,
+    MatSelectComponent
   ],
   imports: [
     CommonModule,
@@ -67,7 +70,8 @@ const modules = [
   ],
   exports: [
     ...modules,
-    MatDatepickerComponent
+    MatDatepickerComponent,
+    MatSelectComponent
   ]
 })
 export class MaterialComponentsModule { }

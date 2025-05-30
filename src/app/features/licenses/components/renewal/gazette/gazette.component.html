@@ -7,22 +7,41 @@
   </mat-card>
 
   <mat-card *ngIf="licenseType">
-    <mat-card-content>
-      <app-load-data-list [showDeleted]="false" [showExport]="true" [showInfo]="false" [showSort]="true"
-        [showAllFilters]="true" [showSearch]="true" [showReset]="false" [onFilterSubmitted]="filterSubmitted"
-        [timestamp]="ts" [url]="url" [getActions]="getActions" (onSelect)="selectionChanged($event)"
-        [showPrint]="false">
-        <ng-template #header>
-          <div class="flex flex-col gap-1">
-            <h2 class="text-lg">Gazette ({{licenseType}})</h2>
-          </div>
-        </ng-template>
-        <ng-template #selectionOptions>
-          <div class="flex gap-1 items-center">
-            <app-export-table [objects]="selectedItems"></app-export-table>
-          </div>
-        </ng-template>
-      </app-load-data-list>
+    <mat-card-content class="flex flex-col gap-2">
+      <app-section-container [title]="'Filters'">
+        <app-form-generator [fields]="basicReportsFilters" [formType]="'emit'"
+          (onSubmit)="onBasicReportsFormSubmitted($event)" [layout]="'grid'"></app-form-generator>
+      </app-section-container>
+      <app-loading *ngIf="loading"></app-loading>
+      <div class="flex flex-col gap-1">
+        <app-pagination [current_page]="currentPage" [total]="totalRows" [limit]="limit" (pageChanged)="setPage($event)"
+          (limitChanged)="setLimit($event)"></app-pagination>
+        <app-table #table [dataSource]="dataSource" [displayedColumns]="displayedColumns" [rowSelection]="'multiple'"
+          [offset]="offset">
+
+          <ng-template fieldTemplate="name" let-column let-data="data">
+            {{data["last_name"]}}, {{data["first_name"]}} {{data["middle_name"]}}
+          </ng-template>
+          <ng-template fieldTemplate="qualification" let-column let-data="data">
+            {{data.qualification_at_registration}} ({{data.training_institution}})
+
+
+            <div *ngFor="let ed of data.qualifications">
+              {{ed.qualification}} ({{ed.institution}})
+            </div>
+          </ng-template>
+          <ng-template fieldTemplate="qualification_date" let-column let-data="data">
+            {{getYear(data.qualification_date)}}
+
+
+            <div *ngFor="let ed of data.qualifications">
+              {{getYear(ed.end_date)}}
+            </div>
+          </ng-template>
+
+        </app-table>
+      </div>
     </mat-card-content>
+
   </mat-card>
 </div>

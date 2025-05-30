@@ -24,12 +24,12 @@ export class PaginationComponent {
   loading: boolean = false;
   error: boolean = false;
   num_of_btns: number = 0;
-  @Output() pageChanged = new EventEmitter;
-  @Output() limitChanged = new EventEmitter
+  @Output() pageChanged = new EventEmitter<number>();
+  @Output() limitChanged = new EventEmitter<number>();
   page_number: any;
 
   constructor() {
-    
+
   }
 
   ngOnInit() {

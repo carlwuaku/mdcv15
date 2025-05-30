@@ -72,4 +72,46 @@ export class LicensesService {
     return this.dbService.post(`licenses/details/filter`, data)
   }
 
+  postRenewalFilter(data: Record<string, any>, queryParams: { [key: string]: string }): Observable<ApiResponseObject<any>> {
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.post(`licenses/renewal/filter?${paramArray.join("&")}`, data)
+  }
+
+  /**
+   * Makes a GET request to the API to retrieve the basic statistics report
+   * for a given license type and set of query parameters.
+   *
+   * @param licenseType The type of license to retrieve the report for.
+   * @param queryParams Any additional query parameters to include in the request.
+   * @returns An Observable containing the response data.
+   */
+  getRenewalBasicReports(licenseType: string, queryParams: { [key: string]: string },): Observable<{ data: { [key: string]: { data: any[], label: string, type: string, labelProperty: string, valueProperty: string, chartTitle: string, xAxisLabel: string, yAxisLabel: string } } }> {
+    const baseUrl = `licenses/renewal-reports/basic-statistics/${licenseType}`;
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.get(baseUrl + "?" + paramArray.join("&"))
+  }
+
+  getRenewalCount(queryParams: { [key: string]: string }): Observable<{ data: string }> {
+    let paramArray: string[] = [];
+    Object.keys(queryParams).forEach(key => {
+      paramArray.push(`${key}=${queryParams[key]}`)
+    })
+    return this.dbService.get(`licenses/renewal-count?${paramArray.join("&")}`)
+  }
+
+  getRenewalFilteredCount(data: Record<string, any>): Observable<{ data: string }> {
+
+    return this.dbService.post(`licenses/renewal-count`, data)
+  }
+
+  filterRenewalBasicReports(licenseType: string, data: Record<string, any>): Observable<{ data: { [key: string]: { data: any[], label: string, type: string, labelProperty: string, valueProperty: string, chartTitle: string, xAxisLabel: string, yAxisLabel: string } } }> {
+    return this.dbService.post(`licenses/renewal-reports/basic-statistics/${licenseType}`, data)
+  }
+
 }

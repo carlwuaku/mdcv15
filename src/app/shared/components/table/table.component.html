@@ -98,12 +98,20 @@
 
 
             <span *ngSwitchDefault>
-              <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
-              <button mat-raised-button color="primary" (click)="viewHtml(element[column])"
-                *ngIf="isHtml(element[column])">View</button>
-              <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"
-                [innerHTML]="element[column]"
-                [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))"></div>
+              <ng-container *ngIf="getCustomTemplate(column) as customTemplate">
+                <ng-container
+                  *ngTemplateOutlet="customTemplate; context: { $implicit: column, data: element }"></ng-container>
+              </ng-container>
+              <ng-container *ngIf="!getCustomTemplate(column)">
+                <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
+                <button mat-raised-button color="primary" (click)="viewHtml(element[column])"
+                  *ngIf="isHtml(element[column])">View</button>
+                <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"
+                  [innerHTML]="element[column]"
+                  [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))">
+                </div>
+              </ng-container>
+
             </span>
           </span>
 
