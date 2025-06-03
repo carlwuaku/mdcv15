@@ -23,7 +23,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   /** keep track of the fields that should have child_ appended to them. on the server these are treated specially */
   childFilterNames: string[] = [];
   availableFields: BasicStatisticField[] = [];
-  selectedField: string = "";// this is used to keep track of the selected field in the filter dropdown
+  selectedField: string[] = [];// this is used to keep track of the selected field in the filter dropdown
   formData: Record<string, any> = {};
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
 
@@ -39,7 +39,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.basicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields];
           this.availableFields = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFields;
-          this.selectedField = this.availableFields[0]?.name;
+          this.selectedField = [this.availableFields[0]?.name];
           this.childFilterNames = data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields.map((filter) => filter.name);
           //populate the filters with the query param values
           this.basicReportsFilters.map((filter: IFormGenerator) => {
@@ -94,7 +94,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   getData() {
     const data = this.formData;
     data['licenseType'] = this.licenseType;
-    data['fields'] = [this.selectedField];//an array is expected. for performance reasons we are only sending one field at a time. if more fields are needed, we can change this
+    data['fields'] = this.selectedField;//an array is expected. for performance reasons we are only sending one field at a time. if more fields are needed, we can change this
     this.licensesService.getFilteredCount(data).pipe(take(1)).subscribe({
       next: (res) => {
         this.total = res.data;
@@ -114,7 +114,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   }
 
-  selectedFieldChange(selectedValue: string) {
+  selectedFieldChange(selectedValue: string[]) {
     this.selectedField = selectedValue;
     this.getData();
   }

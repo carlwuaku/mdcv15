@@ -1,5 +1,6 @@
 <app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (onSelect)="setSelectedItems($event)"
-  [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted">
+  [showAllFilters]="showFilters" [showFilterButton]="showFilters" [showSearch]="showSearch"
+  [onFilterSubmitted]="filterSubmitted">
   <ng-template #selectionOptions>
     <div class="flex gap-1 items-center">
       <app-export-table [objects]="selectedItems"></app-export-table>

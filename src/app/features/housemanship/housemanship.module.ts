@@ -42,6 +42,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     HousemanshipRoutingModule,
     SharedModule,
     MatButtonToggleModule
+  ],
+  exports: [
+    HousemanshipPostingsListComponent
   ]
 })
 export class HousemanshipModule { }

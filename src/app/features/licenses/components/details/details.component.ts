@@ -26,7 +26,7 @@ export class DetailsComponent {
   headerTabs: { label: string, key: string }[] = [];
   excludedDetailsColumns: string[] = ['uuid', 'picture'];
   getClassFromState = getClassFromState;
-
+  postingHistoryQueryParams: { [key: string]: string } = {};
   constructor(private notify: NotifyService,
     private dbService: LicensesService, private ar: ActivatedRoute, public dialog: MatDialog, private appService: AppService) {
     this.id = ar.snapshot.params['id'];
@@ -59,6 +59,7 @@ export class DetailsComponent {
       {
         next: data => {
           this.object = data.data;
+          this.postingHistoryQueryParams['license_number'] = this.object['register_type'] === 'Provisional' ? this.object.license_number : this.object['provisional_number'];
           this.columnLabels = data.columnLabels;
           this.displayedColumns = data.displayColumns.filter((col: string) => !this.excludedDetailsColumns.includes(col));
           this.updateHeaderTabs();
@@ -94,4 +95,7 @@ export class DetailsComponent {
     });
   }
 
+  housemanshipPostingsListFilterSubmitted(filters: { [key: string]: string }) {
+    this.postingHistoryQueryParams = { ...filters, ...this.postingHistoryQueryParams };
+  }
 }
