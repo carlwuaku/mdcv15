@@ -2,12 +2,13 @@
   <h1 [innerHTML]="title"></h1>
 </div>
 <div mat-dialog-content>
-  <app-form-generator *ngIf="url" [url]="url" [fields]="fields" [formType]="formType"
+  <app-form-generator *ngIf="formType === 'filter' || url" [url]="url" [fields]="fields" [formType]="formType"
     (emitFields)="formSubmitted($event)" (onSubmit)="formSubmitted($event)" [id]="id">
     <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
       Cancel
     </button>
   </app-form-generator>
+
 </div>
 
 

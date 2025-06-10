@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormField, IFormGenerator, isFormField, isRow } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsEditorComponent } from './options-editor/options-editor.component';
@@ -8,7 +8,7 @@ import { OptionsEditorComponent } from './options-editor/options-editor.componen
   templateUrl: './form-editor.component.html',
   styleUrls: ['./form-editor.component.scss']
 })
-export class FormEditorComponent implements OnInit {
+export class FormEditorComponent implements OnInit, OnChanges {
   @Input() fields: (FormField | FormField[])[] = [];
   @Output() formChanged: EventEmitter<(FormField | FormField[])[]> = new EventEmitter();
   selectedItem: FormField | undefined;
@@ -29,6 +29,7 @@ export class FormEditorComponent implements OnInit {
     "select",
     "textarea",
     "file",
+    "picture",
     "label",
     "button",
     "submit",
@@ -38,11 +39,16 @@ export class FormEditorComponent implements OnInit {
     "json",
     "api"
   ]
+  //track if the selected field has had its name set explicitly. we want to autogenerate the name if it is empty
+  fieldNamesSet: Set<string> = new Set();
   constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("Form Editor Changes", changes);
+  }
 
 
   addField(type: string) {
@@ -208,8 +214,20 @@ export class FormEditorComponent implements OnInit {
 
 
   setNameIfEmpty() {
-    if (this.selectedItem && this.selectedItem.name.trim() === "") {
+    if (this.selectedItem) {
       this.selectedItem.name = this.selectedItem.label.toLowerCase().replace(/ /g, "_");
     }
+  }
+
+  fieldNameChanged(field: FormField) {
+    if (field.name.trim() !== "") {
+      this.fieldNamesSet.add(field.name);
+    } else {
+      this.fieldNamesSet.delete(field.name);
+    }
+    // // If the field name is empty, auto-generate it
+    // if (field.name.trim() === "" && field.label.trim() !== "") {
+    //   field.name = field.label.toLowerCase().replace(/ /g, "_");
+    // }
   }
 }

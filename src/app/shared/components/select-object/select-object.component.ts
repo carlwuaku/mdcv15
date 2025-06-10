@@ -77,6 +77,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
           this.error = true;
           this.isLoaded = false;
           this.error_message = err;
+          this.loading = false;
         },
         complete: () => {
           this.loading = false;

@@ -38,9 +38,10 @@
 
   <div class="flex gap-1" [ngClass]="{'sticky left-0': layout === 'horizontal'}">
     <ng-content select="[submitButton]"></ng-content>
-    <button type="button" mat-stroked-button color="warn" (click)="resetForm()">{{resetButtonText}}</button>
+    <button type="button" *ngIf="showResetButton" mat-stroked-button color="warn"
+      (click)="resetForm()">{{resetButtonText}}</button>
 
-    <button type="submit" mat-raised-button color="primary"
+    <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="primary"
       [disabled]="!isFilterFormValid()">{{submitButtonText}}</button>
 
   </div>

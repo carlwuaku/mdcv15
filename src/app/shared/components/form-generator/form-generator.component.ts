@@ -32,7 +32,8 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
   @Output() onSubmit = new EventEmitter();
   @Output() onExistingDataLoaded = new EventEmitter();
   @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
-
+  @Input() showSubmitButton: boolean = true;
+  @Input() showResetButton: boolean = true;
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
   @Input() resetButtonText: string = "Reset";
