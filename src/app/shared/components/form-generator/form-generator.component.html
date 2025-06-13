@@ -35,7 +35,7 @@
 
     </ng-container>
   </div>
-
+  <ng-content></ng-content>
   <div class="flex gap-1" [ngClass]="{'sticky left-0': layout === 'horizontal'}">
     <ng-content select="[submitButton]"></ng-content>
     <button type="button" *ngIf="showResetButton" mat-stroked-button color="warn"
@@ -119,7 +119,8 @@
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
 
-      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
+      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker" (click)="picker.open()" (focus)="picker.open()"
+        readonly>
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>

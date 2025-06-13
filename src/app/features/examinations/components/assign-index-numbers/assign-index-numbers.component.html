@@ -1,0 +1,12 @@
+<div mat-dialog-title>
+  <h1>Assign index numbers to candidates</h1>
+</div>
+<div mat-dialog-content>
+
+  <app-table [columnLabels]="columnLabels" [dataSource]="tableDataSource"
+    [displayedColumns]="displayedColumns"></app-table>
+</div>
+<div mat-dialog-actions>
+  <button mat-stroked-button color="error" [mat-dialog-close]="false">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submitIndexNumbers()">Save</button>
+</div>

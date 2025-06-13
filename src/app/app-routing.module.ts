@@ -40,10 +40,11 @@ const routes: Routes = [
   { path: 'applications', resolve: { userData: UserResolver }, data: { title: 'Applications' }, loadChildren: () => import('./features/application-forms/application-forms.module').then(m => m.ApplicationFormsModule) },
   { path: 'application-templates', resolve: { userData: UserResolver }, data: { title: 'Application templates' }, loadChildren: () => import('./features/application-templates/application-templates.module').then(m => m.ApplicationTemplatesModule) },
   { path: 'licenses', resolve: { userData: UserResolver }, data: { title: 'Licenses' }, loadChildren: () => import('./features/licenses/licenses.module').then(m => m.LicensesModule) },
-  { path: 'applications', resolve: { userData: UserResolver }, loadChildren: () => import('./features/applications/applications.module').then(m => m.ApplicationsModule) },
-  { path: 'messaging', loadChildren: () => import('./features/messaging/messaging.module').then(m => m.MessagingModule) },
-  { path: 'print-templates', loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
-  { path: 'housemanship', loadChildren: () => import('./features/housemanship/housemanship.module').then(m => m.HousemanshipModule) },
+  { path: 'applications', resolve: { userData: UserResolver }, data: { title: 'Applications' }, loadChildren: () => import('./features/applications/applications.module').then(m => m.ApplicationsModule) },
+  { path: 'messaging', resolve: { userData: UserResolver }, data: { title: 'Messaging' }, loadChildren: () => import('./features/messaging/messaging.module').then(m => m.MessagingModule) },
+  { path: 'print-templates', resolve: { userData: UserResolver }, data: { title: 'Templates' }, loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
+  { path: 'housemanship', resolve: { userData: UserResolver }, data: { title: 'Housemanship' }, loadChildren: () => import('./features/housemanship/housemanship.module').then(m => m.HousemanshipModule) },
+  { path: 'examinations', resolve: { userData: UserResolver }, data: { title: 'Examinations' }, loadChildren: () => import('./features/examinations/examinations.module').then(m => m.ExaminationsModule) },
   {
     path: '**',
     component: PageNotFoundComponent

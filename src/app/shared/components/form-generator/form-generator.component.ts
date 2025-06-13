@@ -286,7 +286,6 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-      console.log(field)
       if (field.required && !field.value) {
         this.notify.failNotification(`Field '${field.label}' is required.`);
         return false;

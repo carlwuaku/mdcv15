@@ -1,0 +1,94 @@
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <div class="flex flex-col gap-1" *ngIf="object">
+        <div class="flex gap-2  items-center">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg">{{object.title}}</h3>
+            <div class="flex gap-2 items-baseline">
+              <span><span class="font-light text-primary">Exam type:</span>
+                {{object.exam_type}} </span>
+              <span><span class="font-light text-primary"> Candidate type:</span>
+                {{object.type}}</span>
+              <span><span class="font-light text-primary">Open from:</span>{{object.open_from}}</span>
+              <span><span class="font-light text-primary">Open to:</span> {{object.open_to}}</span>
+              <button mat-stroked-button color="primary"
+                [routerLink]="['/examinations/examination-form', object.uuid]">Edit Exam</button>
+              <button mat-raised-button color="accent"
+                [routerLink]="['/examinations/examination-form', object.uuid]">Print attendance sheet</button>
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="" *ngIf="errorLoadingData">
+        <b>Error loading data. Please try again</b>
+        <button mat-raised-button (click)="getExamDetails()">Reload</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-tab-group *ngIf="object != null">
+    <mat-tab label="Add new candidates">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-add-exam-registration></app-add-exam-registration>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Approve/deny candidates">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Download applicants">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Set results">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Pass list">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Fail list">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="All candidates">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

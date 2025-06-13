@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { AuthService } from './core/auth/auth.service';
+import { BehaviorSubject } from 'rxjs';
 import { HttpService } from './core/services/http/http.service';
 import { API_PATH } from './shared/utils/constants';
 import { AppSettings } from './shared/types/AppSettings.model';
@@ -26,9 +25,13 @@ export class AppService {
       availabilityCategories: [],
       sessions: {}
     },
+    examinations: {
+      filterFields: [],
+      defaultLetterTypes: []
+    }
   });
   constructor(
-    private dbService: HttpService,) {
+    private dbService: HttpService) {
     this.dbService.get<AppSettings>(API_PATH + '/app-settings').subscribe({
       next: (response) => {
         this.appSettings.next(response)

@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <app-select-object [embedSearchResults]="false" [type]="'search'"
+        [url]="'licenses/details?licenseType=exam_candidates'" selection_mode="multiple"
+        (selectionChanged)="onLicenseSelected($event)"></app-select-object>
+    </mat-card-content>
+    <div class="flex gap-1">
+      <button [disabled]="selectedLicenses.length === 0" mat-stroked-button color="warn"
+        (click)="clearSelectedLicenses()">Clear All</button>
+
+      <button [disabled]="selectedLicenses.length === 0" mat-raised-button color="primary"
+        (click)="setIndexNumbers()">Assign index numbers</button>
+    </div>
+
+    <mat-list>
+      <mat-list-item *ngFor="let license of selectedLicenses"
+        class="border-b border-gray-200 flex justify-between items-center">
+        <span matListItemTitle>{{ license.name }}</span>
+        <span matListItemLine>{{ license.license_number }}</span>
+
+        <button mat-icon-button color="warn" (click)="removeLicense(license)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item *ngIf="selectedLicenses.length === 0">
+        No licenses selected.
+      </mat-list-item>
+    </mat-list>
+  </mat-card>
+</div>

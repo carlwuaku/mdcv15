@@ -1,0 +1,9 @@
+<div class="flex flex-col gap-1">
+
+  <mat-card>
+    <mat-card-content>
+      <app-examinations-list [url]="url" [can_delete]="can_delete" [can_edit]="can_edit" [filters]="filters"
+        (onFilterSubmitted)="filterSubmitted($event)"></app-examinations-list>
+    </mat-card-content>
+  </mat-card>
+</div>

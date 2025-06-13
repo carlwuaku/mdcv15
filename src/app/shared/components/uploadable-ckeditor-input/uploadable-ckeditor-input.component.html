@@ -1,0 +1,9 @@
+<div class="flex flex-col gap-2">
+  <p>You can upload a word document or enter the template below.</p>
+
+  <button mat-stroked-button class="self-start" color="primary" type="button" (click)="triggerFileInput()">Select Word
+    Document</button>
+
+  <input class="hidden" [accept]="" #fileInput type="file" (change)="uploadDocx($event)">
+  <app-ckeditor #editor [value]="value" [name]="name" (valueChange)="setContent($event)"></app-ckeditor>
+</div>

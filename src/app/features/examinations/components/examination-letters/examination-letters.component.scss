@@ -1,0 +1,131 @@
+.examination-letters-container {
+  margin: 20px 0;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0;
+      color: #333;
+    }
+  }
+
+  .letter-panel {
+    margin-bottom: 16px;
+
+    .letter-form-content {
+      padding: 16px 0;
+
+      .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        .form-field {
+          flex: 1;
+        }
+      }
+
+      .full-width {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+
+      .criteria-section {
+        margin-top: 24px;
+        padding: 16px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+
+        .criteria-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+
+          h4 {
+            margin: 0;
+            color: #555;
+            font-size: 16px;
+          }
+        }
+
+        .criteria-item {
+          margin-bottom: 12px;
+          padding: 12px;
+          background-color: white;
+          border-radius: 6px;
+          border: 1px solid #e0e0e0;
+
+          .criteria-form-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+
+            .criteria-field {
+              flex: 1;
+            }
+
+            .remove-criteria-btn {
+              margin-top: 8px;
+              flex-shrink: 0;
+            }
+          }
+        }
+      }
+
+      .letter-actions {
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .examination-letters-container {
+    .section-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .letter-form-content {
+      .form-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .criteria-section {
+        .criteria-item {
+          .criteria-form-row {
+            flex-direction: column;
+            gap: 8px;
+
+            .remove-criteria-btn {
+              align-self: flex-end;
+              margin-top: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Material theme adjustments
+.mat-expansion-panel-header-title {
+  font-weight: 500;
+}
+
+.mat-expansion-panel-header-description {
+  justify-content: flex-end;
+  text-transform: capitalize;
+}

@@ -93,7 +93,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   search() {
     this.loading = true;
     this.searchRan = false;
-    const searchUrl = this.url + `?param=${this.search_param}`;
+    const searchUrl = this.url.includes("?") ? this.url + `&param=${this.search_param}` : this.url + `?param=${this.search_param}`;
     this.dbService.get<any>(searchUrl).pipe(take(1))
       .subscribe({
         next: (data: any) => {

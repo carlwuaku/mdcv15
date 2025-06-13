@@ -1,0 +1,113 @@
+<div class="examination-letters-container">
+  <div class="section-header">
+    <h3>Examination Letters</h3>
+    <button mat-raised-button color="primary" (click)="addLetter()" type="button">
+      <mat-icon>add</mat-icon>
+      Add Letter
+    </button>
+  </div>
+
+  <form [formGroup]="lettersForm">
+    <div formArrayName="letters">
+      <mat-accordion multi="true">
+        <mat-expansion-panel *ngFor="let letterControl of lettersFormArray.controls; let i = index" [formGroupName]="i"
+          class="letter-panel">
+
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ letterControl.get('name')?.value || 'New Letter' }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ getLetterTypeDisplayName(letterControl.get('type')?.value) }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="letter-form-content">
+            <!-- Letter Basic Information -->
+            <div class="form-row">
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label>Letter Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter letter name">
+                <mat-error *ngIf="letterControl.get('name')?.hasError('required')">
+                  Letter name is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="form-field">
+                <mat-label>Letter Type</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option *ngFor="let type of letterTypes" [value]="type">
+                    {{ getLetterTypeDisplayName(type) }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="letterControl.get('type')?.hasError('required')">
+                  Letter type is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Letter Content -->
+            <div class="full-width">
+              <mat-label>Letter Content</mat-label>
+              <app-uploadable-ckeditor-input name="{{i}}_content" [value]="letterControl.get('content')?.value"
+                (valueChange)="setLetterControlContent(i, $event)"></app-uploadable-ckeditor-input>
+              <!-- <textarea matInput formControlName="content" rows="6" placeholder="Enter the letter content...">
+              </textarea> -->
+              <mat-error *ngIf="letterControl.get('content')?.hasError('required')">
+                Letter content is required
+              </mat-error>
+            </div>
+
+            <!-- Criteria Section -->
+            <div class="criteria-section">
+              <div class="criteria-header">
+                <h4>Criteria</h4>
+                <button mat-stroked-button color="accent" (click)="addCriteria(i)" type="button">
+                  <mat-icon>add</mat-icon>
+                  Add Criteria
+                </button>
+              </div>
+
+              <div formArrayName="criteria">
+                <div *ngFor="let criteriaControl of getCriteriaFormArray(i).controls; let j = index" [formGroupName]="j"
+                  class="criteria-item">
+
+                  <div class="criteria-form-row">
+                    <mat-form-field appearance="fill" class="criteria-field">
+                      <mat-label>Field</mat-label>
+                      <input matInput formControlName="field" placeholder="Field name">
+                      <mat-error *ngIf="criteriaControl.get('field')?.hasError('required')">
+                        Field is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="criteria-field">
+                      <mat-label>Value</mat-label>
+                      <input matInput formControlName="value" placeholder="Field value">
+                      <mat-error *ngIf="criteriaControl.get('value')?.hasError('required')">
+                        Value is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <button mat-icon-button color="warn" (click)="removeCriteria(i, j)" type="button"
+                      class="remove-criteria-btn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Letter Actions -->
+            <div class="letter-actions">
+              <button mat-stroked-button color="warn" (click)="removeLetter(i)" type="button">
+                <mat-icon>delete</mat-icon>
+                Remove Letter
+              </button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</div>

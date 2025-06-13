@@ -1,16 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CpdObject } from '../../models/cpd_model';
 import { CpdAttendanceObject } from '../../models/cpd_attendance_model';
-import { CpdSessionObject } from '../../models/cpd_session_model';
-import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { AuthService } from 'src/app/core/auth/auth.service';
-import { TitleService } from 'src/app/core/services/title/title.service';
-import { API_ADMIN_PATH, API_CPD_PATH } from 'src/app/shared/utils/constants';
-import { PractitionerObject, PractitionerTypes } from 'src/app/features/practitioners/models/practitioner_model';
-import { take } from 'rxjs';
 import { CpdService } from '../../cpd.service';
 
 @Component({
