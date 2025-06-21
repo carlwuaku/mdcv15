@@ -2,9 +2,36 @@
   <h1>Assign index numbers to candidates</h1>
 </div>
 <div mat-dialog-content>
-
-  <app-table [columnLabels]="columnLabels" [dataSource]="tableDataSource"
-    [displayedColumns]="displayedColumns"></app-table>
+  <div class="flex gap-1">
+    <mat-form-field>
+      <mat-select [(ngModel)]="sortBy" name="sortBy" (ngModelChange)="sortByChanged($event)">
+        <mat-option value="intern_code">Intern code</mat-option>
+        <mat-option value="last_name">Last Name</mat-option>
+        <mat-option value="first_name">First Name</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select [(ngModel)]="sortDirection" name="sortDirection" (ngModelChange)="sortFieldChanged($event)">
+        <mat-option value="asc">Ascending</mat-option>
+        <mat-option value="desc">Descending</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="flex gap-1">
+    <form ngNativeValidate (ngSubmit)="autoIndex()">
+      <mat-form-field>
+        <mat-label>Prefix</mat-label>
+        <input matInput [(ngModel)]="indexPrefix" name="indexPrefix" required>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Start point</mat-label>
+        <input matInput type="number" [(ngModel)]="autoCountStart" name="autoCountStart" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Auto-generate index numbers</button>
+    </form>
+  </div>
+  <app-table [columnLabels]="columnLabels" [dataSource]="tableDataSource" [displayedColumns]="displayedColumns"
+    [editableColumns]="editableColumns" [enableInlineEditing]="true"></app-table>
 </div>
 <div mat-dialog-actions>
   <button mat-stroked-button color="error" [mat-dialog-close]="false">Cancel</button>

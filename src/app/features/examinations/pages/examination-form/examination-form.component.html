@@ -2,8 +2,9 @@
   <mat-card-content>
     <app-loading *ngIf="!loaded"></app-loading>
     <app-form-generator *ngIf="loaded" [url]="formUrl" [fields]="fields" [existingObjectUrl]="existingUrl"
-      (onSubmit)="submitForm($event)" [id]="id" [extraData]="extraFormData" [formType]="'emit'">
-      <app-examination-letters [letters]="letters" (lettersChange)="onLettersChange($event)">
+      (onSubmit)="submitForm($event)" (onExistingDataLoaded)="setLetters($event)" [id]="id" [extraData]="extraFormData"
+      [formType]="'emit'">
+      <app-examination-letters [letters]="initialLetters" (lettersChange)="onLettersChange($event)">
       </app-examination-letters>
     </app-form-generator>
   </mat-card-content>

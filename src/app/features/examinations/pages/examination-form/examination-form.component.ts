@@ -8,6 +8,7 @@ import { goBackHome } from 'src/app/shared/utils/helper';
 import { ExaminationService } from '../../examination.service';
 import { ExaminationLetterObject } from '../../models/examination-letter.model';
 import { AppService } from 'src/app/app.service';
+import { ExaminationObject } from '../../models/examination.model';
 
 @Component({
   selector: 'app-examination-form',
@@ -26,14 +27,12 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
   destroy$: Subject<boolean> = new Subject();
   queryParams: { [key: string]: string } = {};
   public letters: ExaminationLetterObject[] = [];
+  public initialLetters: ExaminationLetterObject[] = [];
   constructor(private service: ExaminationService, private ar: ActivatedRoute, private appService: AppService, private router: Router, private notify: NotifyService) {
     this.id = ar.snapshot.params['id'];
 
     if (this.id) {
-      if (!this.id) {
-        goBackHome("No exam id defined");
-        return;
-      }
+
       this.title = `Edit exam details`;
       this.existingUrl = `examinations/details/${this.id}`;
       this.formUrl = `examinations/details/${this.id}`;
@@ -153,7 +152,7 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
     formData['letters'] = this.letters;
 
     // Call the service to submit the form
-    this.service.submitExaminationForm(formData).subscribe({
+    this.service.submitExaminationForm(formData, this.id).subscribe({
       next: () => {
         this.notify.successNotification("Examination details saved successfully");
         this.router.navigate(['/examinations']);
@@ -164,5 +163,11 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
       }
     });
 
+  }
+
+  setLetters(exam: ExaminationObject) {
+    console.log("Setting letters for exam:", exam);
+    this.letters = exam.letters || [];
+    this.initialLetters = exam.letters || [];
   }
 }

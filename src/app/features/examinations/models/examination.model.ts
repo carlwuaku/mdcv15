@@ -1,3 +1,5 @@
+import { ExaminationLetterObject } from "./examination-letter.model";
+
 export interface ExaminationObject {
   uuid: string;
   id: string;
@@ -13,4 +15,5 @@ export interface ExaminationObject {
   created_at: string;
   updated_at: string;
   metadata: Record<string, any>[];
+  letters?: ExaminationLetterObject[];
 }

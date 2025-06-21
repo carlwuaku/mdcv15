@@ -31,12 +31,13 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-tab-group *ngIf="object != null">
+  <mat-tab-group *ngIf="object != null && id">
     <mat-tab label="Add new candidates">
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-            <app-add-exam-registration></app-add-exam-registration>
+            <app-add-exam-registration [exam]="object"
+              (onRegistrationAdded)="registrationAdded($event)"></app-add-exam-registration>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -45,6 +46,7 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-examination-applications-list [urlFilters]="'exam_id='+object.id"></app-examination-applications-list>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -57,7 +59,10 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Set results">
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Set results <span class="badge badge-primary">{{resultNotSetCount}}</span> </div>
+      </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -65,7 +70,10 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Pass list">
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Pass list <span class="badge badge-primary">{{passedCount}}</span> </div>
+      </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -73,7 +81,10 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Fail list">
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Fail list <span class="badge badge-primary">{{failedCount}}</span> </div>
+      </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -81,10 +92,15 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="All candidates">
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>All candidates <span class="badge badge-primary">{{totalCount}}</span> </div>
+      </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-examination-registrations-list [urlFilters]="'exam_id='+object.id"
+              (onRegistrationDeleted)="registrationDeleted()"></app-examination-registrations-list>
           </mat-card-content>
         </mat-card>
       </ng-template>

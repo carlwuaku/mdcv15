@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{title}} - {{registration?.first_name}} {{registration?.last_name}}</h2>
+<mat-dialog-content class="flex flex-col gap-2">
+  <p class="italic">Select a template from the dropdown below or manually enter the letter contents. As with other
+    templates, you can use variables by enclosing them in square brackets. E.g. [first_name]. These variables will be
+    replaced with the details of the candidate/examination where applicable
+  </p>
+  <app-select-object (dataDownloaded)="templatesLoaded($event)" [emitDownload]="true" [url]="'print-queue/templates'"
+    [labelProperty]="'template_name' " [keyProperty]="'template_name'" [type]="'select'" [selection_mode]=" 'single'"
+    (selectionChanged)="onTemplateChange($event)">
+  </app-select-object>
+
+  <app-uploadable-ckeditor-input name="letter_content" [value]="initialContent"
+    (valueChange)="setLetterContent($event)"></app-uploadable-ckeditor-input>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button [color]="'warn'" mat-dialog-close>Cancel</button>
+  <button mat-raised-button [color]="'primary'" (click)="saveLetter()"
+    [disabled]="registration === null">Submit</button>
+</mat-dialog-actions>

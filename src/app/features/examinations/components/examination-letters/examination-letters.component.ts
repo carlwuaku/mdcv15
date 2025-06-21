@@ -1,5 +1,5 @@
 
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ExaminationLetterObject, ExaminationLetterType, ExaminationLetterCriteriaObject } from '../../models/examination-letter.model';
@@ -9,7 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './examination-letters.component.html',
   styleUrls: ['./examination-letters.component.scss']
 })
-export class ExaminationLettersComponent implements OnInit, OnDestroy {
+export class ExaminationLettersComponent implements OnInit, OnChanges, OnDestroy {
   @Input() letters: ExaminationLetterObject[] = [];
   @Output() lettersChange = new EventEmitter<ExaminationLetterObject[]>();
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -18,11 +18,13 @@ export class ExaminationLettersComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private dialog: MatDialog
   ) {
     this.lettersForm = this.fb.group({
       letters: this.fb.array([])
     });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.initializeForm();
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);

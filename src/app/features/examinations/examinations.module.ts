@@ -14,6 +14,7 @@ import { AddExamRegistrationComponent } from './components/add-exam-registration
 import { ExaminationRegistrationsListComponent } from './components/examination-registrations-list/examination-registrations-list.component';
 import { ExaminationApplicationsListComponent } from './components/examination-applications-list/examination-applications-list.component';
 import { AssignIndexNumbersComponent } from './components/assign-index-numbers/assign-index-numbers.component';
+import { SetCustomLetterComponent } from './components/set-custom-letter/set-custom-letter.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { AssignIndexNumbersComponent } from './components/assign-index-numbers/a
     AddExamRegistrationComponent,
     ExaminationRegistrationsListComponent,
     ExaminationApplicationsListComponent,
-    AssignIndexNumbersComponent
+    AssignIndexNumbersComponent,
+    SetCustomLetterComponent
   ],
   imports: [
     CommonModule,

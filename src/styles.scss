@@ -860,7 +860,7 @@ tr:nth-child(even) {
 
 .badge-primary {
   background-color: lightblue;
-  color: blue;
+  color: mat-color($my-app-primary);
   display: inline-flex;
   align-items: center;
 }

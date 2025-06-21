@@ -6,6 +6,15 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { FieldTemplateDirective } from '../form-generator/form-generator.component';
+
+export interface EditableColumn {
+  field: string;
+  type: 'text' | 'number' | 'select' | 'date' | 'checkbox';
+  options?: { value: any; label: string }[]; // For select type
+  validator?: (value: any) => boolean;
+  readonly?: boolean;
+}
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -16,16 +25,24 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Input() columnLabels?: { [key: string]: string };
   @Input() rowSelection: "single" | "multiple" | undefined = "multiple"
   @Input() displayedColumns: string[] = [];
+  @Input() editableColumns: EditableColumn[] = []; // New input for editable columns
+  @Input() enableInlineEditing: boolean = false; // Toggle for edit mode
   selection = new SelectionModel<any>(true, []);
   @Input() specialClasses: { [key: string]: string } = {};
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
   @Input() offset: number = 0;
   destroy$: Subject<boolean> = new Subject();
   @Output() onSelect = new EventEmitter();
+  @Output() onCellValueChange = new EventEmitter<{ row: any, field: string, oldValue: any, newValue: any }>();
+  @Output() onRowSave = new EventEmitter<{ row: any, changes: any }>();
   @ViewChild(MatSort) sort!: MatSort;
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
   private templateMap = new Map<string, TemplateRef<any>>();
   @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
+  editingRows = new Set<any>();
+  originalValues = new Map<any, any>();
+  editableColumnMap = new Map<string, EditableColumn>();
+
   constructor() { }
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
@@ -37,6 +54,10 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.onSelect.emit(data.source.selected)
     })
+    // Create a map for quick lookup of editable columns
+    this.editableColumns.forEach(col => {
+      this.editableColumnMap.set(col.field, col);
+    });
   }
 
 
@@ -129,5 +150,77 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   getCustomTemplate(fieldName: string): TemplateRef<any> | null {
     return this.templateMap.get(fieldName) || null;
+  }
+
+
+  // New methods for editable functionality
+  isColumnEditable(column: string): boolean {
+    return this.editableColumnMap.has(column) && this.enableInlineEditing;
+  }
+
+  isRowEditing(row: any): boolean {
+    return this.editingRows.has(row);
+  }
+
+  startEditRow(row: any): void {
+    // Store original values for potential rollback
+    this.originalValues.set(row, { ...row });
+    this.editingRows.add(row);
+  }
+
+  saveRow(row: any): void {
+    const originalRow = this.originalValues.get(row);
+    const changes: any = {};
+
+    // Find what changed
+    for (const key in row) {
+      if (originalRow && originalRow[key] !== row[key]) {
+        changes[key] = {
+          oldValue: originalRow[key],
+          newValue: row[key]
+        };
+      }
+    }
+
+    this.editingRows.delete(row);
+    this.originalValues.delete(row);
+
+    if (Object.keys(changes).length > 0) {
+      this.onRowSave.emit({ row, changes });
+    }
+  }
+
+  cancelEdit(row: any): void {
+    const originalRow = this.originalValues.get(row);
+    if (originalRow) {
+      // Restore original values
+      Object.assign(row, originalRow);
+    }
+
+    this.editingRows.delete(row);
+    this.originalValues.delete(row);
+  }
+
+  onCellEdit(row: any, field: string, newValue: any): void {
+    const oldValue = row[field];
+    const editableColumn = this.editableColumnMap.get(field);
+
+    // Validate if validator exists
+    if (editableColumn?.validator && !editableColumn.validator(newValue)) {
+      return; // Don't update if validation fails
+    }
+
+    row[field] = newValue;
+    this.onCellValueChange.emit({ row, field, oldValue, newValue });
+  }
+
+  getEditableColumnConfig(field: string): EditableColumn | undefined {
+    return this.editableColumnMap.get(field);
+  }
+
+  // Helper method to get select options for a field
+  getSelectOptions(field: string): { value: any; label: string }[] {
+    const config = this.editableColumnMap.get(field);
+    return config?.options || [];
   }
 }

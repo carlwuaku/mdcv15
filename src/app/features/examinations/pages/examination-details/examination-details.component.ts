@@ -3,6 +3,7 @@ import { ExaminationObject } from '../../models/examination.model';
 import { ExaminationService } from '../../examination.service';
 import { ActivatedRoute } from '@angular/router';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { ExaminationRegistrationObject } from '../../models/examination-registration.model';
 
 @Component({
   selector: 'app-examination-details',
@@ -21,6 +22,12 @@ export class ExaminationDetailsComponent implements OnInit {
   errorLoadingData: boolean = false;
   displayedColumns: string[] = []
   headerTabs: { label: string, key: string }[] = [];
+
+  resultNotSetCount: number = 0;
+  failedCount: number = 0;
+  passedCount: number = 0;
+  totalCount: number = 0;
+
   constructor(private service: ExaminationService, private notify: NotifyService,
     ar: ActivatedRoute) {
     this.id = ar.snapshot.params['id'];
@@ -29,6 +36,7 @@ export class ExaminationDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.getExamDetails();
+
   }
 
   getExamDetails() {
@@ -37,7 +45,7 @@ export class ExaminationDetailsComponent implements OnInit {
     this.errorLoadingData = false;
     this.service.getExamDetails(this.id!).subscribe({
       next: data => {
-        this.object = data;
+        this.object = data.data;
         this.isLoading = false;
         this.errorLoadingData = false;
         this.headerTabs = [
@@ -45,6 +53,22 @@ export class ExaminationDetailsComponent implements OnInit {
           { label: "Practitioner type", key: this.object.type || "" },
           { label: "open from", key: this.object.open_from || "" },
           { label: "Open to", key: this.object.open_to || "" }]
+        this.getExamResultCounts(data.data.id);
+      },
+      error: error => {
+        this.isLoading = false;
+        this.errorLoadingData = true;
+      }
+    });
+  }
+
+  getExamResultCounts(id: string) {
+    this.service.getExaminationResultCounts(id).subscribe({
+      next: data => {
+        this.resultNotSetCount = data.not_set || 0;
+        this.failedCount = data.fail || 0;
+        this.passedCount = data.pass || 0;
+        this.totalCount = this.resultNotSetCount + this.failedCount + this.passedCount;
         // this.getAttendees();
       },
       error: error => {
@@ -52,5 +76,13 @@ export class ExaminationDetailsComponent implements OnInit {
         this.errorLoadingData = true;
       }
     });
+  }
+
+  registrationAdded(objects: ExaminationRegistrationObject[]) {
+    this.getExamResultCounts(this.object!.id);
+  }
+
+  registrationDeleted() {
+    this.getExamResultCounts(this.object!.id);
   }
 }

@@ -253,6 +253,14 @@ export function updateUrlQueryParamValue(url: string, paramName: string, paramVa
 
 }
 
+export function sortObjectsByField(field: string, sortDirection: string, objects: any[]): any[] {
+  if (sortDirection === "asc") {
+    return objects.sort((a, b) => a[field] > b[field] ? 1 : -1);
+  } else {
+    return objects.sort((a, b) => a[field] < b[field] ? 1 : -1);
+  }
+}
+
 
 
 

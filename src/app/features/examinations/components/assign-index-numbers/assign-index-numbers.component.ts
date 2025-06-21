@@ -5,6 +5,8 @@ import { ExaminationRegistrationObject } from '../../models/examination-registra
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { ExaminationService } from '../../examination.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { EditableColumn } from 'src/app/shared/components/table/table.component';
+import { sortObjectsByField } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-assign-index-numbers',
@@ -20,6 +22,13 @@ export class AssignIndexNumbersComponent {
   columnLabels: { [key: string]: string } = {
     license_number: 'Intern Code',
   }
+  editableColumns: EditableColumn[] = [
+    { field: 'index_number', type: 'text', validator: (value) => value.length > 0 }
+  ];
+  autoCountStart: number | undefined = undefined;
+  indexPrefix: string = "";
+  sortDirection: string = "asc";
+  sortBy: string = "intern_code";
   constructor(
     public dialogRef: MatDialogRef<AssignIndexNumbersComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { candidates: LicenseObject[], examId: string }, private notify: NotifyService, private service: ExaminationService) {
@@ -88,6 +97,33 @@ export class AssignIndexNumbersComponent {
         this.notify.failNotification('Failed to assign index numbers');
       }
     });
-    this.dialogRef.close(true);
+    this.dialogRef.close(this.registrations);
+  }
+
+  autoIndex() {
+    if (!this.autoCountStart) {
+      this.notify.failNotification('Please enter a starting number');
+      return;
+    }
+    for (let i = 0; i < this.registrations.length; i++) {
+      let count = i + this.autoCountStart;
+      let padded = count.toString().padStart(3, "0")
+      let index = this.indexPrefix + padded;
+      this.registrations[i].index_number = index;
+    }
+  }
+
+  sortRegistrations(field: string, direction: string) {
+    this.registrations = sortObjectsByField(field, direction, this.registrations);
+    this.tableDataSource = new MatTableDataSource<ExaminationRegistrationObject>(this.registrations);
+  }
+
+  sortByChanged(field: string) {
+    this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+    this.sortRegistrations(field, this.sortDirection);
+  }
+
+  sortFieldChanged(field: string) {
+    this.sortRegistrations(field, this.sortDirection);
   }
 }
