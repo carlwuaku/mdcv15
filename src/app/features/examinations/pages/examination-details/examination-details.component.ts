@@ -85,4 +85,8 @@ export class ExaminationDetailsComponent implements OnInit {
   registrationDeleted() {
     this.getExamResultCounts(this.object!.id);
   }
+
+  resultChanged() {
+    this.getExamResultCounts(this.object!.id);
+  }
 }

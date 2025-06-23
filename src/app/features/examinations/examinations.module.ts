@@ -15,6 +15,10 @@ import { ExaminationRegistrationsListComponent } from './components/examination-
 import { ExaminationApplicationsListComponent } from './components/examination-applications-list/examination-applications-list.component';
 import { AssignIndexNumbersComponent } from './components/assign-index-numbers/assign-index-numbers.component';
 import { SetCustomLetterComponent } from './components/set-custom-letter/set-custom-letter.component';
+import { SetResultsComponent } from './components/set-results/set-results.component';
+import { SetResultsDialogComponent } from './components/set-results-dialog/set-results-dialog.component';
+import { PassFailListComponent } from './components/pass-fail-list/pass-fail-list.component';
+import { ManagePublishResultComponent } from './components/manage-publish-result/manage-publish-result.component';
 
 
 @NgModule({
@@ -30,7 +34,11 @@ import { SetCustomLetterComponent } from './components/set-custom-letter/set-cus
     ExaminationRegistrationsListComponent,
     ExaminationApplicationsListComponent,
     AssignIndexNumbersComponent,
-    SetCustomLetterComponent
+    SetCustomLetterComponent,
+    SetResultsComponent,
+    SetResultsDialogComponent,
+    PassFailListComponent,
+    ManagePublishResultComponent
   ],
   imports: [
     CommonModule,

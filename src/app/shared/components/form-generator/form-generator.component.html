@@ -154,6 +154,9 @@
       <mat-date-range-picker #rangepicker></mat-date-range-picker>
     </mat-form-field>
 
+    <app-string-array-input *ngSwitchCase="'list'" [items]="field.value" [name]="field.name"
+      (valueChanged)="setFieldValue($event, field)"></app-string-array-input>
+
 
     <mat-form-field *ngSwitchDefault>
 

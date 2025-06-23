@@ -33,7 +33,7 @@
   <app-table [columnLabels]="columnLabels" [dataSource]="tableDataSource" [displayedColumns]="displayedColumns"
     [editableColumns]="editableColumns" [enableInlineEditing]="true"></app-table>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions align="end">
   <button mat-stroked-button color="error" [mat-dialog-close]="false">Cancel</button>
   <button mat-raised-button color="primary" (click)="submitIndexNumbers()">Save</button>
 </div>

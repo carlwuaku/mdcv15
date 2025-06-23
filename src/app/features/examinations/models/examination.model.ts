@@ -16,4 +16,5 @@ export interface ExaminationObject {
   updated_at: string;
   metadata: Record<string, any>[];
   letters?: ExaminationLetterObject[];
+  scores_names: string[]
 }

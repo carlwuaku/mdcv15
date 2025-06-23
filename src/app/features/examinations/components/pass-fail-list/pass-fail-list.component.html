@@ -1,4 +1,4 @@
-<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
+<app-load-data-list #list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
   (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
   [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false" [filters]="filters" [showAllFilters]="true"
   [showSort]="false" [showSearch]="false" [showTableTitle]="false" (onSelect)="setSelectedItems($event)"
@@ -6,8 +6,11 @@
   <ng-template #selectionOptions>
     <div class="flex gap-1 items-center">
       <app-export-table [objects]="selectedItems"></app-export-table>
-      <ng-content select="[selectionOptions]"></ng-content>
+      <app-prep-messaging #prepAllMessage [emailField]="'email'" [objects]="selectedItems"></app-prep-messaging>
+      <app-manage-publish-result [registrations]="selectedItems"
+        (resultPublished)="onResultPublished()"></app-manage-publish-result>
     </div>
   </ng-template>
 
 </app-load-data-list>
+<app-prep-messaging #prepNewlyPublishedMessage></app-prep-messaging>

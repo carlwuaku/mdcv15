@@ -4,7 +4,7 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { ApiResponseObject } from 'src/app/shared/types/ApiResponseObject';
 import { ExaminationObject } from './models/examination.model';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
-import { ExaminationRegistrationObject } from './models/examination-registration.model';
+import { ExaminationPublishResultObject, ExaminationRegistrationObject, ExaminationResultObject } from './models/examination-registration.model';
 import { ExaminationApplicationObject } from './models/examination-application.model';
 @Injectable({
   providedIn: 'root'
@@ -69,8 +69,24 @@ export class ExaminationService {
     return this.dbService.delete<{ message: string }>("examinations/applications/" + id).pipe(take(1));
   }
 
-  removeCustomLetter(uuid: string, type: "registration" | "result"): Observable<{ message: string }> {
+  removeCustomLetter(id: string, type: "registration" | "result"): Observable<{ message: string }> {
     const letterType = type === 'registration' ? 'registration_letter' : 'result_letter';
-    return this.dbService.put<{ message: string }>(`examinations/registrations/${uuid}`, { [letterType]: null }).pipe(take(1));
+    return this.dbService.put<{ message: string }>(`examinations/registrations/${id}`, { data: { [letterType]: null } }).pipe(take(1));
+  }
+
+  setResults(data: ExaminationResultObject[]): Observable<{ message: string }> {
+    return this.dbService.post<{ message: string }>('examinations/registrations/result', { data }).pipe(take(1));
+  }
+
+  removeResults(uuid: string): Observable<{ message: string }> {
+    return this.dbService.delete<{ message: string }>(`examinations/registrations/${uuid}/result`).pipe(take(1));
+  }
+
+  publishResults(data: ExaminationPublishResultObject[]): Observable<{ message: string }> {
+    return this.dbService.put<{ message: string }>('examinations/registrations/result/publish', { data }).pipe(take(1));
+  }
+
+  unpublishResults(data: ExaminationPublishResultObject[]): Observable<{ message: string }> {
+    return this.dbService.put<{ message: string }>('examinations/registrations/result/unpublish', { data }).pipe(take(1));
   }
 }

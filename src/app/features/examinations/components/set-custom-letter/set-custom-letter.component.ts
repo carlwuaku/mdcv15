@@ -1,11 +1,10 @@
-import { Component, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { Template } from 'src/app/shared/components/print-table/Template.model';
 import { ExaminationRegistrationObject } from '../../models/examination-registration.model';
 import { ExaminationService } from '../../examination.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { ConfirmPostingsComponent } from 'src/app/features/housemanship/components/confirm-postings/confirm-postings.component';
 
 @Component({
   selector: 'app-set-custom-letter',
@@ -21,7 +20,7 @@ export class SetCustomLetterComponent implements OnInit, OnDestroy {
   registration: ExaminationRegistrationObject | null = null;
   letterContent: string = "";
   letterType: "registration" | "result" = "registration";
-  constructor(private dialog: MatDialog, public dialogRef: MatDialogRef<ConfirmPostingsComponent>,
+  constructor(private dialog: MatDialog, public dialogRef: MatDialogRef<SetCustomLetterComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: { registration: ExaminationRegistrationObject, letterType: "registration" | "result" },
     private service: ExaminationService, private notify: NotifyService) {
     this.registration = dialogData.registration;

@@ -16,7 +16,10 @@
             <th sticky mat-header-cell *matHeaderCellDef>#</th>
           </span>
           <span *ngSwitchCase="'actions'">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <ng-container *ngIf="showActions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+            </ng-container>
+
           </span>
           <span *ngSwitchCase="'edit-actions'">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
@@ -57,49 +60,52 @@
 
             <!-- Regular Actions Column -->
             <span *ngSwitchCase="'actions'">
-              <!-- if element.actions has only one item, show a single button. else display the menu button -->
-              <span *ngIf="element.actions.length === 1; else menuButton">
-                <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
-                  (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
-                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
-                  <span>{{ element.actions[0].label }}</span>
-                </button>
-
-                <a mat-button color="primary" *ngIf="element.actions[0].type === 'link'"
-                  routerLink="/{{element.actions[0].link}}/{{element[element.actions[0].linkProp]}}"
-                  [queryParams]="element.actions[0].urlParams">
-                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
-                  <span>{{ element.actions[0].label }}</span>
-                </a>
-              </span>
-
-              <ng-template #menuButton>
-                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
-                  aria-label="Example icon-button with a menu">
-                  <mat-icon>expand_more</mat-icon> Menu
-                </button>
-                <mat-menu #menu="matMenu">
-                  <ng-container *ngFor="let action of element.actions">
-                    <ng-container [ngTemplateOutlet]="action.type === 'button' ? buttonTemplate : linkTemplate"
-                      [ngTemplateOutletContext]="{ action: action }">
-                    </ng-container>
-                  </ng-container>
-                </mat-menu>
-
-                <ng-template #buttonTemplate let-action="action">
-                  <button (click)="action.onClick(element)" mat-menu-item>
-                    <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
-                    <span>{{ action.label }}</span>
+              <ng-container *ngIf="showActions">
+                <span *ngIf="element.actions.length === 1; else menuButton">
+                  <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
+                    (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
+                    <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
+                    <span>{{ element.actions[0].label }}</span>
                   </button>
-                </ng-template>
 
-                <ng-template #linkTemplate let-action="action">
-                  <a routerLink="/{{action.link}}/{{element[action.linkProp]}}" mat-menu-item>
-                    <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
-                    <span>{{ action.label }}</span>
+                  <a mat-button color="primary" *ngIf="element.actions[0].type === 'link'"
+                    routerLink="/{{element.actions[0].link}}/{{element[element.actions[0].linkProp]}}"
+                    [queryParams]="element.actions[0].urlParams">
+                    <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
+                    <span>{{ element.actions[0].label }}</span>
                   </a>
+                </span>
+
+                <ng-template #menuButton>
+                  <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
+                    aria-label="Example icon-button with a menu">
+                    <mat-icon>expand_more</mat-icon> Menu
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <ng-container *ngFor="let action of element.actions">
+                      <ng-container [ngTemplateOutlet]="action.type === 'button' ? buttonTemplate : linkTemplate"
+                        [ngTemplateOutletContext]="{ action: action }">
+                      </ng-container>
+                    </ng-container>
+                  </mat-menu>
+
+                  <ng-template #buttonTemplate let-action="action">
+                    <button (click)="action.onClick(element)" mat-menu-item>
+                      <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
+                      <span>{{ action.label }}</span>
+                    </button>
+                  </ng-template>
+
+                  <ng-template #linkTemplate let-action="action">
+                    <a routerLink="/{{action.link}}/{{element[action.linkProp]}}" mat-menu-item>
+                      <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
+                      <span>{{ action.label }}</span>
+                    </a>
+                  </ng-template>
                 </ng-template>
-              </ng-template>
+              </ng-container>
+              <!-- if element.actions has only one item, show a single button. else display the menu button -->
+
             </span>
 
             <span *ngSwitchCase="'select'">

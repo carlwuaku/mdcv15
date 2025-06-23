@@ -12,10 +12,10 @@
                 {{object.type}}</span>
               <span><span class="font-light text-primary">Open from:</span>{{object.open_from}}</span>
               <span><span class="font-light text-primary">Open to:</span> {{object.open_to}}</span>
-              <button mat-stroked-button color="primary"
-                [routerLink]="['/examinations/examination-form', object.uuid]">Edit Exam</button>
-              <button mat-raised-button color="accent"
-                [routerLink]="['/examinations/examination-form', object.uuid]">Print attendance sheet</button>
+              <button mat-stroked-button color="primary" [routerLink]="['/examinations/edit', object.uuid]">Edit
+                Exam</button>
+              <button mat-raised-button color="accent" [routerLink]="['/examinations/attendance', object.uuid]">Print
+                attendance sheet</button>
             </div>
 
 
@@ -66,6 +66,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-set-results [urlFilters]="'exam_id='+object.id" [examination]="object"
+              (onResultChanged)="resultChanged()"></app-set-results>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -77,6 +79,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Pass'"
+              [examination]="object"></app-pass-fail-list>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -88,6 +92,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Fail'"
+              [examination]="object"></app-pass-fail-list>
           </mat-card-content>
         </mat-card>
       </ng-template>
@@ -99,7 +105,7 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-            <app-examination-registrations-list [urlFilters]="'exam_id='+object.id"
+            <app-examination-registrations-list (onResultDeleted)="resultChanged()" [urlFilters]="'exam_id='+object.id"
               (onRegistrationDeleted)="registrationDeleted()"></app-examination-registrations-list>
           </mat-card-content>
         </mat-card>

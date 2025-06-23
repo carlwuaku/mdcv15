@@ -35,6 +35,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Output() onSelect = new EventEmitter();
   @Output() onCellValueChange = new EventEmitter<{ row: any, field: string, oldValue: any, newValue: any }>();
   @Output() onRowSave = new EventEmitter<{ row: any, changes: any }>();
+  @Input() showActions: boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
   private templateMap = new Map<string, TemplateRef<any>>();

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ExaminationRegistrationObject } from '../../models/examination-registration.model';
+import { ExaminationRegistrationObject, ExaminationResultObject } from '../../models/examination-registration.model';
 import { ExaminationService } from '../../examination.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
@@ -30,6 +30,7 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   selectedItems: ExaminationRegistrationObject[] = [];
   specialClasses: Record<string, string> = {};
   @Output() onRegistrationDeleted = new EventEmitter<ExaminationRegistrationObject>();
+  @Output() onResultDeleted = new EventEmitter<boolean>();
   constructor(private service: ExaminationService, private authService: AuthService,
     private notify: NotifyService, private dialog: MatDialog) {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
@@ -50,6 +51,10 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   }
 
 
+  tableClassRules = {
+    'bg-light-green': (row: ExaminationRegistrationObject) => row.result === 'Pass',
+    'bg-light-red': (row: ExaminationRegistrationObject) => row.result === 'Fail'
+  };
 
   delete(object: ExaminationRegistrationObject) {
     if (!window.confirm(`Are you sure you want to delete this exam registration for ${object.index_number}?`)) {
@@ -97,8 +102,9 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
       { label: "View/Print result letter", type: "link", link: `cpd/attendance`, linkProp: 'uuid' },
       { label: "Set custom registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomRegistrationLetter(object) },
       { label: "Set custom result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomResultLetter(object) },
-      ...(object.registration_letter ? [{ label: "Edit", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "registration") }] : []),
-      ...(object.result_letter ? [{ label: "Edit", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "result") }] : []),
+      ...(object.registration_letter ? [{ label: "Remove registration letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "registration") }] : []),
+      ...(object.result_letter ? [{ label: "Remove result letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "result") }] : []),
+      ...(object.result ? [{ label: "Delete result", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.deleteResult(object) }] : []),
 
       { label: "Delete", type: "button", onClick: (object: ExaminationRegistrationObject) => this.delete(object) }
     ];
@@ -129,10 +135,28 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   }
 
   removeCustomLetter(object: ExaminationRegistrationObject, type: "registration" | "result") {
-    this.service.removeCustomLetter(object.uuid!, type).subscribe({
+    if (!window.confirm(`Are you sure you want to remove the ${type} letter for ${object.index_number}?`)) {
+      return;
+    }
+    this.service.removeCustomLetter(object.id!, type).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
         this.updateTimestamp();
+      },
+      error: error => { }
+    })
+  }
+
+  deleteResult(object: ExaminationRegistrationObject) {
+    if (!window.confirm(`Are you sure you want to remove the result for ${object.index_number}?`)) {
+      return;
+    }
+
+    this.service.removeResults(object.uuid!).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+        this.updateTimestamp();
+        this.onResultDeleted.emit(true)
       },
       error: error => { }
     })
