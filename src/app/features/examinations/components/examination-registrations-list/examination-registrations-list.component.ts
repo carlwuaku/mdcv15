@@ -10,6 +10,7 @@ import { openHtmlInNewWindow } from 'src/app/shared/utils/helper';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetCustomLetterComponent } from '../set-custom-letter/set-custom-letter.component';
+import { TableLegendType } from 'src/app/shared/components/table/tableLegend.model';
 
 @Component({
   selector: 'app-examination-registrations-list',
@@ -31,6 +32,16 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   specialClasses: Record<string, string> = {};
   @Output() onRegistrationDeleted = new EventEmitter<ExaminationRegistrationObject>();
   @Output() onResultDeleted = new EventEmitter<boolean>();
+
+  tableClassRules = {
+    'bg-light-green': (row: ExaminationRegistrationObject) => row.result === 'Pass',
+    'bg-light-red': (row: ExaminationRegistrationObject) => row.result === 'Fail'
+  };
+  tableLegends: TableLegendType[] = [
+    { classrule: 'bg-light-green', label: 'Result: Pass' },
+    { classrule: 'bg-light-red', label: 'Result: Fail' },
+    { classrule: '', label: 'Result not set' }
+  ]
   constructor(private service: ExaminationService, private authService: AuthService,
     private notify: NotifyService, private dialog: MatDialog) {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
@@ -51,10 +62,6 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   }
 
 
-  tableClassRules = {
-    'bg-light-green': (row: ExaminationRegistrationObject) => row.result === 'Pass',
-    'bg-light-red': (row: ExaminationRegistrationObject) => row.result === 'Fail'
-  };
 
   delete(object: ExaminationRegistrationObject) {
     if (!window.confirm(`Are you sure you want to delete this exam registration for ${object.index_number}?`)) {

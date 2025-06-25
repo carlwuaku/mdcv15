@@ -1,3 +1,11 @@
+<div class="flex" *ngIf="customClassLegends.length > 0">
+  <div class="flex gap-1">
+    <div *ngFor="let legend of customClassLegends" class="flex gap-1 items-center">
+      <div class="w-3 h-3 border" [ngClass]="legend.classrule"></div>
+      <span>{{legend.label}}</span>
+    </div>
+  </div>
+</div>
 <div class="overflow-auto flex-auto max-h-[500px]">
   <cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>

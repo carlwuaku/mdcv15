@@ -13,6 +13,7 @@ import { PrepMessagingComponent } from 'src/app/shared/components/prep-messaging
 import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
 import { isEmpty, openHtmlInNewWindow } from 'src/app/shared/utils/helper';
 import { SetCustomLetterComponent } from '../set-custom-letter/set-custom-letter.component';
+import { TableLegendType } from 'src/app/shared/components/table/tableLegend.model';
 @Component({
   selector: 'app-pass-fail-list',
   templateUrl: './pass-fail-list.component.html',
@@ -61,6 +62,11 @@ export class PassFailListComponent implements OnInit {
     'bg-light-yellow': (row: ExaminationRegistrationObject) => isEmpty(row.publish_result_date),
     'bg-light-blue': (row: ExaminationRegistrationObject) => !isEmpty(row.publish_result_date)
   };
+
+  tableLegends: TableLegendType[] = [
+    { classrule: 'bg-light-yellow', label: 'Not published' },
+    { classrule: 'bg-light-blue', label: 'Published' },
+  ]
 
 
 

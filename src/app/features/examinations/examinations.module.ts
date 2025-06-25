@@ -19,7 +19,8 @@ import { SetResultsComponent } from './components/set-results/set-results.compon
 import { SetResultsDialogComponent } from './components/set-results-dialog/set-results-dialog.component';
 import { PassFailListComponent } from './components/pass-fail-list/pass-fail-list.component';
 import { ManagePublishResultComponent } from './components/manage-publish-result/manage-publish-result.component';
-
+import { ExamAttendanceComponent } from './pages/exam-attendance/exam-attendance.component';
+import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
   declarations: [
@@ -38,12 +39,14 @@ import { ManagePublishResultComponent } from './components/manage-publish-result
     SetResultsComponent,
     SetResultsDialogComponent,
     PassFailListComponent,
-    ManagePublishResultComponent
+    ManagePublishResultComponent,
+    ExamAttendanceComponent
   ],
   imports: [
     CommonModule,
     ExaminationsRoutingModule,
-    SharedModule
+    SharedModule,
+    NgxPrintModule
   ]
 })
 export class ExaminationsModule { }

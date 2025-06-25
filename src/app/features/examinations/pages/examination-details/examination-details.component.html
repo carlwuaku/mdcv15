@@ -14,7 +14,7 @@
               <span><span class="font-light text-primary">Open to:</span> {{object.open_to}}</span>
               <button mat-stroked-button color="primary" [routerLink]="['/examinations/edit', object.uuid]">Edit
                 Exam</button>
-              <button mat-raised-button color="accent" [routerLink]="['/examinations/attendance', object.uuid]">Print
+              <button mat-raised-button color="accent" [routerLink]="['/examinations/attendance', object.id]">Print
                 attendance sheet</button>
             </div>
             <!-- <div class="flex gap-2 items-center">

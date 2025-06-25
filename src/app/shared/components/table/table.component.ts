@@ -6,6 +6,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { FieldTemplateDirective } from '../form-generator/form-generator.component';
+import { TableLegendType } from './tableLegend.model';
 
 export interface EditableColumn {
   field: string;
@@ -43,6 +44,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   editingRows = new Set<any>();
   originalValues = new Map<any, any>();
   editableColumnMap = new Map<string, EditableColumn>();
+  @Input() customClassLegends: TableLegendType[] = [];
 
   constructor() { }
   ngAfterViewInit(): void {

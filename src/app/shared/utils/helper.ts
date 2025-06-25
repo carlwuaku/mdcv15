@@ -271,5 +271,61 @@ export function isEmpty(value: any): boolean {
   return typeof value === 'string' && value.trim() === '';
 }
 
+export function printElement(elementId: string) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  // Clone the element to avoid modifying the original
+  const clonedElement = element.cloneNode(true) as HTMLElement;
+
+  // Get computed styles and apply them inline
+  applyComputedStyles(element, clonedElement);
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print</title>
+          <style>
+            body { margin: 0; padding: 20px; }
+            * { box-sizing: border-box; }
+          </style>
+        </head>
+        <body>
+          ${clonedElement.outerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  }
+}
+
+export function applyComputedStyles(original: Element, clone: Element) {
+  const computedStyle = window.getComputedStyle(original);
+  const cloneElement = clone as HTMLElement;
+
+  // Copy computed styles to inline styles
+  for (let i = 0; i < computedStyle.length; i++) {
+    const property = computedStyle[i];
+    cloneElement.style.setProperty(
+      property,
+      computedStyle.getPropertyValue(property),
+      computedStyle.getPropertyPriority(property)
+    );
+  }
+
+  // Recursively apply to children
+  for (let i = 0; i < original.children.length; i++) {
+    applyComputedStyles(original.children[i], clone.children[i]);
+  }
+}
+
 
 

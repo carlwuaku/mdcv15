@@ -15,6 +15,7 @@ import { ApiResponseObject } from '../../types/ApiResponseObject';
 import { DatePipe } from '@angular/common';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { TableComponent } from '../table/table.component';
+import { TableLegendType } from '../table/tableLegend.model';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
@@ -93,6 +94,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   /** */
   urlFilterKeys: string[] = [];
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
+
   @Input() showAllFilters: boolean = false;
   @Input() onFilterSubmitted: ((params: string) => void) | ((params: IFormGenerator[]) => void) = () => { };
   @Input() filterFormType: "filter" | "emit" = "filter";
@@ -107,6 +109,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() showSelectionContainer: boolean = true;
   //make sure the filter is set only once per url
   filterSet: boolean = false;
+  @Input() customClassLegends: TableLegendType[] = [];
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
