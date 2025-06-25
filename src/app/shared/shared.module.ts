@@ -180,7 +180,8 @@ import { StringArrayInputComponent } from './components/string-array-input/strin
     SubSectionContainerComponent,
     EmailFormComponent,
     AlertComponent,
-    UploadableCkeditorInputComponent
+    UploadableCkeditorInputComponent,
+    StringArrayInputComponent
   ],
   providers: [
     ClipboardCopyDirective

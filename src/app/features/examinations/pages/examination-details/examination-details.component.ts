@@ -69,7 +69,6 @@ export class ExaminationDetailsComponent implements OnInit {
         this.failedCount = data.fail || 0;
         this.passedCount = data.pass || 0;
         this.totalCount = this.resultNotSetCount + this.failedCount + this.passedCount;
-        // this.getAttendees();
       },
       error: error => {
         this.isLoading = false;
@@ -88,5 +87,16 @@ export class ExaminationDetailsComponent implements OnInit {
 
   resultChanged() {
     this.getExamResultCounts(this.object!.id);
+  }
+
+  getResultSubmittedPercentage() {
+    if (this.totalCount > 0) {
+      return (this.passedCount + this.failedCount) / this.totalCount * 100;
+    }
+    return 0;
+  }
+  getResultSubmitted() {
+    return (this.passedCount + this.failedCount);
+
   }
 }

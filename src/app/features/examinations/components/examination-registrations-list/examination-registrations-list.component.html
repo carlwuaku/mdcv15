@@ -6,6 +6,9 @@
   <ng-template #selectionOptions>
     <div class="flex gap-1 items-center">
       <app-export-table [objects]="selectedItems"></app-export-table>
+      <app-prep-messaging #prepAllMessage [emailField]="'email'" [labelField]="'first_name,last_name'"
+        [objects]="selectedItems"></app-prep-messaging>
+
       <ng-content select="[selectionOptions]"></ng-content>
     </div>
   </ng-template>

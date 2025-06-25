@@ -70,8 +70,8 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
     })
   }
 
-  printRegistrationLetter(object: ExaminationRegistrationObject) {
-    this.service.getCandidateRegistrationLetter(object.uuid!).subscribe({
+  printRegistrationLetter(object: ExaminationRegistrationObject, letterType: "registration" | "result") {
+    this.service.getCandidateLetter(object.uuid!, letterType).subscribe({
       next: response => {
         openHtmlInNewWindow(response)
 
@@ -98,8 +98,8 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
 
   getActions = (object: ExaminationRegistrationObject): DataActionsButton[] => {
     const actions: DataActionsButton[] = [
-      { label: "View/Print registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.printRegistrationLetter(object) },
-      { label: "View/Print result letter", type: "link", link: `cpd/attendance`, linkProp: 'uuid' },
+      { label: "View/Print registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.printRegistrationLetter(object, "registration") },
+      { label: "View/Print result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.printRegistrationLetter(object, "result") },
       { label: "Set custom registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomRegistrationLetter(object) },
       { label: "Set custom result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomResultLetter(object) },
       ...(object.registration_letter ? [{ label: "Remove registration letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "registration") }] : []),

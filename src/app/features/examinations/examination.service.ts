@@ -52,9 +52,10 @@ export class ExaminationService {
     return this.dbService.get<{ not_set: number, fail: number, pass: number }>(`examinations/registrations/${id}/result-count`).pipe(take(1));
   }
 
-  getCandidateRegistrationLetter(uuid: string): Observable<string> {
-    return this.dbService.get<string>(`examinations/registrations/${uuid}/letter/registration`).pipe(take(1));
+  getCandidateLetter(uuid: string, letterType: "registration" | "result"): Observable<string> {
+    return this.dbService.get<string>(`examinations/registrations/${uuid}/letter/${letterType}`).pipe(take(1));
   }
+
 
 
   deleteExaminationRegistration(uuid: string): Observable<{ message: string }> {

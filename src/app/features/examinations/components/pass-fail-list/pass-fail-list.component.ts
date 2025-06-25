@@ -11,7 +11,8 @@ import { SetResultsDialogComponent } from '../set-results-dialog/set-results-dia
 import { ExaminationObject } from '../../models/examination.model';
 import { PrepMessagingComponent } from 'src/app/shared/components/prep-messaging/prep-messaging.component';
 import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
-import { isEmpty } from 'src/app/shared/utils/helper';
+import { isEmpty, openHtmlInNewWindow } from 'src/app/shared/utils/helper';
+import { SetCustomLetterComponent } from '../set-custom-letter/set-custom-letter.component';
 @Component({
   selector: 'app-pass-fail-list',
   templateUrl: './pass-fail-list.component.html',
@@ -35,6 +36,7 @@ export class PassFailListComponent implements OnInit {
   @ViewChild('prepAllMessage') prepMessageComponent!: PrepMessagingComponent
   @ViewChild('prepNewlyPublishedMessage') prepNewlyPublishedMessage!: PrepMessagingComponent
   @ViewChild('list') loadDataList!: LoadDataListComponent;
+  @Output() onResultDeleted = new EventEmitter<boolean>();
 
   constructor(private service: ExaminationService, private authService: AuthService,
     private notify: NotifyService, private dialog: MatDialog) {
@@ -78,9 +80,18 @@ export class PassFailListComponent implements OnInit {
   }
 
   getActions = (object: ExaminationRegistrationObject): DataActionsButton[] => {
+    const actions: DataActionsButton[] = [
+      { label: "View/Print registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.printRegistrationLetter(object, "registration") },
+      { label: "View/Print result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.printRegistrationLetter(object, "result") },
+      { label: "Set custom registration letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomRegistrationLetter(object) },
+      { label: "Set custom result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomResultLetter(object) },
+      ...(object.registration_letter ? [{ label: "Remove registration letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "registration") }] : []),
+      ...(object.result_letter ? [{ label: "Remove result letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "result") }] : []),
+      ...(object.result ? [{ label: "Delete result", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.deleteResult(object) }] : []),
+    ];
 
+    return actions;
 
-    return [];
   }
   /**
    * Update the timestamp string to the current time in milliseconds.
@@ -107,8 +118,61 @@ export class PassFailListComponent implements OnInit {
 
   }
 
+  deleteResult(object: ExaminationRegistrationObject) {
+    if (!window.confirm(`Are you sure you want to remove the result for ${object.index_number}?`)) {
+      return;
+    }
 
+    this.service.removeResults(object.uuid!).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+        this.updateTimestamp();
+        this.onResultDeleted.emit(true)
+      },
+      error: error => { }
+    })
+  }
 
+  setCustomRegistrationLetter(object: ExaminationRegistrationObject) {
+    this.dialog.open(SetCustomLetterComponent, {
+      data: { registration: object, letterType: 'registration' },
+      width: '90%',
+      maxHeight: '90%',
+    })
+  }
+
+  setCustomResultLetter(object: ExaminationRegistrationObject) {
+    this.dialog.open(SetCustomLetterComponent, {
+      data: { registration: object, letterType: 'result' },
+      width: '90%',
+      maxHeight: '90%',
+    })
+  }
+
+  removeCustomLetter(object: ExaminationRegistrationObject, type: "registration" | "result") {
+    if (!window.confirm(`Are you sure you want to remove the ${type} letter for ${object.index_number}?`)) {
+      return;
+    }
+    this.service.removeCustomLetter(object.id!, type).subscribe({
+      next: response => {
+        this.notify.successNotification(response.message);
+        this.updateTimestamp();
+      },
+      error: error => { }
+    })
+  }
+
+  printRegistrationLetter(object: ExaminationRegistrationObject, letterType: "registration" | "result") {
+    this.service.getCandidateLetter(object.uuid!, letterType).subscribe({
+      next: response => {
+        openHtmlInNewWindow(response)
+
+      },
+      error: error => {
+        this.notify.failNotification("Failed to load registration letter");
+      }
+    })
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);

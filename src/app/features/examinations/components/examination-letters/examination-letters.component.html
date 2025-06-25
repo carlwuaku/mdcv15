@@ -80,14 +80,20 @@
                         Field is required
                       </mat-error>
                     </mat-form-field>
+                    <div class="flex flex-col gap-1">
+                      <label for="">Value</label>
+                      <app-string-array-input [items]="criteriaControl.get('value')?.value || []"
+                        (valueChanged)="setCriteriaControlValue(i, j, $event)"></app-string-array-input>
+                    </div>
 
-                    <mat-form-field appearance="fill" class="criteria-field">
+                    <!-- <mat-form-field appearance="fill" class="criteria-field">
                       <mat-label>Value</mat-label>
+
                       <input matInput formControlName="value" placeholder="Field value">
                       <mat-error *ngIf="criteriaControl.get('value')?.hasError('required')">
                         Value is required
                       </mat-error>
-                    </mat-form-field>
+                    </mat-form-field> -->
 
                     <button mat-icon-button color="warn" (click)="removeCriteria(i, j)" type="button"
                       class="remove-criteria-btn">

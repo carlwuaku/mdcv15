@@ -124,4 +124,11 @@ export class ExaminationLettersComponent implements OnInit, OnChanges, OnDestroy
     letterGroup.patchValue({ content: content });
     this.emitLettersChange();
   }
+
+  setCriteriaControlValue(letterIndex: number, criteriaIndex: number, value: string[]) {
+    const criteriaArray = this.getCriteriaFormArray(letterIndex);
+    const criteriaGroup = criteriaArray.at(criteriaIndex) as FormGroup;
+    criteriaGroup.patchValue({ value: value });
+    this.emitLettersChange();
+  }
 }

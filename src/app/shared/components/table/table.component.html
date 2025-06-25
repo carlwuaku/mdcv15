@@ -63,7 +63,7 @@
               <ng-container *ngIf="showActions">
                 <span *ngIf="element.actions.length === 1; else menuButton">
                   <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
-                    (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
+                    (click)="element.actions[0].onClick(element)" mat-flat-button color="primary">
                     <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
                     <span>{{ element.actions[0].label }}</span>
                   </button>
@@ -77,8 +77,8 @@
                 </span>
 
                 <ng-template #menuButton>
-                  <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
-                    aria-label="Example icon-button with a menu">
+                  <button [disabled]="element.actions && element.actions.length < 1" mat-flat-button color="primary"
+                    [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                     <mat-icon>expand_more</mat-icon> Menu
                   </button>
                   <mat-menu #menu="matMenu">
@@ -176,7 +176,7 @@
                 <!-- Read-only Cell -->
                 <ng-template #readOnlyCell>
                   <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
-                  <button mat-raised-button color="primary" (click)="viewHtml(element[column])"
+                  <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
                     *ngIf="isHtml(element[column])">View</button>
                   <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"
                     [innerHTML]="element[column]"

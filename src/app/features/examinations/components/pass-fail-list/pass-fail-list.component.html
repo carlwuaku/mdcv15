@@ -6,7 +6,8 @@
   <ng-template #selectionOptions>
     <div class="flex gap-1 items-center">
       <app-export-table [objects]="selectedItems"></app-export-table>
-      <app-prep-messaging #prepAllMessage [emailField]="'email'" [objects]="selectedItems"></app-prep-messaging>
+      <app-prep-messaging #prepAllMessage [emailField]="'email'" [labelField]="'first_name,last_name'"
+        [objects]="selectedItems"></app-prep-messaging>
       <app-manage-publish-result [registrations]="selectedItems"
         (resultPublished)="onResultPublished()"></app-manage-publish-result>
     </div>
