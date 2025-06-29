@@ -58,7 +58,7 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
 
   updateUrl() {
 
-    this.url = `${this.baseUrl}` + "?" + this.urlFilters + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+    this.url = `${this.baseUrl}` + "?" + this.urlFilters + "&" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
   }
 
 

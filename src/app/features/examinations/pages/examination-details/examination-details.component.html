@@ -14,8 +14,11 @@
               <span><span class="font-light text-primary">Open to:</span> {{object.open_to}}</span>
               <button mat-stroked-button color="primary" [routerLink]="['/examinations/edit', object.uuid]">Edit
                 Exam</button>
-              <button mat-raised-button color="accent" [routerLink]="['/examinations/attendance', object.id]">Print
+              <button [disabled]="" mat-raised-button color="accent"
+                [routerLink]="['/examinations/attendance', object.id]">Print
                 attendance sheet</button>
+              <app-download-exam-applicants *ngIf="object != null"
+                [examination]="object"></app-download-exam-applicants>
             </div>
             <!-- <div class="flex gap-2 items-center">
               <span class="font-light text-primary">Results submitted:</span>
@@ -37,30 +40,27 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-tab-group *ngIf="object != null && id">
+  <mat-tab-group *ngIf="object != null && id" mat-stretch-tabs="false" mat-align-tabs="start">
     <mat-tab label="Add new candidates">
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
             <app-add-exam-registration [exam]="object"
-              (onRegistrationAdded)="registrationAdded($event)"></app-add-exam-registration>
+              (onRegistrationAdded)="registrationAdded()"></app-add-exam-registration>
           </mat-card-content>
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Approve/deny candidates">
-      <ng-template matTabContent>
-        <mat-card>
-          <mat-card-content>
-            <app-examination-applications-list [urlFilters]="'exam_id='+object.id"></app-examination-applications-list>
-          </mat-card-content>
-        </mat-card>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Approve/deny candidates <span class="badge badge-primary">{{applicationsCount}}</span> </div>
       </ng-template>
-    </mat-tab>
-    <mat-tab label="Download applicants">
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
+            <app-examination-applications-list [exam]="object" (onRegistrationAdded)="registrationAdded()"
+              [urlFilters]="'exam_id='+object.id"
+              (onTotalChanged)="applicationsTotalChanged($event)"></app-examination-applications-list>
           </mat-card-content>
         </mat-card>
       </ng-template>

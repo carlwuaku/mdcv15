@@ -14,7 +14,7 @@ import { sortObjectsByField } from 'src/app/shared/utils/helper';
   styleUrls: ['./assign-index-numbers.component.scss']
 })
 export class AssignIndexNumbersComponent {
-  candidates: LicenseObject[] = [];
+  // candidates: LicenseObject[] = [];
   registrations: ExaminationRegistrationObject[] = [];
   examId: string = '';
   tableDataSource: MatTableDataSource<ExaminationRegistrationObject> = new MatTableDataSource<ExaminationRegistrationObject>([]);
@@ -31,25 +31,25 @@ export class AssignIndexNumbersComponent {
   sortBy: string = "intern_code";
   constructor(
     public dialogRef: MatDialogRef<AssignIndexNumbersComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { candidates: LicenseObject[], examId: string }, private notify: NotifyService, private service: ExaminationService) {
+    @Inject(MAT_DIALOG_DATA) public data: { candidates: ExaminationRegistrationObject[], examId: string }, private notify: NotifyService, private service: ExaminationService) {
     this.examId = data.examId;
 
-    this.candidates = data.candidates;
+    this.registrations = data.candidates;
   }
 
   ngOnInit() {
-    this.registrations = this.candidates.map(candidate => {
-      return {
-        intern_code: candidate.license_number,
-        index_number: '',
-        first_name: candidate['first_name'],
-        last_name: candidate['last_name'],
-        middle_name: candidate['middle_name'],
-        phone_number: candidate['phone_number'],
-        email: candidate['email'],
-        exam_id: this.examId
-      };
-    });
+    // this.registrations = this.candidates.map(candidate => {
+    //   return {
+    //     intern_code: candidate.license_number,
+    //     index_number: '',
+    //     first_name: candidate['first_name'],
+    //     last_name: candidate['last_name'],
+    //     middle_name: candidate['middle_name'],
+    //     phone_number: candidate['phone_number'],
+    //     email: candidate['email'],
+    //     exam_id: this.examId
+    //   };
+    // });
     this.tableDataSource = new MatTableDataSource<ExaminationRegistrationObject>(this.registrations);
   }
 
@@ -92,12 +92,13 @@ export class AssignIndexNumbersComponent {
       next: () => {
         this.notify.successNotification('Index numbers assigned successfully');
         indexNumbers = [];
+        this.dialogRef.close(this.registrations);
       },
       error: () => {
         this.notify.failNotification('Failed to assign index numbers');
       }
     });
-    this.dialogRef.close(this.registrations);
+
   }
 
   autoIndex() {

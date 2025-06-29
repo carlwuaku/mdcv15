@@ -110,6 +110,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   //make sure the filter is set only once per url
   filterSet: boolean = false;
   @Input() customClassLegends: TableLegendType[] = [];
+  @Output() totalChanged = new EventEmitter<number>();
+
   constructor(private dbService: HttpService, private dialog: MatDialog, private ar: ActivatedRoute,
     private router: Router, private datePipe: DatePipe) {
     //if there's a query param, set the searchParam
@@ -127,21 +129,21 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   ngOnInit(): void {
 
     if (this.useResponseFilters) {
-      this.ar.queryParams
-        .pipe(takeUntil(this.destroy$)).subscribe(params => {
-          this.queryParams = params;
-          const searchQuery = params['searchParam'];
-          //assign the param values to the filters
-          this.filters.forEach(filter => {
-            if (params[filter.name]) {
-              filter.value = params[filter.name];
-            }
-          })
-          if (searchQuery) {
-            this.searchParam = searchQuery;
-            this.search();
-          }
-        });
+      // this.ar.queryParams
+      //   .pipe(takeUntil(this.destroy$)).subscribe(params => {
+      //     this.queryParams = params;
+      //     const searchQuery = params['searchParam'];
+      //     //assign the param values to the filters
+      //     this.filters.forEach(filter => {
+      //       if (params[filter.name]) {
+      //         filter.value = params[filter.name];
+      //       }
+      //     })
+      //     if (searchQuery) {
+      //       this.searchParam = searchQuery;
+      //       this.search();
+      //     }
+      //   });
     }
 
     // Add resize observer to check overflow on container size changes
@@ -290,7 +292,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
           this.displayedColumns.push(...["actions", ...response.displayColumns])
           this.columnLabels = response.columnLabels
           this.showTable = true;
-
+          this.totalChanged.emit(response.total);
           if (this.useResponseFilters && response.columnFilters && response.columnFilters.length > 0 && !this.filterSet) {
             //merge the filters from the server with the filters from the parent component, preserving the parent component's values
             this.filters = response.columnFilters.map(filter => {
@@ -310,6 +312,8 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
             this.filterSet = true;
 
           }
+          //clear the selection
+          this.selection.clear();
         },
         error: (err) => {
           console.error(err)

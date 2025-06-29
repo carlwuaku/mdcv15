@@ -90,4 +90,30 @@ export class ExaminationService {
   unpublishResults(data: ExaminationPublishResultObject[]): Observable<{ message: string }> {
     return this.dbService.put<{ message: string }>('examinations/registrations/result/unpublish', { data }).pipe(take(1));
   }
+
+  updateApplicationStatuses(data: { id: string, intern_code: string, status: string }[]): Observable<{ message: string }> {
+    return this.dbService.put<{ message: string }>('examinations/applications/update-status', { data }).pipe(take(1));
+  }
+
+  downloadWordDocument(examId: string) {
+    return this.dbService.getBlob(`examinations/details/${examId}/applicants`).pipe(take(1));
+  }
+
+  /**
+   * Deletes multiple applications at once
+   * @param data An array of UUIDs of the applications to be deleted
+   * @returns An observable of ApiResponseObject<{ message: string }>, where the message is the success message
+   */
+  deleteMultipleApplications(data: string[]): Observable<{ message: string }> {
+    return this.dbService.post<{ message: string }>('examinations/applications/delete', { data }).pipe(take(1));
+  }
+
+  /**
+   * Retrieves the count of all applications for the given filters
+   * @param filters Url query filters
+   * @returns Observable of ApiResponseObject<number>
+   */
+  getExaminationApplicationsCount(filters: string = ''): Observable<ApiResponseObject<number>> {
+    return this.dbService.get<ApiResponseObject<number>>('examinations/applications/count' + (filters ? `?${filters}` : '')).pipe(take(1));
+  }
 }

@@ -1,8 +1,8 @@
 <app-load-data-list #list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
   (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
-  [onFilterSubmitted]="filterSubmitted" [useResponseFilters]="false" [filters]="filters" [showAllFilters]="true"
-  [showSort]="false" [showSearch]="false" [showTableTitle]="false" (onSelect)="setSelectedItems($event)"
-  [customClassRules]="tableClassRules" [customClassLegends]="tableLegends">
+  [onFilterSubmitted]="filterSubmitted" [showAllFilters]="true" [showSort]="false" [showSearch]="false"
+  [showTableTitle]="false" (onSelect)="setSelectedItems($event)" [customClassRules]="tableClassRules"
+  [customClassLegends]="tableLegends">
   <ng-template #selectionOptions>
     <div class="flex gap-1 items-center">
       <app-export-table [objects]="selectedItems"></app-export-table>

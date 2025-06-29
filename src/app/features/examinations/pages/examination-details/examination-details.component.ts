@@ -27,6 +27,7 @@ export class ExaminationDetailsComponent implements OnInit {
   failedCount: number = 0;
   passedCount: number = 0;
   totalCount: number = 0;
+  applicationsCount: number = 0;
 
   constructor(private service: ExaminationService, private notify: NotifyService,
     ar: ActivatedRoute) {
@@ -54,6 +55,7 @@ export class ExaminationDetailsComponent implements OnInit {
           { label: "open from", key: this.object.open_from || "" },
           { label: "Open to", key: this.object.open_to || "" }]
         this.getExamResultCounts(data.data.id);
+        this.getApplicationsCount(data.data.id)
       },
       error: error => {
         this.isLoading = false;
@@ -77,7 +79,7 @@ export class ExaminationDetailsComponent implements OnInit {
     });
   }
 
-  registrationAdded(objects: ExaminationRegistrationObject[]) {
+  registrationAdded() {
     this.getExamResultCounts(this.object!.id);
   }
 
@@ -98,5 +100,19 @@ export class ExaminationDetailsComponent implements OnInit {
   getResultSubmitted() {
     return (this.passedCount + this.failedCount);
 
+  }
+
+  applicationsTotalChanged(count: number) {
+    this.applicationsCount = count;
+  }
+
+  getApplicationsCount(id: string) {
+    const filters = `exam_id=${id}`;
+    this.service.getExaminationApplicationsCount(filters).subscribe({
+      next: response => {
+        this.applicationsCount = response.data;
+      },
+      error: error => { }
+    })
   }
 }

@@ -46,7 +46,7 @@ export class SetResultsComponent implements OnInit {
 
   updateUrl() {
 
-    this.url = `${this.baseUrl}` + "&" + this.urlFilters + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+    this.url = `${this.baseUrl}` + "&" + this.urlFilters + "&" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
   }
 
 

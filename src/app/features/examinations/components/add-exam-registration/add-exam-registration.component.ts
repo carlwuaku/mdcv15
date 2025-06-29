@@ -37,9 +37,21 @@ export class AddExamRegistrationComponent {
       this.notify.failNotification('Please select at least one practitioner');
       return;
     }
+    const registrations = this.selectedLicenses.map(candidate => {
+      return {
+        intern_code: candidate.license_number,
+        index_number: '',
+        first_name: candidate['first_name'],
+        last_name: candidate['last_name'],
+        middle_name: candidate['middle_name'],
+        phone_number: candidate['phone_number'],
+        email: candidate['email'],
+        exam_id: this.exam?.id!
+      };
+    });
     const dialogRef = this.dialog.open(AssignIndexNumbersComponent, {
       width: '600px',
-      data: { candidates: this.selectedLicenses, examId: this.exam!.id } // examId should be set appropriately
+      data: { candidates: registrations, examId: this.exam!.id } // examId should be set appropriately
     });
 
     dialogRef.afterClosed().subscribe((results: ExaminationRegistrationObject[]) => {
