@@ -398,21 +398,11 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     });
   }
 
-  showSortDialog() {
-    const dialogRef = this.dialog.open(this.sortDialog, {
-      width: '300px'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.sortBy = result.sortBy;
-        this.sortOrder = result.sortOrder;
-        this.offset = 0;
-        this.currentPage = 1;
-        this.clearSelection();
-        this.getData();
-      }
-    });
+  sortChanged() {
+    this.offset = 0;
+    this.currentPage = 1;
+    this.clearSelection();
+    this.getData();
   }
 
   removeFilter(filter: IFormGenerator) {

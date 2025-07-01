@@ -21,7 +21,7 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
   @Input() urlFilters: string = '';
   can_edit: boolean = false;
   can_delete: boolean = false;
-
+  @Input() showFilters: boolean = true;
   baseUrl: string = `examinations/registrations`;
   url: string = "examinations/registrations";
   @Input() ts: string = "";
@@ -58,7 +58,7 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
 
   updateUrl() {
 
-    this.url = `${this.baseUrl}` + "?" + this.urlFilters + "&" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+    this.url = `${this.baseUrl}` + "?" + [this.urlFilters, Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&")].join("&");
   }
 
 

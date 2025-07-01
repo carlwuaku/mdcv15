@@ -47,6 +47,9 @@ import { DownloadExamApplicantsComponent } from './components/download-exam-appl
     CommonModule,
     ExaminationsRoutingModule,
     SharedModule
+  ],
+  exports: [
+    ExaminationRegistrationsListComponent
   ]
 })
 export class ExaminationsModule { }

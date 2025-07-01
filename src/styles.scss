@@ -1188,3 +1188,11 @@ tr:nth-child(even) {
     border: 0
   }
 }
+
+thead {
+  border-bottom: 1px solid #000;
+  position: sticky;
+  top: 0px;
+  background: white;
+  z-index: 2;
+}
