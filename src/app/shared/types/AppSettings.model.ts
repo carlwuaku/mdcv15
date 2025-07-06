@@ -1,3 +1,4 @@
+import { ExaminationLetterType } from "src/app/features/examinations/models/examination-letter.model";
 import { IFormGenerator } from "../components/form-generator/form-generator-interface";
 import { MenuItem, RenewalStageItems } from "../utils/data";
 
@@ -39,6 +40,10 @@ export interface AppSettings {
         number_of_facilities: number, application_form_fields: IFormGenerator[], available_to: any[], allowRepeatRegion: boolean
       }
     }
+  },
+  examinations: {
+    filterFields: IFormGenerator[],
+    defaultLetterTypes: { type: ExaminationLetterType, name: string, criteria: { field: string, value: string[] }[] }[]
   }
 
 }

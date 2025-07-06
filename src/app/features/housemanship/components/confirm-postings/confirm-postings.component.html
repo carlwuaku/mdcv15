@@ -14,7 +14,7 @@
   <app-table [displayedColumns]="tableColumns" [dataSource]="dataSource"></app-table>
 
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions align="end">
   <button mat-stroked-button color="warn" [mat-dialog-close]="false">Cancel</button>
   <button mat-raised-button (click)="approvePostings()" color="primary">Submit</button>
 </mat-dialog-actions>

@@ -1,0 +1,135 @@
+<div class="flex flex-col gap-1">
+  <mat-card>
+    <mat-card-content>
+      <div class="flex flex-col gap-1" *ngIf="object">
+        <div class="flex gap-2  items-center">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg">{{object.title}}</h3>
+            <div class="flex gap-2 items-baseline">
+              <span><span class="font-light text-primary">Exam type:</span>
+                {{object.exam_type}} </span>
+              <span><span class="font-light text-primary"> Candidate type:</span>
+                {{object.type}}</span>
+              <span><span class="font-light text-primary">Open from:</span>{{object.open_from}}</span>
+              <span><span class="font-light text-primary">Open to:</span> {{object.open_to}}</span>
+              <button mat-stroked-button color="primary" [routerLink]="['/examinations/edit', object.uuid]">Edit
+                Exam</button>
+              <button [disabled]="" mat-raised-button color="accent"
+                [routerLink]="['/examinations/attendance', object.id]">Print
+                attendance sheet</button>
+              <app-download-exam-applicants *ngIf="object != null"
+                [examination]="object"></app-download-exam-applicants>
+            </div>
+            <!-- <div class="flex gap-2 items-center">
+              <span class="font-light text-primary">Results submitted:</span>
+              <span>{{getResultSubmitted()}}/{{totalCount}}</span> <mat-progress-spinner class="example-margin"
+                [color]="'primary'" [mode]="'determinate'" [value]="getResultSubmittedPercentage()">
+              </mat-progress-spinner>
+            </div> -->
+
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="" *ngIf="errorLoadingData">
+        <b>Error loading data. Please try again</b>
+        <button mat-raised-button (click)="getExamDetails()">Reload</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-tab-group *ngIf="object != null && id" mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab label="Add new candidates">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-add-exam-registration [exam]="object"
+              (onRegistrationAdded)="registrationAdded()"></app-add-exam-registration>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Approve/deny candidates <span class="badge badge-primary">{{applicationsCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-examination-applications-list [exam]="object" (onRegistrationAdded)="registrationAdded()"
+              [urlFilters]="'exam_id='+object.id"
+              (onTotalChanged)="applicationsTotalChanged($event)"></app-examination-applications-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Set results <span class="badge badge-primary">{{resultNotSetCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-set-results [urlFilters]="'exam_id='+object.id" [examination]="object"
+              (onResultChanged)="resultChanged()"></app-set-results>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Pass list <span class="badge badge-primary">{{passedCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Pass'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Fail list <span class="badge badge-primary">{{failedCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Fail'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Absent list <span class="badge badge-primary">{{absentCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Absent'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>All candidates <span class="badge badge-primary">{{totalCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-examination-registrations-list (onResultDeleted)="resultChanged()" [urlFilters]="'exam_id='+object.id"
+              (onRegistrationDeleted)="registrationDeleted()"></app-examination-registrations-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpHeaders } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
-import { DateService } from '../../date/date.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
   public baseUrl = environment.host;
-  constructor(private httpClient: HttpClient, private dateService: DateService) { }
+  constructor(private httpClient: HttpClient) { }
 
   public constructURL(url: string, doNotEncode?: boolean): string {
     if (doNotEncode) {
@@ -89,6 +88,17 @@ export class HttpService {
     };
 
     return this.httpClient.delete<T>(this.constructURL(url), options);
+  }
+
+  public getBlob(url: string): Observable<Blob> {
+    return this.httpClient.get<Blob>(this.constructURL(url), {
+      responseType: 'blob' as 'json',
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        return response.body!;
+      })
+    );
   }
 
 }

@@ -35,12 +35,13 @@
 
     </ng-container>
   </div>
-
+  <ng-content></ng-content>
   <div class="flex gap-1" [ngClass]="{'sticky left-0': layout === 'horizontal'}">
     <ng-content select="[submitButton]"></ng-content>
-    <button type="button" mat-stroked-button color="warn" (click)="resetForm()">{{resetButtonText}}</button>
+    <button type="button" *ngIf="showResetButton" mat-stroked-button color="warn"
+      (click)="resetForm()">{{resetButtonText}}</button>
 
-    <button type="submit" mat-raised-button color="primary"
+    <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="primary"
       [disabled]="!isFilterFormValid()">{{submitButtonText}}</button>
 
   </div>
@@ -118,7 +119,8 @@
 
     <mat-form-field appearance="fill" *ngSwitchCase="'date'">
 
-      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
+      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker" (click)="picker.open()" (focus)="picker.open()"
+        readonly>
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -151,6 +153,9 @@
       <mat-datepicker-toggle matIconSuffix [for]="rangepicker"></mat-datepicker-toggle>
       <mat-date-range-picker #rangepicker></mat-date-range-picker>
     </mat-form-field>
+
+    <app-string-array-input *ngSwitchCase="'list'" [items]="field.value" [name]="field.name"
+      (valueChanged)="setFieldValue($event, field)"></app-string-array-input>
 
 
     <mat-form-field *ngSwitchDefault>

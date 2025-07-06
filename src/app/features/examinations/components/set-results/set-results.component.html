@@ -1,0 +1,18 @@
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
+  (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
+  [onFilterSubmitted]="filterSubmitted" [showAllFilters]="true" [showSort]="false" [showSearch]="false"
+  [showTableTitle]="false" (onSelect)="setSelectedItems($event)">
+  <ng-template #selectionOptions>
+    <div class="flex gap-1 items-center">
+      <app-export-table [objects]="selectedItems"></app-export-table>
+      <button [disabled]="selectedItems.length < 1" mat-raised-button color="primary" (click)="setResults()">Set
+        results</button>
+
+    </div>
+  </ng-template>
+  <ng-template #tableHeaderOptions>
+    <button mat-raised-button color="primary" (click)="openUploadResultsFromCsvDialog()">Upload
+      results from excel</button>
+  </ng-template>
+
+</app-load-data-list>

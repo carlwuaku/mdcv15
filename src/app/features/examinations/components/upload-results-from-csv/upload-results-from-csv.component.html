@@ -1,0 +1,39 @@
+<div mat-dialog-title>
+  <h1>Upload Results Via Excel</h1>
+</div>
+<div mat-dialog-content>
+
+  <div>
+    Instructions:
+    <ul>
+      <li>Please convert the excel file to a .csv file (comma-delimited). Please check Google for how
+        to do that if not sure.
+      </li>
+      <li>
+        The fields must follow this exact order:
+        <ol>
+          <li>Index Numbers</li>
+          <li *ngFor="let score of scoreFields">{{score}}</li>
+          <li>Result</li>
+        </ol>
+        <br>
+        <app-alert [type]="'error'">Please do not put any titles (e.g. Index Number, Result, etc.) in the first row.
+          Only the
+          actual data should be in the file</app-alert>
+        <app-alert [type]="'info'">If a candidate has a result previously submitted and their index number is in this
+          file, their previous result will be overwritten</app-alert>
+        All other fields will be ignored.
+      </li>
+      <li>Please make sure there are no blank rows or cells</li>
+    </ul>
+  </div>
+  <div>
+    Click this button to select and upload the file <br>
+    <app-file-uploader [accept]="'.csv'" (onFilesSelected)="onFileSelected($event)"
+      [multiple]="false"></app-file-uploader>
+
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button color="error" [mat-dialog-close]="false">Cancel</button>
+</div>

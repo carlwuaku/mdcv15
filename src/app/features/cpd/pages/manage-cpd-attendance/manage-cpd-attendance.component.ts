@@ -39,7 +39,6 @@ export class ManageCpdAttendanceComponent implements OnInit {
         t.license_number === l.license_number
       ))
     );
-    console.log(licenses);
   }
 
   submitAttendance() {

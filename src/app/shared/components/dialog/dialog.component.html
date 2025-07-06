@@ -10,7 +10,7 @@
 </div>
 
 
-<mat-dialog-actions *ngIf="!config.closeOnTimer">
+<mat-dialog-actions *ngIf="!config.closeOnTimer" align="end">
   <button mat-flat-button color="primary" type="button" [mat-dialog-close]="true" cdkFocusInitial>
     {{ config.primaryButton || "OK" | translate }}
   </button>

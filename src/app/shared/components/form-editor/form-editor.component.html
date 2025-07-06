@@ -1,34 +1,38 @@
 <div class="w-full  flex">
-  <div class="flex flex-col gap-1 w-9/12 border p-2 h-[500px] max-h-[500px] overflow-auto">
-    <ng-container *ngFor="let field of fields; let i = index">
-      <div *ngIf="isRow(field)" class="flex flex-col gap-1 p-2 border-dashed border">
-        <div class="flex gap-1">
-          <div class="flex gap-1 justify-between flex-grow overflow-x-auto">
-            <div *ngFor="let subField of field" class="flex formField flex-col flex-grow"
-              [ngClass]="{'selected': subField === selectedItem}">
-              <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: subField }"></ng-container>
+  <div class="flex flex-col gap-1 w-9/12 border p-2 overflow-auto">
+    <div class="flex flex-col gap-1  h-[500px] max-h-[500px] overflow-auto">
+      <ng-container *ngFor="let field of fields; let i = index">
+
+        <div *ngIf="isRow(field)" class="flex flex-col gap-1 p-2 border-dashed border">
+          <div class="flex gap-1">
+            <div class="flex gap-1 justify-between flex-grow overflow-x-auto">
+              <div *ngFor="let subField of field" class="flex formField flex-col flex-grow"
+                [ngClass]="{'selected': subField === selectedItem}">
+                <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: subField }"></ng-container>
+
+              </div>
 
             </div>
-
+            <span>
+              <button mat-stroked-button color="primary" [matMenuTriggerFor]="addToRowMenu">Add item to row</button>
+              <mat-menu #addToRowMenu="matMenu">
+                <button *ngFor="let type of inputTypes" mat-menu-item
+                  (click)="addFieldToRow(field, type)">{{type}}</button>
+              </mat-menu>
+            </span>
           </div>
-          <span>
-            <button mat-stroked-button color="primary" [matMenuTriggerFor]="addToRowMenu">Add item to row</button>
-            <mat-menu #addToRowMenu="matMenu">
-              <button *ngFor="let type of inputTypes" mat-menu-item
-                (click)="addFieldToRow(field, type)">{{type}}</button>
-            </mat-menu>
-          </span>
+
+          <ng-container *ngTemplateOutlet="editorRowControls; context: { $implicit: field }"></ng-container>
+
+        </div>
+        <div *ngIf="isFormField(field)" [ngClass]="{'selected': field === selectedItem}">
+          <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: field }"></ng-container>
+
         </div>
 
-        <ng-container *ngTemplateOutlet="editorRowControls; context: { $implicit: field }"></ng-container>
+      </ng-container>
+    </div>
 
-      </div>
-      <div *ngIf="isFormField(field)" [ngClass]="{'selected': field === selectedItem}">
-        <ng-container *ngTemplateOutlet="editorContainer; context: { $implicit: field }"></ng-container>
-
-      </div>
-
-    </ng-container>
     <button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">Add Item</button>
     <mat-menu #addMenu="matMenu">
       <button mat-menu-item (click)="addRow()">Row</button>
@@ -47,7 +51,7 @@
       <mat-form-field appearance="fill">
         <label>Name</label>
         <div class="font-thin">Typically this the name submitted to the server</div>
-        <input matInput [(ngModel)]="selectedItem.name" />
+        <input matInput [(ngModel)]="selectedItem.name" (ngModelChange)="fieldNameChanged(selectedItem)" />
       </mat-form-field>
       <mat-form-field appearance="fill">
         <label>Hint</label>
@@ -100,7 +104,7 @@
 
   <ng-template #editorContainer let-field>
     <div (click)="setSelectedField(field)"
-      class="border-dashed border p-1 hover:bg-white border-blue-500 cursor-pointer"
+      class="border-dashed border p-1 hover:bg-white border-gray-500 cursor-pointer"
       [ngClass]="{'selected': field === selectedItem}">
       <label>{{field.label}} <span *ngIf="field.required">*</span></label>
       <div class="text-muted">{{field.hint}}</div>

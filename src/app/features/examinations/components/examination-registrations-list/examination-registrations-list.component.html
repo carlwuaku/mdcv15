@@ -1,0 +1,16 @@
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
+  (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
+  [onFilterSubmitted]="filterSubmitted" [showAllFilters]="true" [showFilterButton]="showFilters" [showSort]="false"
+  [showSearch]="false" [showTableTitle]="false" (onSelect)="setSelectedItems($event)"
+  [customClassRules]="tableClassRules" [customClassLegends]="tableLegends">
+  <ng-template #selectionOptions>
+    <div class="flex gap-1 items-center">
+      <app-export-table [objects]="selectedItems"></app-export-table>
+      <app-prep-messaging #prepAllMessage [emailField]="'email'" [labelField]="'first_name,last_name'"
+        [objects]="selectedItems"></app-prep-messaging>
+
+      <ng-content select="[selectionOptions]"></ng-content>
+    </div>
+  </ng-template>
+
+</app-load-data-list>

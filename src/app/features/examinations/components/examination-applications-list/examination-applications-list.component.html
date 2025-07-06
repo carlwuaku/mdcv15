@@ -1,0 +1,20 @@
+<app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" [preload]="true" [showSearch]="false"
+  (onSelect)="setSelectedItems($event)" [showReset]="false" [specialClasses]="specialClasses"
+  [onFilterSubmitted]="filterSubmitted" [showAllFilters]="true" [showSort]="false" [showSearch]="false"
+  [showTableTitle]="false" (onSelect)="setSelectedItems($event)">
+  <ng-template #selectionOptions>
+    <div class="flex gap-1 items-center">
+      <app-export-table [objects]="selectedItems"></app-export-table>
+      <app-prep-messaging #prepAllMessage [emailField]="'email'" [labelField]="'first_name,last_name'"
+        [objects]="selectedItems"></app-prep-messaging>
+      <button [disabled]="selectedItems.length < 1" mat-raised-button color="primary" (click)="updateStatus()">Update
+        status</button>
+      <button [disabled]="selectedItems.length < 1" mat-raised-button color="primary"
+        (click)="approveSelected()">Approve</button>
+      <button [disabled]="selectedItems.length < 1" mat-raised-button color="warn"
+        (click)="denySelected()">Deny</button>
+    </div>
+  </ng-template>
+
+</app-load-data-list>
+<app-prep-messaging [showButton]="false" #prepMessageComponent></app-prep-messaging>

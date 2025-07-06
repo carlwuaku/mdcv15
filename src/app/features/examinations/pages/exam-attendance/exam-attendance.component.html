@@ -1,0 +1,78 @@
+<div class="">
+  <div class="no-print flex gap-3">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Type</mat-label>
+        <mat-select (change)="changeSort()" [(ngModel)]="type">
+          <mat-option value="Grid">Grid</mat-option>
+          <mat-option value="Signature Table">Signature Table</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div class="flex gap-1">
+      <mat-form-field appearance="fill">
+        <mat-label>Sort by</mat-label>
+
+        <mat-select (change)="changeSort()" [(ngModel)]="sortBy">
+          <mat-option value="index_number">Index Number</mat-option>
+          <mat-option value="last_name">Surname</mat-option>
+          <mat-option value="first_name">First Name</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Sort Order</mat-label>
+
+        <mat-select (change)="changeSort()" [(ngModel)]="sortOrder">
+          <mat-option value="1">Ascending Order</mat-option>
+          <mat-option value="-1">Descending order</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+
+    <button mat-raised-button color="primary" (click)="print()"><i class="fa fa-print"></i>
+      Print</button>
+
+  </div>
+  <div class="big_font" id="candidates-list" *ngIf="type == 'Signature Table'">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Index Number</th>
+          <th></th>
+          <th>Name</th>
+
+          <th>Candidate's Signature [MCQ]</th>
+          <th>Candidate's Signature [PS]</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of objects; let ind = index">
+          <td>{{ind + 1}} </td>
+          <td class="uppercase">{{i.index_number}} </td>
+          <td><img class="candidate-image" src="{{i.picture}}" alt="no_picture"></td>
+          <td class="uppercase">{{i.last_name}}
+            {{i.first_name}} {{i.middle_name}}</td>
+
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="big_font" *ngIf="type == 'Grid'">
+    <div class="photo_id_card" *ngFor="let i of objects; let ind = index">
+      <b class="id_card_text text-blue">MEDICAL & DENTAL COUNCIL</b> <br>
+      <i class=" text-red font-10">"GUIDING THE PROFESSION, PROTECTING THE PUBLIC"</i>
+      <br>
+      <img class="candidate-image" src="{{i.picture}}" alt="no_picture">
+      <br>
+      <span class="id_card_text">{{i.index_number}}</span>
+    </div>
+  </div>
+
+</div>

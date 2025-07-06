@@ -32,7 +32,8 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
   @Output() onSubmit = new EventEmitter();
   @Output() onExistingDataLoaded = new EventEmitter();
   @ContentChildren(FieldTemplateDirective) fieldTemplates!: QueryList<FieldTemplateDirective>;
-
+  @Input() showSubmitButton: boolean = true;
+  @Input() showResetButton: boolean = true;
   @Input() existingObjectUrl: string = "";
   @Input() submitButtonText: string = "Submit";
   @Input() resetButtonText: string = "Reset";
@@ -285,7 +286,6 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
 
   validateForm(fields: IFormGenerator[]): boolean {
     for (const field of fields) {
-      console.log(field)
       if (field.required && !field.value) {
         this.notify.failNotification(`Field '${field.label}' is required.`);
         return false;

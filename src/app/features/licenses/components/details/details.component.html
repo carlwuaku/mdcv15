@@ -33,7 +33,7 @@
     </div>
 
   </div>
-  <mat-tab-group *ngIf="object != null">
+  <mat-tab-group *ngIf="object != null" mat-stretch-tabs="false" mat-align-tabs="start">
     <mat-tab label="Personal Details">
       <ng-template matTabContent>
         <mat-card>
@@ -60,6 +60,17 @@
             <app-housemanship-postings-list [showFilters]="false" [showSearch]="false"
               (onFilterSubmitted)="housemanshipPostingsListFilterSubmitted($event)"
               [queryParams]="postingHistoryQueryParams"></app-housemanship-postings-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Examination">
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+
+            <app-examination-registrations-list [urlFilters]="'intern_code='+object.license_number"
+              [showFilters]="false"></app-examination-registrations-list>
           </mat-card-content>
         </mat-card>
       </ng-template>

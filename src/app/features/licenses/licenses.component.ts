@@ -41,6 +41,7 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
 
           this.licenseType = params['licenseType'];
+          console.log(this.licenseType)
           this.queryParams = params;
           if (this.licenseType) {
             this.appService.appSettings.pipe(take(1)).subscribe(data => {
@@ -179,7 +180,9 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     paramsObject['licenseType'] = this.licenseType;
-
+    //generate a timestamp to force a refresh
+    this.ts = getToday("timestamp_string");
+    paramsObject['ts'] = this.ts;
 
     this.router.navigate(['licenses'], { queryParams: paramsObject });
 

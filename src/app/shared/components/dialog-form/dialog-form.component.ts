@@ -8,14 +8,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./dialog-form.component.scss']
 })
 export class DialogFormComponent {
-  formType: "submit" | "filter" = "submit";
+  formType: "submit" | "filter" | "emit" = "submit";
   fields: IFormGenerator[] = [];
   title: string = "";
   url: string = "";
   id: string = "";
   constructor(
     public dialogRef: MatDialogRef<DialogFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { fields: IFormGenerator[], formType: "submit" | "filter", title: string, url?: string, id?: string }) {
+    @Inject(MAT_DIALOG_DATA) public data: { fields: IFormGenerator[], formType: "submit" | "filter" | "emit", title: string, url?: string, id?: string }) {
 
     this.formType = data.formType;
     this.fields = data.fields;

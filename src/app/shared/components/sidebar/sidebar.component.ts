@@ -42,6 +42,15 @@ export class SidebarComponent implements OnInit {
   }
 
   isActiveChild(menuItem: MenuItem) {
-    return this.current_url === menuItem.url.split('?')[0]
+    const main = menuItem.url.split('?')[0];
+    //if the main url ends with applications, check the query params for 'form_type'. if form_type is present and matches the form_type param in the menuItem, then return true
+    if (main.endsWith('applications') && menuItem.urlParams && menuItem.urlParams['form_type']) {
+      const urlParams = new URLSearchParams(this.current_url.split('?')[1]);
+      const formType = urlParams.get('form_type');
+      if (formType && menuItem.urlParams && menuItem.urlParams['form_type']) {
+        return formType === menuItem.urlParams['form_type'];
+      }
+    }
+    return this.current_url === main
   }
 }

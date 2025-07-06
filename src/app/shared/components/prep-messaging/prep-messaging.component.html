@@ -3,15 +3,18 @@
 </button>
 
 <ng-template #emailDialog>
-  <h2 mat-dialog-title>Select/enter message</h2>
+  <div class="flex">
+    <h2 mat-dialog-title>Select/enter message</h2>
+    <button class="self-end" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
   <mat-dialog-content class="flex flex-col gap-2">
-    <p class="italic">Select a template from the dropdown below or manually enter the email message. The email subject,
-      CC, BCC and other
-      fields can be set once you click on the "Continue" button. You can also select a template and edit it before
-      continuing.
+    <p class="italic">Select a template from the dropdown below or manually enter the email message.
     </p>
     <div class="flex flex-col gap-1">
-      <label>Template</label>
+      <label>(Optional) Template</label>
       <app-select-object (dataDownloaded)="templatesLoaded($event)" [emitDownload]="true"
         [url]="'print-queue/templates'" [labelProperty]="'template_name' " [keyProperty]="'template_name'"
         [type]="'select'" [selection_mode]=" 'single'" (selectionChanged)="onTemplateChange($event)">

@@ -25,6 +25,7 @@ import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-q
 import { GazetteComponent } from './components/renewal/gazette/gazette.component';
 import { RenewalReportsComponent } from './components/renewal/renewal-reports/renewal-reports.component';
 import { HousemanshipModule } from '../housemanship/housemanship.module';
+import { ExaminationsModule } from '../examinations/examinations.module';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { HousemanshipModule } from '../housemanship/housemanship.module';
     LicensesRoutingModule,
     SharedModule,
     CpdModule,
-    HousemanshipModule
+    HousemanshipModule,
+    ExaminationsModule
   ],
   exports: [
     LicensesComponent,

@@ -72,12 +72,21 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Form Fields</ng-template>
-    <form [formGroup]="dataFormGroup">
-      <label for="">Use the controls below to add/arrange the form fields</label>
-      <app-form-editor [fields]="fields" (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
-      <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
+    <div class="flex flex-col gap-1">
+      <app-alert type="info">The form fields are the inputs that users will fill in the form. You can add, remove, and
+        rearrange them as needed.</app-alert>
+      <app-select-object [url]="'applications/templates/config/commonTemplates'"
+        [fieldLabel]="'Select a commone template (optional)'"
+        (selectionChanged)="commonApplicationTemplateUrlSelected($event)" [labelProperty]="'label'"
+        [keyProperty]="'form_url'"></app-select-object>
+      <form [formGroup]="dataFormGroup">
+        <label for="">Use the controls below to add/arrange the form fields</label>
+        <app-form-editor [fields]="fields" (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
+        <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
 
-    </form>
+      </form>
+    </div>
+
     <div class="flex gap-1  mt-1">
       <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
       <button mat-raised-button color="primary" matStepperNext>Next</button>
@@ -193,18 +202,16 @@
                   <mat-form-field appearance="fill">
                     <mat-label>Action Type</mat-label>
                     <mat-hint>Select the type of action to perform</mat-hint>
-                    <mat-select formControlName="type">
-                      <mat-option value="email">Send Email to Applicant</mat-option>
-                      <mat-option value="api_call">API Call</mat-option>
-                      <mat-option value="admin_email">Send Email to Admin</mat-option>
-                      <mat-option value="database_update">Update Database</mat-option>
+                    <mat-select formControlName="type" (ngModelChange)="setActionType(i, j, $event)">
+                      <mat-option value="{{action.type}}"
+                        *ngFor="let action of actionTypes">{{action.label}}</mat-option>
                     </mat-select>
                   </mat-form-field>
 
                   <!-- Action Config based on type -->
-                  <div [ngSwitch]="action.get('type')?.value" formGroupName="config" class="flex flex-col gap-1">
+                  <div formGroupName="config" class="flex flex-col gap-1">
                     <!-- Email Config -->
-                    <div *ngSwitchCase="'email'" class="flex flex-col gap-1">
+                    <div *ngIf="action.get('type')?.value === 'email'" class="flex flex-col gap-1">
                       <mat-form-field appearance="fill">
                         <mat-label>Email Subject</mat-label>
                         <input matInput formControlName="subject">
@@ -216,24 +223,228 @@
                     </div>
 
                     <!-- API Call Config -->
-                    <div *ngSwitchCase="'api_call'" class="flex flex-col gap-1">
-                      <mat-form-field appearance="fill">
-                        <mat-label>Endpoint URL</mat-label>
-                        <input matInput formControlName="endpoint">
+                    <!-- API Call Config (Enhanced Version) -->
+                    <div
+                      *ngIf="action.get('config_type')?.value === 'api_call' || action.get('config_type')?.value === 'internal_api_call'"
+                      class="flex flex-col gap-3">
+                      <app-select-object (dataDownloaded)="setDefaultApiCallActions($event)" [emitDownload]="true"
+                        (selectionChanged)="defaultApiCallTemplateSelected(i, j, $event)"
+                        fieldLabel="Select an existing template to apply (optional)" labelProperty="label"
+                        keyProperty="name" url="applications/templates/config/defaultActions"></app-select-object>
+                      <!-- Basic Configuration -->
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3"
+                        *ngIf="action.get('config_type')?.value === 'api_call'">
+                        <mat-form-field appearance="fill">
+                          <mat-label>Endpoint URL</mat-label>
+                          <input matInput formControlName="endpoint" placeholder="e.g., /api/v1/users">
+                          <mat-hint>The API endpoint to call</mat-hint>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                          <mat-label>HTTP Method</mat-label>
+                          <mat-select formControlName="method">
+                            <mat-option value="GET">GET</mat-option>
+                            <mat-option value="POST">POST</mat-option>
+                            <mat-option value="PUT">PUT</mat-option>
+                            <mat-option value="DELETE">DELETE</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      <!-- Authentication -->
+                      <mat-form-field appearance="fill" *ngIf="action.get('config_type')?.value === 'api_call'">
+                        <mat-label>Authentication Token (Optional)</mat-label>
+                        <input matInput formControlName="auth_token" placeholder="Bearer token for authentication">
+                        <mat-hint>Optional: Bearer token for API authentication</mat-hint>
                       </mat-form-field>
-                      <mat-form-field appearance="fill">
-                        <mat-label>Method</mat-label>
-                        <mat-select formControlName="method">
-                          <mat-option value="GET">GET</mat-option>
-                          <mat-option value="POST">POST</mat-option>
-                          <mat-option value="PUT">PUT</mat-option>
-                          <mat-option value="DELETE">DELETE</mat-option>
-                        </mat-select>
-                      </mat-form-field>
+
+                      <!-- Headers Configuration -->
+                      <mat-expansion-panel *ngIf="action.get('config_type')?.value === 'api_call'">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Headers Configuration</mat-panel-title>
+                          <mat-panel-description>Configure custom headers for the API call</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="headers-config">
+                          <div formArrayName="headers" class="flex flex-col gap-2">
+                            <div *ngFor="let header of getHeadersArray(i, j).controls; let h=index" [formGroupName]="h"
+                              class="grid grid-cols-3 gap-2 items-center">
+                              <mat-form-field appearance="fill">
+                                <mat-label>Header Name</mat-label>
+                                <input matInput formControlName="name" placeholder="e.g., Content-Type">
+                              </mat-form-field>
+                              <mat-form-field appearance="fill">
+                                <mat-label>Header Value</mat-label>
+                                <input matInput formControlName="value"
+                                  placeholder="e.g., application/json or [field_name]">
+                                <mat-hint>Use [field_name] for dynamic values</mat-hint>
+                              </mat-form-field>
+                              <button mat-icon-button color="warn" (click)="removeHeader(i, j, h)">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <button mat-stroked-button color="primary" (click)="addHeader(i, j)">
+                            <mat-icon>add</mat-icon> Add Header
+                          </button>
+                        </div>
+                      </mat-expansion-panel>
+
+                      <!-- Body Mapping (for POST/PUT) -->
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Request Body Mapping</mat-panel-title>
+                          <mat-panel-description>Map form fields to API parameters</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="body-mapping-config">
+                          <div formArrayName="body_mapping" class="flex flex-col gap-2">
+                            <div *ngFor="let mapping of getBodyMappingArray(i, j).controls; let m=index"
+                              [formGroupName]="m" class="grid grid-cols-12 gap-2 items-center">
+
+                              <mat-form-field appearance="fill" class="col-span-3">
+                                <mat-label>API Field Name</mat-label>
+                                <input matInput formControlName="api_field" placeholder="e.g., user_name">
+                              </mat-form-field>
+
+                              <mat-form-field appearance="fill" class="col-span-2">
+                                <mat-label>Mapping Type</mat-label>
+                                <mat-select formControlName="mapping_type">
+                                  <mat-option value="field">Form Field</mat-option>
+                                  <mat-option value="static">Static Value</mat-option>
+                                  <mat-option value="template">Template</mat-option>
+                                  <mat-option value="transform">Transform</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+
+                              <!-- Field Selection -->
+                              <mat-form-field appearance="fill" class="col-span-3"
+                                *ngIf="mapping.get('mapping_type')?.value === 'field'">
+                                <mat-label>Form Field</mat-label>
+                                <mat-select formControlName="source_field">
+                                  <mat-option *ngFor="let field of getFieldsList()" [value]="field.name">
+                                    {{field.label || field.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+
+                              <!-- Static Value -->
+                              <mat-form-field appearance="fill" class="col-span-3"
+                                *ngIf="mapping.get('mapping_type')?.value === 'static'">
+                                <mat-label>Static Value</mat-label>
+                                <input matInput formControlName="static_value">
+                              </mat-form-field>
+
+                              <!-- Template -->
+                              <mat-form-field appearance="fill" class="col-span-3"
+                                *ngIf="mapping.get('mapping_type')?.value === 'template'">
+                                <mat-label>Template</mat-label>
+                                <input matInput formControlName="template" placeholder="Hello [first_name] [last_name]">
+                                <mat-hint>Use [field_name] for dynamic values</mat-hint>
+                              </mat-form-field>
+
+                              <!-- Transform Options -->
+                              <div class="col-span-3" *ngIf="mapping.get('mapping_type')?.value === 'transform'">
+                                <mat-form-field appearance="fill">
+                                  <mat-label>Source Field</mat-label>
+                                  <mat-select formControlName="source_field">
+                                    <mat-option *ngFor="let field of getFieldsList()" [value]="field.name">
+                                      {{field.label || field.name}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill" class="mt-2">
+                                  <mat-label>Transform Type</mat-label>
+                                  <mat-select formControlName="transform_type">
+                                    <mat-option value="uppercase">Uppercase</mat-option>
+                                    <mat-option value="lowercase">Lowercase</mat-option>
+                                    <mat-option value="trim">Trim</mat-option>
+                                    <mat-option value="date_format">Date Format</mat-option>
+                                    <mat-option value="concat">Concatenate</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+
+                              <!-- Default Value -->
+                              <mat-form-field appearance="fill" class="col-span-2">
+                                <mat-label>Default Value</mat-label>
+                                <input matInput formControlName="default_value">
+                              </mat-form-field>
+
+                              <button mat-icon-button color="warn" (click)="removeBodyMapping(i, j, m)"
+                                class="col-span-1">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <button mat-stroked-button color="primary" (click)="addBodyMapping(i, j)">
+                            <mat-icon>add</mat-icon> Add Body Mapping
+                          </button>
+                        </div>
+                      </mat-expansion-panel>
+
+                      <!-- Query Parameters (for GET) -->
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Query Parameters</mat-panel-title>
+                          <mat-panel-description>Map form fields to URL query parameters</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="query-params-config">
+                          <div formArrayName="query_params" class="flex flex-col gap-2">
+                            <div *ngFor="let param of getQueryParamsArray(i, j).controls; let p=index"
+                              [formGroupName]="p" class="grid grid-cols-4 gap-2 items-center">
+
+                              <mat-form-field appearance="fill">
+                                <mat-label>Parameter Name</mat-label>
+                                <input matInput formControlName="param_name" placeholder="e.g., user_id">
+                              </mat-form-field>
+
+                              <mat-form-field appearance="fill">
+                                <mat-label>Form Field</mat-label>
+                                <mat-select formControlName="form_field">
+                                  <mat-option *ngFor="let field of getFieldsList()" [value]="field.name">
+                                    {{field.label || field.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+
+                              <mat-form-field appearance="fill">
+                                <mat-label>Default Value</mat-label>
+                                <input matInput formControlName="default_value">
+                              </mat-form-field>
+
+                              <button mat-icon-button color="warn" (click)="removeQueryParam(i, j, p)">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <button mat-stroked-button color="primary" (click)="addQueryParam(i, j)">
+                            <mat-icon>add</mat-icon> Add Query Parameter
+                          </button>
+                        </div>
+                      </mat-expansion-panel>
+
+                      <!-- Test Configuration -->
+                      <mat-expansion-panel *ngIf="action.get('config_type')?.value === 'api_call'">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Test Configuration</mat-panel-title>
+                          <mat-panel-description>Test your API call configuration</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="test-config flex flex-col gap-2">
+                          <p class="text-sm text-gray-600">
+                            You can test this API call configuration with sample data to ensure it works correctly.
+                          </p>
+                          <button mat-stroked-button color="accent" (click)="testApiCall(i, j)">
+                            <mat-icon>play_arrow</mat-icon> Test API Call
+                          </button>
+                        </div>
+                      </mat-expansion-panel>
                     </div>
 
                     <!-- Admin Email Config -->
-                    <div *ngSwitchCase="'admin_email'" class="flex flex-col gap-1">
+                    <div *ngIf="action.get('type')?.value === 'admin_email'" class="flex flex-col gap-1">
                       <mat-form-field appearance="fill">
                         <mat-label>Recipient Field</mat-label>
                         <input matInput formControlName="admin_email">
@@ -299,3 +510,18 @@
     </form>
   </mat-step>
 </mat-stepper>
+
+<ng-template #previewFieldsDialog>
+  <h2 mat-dialog-title>Preview form fields <br>
+    <small>These fields will be applied to this application form. Any form fields previously added will be replaced by
+      these ones</small>
+  </h2>
+  <mat-dialog-content>
+    <app-form-generator *ngIf="commonTemplateFields.length" [fields]="commonTemplateFields" [formType]="'filter'"
+      [showSubmitButton]="false" [showResetButton]="false"></app-form-generator>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="commonTemplateFields">Apply</button>
+  </mat-dialog-actions>
+</ng-template>

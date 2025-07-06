@@ -73,15 +73,37 @@
                   <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
                 </span> -->
       </app-section-container>
+      <ng-container *ngTemplateOutlet="tableHeaderOptions">
+      </ng-container>
 
+      <app-section-container *ngIf="showSort" [title]="'Sort'">
+        <div class="flex  gap-2">
+          <mat-form-field [appearance]="'fill'" subscriptSizing="dynamic" (ngModelChange)="sortChanged()">
+            <mat-label>Sort By: </mat-label>
+            <mat-select [(ngModel)]="sortBy">
+              <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="flex  gap-1">
+            <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"
+                (ngModelChange)="sortChanged()"> </label>
+            <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"
+                (ngModelChange)="sortChanged()"> </label>
+          </div>
+          <!-- <button mat-flat-button color="accent"
+            >Apply</button> -->
+        </div>
+
+      </app-section-container>
 
 
     </div>
     <div class="flex flex-row gap-2 align-middle items-center flex-wrap">
       <app-pagination *ngIf="showPagination" [current_page]="currentPage" [total]="totalRows" [limit]="limit"
         (pageChanged)="setPage($event)" (limitChanged)="setLimit($event)"></app-pagination>
-      <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
-        (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button>
+
+      <!-- <button *ngIf="showSort" mat-flat-button color="accent" [disabled]="filters.length < 1"
+        (click)="showSortDialog()"><mat-icon>sort_by_alpha</mat-icon> Sort</button> -->
 
 
       <!-- <span *ngIf="showSort" class="flex flex-row gap-1 items-center flex-wrap">
@@ -111,119 +133,12 @@
   </div>
 
 
+
   <div class="overflow-auto flex-auto max-h-[500px]">
     <app-table #table [dataSource]="dataSource" [displayedColumns]="displayedColumns" [columnLabels]="columnLabels"
       [rowSelection]="rowSelection" [specialClasses]="specialClasses" [customClassRules]="customClassRules"
-      [offset]="offset"></app-table>
-    <!-- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
-      <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
+      [offset]="offset" [customClassLegends]="customClassLegends"></app-table>
 
-        <span [ngSwitch]="column">
-          <span *ngSwitchCase="'select'">
-            <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox (change)="$event ? toggleAllRows($event) : null"
-                [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-              </mat-checkbox>
-            </th>
-          </span>
-          <span *ngSwitchCase="'#'">
-            <th sticky mat-header-cell *matHeaderCellDef>#</th>
-          </span>
-          <span *ngSwitchCase="'actions'">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-          </span>
-          <span *ngSwitchDefault>
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              {{getColumnLabel(column)}}
-            </th>
-          </span>
-
-
-        </span>
-
-
-        <td mat-cell *matCellDef="let element; let i = index;">
-          <ng-template #imageTemplate>
-
-            <p-image [src]="element[column]" [preview]="true" alt="Image" width="100"></p-image>
-          </ng-template>
-          <span [ngSwitch]="column">
-            <span *ngSwitchCase="'#'">{{offset+ i + 1}}</span>
-
-            <span *ngSwitchCase="'actions'">
-              <span *ngIf="element.actions.length === 1; else menuButton">
-                <button [disabled]="element.actions[0].disabled" *ngIf="element.actions[0].type === 'button'"
-                  (click)="element.actions[0].onClick(element)" mat-raised-button color="primary">
-                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
-                  <span>{{ element.actions[0].label }}</span>
-                </button>
-
-                <a mat-button color="primary" *ngIf="element.actions[0].type === 'link'"
-                  routerLink="/{{element.actions[0].link}}/{{element[element.actions[0].linkProp]}}"
-                  [queryParams]="element.actions[0].urlParams">
-                  <mat-icon *ngIf="element.actions[0].icon">{{ element.actions[0].icon }}</mat-icon>
-                  <span>{{ element.actions[0].label }}</span>
-                </a>
-
-              </span>
-              <ng-template #menuButton>
-                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu"
-                  aria-label="Example icon-button with a menu">
-                  <mat-icon>expand_more</mat-icon> Menu
-                </button>
-                <mat-menu #menu="matMenu">
-                  <ng-container *ngFor="let action of element.actions">
-                    <ng-container [ngTemplateOutlet]="action.type === 'button' ? buttonTemplate : linkTemplate"
-                      [ngTemplateOutletContext]="{ action: action }">
-                    </ng-container>
-                  </ng-container>
-                </mat-menu>
-
-                <ng-template #buttonTemplate let-action="action">
-                  <button (click)="action.onClick(element)" mat-menu-item>
-                    <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
-                    <span>{{ action.label }}</span>
-                  </button>
-                </ng-template>
-
-                <ng-template #linkTemplate let-action="action">
-                  <a routerLink="/{{action.link}}/{{element[action.linkProp]}}" mat-menu-item>
-                    <mat-icon *ngIf="action.icon">{{ action.icon }}</mat-icon>
-                    <span>{{ action.label }}</span>
-                  </a>
-                </ng-template>
-              </ng-template>
-
-            </span>
-
-            <span *ngSwitchCase="'select'">
-              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
-                [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
-              </mat-checkbox>
-            </span>
-            <span *ngSwitchCase="'picture'" [ngTemplateOutlet]="imageTemplate"></span>
-            <span *ngSwitchCase="'qr_code'" [ngTemplateOutlet]="imageTemplate"></span>
-
-
-
-            <span *ngSwitchDefault>
-              <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
-              <button mat-raised-button color="primary" (click)="viewHtml(element[column])"
-                *ngIf="isHtml(element[column])">View</button>
-              <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"
-                [innerHTML]="element[column]"
-                [class]="getColumnClass( column+'-'+ replaceSpaceWithUnderscore(element[column]))"></div>
-            </span>
-          </span>
-
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getRowClasses(row)"></tr>
-
-    </table> -->
 
   </div>
 </div>
@@ -236,19 +151,10 @@
 <ng-template #sortDialog>
   <h2 mat-dialog-title>Sort Options</h2>
   <mat-dialog-content>
-    <mat-form-field [appearance]="'fill'">
-      <mat-label>Sort By: </mat-label>
-      <mat-select [(ngModel)]="sortBy">
-        <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <div>
-      <label>Ascending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="asc"> </label>
-      <label>Descending <input type="radio" name="sortOrder" [(ngModel)]="sortOrder" value="desc"> </label>
-    </div>
+
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="{ sortBy: sortBy, sortOrder: sortOrder }">Apply</button>
+
   </mat-dialog-actions>
 </ng-template>

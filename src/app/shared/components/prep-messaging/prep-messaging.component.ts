@@ -89,6 +89,8 @@ export class PrepMessagingComponent implements OnChanges, OnDestroy {
       maxHeight: '90%',
 
     });
+
+    //TODO: Add an event emitter to signal when dialog is closed
   }
 
   onTemplateChange(event: string) {

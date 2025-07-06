@@ -180,6 +180,84 @@ export function openHtmlInNewWindow(htmlContent: string): void {
   // URL.revokeObjectURL(url);
 }
 
+export function openPrintWindow(htmlContent: string): void {
+
+  const documentContent = `
+          <html>
+            <head>
+              <title>Print </title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+              <style>
+              .page-break{
+                page-break-before: always;
+            }
+            body{
+              line-height: 1 !important;
+            }
+
+
+@media print {
+  .no-print {
+      display: none;
+      width: 0px !important;
+  }
+
+}
+
+
+
+            </style>
+            </head>
+        <body >
+        <div class='no-print'>
+        Press Ctrl+P or click this button
+        <button id='print_btn' class='btn btn-primary no-print'>Print</button> to print
+        <hr>
+        </div>
+        <div>${htmlContent}</div>
+        <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+        <script>
+        $(document).ready(function () {
+          $(document).on("click", "#print_btn", function () {
+            window.print()
+        });
+
+
+        });
+        flexFont = function () {
+          const divs = document.getElementsByClassName("flexFont");
+          for(let i = 0; i < divs.length; i++) {
+              let relFontsize = divs[i].offsetWidth*0.05;
+              divs[i].style.fontSize = relFontsize+'px';
+          }
+      };
+      window.onafterprint = function(){
+            window.close();
+          }
+
+      window.onload = function(event) {
+          flexFont();
+      };
+      window.onresize = function(event) {
+          flexFont();
+      };
+           </script>
+
+           </body>
+          </html>`;
+  const blob = new Blob([documentContent], { type: 'text/html' });
+  // Create a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Open a new window with the URL
+  window.open(url, '_blank');
+
+
+}
+
 /**
  * get the label text from an object using a provided key. replace underscores with spaces and capitalise
  * @param {object} object any object
@@ -253,6 +331,79 @@ export function updateUrlQueryParamValue(url: string, paramName: string, paramVa
 
 }
 
+export function sortObjectsByField(field: string, sortDirection: string, objects: any[]): any[] {
+  if (sortDirection === "asc") {
+    return objects.sort((a, b) => a[field] > b[field] ? 1 : -1);
+  } else {
+    return objects.sort((a, b) => a[field] < b[field] ? 1 : -1);
+  }
+}
+
+export function isEmpty(value: any): boolean {
+  if (value === null || value === undefined) {
+    return true
+  }
+  if (Array.isArray(value)) {
+    return value.length === 0
+  }
+  return typeof value === 'string' && value.trim() === '';
+}
+
+export function printElement(elementId: string) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  // Clone the element to avoid modifying the original
+  const clonedElement = element.cloneNode(true) as HTMLElement;
+
+  // Get computed styles and apply them inline
+  applyComputedStyles(element, clonedElement);
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print</title>
+          <style>
+            body { margin: 0; padding: 20px; }
+            * { box-sizing: border-box; }
+          </style>
+        </head>
+        <body>
+          ${clonedElement.outerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  }
+}
+
+export function applyComputedStyles(original: Element, clone: Element) {
+  const computedStyle = window.getComputedStyle(original);
+  const cloneElement = clone as HTMLElement;
+
+  // Copy computed styles to inline styles
+  for (let i = 0; i < computedStyle.length; i++) {
+    const property = computedStyle[i];
+    cloneElement.style.setProperty(
+      property,
+      computedStyle.getPropertyValue(property),
+      computedStyle.getPropertyPriority(property)
+    );
+  }
+
+  // Recursively apply to children
+  for (let i = 0; i < original.children.length; i++) {
+    applyComputedStyles(original.children[i], clone.children[i]);
+  }
+}
 
 
 

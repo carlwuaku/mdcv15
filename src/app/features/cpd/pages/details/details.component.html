@@ -27,7 +27,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-tab-group *ngIf="object != null">
+  <mat-tab-group *ngIf="object != null" mat-stretch-tabs="false" mat-align-tabs="start">
     <mat-tab label="Details">
       <ng-template matTabContent>
         <mat-card>

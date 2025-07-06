@@ -58,6 +58,9 @@ import { SectionContainerComponent } from './components/section-container/sectio
 import { SubSectionContainerComponent } from './components/sub-section-container/sub-section-container.component';
 import { EmailFormComponent } from './components/email-form/email-form.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AlertComponent } from './components/alert/alert.component';
+import { UploadableCkeditorInputComponent } from './components/uploadable-ckeditor-input/uploadable-ckeditor-input.component';
+import { StringArrayInputComponent } from './components/string-array-input/string-array-input.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -107,7 +110,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     AddGuestUserComponent,
     SectionContainerComponent,
     SubSectionContainerComponent,
-    EmailFormComponent
+    EmailFormComponent,
+    AlertComponent,
+    UploadableCkeditorInputComponent,
+    StringArrayInputComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -173,6 +179,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     SectionContainerComponent,
     SubSectionContainerComponent,
     EmailFormComponent,
+    AlertComponent,
+    UploadableCkeditorInputComponent,
+    StringArrayInputComponent
   ],
   providers: [
     ClipboardCopyDirective
