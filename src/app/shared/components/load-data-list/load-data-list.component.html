@@ -73,6 +73,9 @@
                   <app-print-table *ngIf="showPrint" [objects]="selection.selected"></app-print-table>
                 </span> -->
       </app-section-container>
+      <ng-container *ngTemplateOutlet="tableHeaderOptions">
+      </ng-container>
+
       <app-section-container *ngIf="showSort" [title]="'Sort'">
         <div class="flex  gap-2">
           <mat-form-field [appearance]="'fill'" subscriptSizing="dynamic" (ngModelChange)="sortChanged()">

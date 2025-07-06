@@ -7,7 +7,12 @@
       <app-export-table [objects]="selectedItems"></app-export-table>
       <button [disabled]="selectedItems.length < 1" mat-raised-button color="primary" (click)="setResults()">Set
         results</button>
+
     </div>
+  </ng-template>
+  <ng-template #tableHeaderOptions>
+    <button mat-raised-button color="primary" (click)="openUploadResultsFromCsvDialog()">Upload
+      results from excel</button>
   </ng-template>
 
 </app-load-data-list>

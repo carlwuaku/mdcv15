@@ -48,8 +48,8 @@ export class ExaminationService {
     return this.dbService.get<ApiResponseObject<ExaminationRegistrationObject[]>>('examinations/registrations' + (filters ? `?${filters}` : '')).pipe(take(1));
   }
 
-  getExaminationResultCounts(id: string): Observable<{ not_set: number, fail: number, pass: number }> {
-    return this.dbService.get<{ not_set: number, fail: number, pass: number }>(`examinations/registrations/${id}/result-count`).pipe(take(1));
+  getExaminationResultCounts(id: string): Observable<{ not_set: number, fail: number, pass: number, absent: number, total: number }> {
+    return this.dbService.get<{ not_set: number, fail: number, pass: number, absent: number, total: number }>(`examinations/registrations/${id}/result-count`).pipe(take(1));
   }
 
   getCandidateLetter(uuid: string, letterType: "registration" | "result"): Observable<string> {
@@ -115,5 +115,11 @@ export class ExaminationService {
    */
   getExaminationApplicationsCount(filters: string = ''): Observable<ApiResponseObject<number>> {
     return this.dbService.get<ApiResponseObject<number>>('examinations/applications/count' + (filters ? `?${filters}` : '')).pipe(take(1));
+  }
+
+  uploadResultsFromCSV(examId: string, file: File): Observable<{ message: string, data: ExaminationRegistrationObject[] }> {
+    const formData = new FormData();
+    formData.append('uploadFile', file);
+    return this.dbService.post<{ message: string, data: ExaminationRegistrationObject[] }>(`examinations/registrations/parse-csv-results/${examId}`, formData).pipe(take(1));
   }
 }

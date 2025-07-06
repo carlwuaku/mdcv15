@@ -111,7 +111,7 @@ export class ExaminationRegistrationsListComponent implements OnInit, OnDestroy 
       { label: "Set custom result letter", type: "button", onClick: (object: ExaminationRegistrationObject) => this.setCustomResultLetter(object) },
       ...(object.registration_letter ? [{ label: "Remove registration letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "registration") }] : []),
       ...(object.result_letter ? [{ label: "Remove result letter", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.removeCustomLetter(object, "result") }] : []),
-      ...(object.result ? [{ label: "Delete result", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.deleteResult(object) }] : []),
+      ...(object.result !== null ? [{ label: "Delete result", type: "button" as "button", onClick: (object: ExaminationRegistrationObject) => this.deleteResult(object) }] : []),
 
       { label: "Delete", type: "button", onClick: (object: ExaminationRegistrationObject) => this.delete(object) }
     ];

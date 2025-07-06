@@ -23,14 +23,16 @@ export class SetResultsDialogComponent implements OnInit {
   columnLabels: { [key: string]: string } = {
     license_number: 'Intern Code',
   }
+  validResults = ['Pass', 'Fail', 'Absent'];
   editableColumns: EditableColumn[] = [
-    { field: 'result', type: 'select', options: [{ value: 'Pass', label: 'Pass' }, { value: 'Fail', label: 'Fail' }], validator: (value) => value.length > 0 }
+    { field: 'result', type: 'select', options: this.validResults.map(result => ({ value: result, label: result })), validator: (value) => value.length > 0 }
   ];
+
 
   scoreFields: string[] = [];
   @Input() examination: ExaminationObject | null = null;
 
-  constructor(private dialog: MatDialog, public dialogRef: MatDialogRef<SetResultsDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<SetResultsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: { registrations: ExaminationRegistrationObject[], examination: ExaminationObject },
     private service: ExaminationService, private notify: NotifyService) {
     this.registrations = dialogData.registrations;
@@ -49,7 +51,7 @@ export class SetResultsDialogComponent implements OnInit {
         result: candidate.result || '',
         uuid: candidate.uuid!,
         intern_code: candidate.intern_code,
-        scores: []
+        scores: candidate.scores || []
       };
     });
     this.scoreFields = [];
@@ -58,7 +60,7 @@ export class SetResultsDialogComponent implements OnInit {
     if (this.examination && this.examination.scores_names && isArray(this.examination.scores_names)) {
       this.examination.scores_names.forEach(score => {
         this.displayedColumns.push(score);
-        this.results.map(result => result[score] = '');
+        this.results.map(result => result[score] = result.scores.find(candidateScore => candidateScore.title === score)?.score || '');
         this.editableColumns.push({ field: score, type: 'text', validator: (value) => value.length > 0 });
         this.scoreFields.push(score);
       });
@@ -79,7 +81,7 @@ export class SetResultsDialogComponent implements OnInit {
         this.notify.failNotification(`Please enter a result for ${row.index_number}`);
         return;
       }
-      if (row.result !== 'Pass' && row.result !== 'Fail') {
+      if (this.validResults.indexOf(row.result) === -1) {
         this.notify.failNotification(`Please enter a valid result for ${row.index_number}`);
         return;
       }

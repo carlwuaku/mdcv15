@@ -80,6 +80,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() tableTitle: string = "";
   @ContentChild('header') header!: TemplateRef<any>;
   @ContentChild('selectionOptions') selectionOptions!: TemplateRef<any>;
+  @ContentChild('tableHeaderOptions') tableHeaderOptions!: TemplateRef<any>;
   @Input() showDeleted: boolean = true;
   @Input() showFilterButton: boolean = true;
   @Input() showSort: boolean = true;

@@ -26,6 +26,7 @@ export class ExaminationDetailsComponent implements OnInit {
   resultNotSetCount: number = 0;
   failedCount: number = 0;
   passedCount: number = 0;
+  absentCount: number = 0;
   totalCount: number = 0;
   applicationsCount: number = 0;
 
@@ -70,7 +71,8 @@ export class ExaminationDetailsComponent implements OnInit {
         this.resultNotSetCount = data.not_set || 0;
         this.failedCount = data.fail || 0;
         this.passedCount = data.pass || 0;
-        this.totalCount = this.resultNotSetCount + this.failedCount + this.passedCount;
+        this.absentCount = data.absent || 0;
+        this.totalCount = data.total;
       },
       error: error => {
         this.isLoading = false;

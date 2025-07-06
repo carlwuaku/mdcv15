@@ -106,6 +106,19 @@
     </mat-tab>
     <mat-tab>
       <ng-template matTabLabel>
+        <div>Absent list <span class="badge badge-primary">{{absentCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Absent'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
         <div>All candidates <span class="badge badge-primary">{{totalCount}}</span> </div>
       </ng-template>
       <ng-template matTabContent>

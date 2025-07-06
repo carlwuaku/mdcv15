@@ -9,6 +9,7 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { SetResultsDialogComponent } from '../set-results-dialog/set-results-dialog.component';
 import { ExaminationObject } from '../../models/examination.model';
+import { UploadResultsFromCsvComponent } from '../upload-results-from-csv/upload-results-from-csv.component';
 
 @Component({
   selector: 'app-set-results',
@@ -89,8 +90,12 @@ export class SetResultsComponent implements OnInit {
       this.notify.failNotification("Please select an examination to set results for.");
       return;
     }
+    this.openSetResultsDialog(this.selectedItems, this.examination);
+  }
+
+  openSetResultsDialog(data: ExaminationRegistrationObject[], examination: ExaminationObject) {
     const resultDialogRef = this.dialog.open(SetResultsDialogComponent, {
-      data: { registrations: this.selectedItems, examination: this.examination },
+      data: { registrations: data, examination: examination },
       width: '90%',
       maxHeight: '90%',
     })
@@ -99,6 +104,23 @@ export class SetResultsComponent implements OnInit {
       if (result) {
         this.onResultChanged.emit(true)
         this.updateTimestamp();
+      }
+    })
+  }
+
+  openUploadResultsFromCsvDialog() {
+    if (!this.examination) {
+      this.notify.failNotification("Please select an examination to set results for.");
+      return;
+    }
+    const uploadDialogRef = this.dialog.open(UploadResultsFromCsvComponent, {
+      data: { examination: this.examination },
+      width: '90%',
+      maxHeight: '90%',
+    })
+    uploadDialogRef.afterClosed().subscribe((result: ExaminationRegistrationObject[]) => {
+      if (result) {
+        this.openSetResultsDialog(result, this.examination!);
       }
     })
   }

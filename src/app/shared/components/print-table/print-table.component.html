@@ -14,16 +14,16 @@
       Available variables: <span class="m-1" *ngFor="let variable of templateVariables">{{variable}}</span>
     </div>
     <div class="flex flex-row gap-2">
-      <div class="h-[500px] overflow-auto">
+      <app-section-container [title]="'To be printed'" class="h-[500px] overflow-auto">
         <mat-list>
           <mat-list-item *ngFor="let object of objects">
             <div mat-line>{{object.name}}</div>
           </mat-list-item>
         </mat-list>
-      </div>
-      <div>
+      </app-section-container>
+      <app-section-container [title]="'Template'">
         <div class="h-[500px] w-[500px] overflow-auto" [innerHTML]="selectedTemplate?.template_content"></div>
-      </div>
+      </app-section-container>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

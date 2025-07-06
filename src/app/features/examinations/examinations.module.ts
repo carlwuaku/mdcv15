@@ -21,6 +21,7 @@ import { PassFailListComponent } from './components/pass-fail-list/pass-fail-lis
 import { ManagePublishResultComponent } from './components/manage-publish-result/manage-publish-result.component';
 import { ExamAttendanceComponent } from './pages/exam-attendance/exam-attendance.component';
 import { DownloadExamApplicantsComponent } from './components/download-exam-applicants/download-exam-applicants.component';
+import { UploadResultsFromCsvComponent } from './components/upload-results-from-csv/upload-results-from-csv.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { DownloadExamApplicantsComponent } from './components/download-exam-appl
     ManagePublishResultComponent,
     ExamAttendanceComponent,
     DownloadExamApplicantsComponent,
+    UploadResultsFromCsvComponent,
   ],
   imports: [
     CommonModule,
