@@ -27,6 +27,7 @@ export interface IFormGenerator {
   key?: string;
   customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
   placeholder?: string;
+  file_types?: string; //comma separated. e.g. "jpg,png" used when type is 'file'. specifies the allowed file types
 }
 
 export class FormField implements IFormGenerator {

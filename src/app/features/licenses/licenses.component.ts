@@ -34,14 +34,13 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
 
+    this.licenseType = ar.snapshot.params['type'];
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.ar.queryParams
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
 
-          this.licenseType = params['licenseType'];
-          console.log(this.licenseType)
           this.queryParams = params;
           if (this.licenseType) {
             this.appService.appSettings.pipe(take(1)).subscribe(data => {
@@ -72,9 +71,9 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  onLicenseTypeChange(selectedValue: string) {
-    this.router.navigate(['licenses'], { queryParams: { licenseType: selectedValue } });
-  }
+  // onLicenseTypeChange(selectedValue: string) {
+  //   this.router.navigate(['licenses'], { queryParams: { licenseType: selectedValue } });
+  // }
 
   updateUrl() {
 
@@ -179,12 +178,12 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
       paramsObject["child_" + key] = value;
     });
 
-    paramsObject['licenseType'] = this.licenseType;
+    // paramsObject['licenseType'] = this.licenseType;
     //generate a timestamp to force a refresh
     this.ts = getToday("timestamp_string");
     paramsObject['ts'] = this.ts;
 
-    this.router.navigate(['licenses'], { queryParams: paramsObject });
+    this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
 
   }
 

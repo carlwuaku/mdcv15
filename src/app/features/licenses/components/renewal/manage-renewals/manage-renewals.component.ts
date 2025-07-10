@@ -37,7 +37,7 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private appService: AppService,
     private authService: AuthService, private router: Router) {
-
+    this.licenseType = ar.snapshot.params['type'];
 
 
   }
@@ -45,7 +45,6 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     //get query params for status and license_type
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       this.queryParams = params
-      this.licenseType = params['license_type'];
       this.setUrl();
     });
 
@@ -197,9 +196,7 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     })
   }
 
-  onLicenseTypeChange(selectedValue: string) {
-    this.router.navigate(['licenses/renewals-manage'], { queryParams: { license_type: selectedValue } });
-  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next(true);

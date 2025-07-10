@@ -3,12 +3,7 @@
     Renew a
     new
     license</a>
-  <mat-card>
-    <mat-card-content>
-      <app-select-license-type [emptyOption]="'None'" [licenseType]="licenseType"
-        (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
-    </mat-card-content>
-  </mat-card>
+
   <div *ngIf="!licenseType">
     <mat-card>
 

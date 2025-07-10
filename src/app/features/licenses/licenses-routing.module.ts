@@ -15,22 +15,22 @@ import { RenewalReportsComponent } from './components/renewal/renewal-reports/re
 import { GazetteComponent } from './components/renewal/gazette/gazette.component';
 const routes: Routes = [
   { path: '', component: LicensesComponent },
-  { path: 'list', component: LicensesComponent },
+  { path: 'list/:type', component: LicensesComponent },
   { path: 'form/:action/:type', component: LicenseFormComponent, data: { title: "Add new license" } },
   { path: 'form/:action/:type/:id', component: LicenseFormComponent, data: { title: "Update license" } },
   { path: 'license-details/:id', component: DetailsComponent, data: { title: "License details" } },
-  { path: 'renewals', data: { title: 'Renewals' }, component: RenewalComponent },
-  { path: 'renewals-manage', data: { title: 'Manage Renewals' }, component: ManageRenewalsComponent },
+  { path: 'renewals/:type', data: { title: 'Renewals' }, component: RenewalComponent },
+  { path: 'renewals-manage/:type', data: { title: 'Manage Renewals' }, component: ManageRenewalsComponent },
   { path: 'renewal-print-queue', data: { title: 'Renewals Print Queue' }, component: RenewalPrintQueueComponent },
   { path: 'renewal', redirectTo: 'renewals-manage' },
 
   { path: 'renewal-form', data: { title: 'Create Renewal' }, component: RenewalFormComponent },
   { path: 'renewal-form/:id', data: { title: 'Edit Renewal' }, component: RenewalFormComponent },
   { path: 'renewal-certificate/:id', data: { title: 'Print Renewal Certificate' }, component: RenewalCertificateComponent },
-  { path: 'renewal-dashboard', data: { title: 'Manage Renewals' }, component: RenewalDashboardComponent },
-  { path: 'reports', data: { title: 'Basic Reports' }, component: ReportsComponent },
-  { path: 'advanced-reports', data: { title: 'Advanced Reports' }, component: AdvancedReportsComponent },
-  { path: 'renewal-reports', data: { title: 'Renewal Basic Reports' }, component: RenewalReportsComponent },
+  { path: 'renewal-dashboard/:type', data: { title: 'Manage Renewals' }, component: RenewalDashboardComponent },
+  { path: 'reports/:type', data: { title: 'Basic Reports' }, component: ReportsComponent },
+  { path: 'advanced-reports/:type', data: { title: 'Advanced Reports' }, component: AdvancedReportsComponent },
+  { path: 'renewal-reports/:type', data: { title: 'Renewal Basic Reports' }, component: RenewalReportsComponent },
   { path: 'gazette', data: { title: 'Gazette' }, component: GazetteComponent },
 ];
 

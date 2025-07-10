@@ -11,7 +11,8 @@
     <ng-container *ngFor="let field of fields; let i = index">
       <div *ngIf="isRow(field)" class="flex gap-1 justify-between p-2">
         <div *ngFor="let subField of field" class="flex-col gap-1 flex-auto">
-          <label>{{subField.label}} <span *ngIf="subField.required">*</span></label>
+          <label>{{subField.label}} <span *ngIf="subField.required">*</span> <mat-icon class="size-4 text-[16px]"
+              *ngIf="subField.hint" matTooltip="{{subField.hint}}" aria-label="Info">help</mat-icon> </label>
           <div class="text-gray-500 text-sm">{{subField.hint}}</div>
           <div *ngIf="subField.showOnly === true;">
             <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: subField }"></ng-container>
@@ -23,8 +24,9 @@
       </div>
       <div *ngIf="isFormField(field)" class="flex flex-col gap-1">
 
-        <label>{{field.label}} <span *ngIf="field.required">*</span></label>
-        <div class="text-gray-500 text-sm">{{field.hint}}</div>
+        <label>{{field.label}} <span *ngIf="field.required">*</span> <mat-icon class="size-4 text-[16px]"
+            *ngIf="field.hint" matTooltip="{{field.hint}}" aria-label="Info">help</mat-icon> </label>
+
         <div *ngIf="field.showOnly === true;">
           <ng-container *ngTemplateOutlet="renderReadOnly; context: { $implicit: field }"></ng-container>
         </div>
@@ -89,7 +91,7 @@
     </div>
     <div *ngSwitchCase="'file'" class="flex flex-col gap-1">
       <label for="">{{field.label}}</label>
-      <app-file-uploader [accept]="'*/*'" (onFilesSelected)="onFileSelected($event, field)"
+      <app-file-uploader [accept]="field.file_types || '*/*'" (onFilesSelected)="onFileSelected($event, field)"
         [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
 

@@ -1,10 +1,5 @@
 <div class=" flex flex-col gap-1">
-  <mat-card *ngIf="!license">
-    <mat-card-content>
-      <app-select-license-type [licenseType]="licenseType"
-        (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
-    </mat-card-content>
-  </mat-card>
+
 
   <mat-card *ngIf="licenseType">
     <mat-card-content>

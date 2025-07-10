@@ -13,6 +13,7 @@ export interface AppSettings {
   dashboardMenu: MenuItem[],
   renewalBasicStatisticsFilterFields: IFormGenerator[],
   basicStatisticsFilterFields: IFormGenerator[],
+  advancedStatisticsFilterFields: IFormGenerator[],
   searchTypes: MenuItem[],
   licenseTypes: {
     [key: string]: {

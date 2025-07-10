@@ -22,21 +22,42 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
   @ViewChild('advancedReportsList') advancedReportsList!: LoadDataListComponent;
   apiCallData: Record<string, any> = {};
   selectedItems: any[] = [];
+  /** keep track of the fields that should have child_ appended to them. on the server these are treated specially */
+  childFilterNames: string[] = [];
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
+    this.licenseType = ar.snapshot.params['type'];
 
   }
   ngOnInit(): void {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      this.licenseType = params['licenseType'];
       if (this.licenseType) {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
-          this.AdvancedReportsFilters = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields;
-          this.AdvancedReportsFilters.forEach(filter => {
-            filter.value = this.queryParams[`child_${filter.name}`];
-          });
+          this.AdvancedReportsFilters = [...data?.advancedStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.advancedStatisticsFields];
+
+          this.childFilterNames = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields.map((filter) => filter.name);
+          //populate the filters with the query param values
+          this.AdvancedReportsFilters.map((filter: IFormGenerator) => {
+            if (this.queryParams[filter.name] || this.queryParams[`child_${filter.name}`]) {
+              const value = this.queryParams[filter.name] ? this.queryParams[filter.name] : this.queryParams[`child_${filter.name}`];
+              if (filter.selection_mode === 'multiple') {
+                filter.value = value.split(',');
+              }
+              else {
+                filter.value = value;
+              }
+            }
+          }
+          );
         })
+
+        // this.appService.appSettings.pipe(take(1)).subscribe(data => {
+        //   this.AdvancedReportsFilters = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields;
+        //   this.AdvancedReportsFilters.forEach(filter => {
+        //     filter.value = this.queryParams[`child_${filter.name}`];
+        //   });
+        // })
         this.AdvancedReportsUrl = this.AdvancedReportsBaseUrl + "?licenseType=" + this.licenseType;
         // this.advancedReportsList?.getData();
       }
@@ -59,7 +80,13 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
     const data: Record<string, any> = {};
     params.forEach((param) => {
       if (param.value && param.value.length > 0) {
-        data[`child_${param.name}`] = param.value;
+        if (this.childFilterNames.includes(param.name)) {
+          data[`child_${param.name}`] = param.value;
+        }
+        else {
+          data[param.name] = param.value;
+        }
+        // data[`child_${param.name}`] = param.value;
       }
     });
     data['licenseType'] = this.licenseType;

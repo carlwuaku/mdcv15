@@ -20,6 +20,7 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
   url: string = "licenses/renewal";
   constructor(private appService: AppService,
     private ar: ActivatedRoute, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+    this.licenseType = ar.snapshot.params['type'];
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -30,7 +31,6 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
 
     this.ar.queryParams
       .pipe(takeUntil(this.destroy$)).subscribe(params => {
-        this.licenseType = params['license_type'];
         this.queryParams = params;
         if (this.licenseType) {
           this.getMenuItems()
@@ -95,8 +95,7 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
-    paramsObject['license_type'] = this.licenseType;
-    this.router.navigate(['licenses/renewal-dashboard'], { queryParams: paramsObject });
+    this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
   }
 
 }

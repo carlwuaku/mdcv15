@@ -11,6 +11,7 @@ import { LicensesModule } from '../features/licenses/licenses.module';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { RouterModule } from '@angular/router';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
     LoginComponent,
     LogoutComponent,
     SearchComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     CommonModule,

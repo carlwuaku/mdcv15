@@ -37,13 +37,13 @@ export class GazetteComponent implements OnInit, OnDestroy {
   }
   getYear = (date: string) => { return getToday("year", date) }; // This is used to get the current year for the filter
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
+    this.licenseType = ar.snapshot.params['type'];
 
   }
   ngOnInit(): void {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      this.licenseType = params['license_type'];
       if (this.licenseType) {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];

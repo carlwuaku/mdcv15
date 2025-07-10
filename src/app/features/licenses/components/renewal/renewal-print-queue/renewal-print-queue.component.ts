@@ -30,7 +30,7 @@ export class RenewalPrintQueueComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, private notify: NotifyService,
     private ar: ActivatedRoute, private router: Router, private renewalService: RenewalService,
     private appService: AppService) {
-
+    this.licenseType = ar.snapshot.params['type'];
 
   }
 
@@ -39,9 +39,7 @@ export class RenewalPrintQueueComponent implements OnInit, OnDestroy {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      if (!this.licenseType) {
-        this.licenseType = params['license_type'];
-      }
+
       this.setUrl();
 
       this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
@@ -102,7 +100,7 @@ export class RenewalPrintQueueComponent implements OnInit, OnDestroy {
     }
 
 
-    this.router.navigate(['licenses/renewal-print-queue'], { queryParams: paramsObject });
+    this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
 
   }
 
