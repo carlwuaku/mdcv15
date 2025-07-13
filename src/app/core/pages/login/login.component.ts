@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
     this.error = false;
 
     let data = new FormData();
-    data.append('email', this.username);
+    data.append('username', this.username);
     data.append('password', this.password);
     data.append('device_name', 'admin portal');
     data.append('user_type', 'admin');

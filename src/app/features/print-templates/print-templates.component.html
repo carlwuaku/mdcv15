@@ -1,5 +1,5 @@
 <app-load-data-list #dataList [url]="url" [timestamp]="ts" [getActions]="getActions"
-  (onSelect)="setSelectedItems($event)" (onSelect)="setSelectedItems($event)">
+  (onSelect)="setSelectedItems($event)" (onSelect)="setSelectedItems($event)" [showFilterButton]="false">
   <ng-template #selectionOptions>
     <div class="flex gap-1">
       <app-export-table [objects]="selectedItems"></app-export-table>

@@ -7,6 +7,7 @@ import { LoginComponent } from './core/pages/login/login.component';
 import { UserResolver } from './core/resolvers/userResolver.service';
 import { SearchComponent } from './core/pages/search/search.component';
 import { PageNotFoundComponent } from './core/pages/page-not-found/page-not-found.component';
+import { ForgotPasswordComponent } from './core/pages/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent
+  },
+  {
     path: 'search',
     component: SearchComponent,
     data: { title: 'Search' }
@@ -33,7 +38,6 @@ const routes: Routes = [
     path: 'cpd', data: { title: 'Continuous Professional Development' }, resolve: { userData: UserResolver },
     loadChildren: () => import('./features/cpd/cpd.module').then(m => m.CpdModule)
   },
-  // { path: 'practitioners', data: { title: 'Practitioners' }, loadChildren: () => import('./features/practitioners/practitioners.module').then(m => m.PractitionersModule) },
   { path: 'admin', data: { title: "Admin" }, resolve: { userData: UserResolver }, loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   { path: 'settings', resolve: { userData: UserResolver }, data: { title: 'Settings' }, loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule) },
   { path: 'activities', resolve: { userData: UserResolver }, data: { title: 'Activities' }, loadChildren: () => import('./features/activities/activities.module').then(m => m.ActivitiesModule) },

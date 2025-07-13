@@ -22,13 +22,18 @@
     </mat-card>
   </div>
 
-  <div *ngIf="licenseType" class="flex flex-wrap justify-between  gap-2">
+  <div *ngIf="licenseType" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
 
     <ng-container *ngFor="let item of menuItems">
-      <app-dashboard-tile class="w-[32%] min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
+      <app-dashboard-tile class=" min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
         [counterText]="item.apiCountText" [description]="item.description" [counterUrl]="item.apiCountUrl"
         [urlParams]="item.urlParams"></app-dashboard-tile>
     </ng-container>
-
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-print-queue/'+licenseType" [icon]="'print'"
+      [title]="'Print Queue'" [description]="''"></app-dashboard-tile>
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-reports/'+licenseType" [icon]="'list'"
+      [title]="'Renewal Reports'" [description]="''"></app-dashboard-tile>
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/gazette/'+licenseType" [icon]="'list'"
+      [title]="'Gazette'" [description]="''"></app-dashboard-tile>
   </div>
 </div>

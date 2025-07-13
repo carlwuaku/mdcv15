@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'license-details/:id', component: DetailsComponent, data: { title: "License details" } },
   { path: 'renewals/:type', data: { title: 'Renewals' }, component: RenewalComponent },
   { path: 'renewals-manage/:type', data: { title: 'Manage Renewals' }, component: ManageRenewalsComponent },
-  { path: 'renewal-print-queue', data: { title: 'Renewals Print Queue' }, component: RenewalPrintQueueComponent },
+  { path: 'renewal-print-queue/:type', data: { title: 'Renewals Print Queue' }, component: RenewalPrintQueueComponent },
   { path: 'renewal', redirectTo: 'renewals-manage' },
 
   { path: 'renewal-form', data: { title: 'Create Renewal' }, component: RenewalFormComponent },
@@ -31,7 +31,7 @@ const routes: Routes = [
   { path: 'reports/:type', data: { title: 'Basic Reports' }, component: ReportsComponent },
   { path: 'advanced-reports/:type', data: { title: 'Advanced Reports' }, component: AdvancedReportsComponent },
   { path: 'renewal-reports/:type', data: { title: 'Renewal Basic Reports' }, component: RenewalReportsComponent },
-  { path: 'gazette', data: { title: 'Gazette' }, component: GazetteComponent },
+  { path: 'gazette/:type', data: { title: 'Gazette' }, component: GazetteComponent },
 ];
 
 @NgModule({

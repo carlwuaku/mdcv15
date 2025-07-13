@@ -47,7 +47,7 @@ export class RenewalPrintQueueComponent implements OnInit, OnDestroy {
 
   }
   setUrl() {
-    let queryParams = "";
+    let queryParams = "?license_type=" + this.licenseType;
     const queryParamsKeys = Object.keys(this.queryParams);
     queryParamsKeys.forEach(key => {
       queryParams += queryParams === "" ? "?" : "&";

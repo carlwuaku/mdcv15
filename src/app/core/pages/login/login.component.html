@@ -35,8 +35,8 @@
               {{flash_message}}
             </div>
             <mat-form-field class="w-full" appearance="fill">
-              <mat-label>Email</mat-label>
-              <input [(ngModel)]="username" type="text" name="email" class="form-control" required matInput>
+              <mat-label>Username</mat-label>
+              <input [(ngModel)]="username" type="text" name="username" class="form-control" required matInput>
             </mat-form-field>
             <mat-form-field class="w-full" appearance="fill">
               <mat-label>Password*</mat-label> <br>
@@ -54,7 +54,7 @@
                   class="full-width">Submit</button>
               </div>
             </div>
-            <u class="link text-muted" (click)="forgotPassword()">Forgot Password</u>
+            <a class="link text-muted" routerLink="/forgot-password">Forgot Password</a>
 
 
 
@@ -89,7 +89,7 @@
       </mat-card-content>
       <mat-card-footer>
         <div class="w-full text-center">
-          &copy; Medical & Dental Council Ghana <span id="year"></span>. All Rights Reserved.
+          &copy; {{appName}} <span id="year"></span>. All Rights Reserved.
           <br>
           Unauthorized access is prohibited. All data is protected by the Data Protection Law
         </div>

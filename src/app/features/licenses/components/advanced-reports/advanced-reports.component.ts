@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Observable, Subject, take, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LicensesService } from '../../licenses.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,7 +14,7 @@ import { ApiResponseObject } from 'src/app/shared/types/ApiResponseObject';
 })
 export class AdvancedReportsComponent implements OnInit, OnDestroy {
   queryParams: { [key: string]: string } = {};
-  licenseType: string = "";
+  licenseType: string | undefined;
   destroy$: Subject<boolean> = new Subject();
   AdvancedReportsBaseUrl: string = "licenses/details/filter";
   AdvancedReportsUrl: string = "licenses/details/filter";
@@ -25,18 +25,23 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
   /** keep track of the fields that should have child_ appended to them. on the server these are treated specially */
   childFilterNames: string[] = [];
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
-    this.licenseType = ar.snapshot.params['type'];
+
 
   }
   ngOnInit(): void {
-    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-
-      this.queryParams = params;
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.licenseType = params.get('type') ?? undefined;
+      this.queryParams = queryParams;
       if (this.licenseType) {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
-          this.AdvancedReportsFilters = [...data?.advancedStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.advancedStatisticsFields];
+          this.AdvancedReportsFilters = [...data?.advancedStatisticsFilterFields, ...data?.licenseTypes[this.licenseType!]?.advancedStatisticsFields];
 
-          this.childFilterNames = data?.licenseTypes[this.licenseType]?.advancedStatisticsFields.map((filter) => filter.name);
+          this.childFilterNames = data?.licenseTypes[this.licenseType!]?.advancedStatisticsFields.map((filter) => filter.name);
           //populate the filters with the query param values
           this.AdvancedReportsFilters.map((filter: IFormGenerator) => {
             if (this.queryParams[filter.name] || this.queryParams[`child_${filter.name}`]) {
@@ -61,8 +66,8 @@ export class AdvancedReportsComponent implements OnInit, OnDestroy {
         this.AdvancedReportsUrl = this.AdvancedReportsBaseUrl + "?licenseType=" + this.licenseType;
         // this.advancedReportsList?.getData();
       }
-
     });
+
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);

@@ -13,5 +13,6 @@
       </div>
     </ng-template>
   </app-load-data-list>
+  <app-alert [type]="'error'" *ngIf="!licenseType">No valid license type selected</app-alert>
 
 </div>
