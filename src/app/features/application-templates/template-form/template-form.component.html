@@ -3,7 +3,7 @@
     <ng-template matStepLabel>General Information</ng-template>
     <form [formGroup]="generalFormGroup">
       <div class="flex flex-col gap-1 pt-2">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>Form Name</mat-label>
           <input matInput formControlName="form_name" name="form_name" required>
           <mat-error *ngIf="generalFormGroup && generalFormGroup.get('form_name')?.hasError('required')">Required
@@ -161,23 +161,23 @@
 
             <!-- Stage Details -->
             <div class="stage-details">
-              <!-- <mat-form-field appearance="fill">
+              <!-- <mat-form-field appearance="outline">
                 <mat-label>Stage ID</mat-label>
                 <input matInput formControlName="id" placeholder="e.g., pending_verification">
               </mat-form-field> -->
 
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="outline">
                 <mat-label>Stage Name</mat-label>
                 <input matInput formControlName="name" placeholder="e.g., Pending Verification">
               </mat-form-field>
 
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="outline">
                 <mat-label>Description</mat-label>
                 <textarea matInput formControlName="description"></textarea>
               </mat-form-field>
 
               <!-- Allowed Transitions -->
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="outline">
                 <mat-label>Allowed Transitions</mat-label>
                 <mat-select formControlName="allowedTransitions" multiple>
                   <mat-option *ngFor="let s of stages.controls; let j=index" [value]="s.get('name')?.value"
@@ -199,7 +199,7 @@
                 <h4>Actions</h4>
                 <div *ngFor="let action of getActions(i).controls; let j=index" [formGroupName]="j"
                   class="flex flex-col gap-1  border border-gray-300 p-2">
-                  <mat-form-field appearance="fill">
+                  <mat-form-field appearance="outline">
                     <mat-label>Action Type</mat-label>
                     <mat-hint>Select the type of action to perform</mat-hint>
                     <mat-select formControlName="type" (ngModelChange)="setActionType(i, j, $event)">
@@ -212,11 +212,11 @@
                   <div formGroupName="config" class="flex flex-col gap-1">
                     <!-- Email Config -->
                     <div *ngIf="action.get('type')?.value === 'email'" class="flex flex-col gap-1">
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline">
                         <mat-label>Email Subject</mat-label>
                         <input matInput formControlName="subject">
                       </mat-form-field>
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline">
                         <mat-label>Email Template</mat-label>
                         <textarea matInput formControlName="template"></textarea>
                       </mat-form-field>
@@ -234,13 +234,13 @@
                       <!-- Basic Configuration -->
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-3"
                         *ngIf="action.get('config_type')?.value === 'api_call'">
-                        <mat-form-field appearance="fill">
+                        <mat-form-field appearance="outline">
                           <mat-label>Endpoint URL</mat-label>
                           <input matInput formControlName="endpoint" placeholder="e.g., /api/v1/users">
                           <mat-hint>The API endpoint to call</mat-hint>
                         </mat-form-field>
 
-                        <mat-form-field appearance="fill">
+                        <mat-form-field appearance="outline">
                           <mat-label>HTTP Method</mat-label>
                           <mat-select formControlName="method">
                             <mat-option value="GET">GET</mat-option>
@@ -252,7 +252,7 @@
                       </div>
 
                       <!-- Authentication -->
-                      <mat-form-field appearance="fill" *ngIf="action.get('config_type')?.value === 'api_call'">
+                      <mat-form-field appearance="outline" *ngIf="action.get('config_type')?.value === 'api_call'">
                         <mat-label>Authentication Token (Optional)</mat-label>
                         <input matInput formControlName="auth_token" placeholder="Bearer token for authentication">
                         <mat-hint>Optional: Bearer token for API authentication</mat-hint>
@@ -269,11 +269,11 @@
                           <div formArrayName="headers" class="flex flex-col gap-2">
                             <div *ngFor="let header of getHeadersArray(i, j).controls; let h=index" [formGroupName]="h"
                               class="grid grid-cols-3 gap-2 items-center">
-                              <mat-form-field appearance="fill">
+                              <mat-form-field appearance="outline">
                                 <mat-label>Header Name</mat-label>
                                 <input matInput formControlName="name" placeholder="e.g., Content-Type">
                               </mat-form-field>
-                              <mat-form-field appearance="fill">
+                              <mat-form-field appearance="outline">
                                 <mat-label>Header Value</mat-label>
                                 <input matInput formControlName="value"
                                   placeholder="e.g., application/json or [field_name]">
@@ -302,12 +302,12 @@
                             <div *ngFor="let mapping of getBodyMappingArray(i, j).controls; let m=index"
                               [formGroupName]="m" class="grid grid-cols-12 gap-2 items-center">
 
-                              <mat-form-field appearance="fill" class="col-span-3">
+                              <mat-form-field appearance="outline" class="col-span-3">
                                 <mat-label>API Field Name</mat-label>
                                 <input matInput formControlName="api_field" placeholder="e.g., user_name">
                               </mat-form-field>
 
-                              <mat-form-field appearance="fill" class="col-span-2">
+                              <mat-form-field appearance="outline" class="col-span-2">
                                 <mat-label>Mapping Type</mat-label>
                                 <mat-select formControlName="mapping_type">
                                   <mat-option value="field">Form Field</mat-option>
@@ -318,7 +318,7 @@
                               </mat-form-field>
 
                               <!-- Field Selection -->
-                              <mat-form-field appearance="fill" class="col-span-3"
+                              <mat-form-field appearance="outline" class="col-span-3"
                                 *ngIf="mapping.get('mapping_type')?.value === 'field'">
                                 <mat-label>Form Field</mat-label>
                                 <mat-select formControlName="source_field">
@@ -329,14 +329,14 @@
                               </mat-form-field>
 
                               <!-- Static Value -->
-                              <mat-form-field appearance="fill" class="col-span-3"
+                              <mat-form-field appearance="outline" class="col-span-3"
                                 *ngIf="mapping.get('mapping_type')?.value === 'static'">
                                 <mat-label>Static Value</mat-label>
                                 <input matInput formControlName="static_value">
                               </mat-form-field>
 
                               <!-- Template -->
-                              <mat-form-field appearance="fill" class="col-span-3"
+                              <mat-form-field appearance="outline" class="col-span-3"
                                 *ngIf="mapping.get('mapping_type')?.value === 'template'">
                                 <mat-label>Template</mat-label>
                                 <input matInput formControlName="template" placeholder="Hello [first_name] [last_name]">
@@ -345,7 +345,7 @@
 
                               <!-- Transform Options -->
                               <div class="col-span-3" *ngIf="mapping.get('mapping_type')?.value === 'transform'">
-                                <mat-form-field appearance="fill">
+                                <mat-form-field appearance="outline">
                                   <mat-label>Source Field</mat-label>
                                   <mat-select formControlName="source_field">
                                     <mat-option *ngFor="let field of getFieldsList()" [value]="field.name">
@@ -353,7 +353,7 @@
                                     </mat-option>
                                   </mat-select>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="mt-2">
+                                <mat-form-field appearance="outline" class="mt-2">
                                   <mat-label>Transform Type</mat-label>
                                   <mat-select formControlName="transform_type">
                                     <mat-option value="uppercase">Uppercase</mat-option>
@@ -366,7 +366,7 @@
                               </div>
 
                               <!-- Default Value -->
-                              <mat-form-field appearance="fill" class="col-span-2">
+                              <mat-form-field appearance="outline" class="col-span-2">
                                 <mat-label>Default Value</mat-label>
                                 <input matInput formControlName="default_value">
                               </mat-form-field>
@@ -395,12 +395,12 @@
                             <div *ngFor="let param of getQueryParamsArray(i, j).controls; let p=index"
                               [formGroupName]="p" class="grid grid-cols-4 gap-2 items-center">
 
-                              <mat-form-field appearance="fill">
+                              <mat-form-field appearance="outline">
                                 <mat-label>Parameter Name</mat-label>
                                 <input matInput formControlName="param_name" placeholder="e.g., user_id">
                               </mat-form-field>
 
-                              <mat-form-field appearance="fill">
+                              <mat-form-field appearance="outline">
                                 <mat-label>Form Field</mat-label>
                                 <mat-select formControlName="form_field">
                                   <mat-option *ngFor="let field of getFieldsList()" [value]="field.name">
@@ -409,7 +409,7 @@
                                 </mat-select>
                               </mat-form-field>
 
-                              <mat-form-field appearance="fill">
+                              <mat-form-field appearance="outline">
                                 <mat-label>Default Value</mat-label>
                                 <input matInput formControlName="default_value">
                               </mat-form-field>
@@ -445,15 +445,15 @@
 
                     <!-- Admin Email Config -->
                     <div *ngIf="action.get('type')?.value === 'admin_email'" class="flex flex-col gap-1">
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline">
                         <mat-label>Recipient Field</mat-label>
                         <input matInput formControlName="admin_email">
                       </mat-form-field>
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline">
                         <mat-label>Email Subject</mat-label>
                         <input matInput formControlName="subject">
                       </mat-form-field>
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline">
                         <mat-label>Email Template</mat-label>
                         <textarea matInput formControlName="template"></textarea>
                       </mat-form-field>
@@ -485,7 +485,7 @@
       </button>
 
       <!-- Initial Stage Selection -->
-      <mat-form-field appearance="fill" class="initial-stage">
+      <mat-form-field appearance="outline" class="initial-stage">
         <mat-label>Initial Stage</mat-label>
         <mat-select formControlName="initialStage">
           <mat-option value="">Select one</mat-option>
@@ -494,7 +494,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill" class="initial-stage">
+      <mat-form-field appearance="outline" class="initial-stage">
         <mat-label>Final Stage</mat-label>
         <mat-select formControlName="finalStage">
           <mat-option value="">Select one</mat-option>

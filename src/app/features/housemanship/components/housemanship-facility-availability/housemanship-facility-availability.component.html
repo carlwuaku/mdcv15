@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-content>
       <form [formGroup]="filterFormGroup">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>Year</mat-label>
           <input matInput formControlName="year" placeholder="YYYY" type="number">
           <mat-error *ngIf="filterFormGroup.get('year')?.hasError('required')">

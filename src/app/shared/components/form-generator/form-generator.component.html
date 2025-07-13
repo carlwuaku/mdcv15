@@ -62,15 +62,15 @@
         <input type="radio" [value]="option.value" [(ngModel)]="field.value" name="{{field.name}}" />
         {{option.key}}</span>
     </div>
-    <mat-form-field class="flex-auto" *ngSwitchCase="'select'">
-      <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
+    <mat-form-field class="flex-auto" *ngSwitchCase="'select'" appearance="outline">
+      <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
         <mat-option value="">Choose one</mat-option>
         <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="flex-auto" multiple *ngSwitchCase="'multi-select'">
-      <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}" appearance="outline">
+    <mat-form-field class="flex-auto" multiple *ngSwitchCase="'multi-select'" appearance="outline">
+      <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
         <mat-option value="">Choose one</mat-option>
         <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
@@ -119,7 +119,7 @@
     </div>
 
 
-    <mat-form-field appearance="fill" *ngSwitchCase="'date'">
+    <mat-form-field appearance="outline" *ngSwitchCase="'date'">
 
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker" (click)="picker.open()" (focus)="picker.open()"
         readonly>
@@ -128,7 +128,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngSwitchCase="'datetime'">
+    <mat-form-field appearance="outline" *ngSwitchCase="'datetime'">
 
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY HH:MM</mat-hint>
@@ -136,7 +136,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngSwitchCase="'time'">
+    <mat-form-field appearance="outline" *ngSwitchCase="'time'">
 
       <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
       <mat-hint>HH:MM</mat-hint>
@@ -144,7 +144,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngSwitchCase="'date-range'">
+    <mat-form-field appearance="outline" *ngSwitchCase="'date-range'">
 
       <mat-date-range-input [rangePicker]="rangepicker">
         <input matStartDate #start [value]="getDateRangeValue(field).start" placeholder="Start date">
@@ -160,7 +160,7 @@
       (valueChanged)="setFieldValue($event, field)"></app-string-array-input>
 
 
-    <mat-form-field *ngSwitchDefault>
+    <mat-form-field *ngSwitchDefault appearance="outline">
 
       <input matInput [required]="field.required" type="{{field.type}}" [(ngModel)]="field.value"
         name="{{field.name}}" />

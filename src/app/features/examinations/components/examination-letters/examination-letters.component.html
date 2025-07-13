@@ -25,7 +25,7 @@
           <div class="letter-form-content">
             <!-- Letter Basic Information -->
             <div class="form-row">
-              <mat-form-field appearance="fill" class="form-field">
+              <mat-form-field appearance="outline" class="form-field">
                 <mat-label>Letter Name</mat-label>
                 <input matInput formControlName="name" placeholder="Enter letter name">
                 <mat-error *ngIf="letterControl.get('name')?.hasError('required')">
@@ -33,7 +33,7 @@
                 </mat-error>
               </mat-form-field>
 
-              <mat-form-field appearance="fill" class="form-field">
+              <mat-form-field appearance="outline" class="form-field">
                 <mat-label>Letter Type</mat-label>
                 <mat-select formControlName="type">
                   <mat-option *ngFor="let type of letterTypes" [value]="type">
@@ -73,7 +73,7 @@
                   class="criteria-item">
 
                   <div class="criteria-form-row">
-                    <mat-form-field appearance="fill" class="criteria-field">
+                    <mat-form-field appearance="outline" class="criteria-field">
                       <mat-label>Field</mat-label>
                       <input matInput formControlName="field" placeholder="Field name">
                       <mat-error *ngIf="criteriaControl.get('field')?.hasError('required')">
@@ -86,7 +86,7 @@
                         (valueChanged)="setCriteriaControlValue(i, j, $event)"></app-string-array-input>
                     </div>
 
-                    <!-- <mat-form-field appearance="fill" class="criteria-field">
+                    <!-- <mat-form-field appearance="outline" class="criteria-field">
                       <mat-label>Value</mat-label>
 
                       <input matInput formControlName="value" placeholder="Field value">

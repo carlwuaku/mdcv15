@@ -1128,6 +1128,10 @@ body {
   align-items: center;
 }
 
+.active {
+  background-color: mat-color($my-app-primary, 200) !important;
+}
+
 @import 'utilities';
 // Keep all your existing specific styles for IDs, print styles, etc.
 // (maintaining backward compatibility)

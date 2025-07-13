@@ -1,8 +1,8 @@
 <app-loading *ngIf="loading"></app-loading>
 
-<mat-form-field class="flex-auto" *ngIf="type === 'select'">
+<mat-form-field class="flex-auto" *ngIf="type === 'select'" appearance="outline">
   <mat-label>{{fieldLabel}}</mat-label>
-  <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()" appearance="outline"
+  <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()"
     [multiple]="selection_mode === 'multiple'">
     <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
       <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
@@ -18,7 +18,7 @@
 
 
 
-<mat-form-field class="flex-auto" *ngIf="type === 'datalist'">
+<mat-form-field class="flex-auto" *ngIf="type === 'datalist'" appearance="outline">
   <mat-label>{{fieldLabel}}</mat-label>
   <input type="text" matInput class="flex-auto" [attr.list]="dataListId" #dataListInput [(ngModel)]="selectedItem"
     (change)="selectionMade()" (keyup)="selectionMade()">
@@ -30,7 +30,7 @@
 
 
 <div *ngIf="type === 'search'">
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline">
     <mat-label>{{fieldLabel}}</mat-label>
     <input matInput type="text" class="form-control" [(ngModel)]="search_param" (ngModelChange)="selectionMade()"
       (keyup.enter)="search()">
