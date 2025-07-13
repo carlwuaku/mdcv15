@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-1">
-  <a class="self-start" mat-raised-button color="accent" routerLink="/admin/userForm">Add a new user</a>
 
   <mat-card>
     <mat-card-content>
-      <app-load-data-list [timestamp]="ts" [url]="url" (onSelect)="setSelectedItems($event)" [getActions]="getActions">
+      <app-load-data-list [timestamp]="ts" [url]="url" (onSelect)="setSelectedItems($event)" [showSearch]="false"
+        [getActions]="getActions" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted">
         <ng-template #selectionOptions>
           <app-export-table></app-export-table>
         </ng-template>
