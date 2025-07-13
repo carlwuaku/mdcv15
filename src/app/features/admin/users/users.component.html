@@ -3,7 +3,8 @@
   <mat-card>
     <mat-card-content>
       <app-load-data-list [timestamp]="ts" [url]="url" (onSelect)="setSelectedItems($event)" [showSearch]="false"
-        [getActions]="getActions" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted">
+        [getActions]="getActions" [showAllFilters]="true" [onFilterSubmitted]="filterSubmitted"
+        [showTableTitle]="false">
         <ng-template #selectionOptions>
           <app-export-table></app-export-table>
         </ng-template>
