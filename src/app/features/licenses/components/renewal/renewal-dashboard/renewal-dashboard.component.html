@@ -1,8 +1,5 @@
 <div class="flex flex-col gap-2">
-  <a routerLink="/licenses/renewal-form" class="self-start" mat-raised-button color="accent"><mat-icon>plus</mat-icon>
-    Renew a
-    new
-    license</a>
+
 
   <div *ngIf="!licenseType">
     <mat-card>
@@ -22,7 +19,10 @@
     </mat-card>
   </div>
 
-  <div *ngIf="licenseType" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+  <div *ngIf="licenseType"
+    class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 grid-stretch-items ">
+    <app-dashboard-tile [variant]="'primary'" class="min-w-[300px] " [url]="'/licenses/renewal-form'" [icon]="'list'"
+      [title]="'Select for renewal'" [description]="''" [urlParams]="{license_type: licenseType}"></app-dashboard-tile>
 
     <ng-container *ngFor="let item of menuItems">
       <app-dashboard-tile class=" min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"

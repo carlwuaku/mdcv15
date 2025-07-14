@@ -16,6 +16,7 @@ export class DashboardTileComponent implements OnChanges {
   @Input() counterText?: string = '';
   @Input() description?: string = '';
   @Input() urlParams?: any;
+  @Input() variant: "primary" | "secondary" | "white" = "white";
   @ContentChild('count') count!: TemplateRef<any>;
 
   ngOnChanges(changes: SimpleChanges): void {

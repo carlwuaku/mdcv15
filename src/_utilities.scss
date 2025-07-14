@@ -21,6 +21,216 @@
   }
 }
 
+// Primary colored card
+.card-primary {
+  @apply rounded-xl shadow-lg border-0 transition-all duration-300;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+
+  &:hover {
+    @apply -translate-y-0.5 shadow-xl;
+    box-shadow: 0 25px 50px rgba(63, 81, 181, 0.3);
+  }
+
+  // Text colors for primary cards
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: white;
+  }
+
+  p,
+  span,
+  div {
+    &:not(.badge-modern):not(.alert-modern) {
+      color: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  // Icon colors
+  mat-icon,
+  .material-icons {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  // Link colors
+  a {
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  // Muted text
+  .text-muted,
+  .text-secondary {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  // Stats or numbers
+  .stat-number,
+  .number {
+    color: white;
+    font-weight: 600;
+  }
+
+  // Subtle text
+  .text-subtle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+// Variant: Primary card with solid background (no gradient)
+.card-primary-solid {
+  @apply rounded-xl shadow-lg border-0 transition-all duration-300;
+  background-color: var(--primary-color);
+  color: white;
+
+  &:hover {
+    @apply -translate-y-0.5 shadow-xl;
+    background-color: var(--primary-dark);
+    box-shadow: 0 25px 50px rgba(63, 81, 181, 0.3);
+  }
+
+  // Apply same text/icon styling as gradient version
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: white;
+  }
+
+  p,
+  span,
+  div {
+    &:not(.badge-modern):not(.alert-modern) {
+      color: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  mat-icon,
+  .material-icons {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  .text-muted,
+  .text-secondary {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .stat-number,
+  .number {
+    color: white;
+    font-weight: 600;
+  }
+
+  .text-subtle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+// Light primary card (for better readability when needed)
+.card-primary-light {
+  @apply rounded-xl shadow-lg border border-primary-200 transition-all duration-300;
+  background-color: var(--primary-lighter);
+  color: var(--primary-dark);
+
+  &:hover {
+    @apply -translate-y-0.5 shadow-xl;
+    background-color: var(--primary-light);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--primary-dark);
+  }
+
+  p,
+  span,
+  div {
+    color: var(--text-primary);
+  }
+
+  mat-icon,
+  .material-icons {
+    color: var(--primary-color);
+  }
+
+  a {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-dark);
+    }
+  }
+
+  .text-muted,
+  .text-secondary {
+    color: var(--text-secondary) !important;
+  }
+}
+
+.card-white {
+  @apply rounded-xl shadow-lg border border-primary-200 transition-all duration-300;
+  background-color: var(--bg-primary);
+  color: var(--primary-dark);
+
+  &:hover {
+    @apply -translate-y-0.5 shadow-xl;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--primary-dark);
+  }
+
+  p,
+  span,
+  div {
+    color: var(--text-primary);
+  }
+
+  mat-icon,
+  .material-icons {
+    color: var(--primary-color);
+  }
+
+  a {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-dark);
+    }
+  }
+
+  .text-muted,
+  .text-secondary {
+    color: var(--text-secondary) !important;
+  }
+}
+
 // Modern Buttons (NO GRADIENTS)
 .btn-modern {
   @apply rounded-lg font-medium transition-all duration-300 px-6 py-3 inline-flex items-center justify-center gap-2;

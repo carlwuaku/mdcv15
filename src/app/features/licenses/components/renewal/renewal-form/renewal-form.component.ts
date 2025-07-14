@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { getThisYear, getToday } from 'src/app/shared/utils/dates';
-import { take } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { RenewalObject } from '../renewal.model';
 import { LicenseObject } from '../../../models/license_model';
 import { RenewalService } from '../../../renewal.service';
@@ -15,7 +15,7 @@ import { RenewalService } from '../../../renewal.service';
   templateUrl: './renewal-form.component.html',
   styleUrls: ['./renewal-form.component.scss']
 })
-export class RenewalFormComponent {
+export class RenewalFormComponent implements OnInit, OnDestroy {
   title: string = "Renew a license";
   formUrl: string = "licenses/renewal";
   existingUrl: string = "licenses/renewal";
@@ -37,27 +37,41 @@ export class RenewalFormComponent {
   licenseSearchUrl: string = `licenses/details?renewalYear=${this.date}`;
   ts: string = "";
   existingRenewal: any | null = null;
-  constructor(ar: ActivatedRoute, private router: Router,
+  licenseType: string | null = null;
+  destroy$: Subject<boolean> = new Subject<boolean>();
+  constructor(private ar: ActivatedRoute, private router: Router,
     private dbService: HttpService, private notify: NotifyService, private renewalService: RenewalService) {
-    this.id = ar.snapshot.params['id'];
-    if (this.id) {
-      this.title = "Edit Renewal";
-      this.existingUrl = `licenses/renewal/${this.id}`;
-      this.formUrl = `licenses/renewal/${this.id}`;
-      this.extraFormData = [{ key: "uuid", value: this.id }]
-    }
-    //get the query parameters named registration_number
-    this.licenseUuid = ar.snapshot.queryParamMap.get('license_uuid') || "";
-    if (this.licenseUuid) {
-      this.getLicense(this.licenseUuid)
-    }
-    else if (this.id) {
-      this.getRenewal()
-    }
+
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}`;
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.licenseType = queryParams['license_type'] ?? null;
+      this.id = params.get('id');
+
+      //get the query parameters named registration_number
+      this.licenseUuid = queryParams['license_uuid'] || "";
+      if (this.licenseUuid) {
+        this.getLicense(this.licenseUuid)
+      }
+      else if (this.id) {
+        this.title = "Edit Renewal";
+        this.existingUrl = `licenses/renewal/${this.id}`;
+        this.formUrl = `licenses/renewal/${this.id}`;
+        this.extraFormData = [{ key: "uuid", value: this.id }]
+        this.getRenewal();
+      }
+    });
+    this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}&type=${this.licenseType}`;
   }
 
   getFormFields(type: string) {

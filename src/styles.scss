@@ -121,7 +121,7 @@ body {
   background: var(--bg-primary);
 
   &:hover {
-    transform: translateY(-2px);
+    // transform: translateY(-2px);
     box-shadow: var(--shadow-xl) !important;
   }
 
@@ -1130,6 +1130,29 @@ body {
 
 .active {
   background-color: mat-color($my-app-primary, 200) !important;
+}
+
+.grid-stretch-items {
+  app-dashboard-tile {
+    display: flex;
+    flex-direction: column;
+
+    a {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      >div {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        >div {
+          flex: 1;
+        }
+      }
+    }
+  }
 }
 
 @import 'utilities';
