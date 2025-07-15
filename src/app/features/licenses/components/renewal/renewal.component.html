@@ -6,7 +6,7 @@
       <app-load-data-list [showDeleted]="false" [showExport]="!license" [showInfo]="false" [showSort]="!license"
         [showFilterButton]="!license" [showAllFilters]="true" [showSearch]="false" [showReset]="!license"
         [onFilterSubmitted]="filterSubmitted" [timestamp]="ts" [url]="url" [getActions]="getActions"
-        (onSelect)="selectionChanged($event)" [showPrint]="false">
+        (onSelect)="selectionChanged($event)" [showPrint]="false" [showTableTitle]="false">
         <ng-template #selectionOptions>
           <div class="inline-flex gap-1 flex-wrap">
             <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"

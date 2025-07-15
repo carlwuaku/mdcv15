@@ -44,8 +44,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      if (!this.licenseType) {
-      }
+
       this.setUrl();
 
       this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
@@ -59,7 +58,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setUrl() {
-    let queryParams = "";
+    let queryParams = "?license_type=" + this.licenseType;
     Object.keys(this.queryParams).forEach(key => {
       queryParams += queryParams === "" ? "?" : "&";
       queryParams += `${key}=${this.queryParams[key]}`;

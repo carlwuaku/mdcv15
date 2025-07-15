@@ -29,11 +29,14 @@
         [counterText]="item.apiCountText" [description]="item.description" [counterUrl]="item.apiCountUrl"
         [urlParams]="item.urlParams"></app-dashboard-tile>
     </ng-container>
-    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-print-queue/'+licenseType" [icon]="'print'"
-      [title]="'Print Queue'" [description]="''"></app-dashboard-tile>
+    <app-dashboard-tile class="min-w-[300px]" [url]="printQueueUrl" [icon]="'print'" [title]="'Print Queue'"
+      [description]="''" [counterText]="'Items in print queue'" [counterUrl]="printQueueCountUrl"
+      [urlParams]="printQueueQueryParams"></app-dashboard-tile>
     <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-reports/'+licenseType" [icon]="'list'"
       [title]="'Renewal Reports'" [description]="''"></app-dashboard-tile>
     <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/gazette/'+licenseType" [icon]="'list'"
       [title]="'Gazette'" [description]="''"></app-dashboard-tile>
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewals/'+licenseType" [icon]="'list'"
+      [title]="'Track renewals'" [description]="''" [variant]="'secondary'"></app-dashboard-tile>
   </div>
 </div>

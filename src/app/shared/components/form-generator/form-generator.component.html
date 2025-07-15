@@ -136,13 +136,6 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngSwitchCase="'time'">
-
-      <input [(ngModel)]="field.value" matInput [matDatepicker]="picker">
-      <mat-hint>HH:MM</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
     <mat-form-field appearance="outline" *ngSwitchCase="'date-range'">
 
