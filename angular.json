@@ -108,7 +108,6 @@
       }
     }
   },
-  "defaultProject": "mdc-client",
   "cli": {
     "analytics": false
   }

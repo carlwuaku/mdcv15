@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { catchError, map, Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { NotifyService } from '../services/notify/notify.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PermissionsGuard implements CanActivate, CanActivateChild {
+export class PermissionsGuard  {
   constructor(private authService: AuthService, private notifyService: NotifyService) { }
   canActivate(
     route: ActivatedRouteSnapshot,
