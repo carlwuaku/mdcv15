@@ -1,10 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AppService } from 'src/app/app.service';
+import { Component, Input } from '@angular/core';
 import { HousemanshipService } from '../../housemanship.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { name } from 'faker';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { MatDialog } from '@angular/material/dialog';
