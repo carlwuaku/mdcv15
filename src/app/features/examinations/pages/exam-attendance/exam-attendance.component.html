@@ -1,7 +1,7 @@
 <div class="">
   <div class="no-print flex gap-3">
     <div>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
         <mat-select (change)="changeSort()" [(ngModel)]="type">
           <mat-option value="Grid">Grid</mat-option>
@@ -11,7 +11,7 @@
 
     </div>
     <div class="flex gap-1">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Sort by</mat-label>
 
         <mat-select (change)="changeSort()" [(ngModel)]="sortBy">
@@ -20,7 +20,7 @@
           <mat-option value="first_name">First Name</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Sort Order</mat-label>
 
         <mat-select (change)="changeSort()" [(ngModel)]="sortOrder">

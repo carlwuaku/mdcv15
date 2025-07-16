@@ -18,6 +18,7 @@ export class AppService {
     dashboardMenu: [],
     renewalBasicStatisticsFilterFields: [],
     basicStatisticsFilterFields: [],
+    advancedStatisticsFilterFields: [],
     searchTypes: [],
     licenseTypes: {},
     cpdFilterFields: [],

@@ -12,7 +12,7 @@
     <div class="flex gap-2 ">
       <app-section-container *ngIf="showSearch" [title]="'Search'">
         <form ngNativeValidate (ngSubmit)="search()" class="flex flex-row gap-1 align-middle items-center">
-          <mat-form-field [appearance]="'fill'" class="flex-auto">
+          <mat-form-field [appearance]="'outline'" class="flex-auto">
             <mat-label for="">Search</mat-label>
             <input name="search" required matInput [(ngModel)]="searchParam" (change)="paramInputChanged()"
               type="search">
@@ -78,7 +78,7 @@
 
       <app-section-container *ngIf="showSort" [title]="'Sort'">
         <div class="flex  gap-2">
-          <mat-form-field [appearance]="'fill'" subscriptSizing="dynamic" (ngModelChange)="sortChanged()">
+          <mat-form-field [appearance]="'outline'" subscriptSizing="dynamic" (ngModelChange)="sortChanged()">
             <mat-label>Sort By: </mat-label>
             <mat-select [(ngModel)]="sortBy">
               <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>

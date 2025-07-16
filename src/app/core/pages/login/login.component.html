@@ -1,102 +1,137 @@
-<div class="w-full">
-  <div class="flex flex-col gap-2 justify-center items-center">
-    <img src="{{logo}}" alt="logo" class="w-[100px] h-[100px]">
-    <h2>{{appName}}</h2>
+<div class="login-container">
+  <div class="login-card-wrapper">
+    <!-- Logo and App Name Section -->
+    <div class="logo-section">
+      <div class="logo-container">
+        <img [src]="logo" alt="logo" class="logo">
+      </div>
+      <h1 class="app-name">{{appName}}</h1>
+    </div>
 
-  </div>
-  <div class=" w-[60%] m-auto">
-
-    <mat-card>
+    <!-- Login Card -->
+    <mat-card class="login-card">
       <mat-card-header>
-        <div class="flex-col flex gap-2 items-center justify-center w-full">
-          <div class="w-full text-center text-lg font-bold">Login</div>
+        <mat-card-title>
+          <mat-icon class="login-icon">{{twoFactorAuthMode ? 'security' : 'login'}}</mat-icon>
+          <span>{{twoFactorAuthMode ? 'Two Factor Authentication' : 'Welcome Back'}}</span>
+        </mat-card-title>
+        <mat-card-subtitle>
+          <span *ngIf="twoFactorAuthMode">Enter your authenticator code</span>
+          <span *ngIf="!twoFactorAuthMode">Please sign in to your account</span>
+        </mat-card-subtitle>
+      </mat-card-header>
 
-
-          <div class="w-full text-center text-sm font-bold">
-            <div class="text-sm font-bold " *ngIf="twoFactorAuthMode">
-              Two Factor Authentication
-            </div>
-            <div class="text-sm font-bold " *ngIf="!twoFactorAuthMode">
-              Please enter your credentials
-            </div>
-          </div>
+      <mat-card-content class="flex flex-col gap-2">
+        <!-- Error Messages -->
+        <div *ngIf="error" class="alert alert-error">
+          <mat-icon>error</mat-icon>
+          <span>{{error_message}}</span>
         </div>
 
-      </mat-card-header>
-      <mat-card-content>
-        <form *ngIf="!twoFactorAuthMode" ngNativeValidate (ngSubmit)="login()">
-          <div class="card-body flex flex-col gap-2 items-center pt-2">
+        <div *ngIf="flash_message" class="alert alert-warning">
+          <mat-icon>warning</mat-icon>
+          <span>{{flash_message}}</span>
+        </div>
 
-
-            <div class="alert alert-danger" *ngIf="error">
-              {{error_message}}
-            </div>
-            <div class="alert alert-warning background-warning" *ngIf="flash_message != null">
-              {{flash_message}}
-            </div>
-            <mat-form-field class="w-full" appearance="fill">
-              <mat-label>Email</mat-label>
-              <input [(ngModel)]="username" type="text" name="email" class="form-control" required matInput>
+        <!-- Regular Login Form -->
+        <form *ngIf="!twoFactorAuthMode" (ngSubmit)="login()" class="login-form">
+          <div class="form-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Username</mat-label>
+              <input matInput [(ngModel)]="username" name="username" required autocomplete="username"
+                placeholder="Enter your username" (input)="onUsernameChange()" [disabled]="hasExceededAttempts">
+              <mat-icon matPrefix>person</mat-icon>
             </mat-form-field>
-            <mat-form-field class="w-full" appearance="fill">
-              <mat-label>Password*</mat-label> <br>
-              <input type="password" name="password" [(ngModel)]="password" class="form-control" required matInput>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password"
+                required autocomplete="current-password" placeholder="Enter your password" (input)="onPasswordChange()"
+                [disabled]="hasExceededAttempts">
+              <mat-icon matPrefix>lock</mat-icon>
+              <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
+                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" tabindex="-1">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
             </mat-form-field>
-            <re-captcha *ngIf="recaptchaSiteKey" (errored)="recaptchaError()" (resolved)="resolved($event)" type="image"
-              [siteKey]="recaptchaSiteKey"></re-captcha>
 
+            <!-- reCAPTCHA -->
+            <div class="recaptcha-container" *ngIf="recaptchaSiteKey">
+              <re-captcha (errored)="recaptchaError()" (resolved)="resolved($event)" type="image"
+                [siteKey]="recaptchaSiteKey">
+              </re-captcha>
+            </div>
 
+            <!-- Submit Button -->
+            <div class="button-container">
+              <button mat-raised-button color="primary" type="submit"
+                [disabled]="!isLoginFormValid || loading || hasExceededAttempts" class="login-button">
+                <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+                <mat-icon *ngIf="!loading && loginButtonIcon">{{loginButtonIcon}}</mat-icon>
+                <span>{{loginButtonText}}</span>
+              </button>
 
-            <div class="row m-t-30">
-              <div class="col-md-12">
-                <app-loading *ngIf="loading"></app-loading>
-                <button [disabled]="!recaptchaVerified" mat-raised-button color="primary" *ngIf="!loading" type="submit"
-                  class="full-width">Submit</button>
+              <div *ngIf="hasExceededAttempts" class="attempt-warning">
+                <mat-icon>warning</mat-icon>
+                <span>Too many failed attempts. Please wait or use forgot password.</span>
               </div>
             </div>
-            <u class="link text-muted" (click)="forgotPassword()">Forgot Password</u>
 
-
-
-
+            <!-- Forgot Password Link -->
+            <div class="forgot-password-link">
+              <a mat-button routerLink="/forgot-password" color="primary">
+                <mat-icon>help</mat-icon>
+                Forgot Password?
+              </a>
+            </div>
           </div>
         </form>
-        <form *ngIf="twoFactorAuthMode" ngNativeValidate (ngSubmit)="submit2FA()">
-          <div class="card-body flex flex-col gap-2 items-center pt-2">
 
-
-            <div class="alert alert-danger" *ngIf="error">
-              {{error_message}}
+        <!-- Two Factor Authentication Form -->
+        <form *ngIf="twoFactorAuthMode" (ngSubmit)="submit2FA()" class="login-form">
+          <div class="form-container">
+            <div class="two-factor-info">
+              <mat-icon class="info-icon">smartphone</mat-icon>
+              <p>Open your authenticator app and enter the 6-digit code</p>
             </div>
 
-            <mat-form-field class="w-full" appearance="fill">
-              <mat-label>Google Authenticator Code</mat-label>
-              <input [(ngModel)]="twoFactorCode" type="text" name="twoFactorCode" class="form-control" required
-                matInput>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Authenticator Code</mat-label>
+              <input matInput [(ngModel)]="twoFactorCode" name="twoFactorCode" required maxlength="6"
+                placeholder="000000" class="two-factor-input" autocomplete="one-time-code"
+                (input)="onTwoFactorInput($event)">
+              <mat-icon matPrefix>security</mat-icon>
             </mat-form-field>
 
+            <div class="button-container">
+              <button mat-raised-button color="primary" type="submit" [disabled]="!is2FAFormValid || loading"
+                class="login-button">
+                <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+                <mat-icon *ngIf="!loading && loginButtonIcon">{{loginButtonIcon}}</mat-icon>
+                <span>{{loginButtonText}}</span>
+              </button>
+            </div>
 
-
-            <div class="row m-t-30">
-              <div class="col-md-12">
-                <app-loading *ngIf="loading"></app-loading>
-                <button mat-raised-button color="primary" *ngIf="!loading" type="submit"
-                  class="full-width">Submit</button>
-              </div>
+            <div class="back-to-login">
+              <button mat-button type="button" (click)="goBackToLogin()" color="accent">
+                <mat-icon>arrow_back</mat-icon>
+                Back to Login
+              </button>
             </div>
           </div>
         </form>
       </mat-card-content>
+
       <mat-card-footer>
-        <div class="w-full text-center">
-          &copy; Medical & Dental Council Ghana <span id="year"></span>. All Rights Reserved.
-          <br>
-          Unauthorized access is prohibited. All data is protected by the Data Protection Law
+        <div class="footer-content">
+          <div class="copyright">
+            &copy; {{appName}} {{currentYear}}. All Rights Reserved.
+          </div>
+          <div class="disclaimer">
+            Unauthorized access is prohibited. All data is protected by the Data Protection Law.
+          </div>
         </div>
       </mat-card-footer>
     </mat-card>
-
-
   </div>
-
 </div>

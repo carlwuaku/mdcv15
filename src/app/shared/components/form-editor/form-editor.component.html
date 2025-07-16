@@ -44,20 +44,20 @@
     <div *ngIf="selectedItem" class="border-dashed border p-1 flex flex-col gap-1">
 
 
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Label</label>
         <input matInput [(ngModel)]="selectedItem.label" (ngModelChange)="setNameIfEmpty()" />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Name</label>
         <div class="font-thin">Typically this the name submitted to the server</div>
         <input matInput [(ngModel)]="selectedItem.name" (ngModelChange)="fieldNameChanged(selectedItem)" />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Hint</label>
         <input matInput [(ngModel)]="selectedItem.hint" />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Required</label>
         <mat-select [(ngModel)]="selectedItem.required">
           <mat-option [value]="true">Yes</mat-option>
@@ -71,30 +71,30 @@
           Options</button>
       </div>
 
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Show Only</label>
         <mat-select [(ngModel)]="selectedItem.showOnly">
           <mat-option [value]="true">Yes</mat-option>
           <mat-option [value]="false">No</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>Type</label>
         <mat-select [(ngModel)]="selectedItem.type">
           <mat-option *ngFor="let type of inputTypes" [value]="type">{{type}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>API Type</label>
         <mat-select [(ngModel)]="selectedItem.apiType">
           <mat-option *ngFor="let type of ['select', 'search', 'datalist']" [value]="type">{{type}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>API URL</label>
         <input matInput [(ngModel)]="selectedItem.api_url" />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <label>API Label Property</label>
         <input matInput [(ngModel)]="selectedItem.apiLabelProperty" />
       </mat-form-field>

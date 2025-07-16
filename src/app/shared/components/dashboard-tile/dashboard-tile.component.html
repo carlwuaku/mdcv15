@@ -1,33 +1,19 @@
 <a [routerLink]="url" [queryParams]="urlParams">
-  <mat-card class="dashboard-card h-full">
-    <mat-card-content>
-      <div class="flex gap-1 ">
-        <div class="icon-container" *ngIf="icon">
-          <mat-icon class="text-7xl w-[72px] h-[72px]  icon">{{icon}}</mat-icon>
-        </div>
-
-        <div class="flex flex-col justify-start flex-grow">
-          <h3 class="text-2xl font-light  text-primary">{{title}}</h3>
-
-
-          <div class="flex gap-1 w-fit items-baseline">
-            <span class="text-3xl font-bold text-accent">
-              <ng-container *ngTemplateOutlet="count || useApiCount">
-              </ng-container>
-              <ng-template #useApiCount>
-                <app-api-count *ngIf="counterUrl" [url]="counterUrl"></app-api-count>
-              </ng-template>
-            </span>
-            <p class="counterText" *ngIf="counterText">{{counterText}}</p>
-
-          </div>
-
-          <p *ngIf="description" class="">{{description}}</p>
-
-
-        </div>
+  <div class=" p-6"
+    [ngClass]="{'card-primary': variant === 'primary', 'card-primary-light': variant === 'secondary', 'card-white': variant === 'white'}">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-xl font-semibold mb-2">{{title}}</h3>
+        <p class="text-3xl font-bold"><ng-container *ngTemplateOutlet="count || useApiCount">
+          </ng-container>
+          <ng-template #useApiCount>
+            <app-api-count *ngIf="counterUrl" [url]="counterUrl"></app-api-count>
+          </ng-template>
+        </p>
+        <p class="text-subtle" *ngIf="counterText">{{counterText}}</p>
+        <p *ngIf="description" class="">{{description}}</p>
       </div>
-    </mat-card-content>
-
-  </mat-card>
+      <mat-icon *ngIf="icon" class="text-7xl w-[72px] h-[72px]  opacity-20">{{icon}}</mat-icon>
+    </div>
+  </div>
 </a>

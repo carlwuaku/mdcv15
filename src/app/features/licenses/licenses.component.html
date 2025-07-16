@@ -2,10 +2,7 @@
 
 
   <mat-card>
-    <mat-card-header>
-      <app-select-license-type *ngIf="showSelectLicenseType" [licenseType]="licenseType"
-        (licenseTypeChanged)="onLicenseTypeChange($event)"></app-select-license-type>
-    </mat-card-header>
+
     <mat-card-content>
       <app-load-data-list #dataList *ngIf="licenseType" [preload]="false" [showSearch]="showSearch" [timestamp]="ts"
         [url]="url" (onSelect)="setSelectedItems($event)" [getActions]="getActions" [showReset]="false"

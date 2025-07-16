@@ -34,7 +34,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private authService: AuthService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private router: Router,
     private appService: AppService) {
-
+    this.licenseType = ar.snapshot.params['type'];
 
   }
   ngOnInit(): void {
@@ -44,9 +44,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      if (!this.licenseType) {
-        this.licenseType = params['license_type'];
-      }
+
       this.setUrl();
 
       this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
@@ -60,7 +58,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setUrl() {
-    let queryParams = "";
+    let queryParams = "?license_type=" + this.licenseType;
     Object.keys(this.queryParams).forEach(key => {
       queryParams += queryParams === "" ? "?" : "&";
       queryParams += `${key}=${this.queryParams[key]}`;

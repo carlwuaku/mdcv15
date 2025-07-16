@@ -16,7 +16,8 @@
       </mat-expansion-panel>
     </ng-container>
     <ng-template #noChildren>
-      <a mat-list-item [routerLink]="item.url" [queryParams]="item.urlParams">
+      <a mat-list-item [routerLink]="item.url" [queryParams]="item.urlParams"
+        [ngClass]="{'active shadow-sm rounded-sm': isActiveChild(item)}">
         <span class="flex items-center gap-1.5  text-[16px] font-light overflow-auto">
           <mat-icon color="primary">{{ item.icon }}</mat-icon>
           <span class="overflow-auto">{{ item.title }}</span>

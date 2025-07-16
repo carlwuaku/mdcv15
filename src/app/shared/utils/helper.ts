@@ -201,6 +201,9 @@ export function openPrintWindow(htmlContent: string): void {
       display: none;
       width: 0px !important;
   }
+      .page-break{
+                page-break-before: always;
+            }
 
 }
 
@@ -214,7 +217,7 @@ export function openPrintWindow(htmlContent: string): void {
         <button id='print_btn' class='btn btn-primary no-print'>Print</button> to print
         <hr>
         </div>
-        <div>${htmlContent}</div>
+        ${htmlContent}
         <script
   src="https://code.jquery.com/jquery-3.6.0.min.js"
   integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="

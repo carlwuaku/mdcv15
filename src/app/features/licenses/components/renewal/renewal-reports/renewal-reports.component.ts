@@ -26,13 +26,12 @@ export class RenewalReportsComponent implements OnInit, OnDestroy {
   selectedField: string[] = [];// this is used to keep track of the selected field in the filter dropdown
   formData: Record<string, any> = {};
   constructor(private ar: ActivatedRoute, private router: Router, private licensesService: LicensesService, private appService: AppService) {
-
+    this.licenseType = ar.snapshot.params['type'];
   }
   ngOnInit(): void {
     this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
 
       this.queryParams = params;
-      this.licenseType = params['license_type'];
       if (this.licenseType) {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];

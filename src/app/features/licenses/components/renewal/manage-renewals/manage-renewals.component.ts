@@ -12,7 +12,7 @@ import { AppService } from 'src/app/app.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
-import { Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { RenewalStageItems } from 'src/app/shared/utils/data';
 @Component({
   selector: 'app-manage-renewals',
@@ -37,43 +37,49 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
   constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private appService: AppService,
     private authService: AuthService, private router: Router) {
-
+    this.licenseType = ar.snapshot.params['type'];
 
 
   }
   ngOnInit(): void {
-    //get query params for status and license_type
-    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.queryParams = params
-      this.licenseType = params['license_type'];
+
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.queryParams = queryParams;
+      this.licenseType = params.get('type') ?? '';
+      this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
+
+        const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
+        if (!stages) {
+          return;
+        }
+        this.status = this.queryParams['status'];
+        const stageConfig = stages[this.status];
+
+        if (!stageConfig) {
+          return;
+        }
+        const otherStatuses = Object.values(stages).filter((status) => status.title !== this.status);
+
+
+        this.allStatuses = otherStatuses.filter((status) => stageConfig.allowedTransitions.includes(status.title) && this.authService.currentUser?.permissions.includes(status.permission));
+
+      })
       this.setUrl();
     });
 
-    this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
 
-      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
-      if (!stages) {
-        return;
-      }
-      this.status = this.queryParams['status'];
-      const stageConfig = stages[this.status];
-
-      if (!stageConfig) {
-        return;
-      }
-      const otherStatuses = Object.values(stages).filter((status) => status.title !== this.status);
-
-
-      this.allStatuses = otherStatuses.filter((status) => stageConfig.allowedTransitions.includes(status.title) && this.authService.currentUser?.permissions.includes(status.permission));
-
-    })
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.setUrl();
   }
 
   setUrl() {
-    let queryParams = "";
+    let queryParams = "?license_type=" + this.licenseType;
     Object.keys(this.queryParams).forEach(key => {
       queryParams += queryParams === "" ? "?" : "&";
       queryParams += `${key}=${this.queryParams[key]}`;
@@ -160,6 +166,9 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
   }
 
   submit(status: string) {
+    if (!window.confirm(`Are you sure you want to update these ${this.selectedItems.length} item(s)? to ${status}`)) {
+      return;
+    }
     const data: Record<string, any>[] = [];
     const supplementaryData = this.providedData.reduce((acc: Record<string, any>, curr) => {
       acc[curr.name] = curr.value;
@@ -197,8 +206,15 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
     })
   }
 
-  onLicenseTypeChange(selectedValue: string) {
-    this.router.navigate(['licenses/renewals-manage'], { queryParams: { license_type: selectedValue } });
+  filterSubmitted(params: string) {
+    //split the params by & and then by =
+    const paramsArray = params.split("&");
+    const paramsObject: { [key: string]: string } = {};
+    paramsArray.forEach(param => {
+      const [key, value] = param.split("=");
+      paramsObject[key] = value;
+    });
+    this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
   }
 
   ngOnDestroy(): void {

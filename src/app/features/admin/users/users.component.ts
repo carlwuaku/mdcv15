@@ -1,5 +1,7 @@
-import { Component, EventEmitter, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { User } from 'src/app/core/models/user.model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -12,15 +14,38 @@ import { getToday } from 'src/app/shared/utils/dates';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit, OnDestroy {
   qrCodeUrl: string = "";
   authCode: string = "";
   @ViewChild('twoFaDialog') twoFaDialog!: TemplateRef<any>;
-  constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog) {
+  destroy$: Subject<boolean> = new Subject();
+  queryParams: { [key: string]: string } = {};
+
+  constructor(private dbService: HttpService, private notify: NotifyService, public dialog: MatDialog, private ar: ActivatedRoute,
+    private router: Router) {
     this.updateTimestampEvent.subscribe(() => {
       this.updateTimestamp();
     });
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+  ngOnInit(): void {
+    this.ar.queryParams
+      .pipe(takeUntil(this.destroy$)).subscribe(params => {
+
+        this.queryParams = params;
+        this.updateUrl();
+      });
+
+  }
+  updateUrl() {
+
+    this.url = `${this.baseUrl}` + "?" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+  }
+
   updateTimestampEvent: EventEmitter<void> = new EventEmitter();
   columnDefs = [
     {
@@ -160,5 +185,23 @@ export class UsersComponent {
       })
   }
 
+  filterSubmitted = (params: string) => {
+
+    //split the params by & and then by =
+    const paramsArray = params.split("&");
+    const paramsObject: { [key: string]: string } = {};
+    paramsArray.forEach(param => {
+      const [key, value] = param.split("=");
+      paramsObject[key] = value;
+    });
+
+    // paramsObject['licenseType'] = this.licenseType;
+    //generate a timestamp to force a refresh
+    this.ts = getToday("timestamp_string");
+    paramsObject['ts'] = this.ts;
+
+    this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
+
+  }
 
 }

@@ -138,7 +138,7 @@
                   <ng-container [ngSwitch]="getEditableColumnConfig(column)?.type">
 
                     <!-- Text Input -->
-                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'text'" appearance="fill"
+                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'text'" appearance="outline"
                       class="edit-field">
                       <input matInput [value]="element[column]" #inputRef
                         (blur)="onCellEdit(element, column, inputRef.value)"
@@ -146,7 +146,7 @@
                     </mat-form-field>
 
                     <!-- Number Input -->
-                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'number'" appearance="fill"
+                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'number'" appearance="outline"
                       class="edit-field">
                       <input matInput type="number" [value]="element[column]" #numInputRef
                         (blur)="onCellEdit(element, column, numInputRef.value)"
@@ -154,7 +154,7 @@
                     </mat-form-field>
 
                     <!-- Select Dropdown -->
-                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'select'" appearance="fill"
+                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'select'" appearance="outline"
                       class="edit-field">
                       <mat-select [value]="element[column]"
                         (selectionChange)="onCellEdit(element, column, $event.value)">
@@ -165,7 +165,7 @@
                     </mat-form-field>
 
                     <!-- Date Picker -->
-                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'date'" appearance="fill"
+                    <mat-form-field subscriptSizing="dynamic" *ngSwitchCase="'date'" appearance="outline"
                       class="edit-field">
                       <input matInput [matDatepicker]="picker" [value]="element[column]"
                         (dateChange)="onCellEdit(element, column, $event.value)">

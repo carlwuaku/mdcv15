@@ -94,7 +94,7 @@ export class EmailFormComponent implements OnInit, OnChanges, FormGeneratorCompo
       options: [],
       type: "file",
       value: "",
-      required: true
+      required: false
     }
 
 

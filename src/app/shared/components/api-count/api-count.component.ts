@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { take } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { API_ACCOUNTS_PATH, API_ADMIN_PATH, API_CPD_PATH, API_DOCTOR_PATH, API_INTERN_PATH } from '../../utils/constants';
@@ -8,7 +8,7 @@ import { API_ACCOUNTS_PATH, API_ADMIN_PATH, API_CPD_PATH, API_DOCTOR_PATH, API_I
   templateUrl: './api-count.component.html',
   styleUrls: ['./api-count.component.scss']
 })
-export class ApiCountComponent implements OnInit {
+export class ApiCountComponent implements OnInit, OnChanges {
   @Input() url: string = '';
   @Input() module: string = '';
   count: any = '...';
@@ -20,10 +20,17 @@ export class ApiCountComponent implements OnInit {
   constructor(private httpService: HttpService) {
 
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['url']) {
+      this.getCount();
+    }
+  }
 
   ngOnInit(): void {
     this.getCount();
   }
+
+
 
   getCount(): void {
     this.loading = true;
