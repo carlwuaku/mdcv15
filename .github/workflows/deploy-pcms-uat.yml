@@ -1,0 +1,44 @@
+on:
+  workflow_dispatch:
+
+name: Deploy To Pharmacy Council PCMS UAT via FTP
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build Angular App
+      run: npm run build-prod
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ftp.pcghana.org
+        username: ${{ secrets.ftp_username_pcms_uat }}
+        password: ${{ secrets.ftp_password_pcms_uat }}
+        local-dir: ./dist/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.vscode/**
+          **/src/**
+          **/e2e/**
+          **/*.md
+          **/angular.json
+          **/package*.json
+          **/tsconfig*.json
+          **/.editorconfig
+          **/.gitignore
