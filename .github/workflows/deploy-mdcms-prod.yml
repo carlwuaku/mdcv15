@@ -20,14 +20,14 @@ jobs:
       run: npm ci
 
     - name: Build Angular App
-      run: npm run build-pcms-staging
+      run: npm run build-mdcms-prod
 
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ftp.pcghana.org
-        username: ${{ secrets.ftp_username_pcms_uat }}
-        password: ${{ secrets.ftp_password_pcms_uat }}
+        username: ${{ secrets.ftp_username_mdcms_prod }}
+        password: ${{ secrets.ftp_password_mdcms_prod }}
         local-dir: ./dist/
         exclude: |
           **/.git*

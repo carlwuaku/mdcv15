@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "hire-tracker-app": {
+    "councils": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -69,6 +69,38 @@
               "extractLicenses": true,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "pcms-staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pcms-staging.ts"
+                }
+              ]
+            },
+            "pcms-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pcms-production.ts"
+                }
+              ]
+            },
+            "mdcms-staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mdcms-staging.ts"
+                }
+              ]
+            },
+            "mdcms-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mdcms-production.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -77,10 +109,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "hire-tracker-app:build:production"
+              "browserTarget": "councils:build:production"
             },
             "development": {
-              "browserTarget": "hire-tracker-app:build:development"
+              "browserTarget": "councils:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -88,7 +120,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "hire-tracker-app:build"
+            "browserTarget": "councils:build"
           }
         },
         "test": {
@@ -108,7 +140,7 @@
       }
     }
   },
-  "defaultProject": "mdc-client",
+  "defaultProject": "councils",
   "cli": {
     "analytics": false
   }
