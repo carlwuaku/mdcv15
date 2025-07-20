@@ -2,6 +2,9 @@
 
 
   <mat-card *ngIf="licenseType">
+    <mat-card-header *ngIf="!license">
+      <h1 class="text-lg">Renewals ({{licenseType}})</h1>
+    </mat-card-header>
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="!license" [showInfo]="false" [showSort]="!license"
         [showFilterButton]="!license" [showAllFilters]="true" [showSearch]="false" [showReset]="!license"
@@ -17,6 +20,14 @@
               (click)="updatePrintQueue(1)">Add to print queue</button>
             <button mat-stroked-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="updatePrintQueue(0)">Remove from print queue</button>
+            <span class="w-2"></span>
+            <button mat-stroked-button [color]="'primary'" *ngIf="canApproveOnlineCertificate"
+              [disabled]="selectedItems.length === 0" (click)="approveOnlineCerficates()">Approve Online/Temporary
+              Certificate</button>
+            <button mat-stroked-button [color]="'warn'" *ngIf="canApproveOnlineCertificate"
+              [disabled]="selectedItems.length === 0" (click)="revokeOnlineCerficates()">Revoke Online/Temporary
+              Certificate</button>
+            <span class="w-2"></span>
             <app-export-table [objects]="selectedItems"></app-export-table>
           </div>
         </ng-template>

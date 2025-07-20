@@ -7,22 +7,21 @@ import {
   HttpHeaders
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
 import { LOCAL_USER_TOKEN } from 'src/app/shared/utils/constants';
 
 @Injectable()
 export class HeadersInterceptorInterceptor implements HttpInterceptor {
 
-  constructor(private auth:AuthService) {}
+  constructor() { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.url.endsWith('/mobile_login') || request.url.endsWith('/appName')){
+    if (request.url.endsWith('/mobile_login') || request.url.endsWith('/appName')) {
       return next.handle(request);
     }
     let headers: HttpHeaders = request.headers;
     const token = localStorage.getItem(LOCAL_USER_TOKEN);
-    if(token){
-     headers = headers.set('Authorization', `Bearer ${token}`)
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`)
     }
     const modifiedRequest = request.clone({
       headers: headers

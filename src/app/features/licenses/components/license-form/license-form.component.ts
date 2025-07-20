@@ -72,10 +72,15 @@ export class LicenseFormComponent implements OnInit, FormGeneratorComponentInter
 
   formSubmitted(args: boolean) {
     if (args) {
-      this.router.navigate(['/licenses'])
+      if (this.id) {
+        this.router.navigate(['/licenses/license-details/' + this.id]);
+      }
+      else {
+        window.history.back();
+      }
     }
     else {
-      this.notify.failNotification("Failed to save license")
+      this.notify.failNotification("Failed to update")
     }
   }
 

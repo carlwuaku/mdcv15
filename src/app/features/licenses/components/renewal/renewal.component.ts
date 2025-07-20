@@ -8,7 +8,7 @@ import { getToday } from 'src/app/shared/utils/dates';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RenewalService } from '../../renewal.service';
 import { LicenseObject } from '../../models/license_model';
-import { Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { AppService } from 'src/app/app.service';
 import { openHtmlInNewWindow } from 'src/app/shared/utils/helper';
@@ -31,6 +31,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   destroy$: Subject<boolean> = new Subject();
   canPrint: boolean = false;
   selectedItems: RenewalObject[] = [];
+  canApproveOnlineCertificate: boolean = false;
   constructor(private authService: AuthService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private router: Router,
     private appService: AppService) {
@@ -38,22 +39,45 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
 
   }
   ngOnInit(): void {
-    if (this.license) {
-      this.licenseType = this.license.type
-    }
-    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-
-      this.queryParams = params;
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.queryParams = queryParams;
+      this.licenseType = params.get('type') ?? '';
+      if (this.license) {
+        this.licenseType = this.license.type
+      }
+      this.queryParams = queryParams;
 
       this.setUrl();
 
       this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
-    });
+      this.checkCanApproveOnlineCertificate();
 
+    });
+  }
+
+  private checkCanApproveOnlineCertificate() {
+    this.canApproveOnlineCertificate = false;
+    this.appService.appSettings.pipe(take(1)).subscribe(data => {
+      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
+      if (!stages) {
+        return;
+      }
+      for (let i = 0; i < Object.values(stages).length; i++) {
+        const stage = Object.values(stages)[i];
+        //get the stage that has onlineCertificatePrintable set to true and check if the user has the permission required for that stage
+        if (stage.onlineCertificatePrintable && this.authService.currentUser?.permissions.includes(stage.permission)) {
+          this.canApproveOnlineCertificate = true;
+          break;
+        }
+      }
+    });
   }
   ngOnChanges(changes: SimpleChanges): void {
-
-
     this.setUrl();
   }
 
@@ -157,19 +181,6 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         apiKeyProperty: "template_name",
         apiLabelProperty: "template_name",
         apiType: "select"
-      },
-      {
-        label: "Online Certificate Template",
-        name: "online_print_template",
-        hint: "The template to use for online certificate printing by practitioners",
-        options: [],
-        type: "api",
-        value: "",
-        required: false,
-        api_url: "print-queue/templates",
-        apiKeyProperty: "template_name",
-        apiLabelProperty: "template_name",
-        apiType: "select"
       }
     ];
     this.dialog.open(DialogFormComponent, {
@@ -189,7 +200,6 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         return {
           uuid: item.uuid,
           print_template: data.find(field => field.name === "print_template")?.value,
-          online_print_template: data.find(field => field.name === "online_print_template")?.value,
           license_type: item.license_type,
           license_number: item.license_number,
           status: item.status
@@ -351,5 +361,122 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
+  }
+
+  /**
+   * Opens a dialog to approve online/temporary certificates for the selected items.
+   * This will allow them to generate and print certificates online for the selected renewals.
+   * Please provide the following data:
+   * - Online Certificate Template: The template to use for online certificate printing by practitioners
+   * - Online Certificate Valid Period Start Date: The start date for the online certificate
+   * - Online Certificate Valid Period End Date: The end date for the online certificate
+   * Please note that this will override any existing online certificate templates set for the selected renewals.
+   */
+  approveOnlineCerficates() {
+    const fields = [
+
+      {
+        label: "Online Certificate Template",
+        name: "online_print_template",
+        hint: "The template to use for online certificate printing by practitioners",
+        options: [],
+        type: "api",
+        value: "",
+        required: false,
+        api_url: "print-queue/templates",
+        apiKeyProperty: "template_name",
+        apiLabelProperty: "template_name",
+        apiType: "select"
+      },
+      {
+        label: "Online Certificate Valid Period Start Date",
+        name: "online_certificate_start_date",
+        hint: "The start date for the online certificate",
+        options: [],
+        type: "date",
+        value: "",
+        required: true,
+        api_url: "",
+        apiKeyProperty: "",
+        apiLabelProperty: "",
+        apiType: ""
+      },
+      {
+        label: "Online Certificate Valid Period End Date",
+        name: "online_certificate_end_date",
+        hint: "The end date for the online certificate",
+        options: [],
+        type: "date",
+        value: "",
+        required: true,
+        api_url: "",
+        apiKeyProperty: "",
+        apiLabelProperty: "",
+        apiType: ""
+      },
+    ];
+    this.dialog.open(DialogFormComponent, {
+      data: {
+        fields: fields, title: `Approve online/temporary certificates for ${this.selectedItems.length} selected item(s). This will allow them to generate and print certificates online for the selected renewals. Please provide the following data.
+        Please note that this will override any existing online certificate templates and valid period set for the selected renewals.`,
+        formType: "filter"
+      },
+      height: '90vh',
+      width: '90vw'
+    }).afterClosed().subscribe((data: IFormGenerator[]) => {
+      //get an object of the name and value of the fields
+      if (!data) {
+        this.notify.failNotification("Please provide the required data");
+        return;
+      }
+      const renewalData = this.selectedItems.map(item => {
+        return {
+          uuid: item.uuid,
+          online_print_template: data.find(field => field.name === "online_print_template")?.value,
+          online_certificate_start_date: data.find(field => field.name === "online_certificate_start_date")?.value,
+          online_certificate_end_date: data.find(field => field.name === "online_certificate_end_date")?.value,
+          approve_online_certificate: "Yes",
+          license_type: item.license_type,
+          license_number: item.license_number,
+          status: item.status
+        }
+      });
+      if (!window.confirm("Are you sure you want to approve online/temporary certificates for the selected renewals?")) {
+        return;
+      }
+      this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
+        next: (res) => {
+          this.notify.successNotification(res.message);
+          this.updateTimestamp();
+          this.selectedItems = [];
+        }
+      });
+    })
+  }
+
+  revokeOnlineCerficates() {
+    if (!window.confirm("Are you sure you want to revoke online/temporary certificates for the selected renewals?")) {
+      return;
+    }
+    const renewalData = this.selectedItems.map(item => {
+      return {
+        uuid: item.uuid,
+        online_print_template: null,
+        online_certificate_start_date: null,
+        online_certificate_end_date: null,
+        approve_online_certificate: "No",
+        license_type: item.license_type,
+        license_number: item.license_number,
+        status: item.status
+      }
+    });
+
+    this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
+      next: (res) => {
+        this.notify.successNotification(res.message);
+        this.updateTimestamp();
+        this.selectedItems = [];
+      }
+    });
   }
 }

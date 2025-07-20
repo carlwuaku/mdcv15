@@ -58,7 +58,6 @@ export class AuthService {
     if (this.currentUser) {
       return of(this.currentUser)
     }
-    //TODO: set the return type properly or assign the permissions on the server side
     return this.dbService.get<{ user: User, permissions: string[] }>("admin/profile").pipe(map(data => {
       this.currentUser = data.user;
       this.currentUser!.permissions = data.permissions

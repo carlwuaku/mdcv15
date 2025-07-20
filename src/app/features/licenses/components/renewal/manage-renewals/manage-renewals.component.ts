@@ -214,6 +214,8 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
+    const timestamp = getToday("timestamp_string");
+    paramsObject["ts"] = timestamp;
     this.router.navigate([], { queryParams: paramsObject, relativeTo: this.ar });
   }
 

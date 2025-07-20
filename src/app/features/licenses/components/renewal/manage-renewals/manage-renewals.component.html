@@ -2,7 +2,9 @@
 
 
   <mat-card>
-
+    <mat-card-header>
+      <h2 class="text-lg ">Status: <b>{{status}}</b> </h2>
+    </mat-card-header>
     <mat-card-content>
       <app-load-data-list [showDeleted]="false" [showExport]="false" [showInfo]="false" [showSort]="false"
         [showAllFilters]="true" [showSearch]="false" [timestamp]="ts" [url]="url" [getActions]="getActions"

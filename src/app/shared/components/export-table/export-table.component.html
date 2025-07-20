@@ -1,6 +1,3 @@
-<button mat-stroked-button color="primary" [matMenuTriggerFor]="menu" [disabled]="objects.length  < 1">Export data
-  <mat-icon>expand_more</mat-icon> </button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="exportExcel()"><i class="fa fa-excel"></i>To Excel</button>
-  <button mat-menu-item (click)="exportPdf()"><i class="fa fa-pdf"></i>To PDF</button>
-</mat-menu>
+<button mat-stroked-button color="primary" (click)="exportExcel()" [disabled]="objects.length  < 1"><i
+    class="pi pi-file-excel"></i> Export to Excel
+</button>
