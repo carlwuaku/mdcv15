@@ -1,0 +1,12 @@
+<app-load-data-list [showDeleted]="false" [showExport]="!licenseMode" [showInfo]="false" [showSort]="!licenseMode"
+  [showFilterButton]="!licenseMode" [showAllFilters]="true" [showSearch]="false" [showReset]="!licenseMode"
+  [onFilterSubmitted]="filterSubmitted" [timestamp]="ts" [url]="url" [getActions]="getActions"
+  (onSelect)="setSelectedItems($event)" [showPrint]="false" [showTableTitle]="false">
+  <ng-template #selectionOptions>
+    <div class="inline-flex gap-1 flex-wrap">
+      <ng-content></ng-content>
+      <span class="w-2"></span>
+      <app-export-table [objects]="selectedItems"></app-export-table>
+    </div>
+  </ng-template>
+</app-load-data-list>

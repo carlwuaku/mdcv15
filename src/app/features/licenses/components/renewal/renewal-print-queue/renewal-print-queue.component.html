@@ -18,7 +18,6 @@
               (click)="onPrint()">Print</button>
             <button mat-raised-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
               (click)="updatePrintQueue(0)">Remove from print queue</button>
-            <app-export-table [objects]="selectedItems"></app-export-table>
           </div>
         </ng-template>
       </app-load-data-list>

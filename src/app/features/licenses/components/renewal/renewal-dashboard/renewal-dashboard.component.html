@@ -14,15 +14,16 @@
 
       <mat-card-content>
         <app-form-generator (onSubmit)="filterSubmitted($event)" [submitButtonText]="'Filter'" [fields]="filterFields"
-          [formType]="'filter'"></app-form-generator>
+          [formType]="'filter'" [layout]="'grid'"></app-form-generator>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div *ngIf="licenseType"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 grid-stretch-items ">
-    <app-dashboard-tile [variant]="'primary'" class="min-w-[300px] " [url]="'/licenses/renewal-form'" [icon]="'list'"
-      [title]="'Select for renewal'" [description]="''" [urlParams]="{license_type: licenseType}"></app-dashboard-tile>
+    <app-dashboard-tile [variant]="'primary'" class="min-w-[300px] " [url]="'/licenses/renewal-form'"
+      [icon]="'arrow_forward'" [title]="'Select for renewal'" [description]="''"
+      [urlParams]="{license_type: licenseType}"></app-dashboard-tile>
 
     <ng-container *ngFor="let item of menuItems">
       <app-dashboard-tile class=" min-w-[300px]" [url]="item.url" [icon]="item.icon" [title]="item.title"
@@ -32,11 +33,11 @@
     <app-dashboard-tile class="min-w-[300px]" [url]="printQueueUrl" [icon]="'print'" [title]="'Print Queue'"
       [description]="''" [counterText]="'Items in print queue'" [counterUrl]="printQueueCountUrl"
       [urlParams]="printQueueQueryParams"></app-dashboard-tile>
-    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-reports/'+licenseType" [icon]="'list'"
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewal-reports/'+licenseType" [icon]="'show_chart'"
       [title]="'Renewal Reports'" [description]="''"></app-dashboard-tile>
-    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/gazette/'+licenseType" [icon]="'list'"
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/gazette/'+licenseType" [icon]="'show_chart'"
       [title]="'Gazette'" [description]="''"></app-dashboard-tile>
-    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewals/'+licenseType" [icon]="'list'"
-      [title]="'Track renewals'" [description]="''" [variant]="'secondary'"></app-dashboard-tile>
+    <app-dashboard-tile class="min-w-[300px]" [url]="'/licenses/renewals/'+licenseType" [icon]="'history_2'"
+      [title]="'Track/Manage renewals'" [description]="''" [variant]="'secondary'"></app-dashboard-tile>
   </div>
 </div>

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Subject, interval, takeUntil } from 'rxjs';
+import { Subject, Subscription, interval, takeUntil } from 'rxjs';
 import { HttpService } from '../../services/http/http.service';
 import { NotifyService } from '../../services/notify/notify.service';
 import { API_PATH } from 'src/app/shared/utils/constants';
@@ -31,6 +31,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   // Timer for token expiration
   timeRemaining = 0;
   timerDisplay = '';
+  timerInterval: Subscription | null = null;
 
   // Password visibility
   hidePassword = true;
@@ -184,11 +185,13 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   // Start countdown timer
   private startTimer(timeout: number): void {
-
+    if (this.timerInterval) {
+      this.timerInterval.unsubscribe();
+    }
     this.timeRemaining = timeout * 60;
     this.updateTimerDisplay();
 
-    interval(1000)
+    this.timerInterval = interval(1000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.timeRemaining--;
@@ -203,6 +206,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   private stopTimer(): void {
     this.timeRemaining = 0;
     this.timerDisplay = '';
+    this.timerInterval?.unsubscribe();
   }
 
   private updateTimerDisplay(): void {

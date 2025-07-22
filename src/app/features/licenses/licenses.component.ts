@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditImageComponent } from 'src/app/shared/components/edit-image/edit-image.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
-import { Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
 @Component({
@@ -41,18 +41,7 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
       this.ar.queryParams
         .pipe(takeUntil(this.destroy$)).subscribe(params => {
 
-          this.queryParams = params;
-          if (this.licenseType) {
-            this.appService.appSettings.pipe(take(1)).subscribe(data => {
-              this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
-              this.filters.forEach(filter => {
-                filter.value = params[`child_${filter.name}`];
-              });
-              this.updateUrl();
-              this.dataList?.getData(this.url);
-            })
 
-          }
         });
     })
   }
@@ -61,13 +50,26 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroy$.unsubscribe();
   }
   ngOnInit(): void {
-    // if (this.licenseType) {
-    //   this.updateUrl();
-    // }
-    // else {
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.licenseType = params.get('type') ?? '';
+      this.queryParams = queryParams;
+      if (this.licenseType) {
+        this.appService.appSettings.pipe(take(1)).subscribe(data => {
+          this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
+          this.filters.forEach(filter => {
+            filter.value = params.get(`child_${filter.name}`);
+          });
+          this.updateUrl();
+          this.dataList?.getData(this.url);
+        })
 
-    // }
-
+      }
+    });
 
   }
 
@@ -77,7 +79,7 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updateUrl() {
 
-    this.url = `${this.baseUrl}` + "?" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
+    this.url = `${this.baseUrl}?licenseType=${this.licenseType}` + "&" + Object.entries(this.queryParams).map(([key, value]) => `${key}=${value}`).join("&");
   }
   getActions = (license: LicenseObject): DataActionsButton[] => {
 

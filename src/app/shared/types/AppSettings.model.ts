@@ -19,6 +19,7 @@ export interface AppSettings {
     [key: string]: {
       table: string,
       detailsPageHeaderTabs: { label: string, key: string }[],
+      detailsPageTabs: { label: string, key: string }[],
       renewalFields: IFormGenerator[],
       renewalStages: {
         [key: string]: RenewalStageItems

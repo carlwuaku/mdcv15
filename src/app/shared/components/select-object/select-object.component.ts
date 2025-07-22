@@ -108,12 +108,14 @@ export class SelectObjectComponent implements OnInit, OnChanges {
           this.isLoaded = true;
           this.error = false;
           this.searchRan = true;
+          this.loading = false;
         },
         error: (err) => {
           this.error = true;
           this.isLoaded = false;
           this.error_message = err;
           this.searchRan = true;
+          this.loading = false;
         },
         complete: () => {
           this.loading = false;

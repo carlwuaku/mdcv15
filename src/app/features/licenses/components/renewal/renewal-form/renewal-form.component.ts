@@ -70,8 +70,9 @@ export class RenewalFormComponent implements OnInit, OnDestroy {
         this.extraFormData = [{ key: "uuid", value: this.id }]
         this.getRenewal();
       }
+      this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}&licenseType=${this.licenseType}`;
     });
-    this.licenseSearchUrl = `licenses/details?renewalDate=${this.date}&type=${this.licenseType}`;
+
   }
 
   getFormFields(type: string) {

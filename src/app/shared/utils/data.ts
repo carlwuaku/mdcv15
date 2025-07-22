@@ -20,7 +20,7 @@ export interface DashboardItem extends MenuItem {
 export interface RenewalStageItems extends DashboardItem {
   permission: string,
   printable: boolean,
-  online_certificate_printable: boolean,
+  onlineCertificatePrintable: boolean,
   allowedTransitions: string[],
   fields: IFormGenerator[]
 }

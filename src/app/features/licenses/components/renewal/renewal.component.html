@@ -2,25 +2,37 @@
 
 
   <mat-card *ngIf="licenseType">
+    <mat-card-header *ngIf="!license">
+      <h1 class="text-lg">Renewals ({{licenseType}})</h1>
+    </mat-card-header>
     <mat-card-content>
-      <app-load-data-list [showDeleted]="false" [showExport]="!license" [showInfo]="false" [showSort]="!license"
-        [showFilterButton]="!license" [showAllFilters]="true" [showSearch]="false" [showReset]="!license"
-        [onFilterSubmitted]="filterSubmitted" [timestamp]="ts" [url]="url" [getActions]="getActions"
-        (onSelect)="selectionChanged($event)" [showPrint]="false" [showTableTitle]="false">
-        <ng-template #selectionOptions>
-          <div class="inline-flex gap-1 flex-wrap">
-            <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
-              (click)="onPrint()">Print</button>
-            <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
-              (click)="setPrintTemplates()">Set print templates</button>
-            <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
-              (click)="updatePrintQueue(1)">Add to print queue</button>
-            <button mat-stroked-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
-              (click)="updatePrintQueue(0)">Remove from print queue</button>
-            <app-export-table [objects]="selectedItems"></app-export-table>
-          </div>
-        </ng-template>
-      </app-load-data-list>
+      <app-renewal-list [licenseType]="licenseType" [licenseMode]="!!license" #renewalList
+        (onSelectedItemsChange)="selectionChanged($event)" [url]="url">
+        <div class="inline-flex gap-1 flex-wrap">
+          <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            (click)="onPrint()">Print</button>
+          <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            (click)="setPrintTemplates()">Set print templates</button>
+          <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            (click)="updatePrintQueue(1)">Add to print queue</button>
+          <button mat-stroked-button [color]="'warn'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
+            (click)="updatePrintQueue(0)">Remove from print queue</button>
+          <span class="w-2"></span>
+          <button mat-stroked-button [color]="'primary'" *ngIf="canApproveOnlineCertificate"
+            [disabled]="selectedItems.length === 0" (click)="approveOnlineCerficates()">Approve online/temporary
+            certificate</button>
+          <button mat-stroked-button [color]="'warn'" *ngIf="canApproveOnlineCertificate"
+            [disabled]="selectedItems.length === 0" (click)="revokeOnlineCerficates()">Revoke online/temporary
+            certificate</button>
+          <span class="w-2"></span>
+
+          <button mat-stroked-button [color]="'primary'" *ngIf="canApprove" [disabled]="selectedItems.length === 0"
+            (click)="updateValidPeriod()">Update start and expiry dates</button>
+          <span class="w-2"></span>
+          <app-export-table [objects]="selectedItems"></app-export-table>
+        </div>
+      </app-renewal-list>
+
     </mat-card-content>
   </mat-card>
 </div>

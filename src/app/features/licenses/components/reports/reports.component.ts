@@ -38,7 +38,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         // this.getTotal();
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.basicReportsFilters = [...data?.basicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields];
-          this.availableFields = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFields;
+          this.availableFields = data?.licenseTypes[this.licenseType]?.basicStatisticsFields ?? [];
           this.selectedField = [this.availableFields[0]?.name];
           this.childFilterNames = data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields.map((filter) => filter.name);
           //populate the filters with the query param values

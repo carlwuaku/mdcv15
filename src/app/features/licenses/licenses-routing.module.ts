@@ -14,7 +14,6 @@ import { RenewalPrintQueueComponent } from './components/renewal/renewal-print-q
 import { RenewalReportsComponent } from './components/renewal/renewal-reports/renewal-reports.component';
 import { GazetteComponent } from './components/renewal/gazette/gazette.component';
 const routes: Routes = [
-  { path: '', component: LicensesComponent },
   { path: 'list/:type', component: LicensesComponent },
   { path: 'form/:action/:type', component: LicenseFormComponent, data: { title: "Add new license" } },
   { path: 'form/:action/:type/:id', component: LicenseFormComponent, data: { title: "Update license" } },
