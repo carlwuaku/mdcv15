@@ -26,6 +26,9 @@ import { GazetteComponent } from './components/renewal/gazette/gazette.component
 import { RenewalReportsComponent } from './components/renewal/renewal-reports/renewal-reports.component';
 import { HousemanshipModule } from '../housemanship/housemanship.module';
 import { ExaminationsModule } from '../examinations/examinations.module';
+import { RenewalListComponent } from './components/renewal/renewal-list/renewal-list.component';
+import { SuperintendingHistoryComponent } from './components/renewal/superintending-history/superintending-history.component';
+
 
 @NgModule({
   declarations: [
@@ -49,6 +52,8 @@ import { ExaminationsModule } from '../examinations/examinations.module';
     RenewalPrintQueueComponent,
     GazetteComponent,
     RenewalReportsComponent,
+    RenewalListComponent,
+    SuperintendingHistoryComponent
   ],
   imports: [
     CommonModule,

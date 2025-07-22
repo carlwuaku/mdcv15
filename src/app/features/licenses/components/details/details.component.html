@@ -34,7 +34,8 @@
 
   </div>
   <mat-tab-group *ngIf="object != null" mat-stretch-tabs="false" mat-align-tabs="start">
-    <mat-tab label="Personal Details">
+    <mat-tab *ngIf="isInDetailsTabs('details')">
+      <ng-template matTabLabel=""> {{getTabTitle('details')}} </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -44,7 +45,8 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Education History">
+    <mat-tab *ngIf="isInDetailsTabs('education')">
+      <ng-template matTabLabel=""> {{getTabTitle('education')}} </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -53,7 +55,8 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Housemanship">
+    <mat-tab *ngIf="isInDetailsTabs('housemanship')">
+      <ng-template matTabLabel=""> {{getTabTitle('housemanship')}} </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -64,7 +67,8 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Examination">
+    <mat-tab *ngIf="isInDetailsTabs('examination')">
+      <ng-template matTabLabel=""> {{getTabTitle('examination')}} </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -75,7 +79,8 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="CPD History">
+    <mat-tab *ngIf="isInDetailsTabs('cpd')">
+      <ng-template matTabLabel=""> {{getTabTitle('cpd')}} </ng-template>
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
@@ -86,23 +91,33 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Renewal History">
+    <mat-tab *ngIf="isInDetailsTabs('renewal')">
+      <ng-template matTabLabel=""> {{getTabTitle('renewal')}} </ng-template>
       <ng-template matTabContent>
         <app-renewal [license]="object"></app-renewal>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Work History">
+    <mat-tab *ngIf="isInDetailsTabs('superintending')">
+      <ng-template matTabLabel=""> {{getTabTitle('superintending')}} </ng-template>
+      <ng-template matTabContent>
+        <app-superintending-history [licenseNumber]="object.license_number"></app-superintending-history>
+      </ng-template>
+    </mat-tab>
+    <mat-tab *ngIf="isInDetailsTabs('work')">
+      <ng-template matTabLabel=""> {{getTabTitle('work')}} </ng-template>
       <ng-template matTabContent>
         <app-work-history [practitioner]="object"></app-work-history>
 
       </ng-template>
     </mat-tab>
-    <mat-tab label="Activities">
+    <mat-tab *ngIf="isInDetailsTabs('activities')">
+      <ng-template matTabLabel=""> {{getTabTitle('activities')}} </ng-template>
       <ng-template matTabContent>
 
       </ng-template>
     </mat-tab>
-    <mat-tab label="Documents">
+    <mat-tab *ngIf="isInDetailsTabs('documents')">
+      <ng-template matTabLabel=""> {{getTabTitle('documents')}} </ng-template>
       <ng-template matTabContent>
 
       </ng-template>

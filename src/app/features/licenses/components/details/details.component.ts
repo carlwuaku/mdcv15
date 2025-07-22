@@ -24,6 +24,7 @@ export class DetailsComponent {
   replaceSpaceWithUnderscore = replaceSpaceWithUnderscore;
   destroy$: Subject<boolean> = new Subject();
   headerTabs: { label: string, key: string }[] = [];
+  detailsTabs: { label: string, key: string }[] = [];
   excludedDetailsColumns: string[] = ['uuid', 'picture'];
   getClassFromState = getClassFromState;
   postingHistoryQueryParams: { [key: string]: string } = {};
@@ -43,6 +44,8 @@ export class DetailsComponent {
     if (!this.object) return;
     const type = this.object.type;
     this.headerTabs = this.appService.appSettings.value.licenseTypes[type].detailsPageHeaderTabs || [];
+    this.detailsTabs = this.appService.appSettings.value.licenseTypes[type].detailsPageTabs || [];
+
   }
 
   ngOnDestroy(): void {
@@ -97,5 +100,13 @@ export class DetailsComponent {
 
   housemanshipPostingsListFilterSubmitted(filters: { [key: string]: string }) {
     this.postingHistoryQueryParams = { ...filters, ...this.postingHistoryQueryParams };
+  }
+
+  isInDetailsTabs(key: string): boolean {
+    return this.detailsTabs.some(tab => tab.key === key);
+  }
+
+  getTabTitle(key: string): string {
+    return this.detailsTabs.find(tab => tab.key === key)?.label || '';
   }
 }

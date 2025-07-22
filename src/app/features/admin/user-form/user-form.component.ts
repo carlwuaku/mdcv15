@@ -105,7 +105,7 @@ export class UserFormComponent {
     },
     {
       label: "Email address",
-      name: "email",
+      name: "email_address",
       hint: "the email address of the user. May be used for 2-factor authentication",
       options: [],
       type: "email",

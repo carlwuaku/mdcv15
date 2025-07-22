@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
@@ -14,6 +14,7 @@ import { AppService } from 'src/app/app.service';
 import { openHtmlInNewWindow } from 'src/app/shared/utils/helper';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
+import { RenewalListComponent } from './renewal-list/renewal-list.component';
 
 @Component({
   selector: 'app-renewal',
@@ -23,15 +24,16 @@ import { IFormGenerator } from 'src/app/shared/components/form-generator/form-ge
 export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
   baseUrl: string = "licenses/renewal";
   url: string = "licenses/renewal";
-  ts: string = "";
   @Input() license: LicenseObject | undefined = undefined;
   queryParams: { [key: string]: string } = {};
   licenseType: string = "";
   inlineFilters: string[] = ["start_date", "end_date"];
   destroy$: Subject<boolean> = new Subject();
-  canPrint: boolean = false;
   selectedItems: RenewalObject[] = [];
+  @ViewChild('renewalList') renewalList!: RenewalListComponent;
   canApproveOnlineCertificate: boolean = false;
+  canApprove: boolean = false;
+  canPrint: boolean = false;
   constructor(private authService: AuthService, private notify: NotifyService, public dialog: MatDialog,
     private renewalService: RenewalService, private ar: ActivatedRoute, private router: Router,
     private appService: AppService) {
@@ -53,30 +55,14 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       this.queryParams = queryParams;
 
       this.setUrl();
-
-      this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
       this.checkCanApproveOnlineCertificate();
+      this.checkCanApprove();
+      this.canPrint = this.authService.currentUser?.permissions.includes(`Print_Renewal_Certificates_${this.licenseType}`) ?? false;
 
     });
   }
 
-  private checkCanApproveOnlineCertificate() {
-    this.canApproveOnlineCertificate = false;
-    this.appService.appSettings.pipe(take(1)).subscribe(data => {
-      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
-      if (!stages) {
-        return;
-      }
-      for (let i = 0; i < Object.values(stages).length; i++) {
-        const stage = Object.values(stages)[i];
-        //get the stage that has onlineCertificatePrintable set to true and check if the user has the permission required for that stage
-        if (stage.onlineCertificatePrintable && this.authService.currentUser?.permissions.includes(stage.permission)) {
-          this.canApproveOnlineCertificate = true;
-          break;
-        }
-      }
-    });
-  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.setUrl();
   }
@@ -95,47 +81,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getActions = (object: RenewalObject): DataActionsButton[] => {
 
-    const actions: DataActionsButton[] = [
-      { label: "Edit", type: "link", link: `licenses/renewal-form/`, linkProp: 'uuid' },
-      { label: "Delete", type: "button", onClick: (object: RenewalObject) => this.delete(object) }
-    ];
-    if (!this.license) {
-      actions.unshift(
-        { label: "View license", type: "link", link: `licenses/license-details/`, linkProp: 'license_uuid' }
-      )
-    }
-
-
-    return actions;
-  }
-  delete(object: RenewalObject) {
-    this.renewalService.delete(object.uuid).subscribe({
-      next: response => {
-        this.notify.successNotification(response.message);
-        this.updateTimestamp();
-      },
-      error: error => { }
-    })
-  }
-
-  updateTimestamp() {
-    this.ts = getToday("timestamp_string");
-  }
-
-  update(object: RenewalObject, data: { [key: string]: string }) {
-    if (!window.confirm('Are you sure you want to update this entry? ')) {
-      return;
-    }
-    this.renewalService.update(object.uuid, data).subscribe({
-      next: response => {
-        this.notify.successNotification(response.message);
-        this.updateTimestamp();
-      },
-      error: error => { }
-    })
-  }
 
   onLicenseTypeChange(selectedValue: string) {
     this.router.navigate(['licenses/renewals'], { queryParams: { license_type: selectedValue } });
@@ -145,27 +91,8 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  filterSubmitted = (params: string) => {
-
-    //split the params by & and then by =
-    const paramsArray = params.split("&");
-    const paramsObject: { [key: string]: string } = {};
-    paramsArray.forEach(param => {
-      const [key, value] = param.split("=");
-      paramsObject[key] = value;
-    });
-    paramsObject['license_type'] = this.licenseType;
 
 
-    this.router.navigate(['licenses/renewals'], { queryParams: paramsObject });
-
-  }
-
-  selectionChanged = (selected: RenewalObject[]) => {
-    this.selectedItems = selected;
-  }
-
-  private itemsCanBePrinted(items: RenewalObject[]) { }
 
   setPrintTemplates() {
     const fields = [
@@ -185,7 +112,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     ];
     this.dialog.open(DialogFormComponent, {
       data: {
-        fields: fields, title: `Select the templates. This will apply to all ${this.selectedItems.length} selected item(s)`,
+        fields: fields, title: `Select the templates. This will apply to all ${this.selectedItems.length} selected item(s). Please note that this will override any existing templates previously set for the selected renewals.`,
         formType: "filter"
       },
       height: '90vh',
@@ -207,8 +134,8 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       });
       this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
         next: (res) => {
-          this.notify.successNotification("Items added to print queue");
-          this.updateTimestamp();
+          this.notify.successNotification(res.message);
+          this.renewalList.reload();
           this.selectedItems = [];
         }
       });
@@ -266,8 +193,8 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       );
       this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
         next: (res) => {
-          this.notify.successNotification("Items added to print queue");
-          this.updateTimestamp();
+          this.notify.successNotification(res.message);
+          this.renewalList.reload();
           this.selectedItems = [];
         }
       });
@@ -349,13 +276,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         error: (err) => {
           console.error("Error loading print templates:", err);
         }
-      },
-
-
-
-
-
-      )
+      })
     });
 
 
@@ -447,7 +368,7 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
       this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
         next: (res) => {
           this.notify.successNotification(res.message);
-          this.updateTimestamp();
+          this.renewalList.reload();
           this.selectedItems = [];
         }
       });
@@ -474,9 +395,116 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
     this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
       next: (res) => {
         this.notify.successNotification(res.message);
-        this.updateTimestamp();
+        this.renewalList.reload();
         this.selectedItems = [];
       }
     });
+  }
+
+  updateValidPeriod() {
+    const fields = [
+
+      {
+        label: "Rnewal Start Date",
+        name: "start_date",
+        hint: "The start date for the renewal",
+        options: [],
+        type: "date",
+        value: "",
+        required: true,
+        api_url: "",
+        apiKeyProperty: "",
+        apiLabelProperty: "",
+        apiType: ""
+      },
+      {
+        label: "Renewal End Date",
+        name: "expiry",
+        hint: "The end date for the renewal",
+        options: [],
+        type: "date",
+        value: "",
+        required: true,
+        api_url: "",
+        apiKeyProperty: "",
+        apiLabelProperty: "",
+        apiType: ""
+      },
+    ];
+    this.dialog.open(DialogFormComponent, {
+      data: {
+        fields: fields, title: `Update start and end dates for ${this.selectedItems.length} selected renewals.
+        Please note that this will overwrite any existing start and end dates for the selected renewals.`,
+        formType: "filter"
+      },
+      height: '90vh',
+      width: '90vw'
+    }).afterClosed().subscribe((data: IFormGenerator[]) => {
+      //get an object of the name and value of the fields
+      if (!data) {
+        this.notify.failNotification("Please provide the required data");
+        return;
+      }
+      const renewalData = this.selectedItems.map(item => {
+        return {
+          uuid: item.uuid,
+          start_date: data.find(field => field.name === "start_date")?.value,
+          expiry: data.find(field => field.name === "expiry")?.value,
+          license_type: item.license_type,
+          license_number: item.license_number,
+          status: item.status
+        }
+      });
+      if (!window.confirm("Are you sure you want to update the start and end dates for the selected renewals?")) {
+        return;
+      }
+      this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
+        next: (res) => {
+          this.notify.successNotification(res.message);
+          this.renewalList.reload();
+          this.selectedItems = [];
+        }
+      });
+    })
+  }
+
+
+  private checkCanApproveOnlineCertificate() {
+    this.canApproveOnlineCertificate = false;
+    this.appService.appSettings.pipe(take(1)).subscribe(data => {
+      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
+      if (!stages) {
+        return;
+      }
+      for (let i = 0; i < Object.values(stages).length; i++) {
+        const stage = Object.values(stages)[i];
+        //get the stage that has onlineCertificatePrintable set to true and check if the user has the permission required for that stage
+        if (stage.onlineCertificatePrintable && this.authService.currentUser?.permissions.includes(stage.permission)) {
+          this.canApproveOnlineCertificate = true;
+          break;
+        }
+      }
+    });
+  }
+  private checkCanApprove() {
+    this.canApproveOnlineCertificate = false;
+    this.appService.appSettings.pipe(take(1)).subscribe(data => {
+      const stages = data?.licenseTypes[this.licenseType]?.renewalStages;
+      if (!stages) {
+        return;
+      }
+      for (let i = 0; i < Object.values(stages).length; i++) {
+        const stage = Object.values(stages)[i];
+        //get the stage that is printableand check if the user has the permission required for that stage. for now we'll assume that the final stage is the printable one
+        if (stage.printable && this.authService.currentUser?.permissions.includes(stage.permission)) {
+          this.canApprove = true;
+          break;
+        }
+      }
+    });
+  }
+
+  selectionChanged(items: RenewalObject[]) {
+    this.selectedItems = items;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppService } from 'src/app/app.service';
@@ -41,24 +41,29 @@ export class GazetteComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit(): void {
-    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
+      this.queryParams = queryParams;
+      this.licenseType = params.get('type') ?? '';
+      this.appService.appSettings.pipe(take(1)).subscribe(data => {
+        this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];
 
-      this.queryParams = params;
-      if (this.licenseType) {
-        this.appService.appSettings.pipe(take(1)).subscribe(data => {
-          this.basicReportsFilters = [...data?.renewalBasicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields];
-
-          this.childFilterNames = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields.map((filter) => filter.name);
-          //populate the filters with the query param values
-          this.basicReportsFilters.map((filter) => {
-            if (this.queryParams[filter.name]) {
-              filter.value = this.queryParams[filter.name].split(',');
-            }
+        this.childFilterNames = data?.licenseTypes[this.licenseType]?.renewalBasicStatisticsFilterFields.map((filter) => filter.name);
+        //populate the filters with the query param values
+        this.basicReportsFilters.map((filter) => {
+          if (this.queryParams[filter.name]) {
+            filter.value = this.queryParams[filter.name].split(',');
           }
-          );
-        })
-      }
+        }
+        );
+      })
+
     });
+
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);
