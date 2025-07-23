@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, Subject, map, of } from "rxjs";
+import { BehaviorSubject, Observable, Subject, map, of } from "rxjs";
 import { LOCAL_USER_TOKEN } from "src/app/shared/utils/constants";
 import { User } from "../models/user.model";
 import { HttpService } from "../services/http/http.service";
@@ -10,7 +10,7 @@ import { HttpService } from "../services/http/http.service";
 })
 export class AuthService {
   currentUser: User | null = null;
-  isLoggedIn$: Subject<boolean> = new Subject();
+  isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(private dbService: HttpService, private router: Router) {
 
   }
@@ -31,6 +31,8 @@ export class AuthService {
 
   public logout(): void {
     localStorage.removeItem(LOCAL_USER_TOKEN);
+    this.isLoggedIn$.next(false);
+
     this.currentUser = new User();
   }
 
@@ -40,12 +42,14 @@ export class AuthService {
 
   }
 
-  checkLogin(url: string): boolean {
+  checkLogin(): boolean {
     const token = this.getCookie(LOCAL_USER_TOKEN);
     if (token !== null) {
+      this.isLoggedIn$.next(true);
       return true;
     }
 
+    this.isLoggedIn$.next(false);
     this.router.navigate(['/login']);
     return false;
   }

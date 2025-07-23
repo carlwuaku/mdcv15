@@ -22,7 +22,7 @@ import { getAnalytics } from "firebase/analytics";
 export class AppComponent implements OnInit {
   appName = 'Management System';
   title = '';
-  isLoggedIn: boolean;
+  isLoggedIn: boolean = false;
   user = this.authService.currentUser;
   mobileQuery: MediaQueryList;
   logo: string = "";
@@ -43,22 +43,12 @@ export class AppComponent implements OnInit {
     private dbService: HttpService,
     private ar: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef, private media: MediaMatcher, private appService: AppService) {
-    // this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    // this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    // this.mobileQuery.addListener(this._mobileQueryListener);
-    // //log changes in the mobilequery
-    // this.mobileQuery.addEventListener('change', (e) => {
-    //   if (e.matches) {
-    //     this.opened = false;
-    //   } else {
-    //     this.opened = true;
-    //   }
-    // });
+    this.authService.checkLogin();
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => this.updateSidebarState(this.mobileQuery.matches);
     this.mobileQuery.addListener(this._mobileQueryListener);
 
-    this.isLoggedIn = this.authService.checkLogin("")
+
     this.ar.data.subscribe(data => {
       this.title = data['title']
     });
@@ -69,6 +59,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.isLoggedIn$.subscribe(data => {
+      if (data === this.isLoggedIn) return
+      this.isLoggedIn = data;
+      if (this.isLoggedIn) {
+        this.authService.getUser().subscribe(data => {
+          this.user = data;
+        });
+      }
+    });
     this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
     this.changeDetectorRef.detectChanges();
     this.updateSidebarState(this.mobileQuery.matches);
@@ -82,11 +81,8 @@ export class AppComponent implements OnInit {
       measurementId: "G-FC717CXV4E"
     };
 
-    if (this.isLoggedIn) {
-      this.authService.getUser().subscribe(data => {
-        this.user = data;
-      });
-    }
+
+
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -107,7 +103,7 @@ export class AppComponent implements OnInit {
   logout() {
     this.authService.logout();
     //send user to login page
-    window.location.assign('/');
+    this.router.navigate(['login']);
   }
 
   private updateSidebarState(matches: boolean) {
