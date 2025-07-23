@@ -6,6 +6,7 @@ import { IUser, User } from '../../models/user.model';
 import { HttpService } from '../../services/http/http.service';
 import { AppService } from 'src/app/app.service';
 import { NotifyService } from '../../services/notify/notify.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -43,7 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private dbService: HttpService,
     private appService: AppService,
-    private notify: NotifyService
+    private notify: NotifyService,
+    private router: Router
   ) {
     this.appService.appSettings
       .pipe(takeUntil(this.destroy$))
@@ -64,7 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private initializeComponent(): void {
-    this.authService.logout();
+    // this.authService.logout();
     this.loadFlashMessage();
     this.loadSavedUsername();
     this.addEntranceAnimation();
@@ -226,16 +228,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.username?.trim()) {
       localStorage.setItem('saved_username', this.username.trim());
     }
-
     // Store token and redirect
     localStorage.setItem(LOCAL_USER_TOKEN, response.token);
+    this.authService.isLoggedIn$.next(true);
 
     // Show success message
     this.notify.successNotification('Login successful! Welcome back.');
 
     // Add slight delay for better UX
     setTimeout(() => {
-      window.location.assign('/');
+      // Redirect to dashboard
+      this.router.navigate(['/dashboard']);
     }, 500);
   }
 
