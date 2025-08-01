@@ -49,6 +49,7 @@ const routes: Routes = [
   { path: 'print-templates', resolve: { userData: UserResolver }, data: { title: 'Templates' }, loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
   { path: 'housemanship', resolve: { userData: UserResolver }, data: { title: 'Housemanship' }, loadChildren: () => import('./features/housemanship/housemanship.module').then(m => m.HousemanshipModule) },
   { path: 'examinations', resolve: { userData: UserResolver }, data: { title: 'Examinations' }, loadChildren: () => import('./features/examinations/examinations.module').then(m => m.ExaminationsModule) },
+  { path: 'payment', loadChildren: () => import('./features/payment/payment.module').then(m => m.PaymentModule) },
   {
     path: '**',
     component: PageNotFoundComponent

@@ -1,5 +1,6 @@
+<label>{{label}}</label>
 <mat-form-field appearance="outline">
-  <mat-label>{{label}}</mat-label>
+
   <input (dateChange)="onDateChange($event)" (click)="picker.open()" readonly (focus)="picker.open()" matInput
     [matDatepicker]="picker" [(ngModel)]="date">
   <mat-hint>DD/MM/YYYY</mat-hint>
