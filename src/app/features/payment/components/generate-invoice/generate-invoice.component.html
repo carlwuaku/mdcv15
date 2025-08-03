@@ -1,10 +1,28 @@
-<button *ngIf="showButton" mat-stroked-button color="primary" (click)="openDialog()"
-  [disabled]="objects.length  < 1">Generate invoice
-</button>
+<span *ngIf="showButton">
+  <button *ngIf="paymentPurposes.length < 1" mat-stroked-button color="primary"
+    matTooltip="No payment purposes configured" disabled>Generate invoice
+  </button>
+
+  <button *ngIf="paymentPurposes.length === 1" mat-stroked-button color="primary"
+    (click)="openDialog(paymentPurposes[0])" [disabled]="objects.length  < 1">Generate invoice
+  </button>
+  <button *ngIf="paymentPurposes.length > 1" [disabled]="objects.length  < 1" mat-stroked-button color="primary"
+    [matMenuTriggerFor]="menu" aria-label="Create new invoices">
+    <mat-icon>expand_more</mat-icon> Menu
+  </button>
+  <mat-menu #menu="matMenu">
+    <button *ngFor="let purpose of paymentPurposes" (click)="openDialog(purpose)" mat-menu-item>
+      <span>{{ purpose }}</span>
+    </button>
+  </mat-menu>
+
+</span>
+
+
 
 <ng-template #invoiceDialog>
   <div class="flex justify-between items-center">
-    <h2 mat-dialog-title>Generate a {{paymentPurpose}} payment invoice for the selected items</h2>
+    <h2 mat-dialog-title>Generate a {{selectedPaymentPurpose}} payment invoice for the selected items</h2>
     <button class="" mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
     </button>

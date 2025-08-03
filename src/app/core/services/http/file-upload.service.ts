@@ -35,37 +35,45 @@ export class FileUploadService {
     }
   }
 
-  uploadFiles(files: Map<string, File>, uploadUrl: string): Observable<FileUploadResponse[]> {
+  uploadFiles(files: Map<string, File>, fileUrls: Map<string, string>): Observable<FileUploadResponse[]> {
     const uploadObservables: Observable<any>[] = [];
     const progressItems: ProgressItem[] = [];
 
     files.forEach((file, key) => {
-      const formData = new FormData();
-      formData.append('uploadFile', file, file.name);
+      try {
+        const formData = new FormData();
+        const url = fileUrls.get(key);
+        formData.append('uploadFile', file, file.name);
+        if (!url) {
+          throw new Error('File upload url not found');
+        }
+        const upload$ = this.http.postWithProgress<FileUploadResponse[]>(url, formData).pipe(
+          map(event => {
+            switch (event.type) {
+              case HttpEventType.UploadProgress:
+                const progress = Math.round(100 * event.loaded / (event.total ?? 1));
+                return { key, progress, status: 'progress' };
+              case HttpEventType.Response:
+                return { key, status: 'complete', response: event.body };
+              default:
+                return { key, status: 'unknown' };
+            }
+          }),
+          tap(update => {
+            const itemIndex = progressItems.findIndex(item => item.title === key);
+            if (itemIndex !== -1) {
+              progressItems[itemIndex].progress = update.progress ?? 100;
+              this.updateProgress(progressItems);
+            }
+          })
+        );
 
-      const upload$ = this.http.postWithProgress<FileUploadResponse[]>(uploadUrl, formData).pipe(
-        map(event => {
-          switch (event.type) {
-            case HttpEventType.UploadProgress:
-              const progress = Math.round(100 * event.loaded / (event.total ?? 1));
-              return { key, progress, status: 'progress' };
-            case HttpEventType.Response:
-              return { key, status: 'complete', response: event.body };
-            default:
-              return { key, status: 'unknown' };
-          }
-        }),
-        tap(update => {
-          const itemIndex = progressItems.findIndex(item => item.title === key);
-          if (itemIndex !== -1) {
-            progressItems[itemIndex].progress = update.progress ?? 100;
-            this.updateProgress(progressItems);
-          }
-        })
-      );
+        uploadObservables.push(upload$);
+        progressItems.push({ title: key, progress: 0 });
+      } catch (error) {
 
-      uploadObservables.push(upload$);
-      progressItems.push({ title: key, progress: 0 });
+      }
+
     });
 
     this.open('Uploading Files', progressItems);

@@ -1,5 +1,8 @@
 import { IFormGenerator } from "../components/form-generator/form-generator-interface";
-
+export interface Criterion {
+  field: string;
+  value: (string | number)[];
+}
 /**
  * Extracts the keys from an object but excludes the ones that are in the
  * exclude array
@@ -408,5 +411,96 @@ export function applyComputedStyles(original: Element, clone: Element) {
   }
 }
 
+
+
+
+/**
+ * Check if all objects in the array match the given criteria
+ *
+ * Criteria is an array of rules to match.
+ * Each rule has 'field' and 'value' properties.
+ *
+ * 'field' is the key in each object to check
+ * 'value' is an array of allowed values. If the first value is 1, then any non-empty value will match.
+ * If the first value is 0, then only empty values will match (empty strings, null, or undefined).
+ * If the first value is neither 1 nor 0, then any value in the array will be checked against the object's value.
+ *
+ * @param criteria - Array of rules to match
+ * @param objects - Array of objects to check
+ * @returns true if ALL objects match ALL criteria
+ */
+export function matchesCriteria(criteria: Criterion[], objects: any[]): boolean {
+  // Return false if no objects to check
+  if (objects.length === 0) {
+    return false;
+  }
+
+  // Check each object against all criteria
+  for (const obj of objects) {
+    if (!objectMatchesCriteria(criteria, obj)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Check if a single object matches all criteria
+ * (Helper function extracted from the original PHP logic)
+ */
+export function objectMatchesCriteria(criteria: Criterion[], data: any): boolean {
+
+  for (const criterion of criteria) {
+    const field = criterion.field || '';
+    const values = criterion.value || [];
+
+    // Check if the field exists in the data
+    if (!(field in data)) {
+      return false;
+    }
+
+    // If no values specified, continue to next criterion
+    if (values.length === 0) {
+      continue;
+    }
+
+    const dataValue = data[field];
+    const firstValue = values[0];
+
+    // Special case: first value is 1 - match any non-empty value
+    if (firstValue == 1) {
+      const isEmpty = (
+        dataValue === null ||
+        dataValue === undefined ||
+        (typeof dataValue === 'string' && dataValue.trim() === '')
+      );
+      if (isEmpty) {
+        return false;
+      }
+      continue;
+    }
+
+    // Special case: first value is 0 - match only empty values
+    if (firstValue == 0) {
+      const isEmpty = (
+        dataValue === null ||
+        dataValue === undefined ||
+        (typeof dataValue === 'string' && dataValue.trim() === '')
+      );
+      if (!isEmpty) {
+        return false;
+      }
+      continue;
+    }
+
+    // Regular case: check if data value is in the allowed values array
+    if (!values.includes(dataValue)) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 

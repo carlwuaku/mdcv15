@@ -10,6 +10,7 @@ import { InvoiceFormComponent } from './pages/invoice-form/invoice-form.componen
 import { GenerateInvoiceComponent } from './components/generate-invoice/generate-invoice.component';
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
+import { InvoicePaymentDialogComponent } from './components/invoice-payment-dialog/invoice-payment-dialog.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { InvoiceDetailsComponent } from './components/invoice-details/invoice-de
     InvoiceFormComponent,
     GenerateInvoiceComponent,
     InvoiceListComponent,
-    InvoiceDetailsComponent
+    InvoiceDetailsComponent,
+    InvoicePaymentDialogComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { InvoiceDetailsComponent } from './components/invoice-details/invoice-de
     SharedModule
   ],
   exports: [
-    GenerateInvoiceComponent
+    GenerateInvoiceComponent,
+    InvoiceListComponent
   ]
 })
 export class PaymentModule { }

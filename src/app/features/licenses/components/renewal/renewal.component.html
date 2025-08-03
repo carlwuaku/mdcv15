@@ -9,7 +9,8 @@
       <app-renewal-list [licenseType]="licenseType" [licenseMode]="!!license" #renewalList
         (onSelectedItemsChange)="selectionChanged($event)" [url]="url">
         <div class="inline-flex gap-1 flex-wrap">
-          <app-generate-invoice [paymentPurpose]="'Pharmacy Renewal'" [objects]="selectedItems"></app-generate-invoice>
+          <app-generate-invoice [activityType]="'renewal'" [licenseType]="licenseType"
+            [objects]="selectedItems"></app-generate-invoice>
           <span class="w-2"></span>
           <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
             (click)="onPrint()">Print</button>

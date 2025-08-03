@@ -1,9 +1,11 @@
-<label>{{label}}</label>
-<mat-form-field appearance="outline">
+<div class="flex gap-1 flex-col">
+  <label>{{label}}</label>
+  <mat-form-field appearance="outline">
 
-  <input (dateChange)="onDateChange($event)" (click)="picker.open()" readonly (focus)="picker.open()" matInput
-    [matDatepicker]="picker" [(ngModel)]="date">
-  <mat-hint>DD/MM/YYYY</mat-hint>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker></mat-datepicker>
-</mat-form-field>
+    <input (dateChange)="onDateChange($event)" (click)="picker.open()" readonly (focus)="picker.open()" matInput
+      [matDatepicker]="picker" [(ngModel)]="date">
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div>

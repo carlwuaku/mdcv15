@@ -103,6 +103,12 @@
         <app-superintending-history [licenseNumber]="object.license_number"></app-superintending-history>
       </ng-template>
     </mat-tab>
+    <mat-tab *ngIf="isInDetailsTabs('payments')">
+      <ng-template matTabLabel=""> {{getTabTitle('payments')}} </ng-template>
+      <ng-template matTabContent>
+        <app-invoice-list [url]="'payment/invoices?unique_id='+object.license_number"></app-invoice-list>
+      </ng-template>
+    </mat-tab>
     <mat-tab *ngIf="isInDetailsTabs('work')">
       <ng-template matTabLabel=""> {{getTabTitle('work')}} </ng-template>
       <ng-template matTabContent>

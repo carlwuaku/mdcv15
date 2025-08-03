@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateFormFieldsFromObject } from '../../utils/helper';
 import { DatePipe } from '@angular/common';
 import { FileUploadResponse, FileUploadService } from 'src/app/core/services/http/file-upload.service';
+import { FILE_UPLOAD_BASE_URL } from '../../utils/constants';
 
 // Add a directive to mark field templates
 @Directive({
@@ -59,6 +60,9 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
   isRow = isRow;
   existingObject: Record<string, any> | null = null;
   imageFieldsFiles: Map<string, File> = new Map();
+  imageFieldsUrls: Map<string, string> = new Map();
+  //TODO: make this configurable
+  fileUploadBaseUrl: string = FILE_UPLOAD_BASE_URL;
   private templateMap = new Map<string, TemplateRef<any>>();
   @Input() sendAsJson: boolean = false;
   @Input() layout: "vertical" | "horizontal" | "grid" = "vertical";
@@ -340,12 +344,12 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
     if (files.length > 0) {
       field.value = files[0];
       this.imageFieldsFiles.set(field.name, files[0]);
+      this.imageFieldsUrls.set(field.name, `${this.fileUploadBaseUrl}/${field.assetType}`)
     }
   }
 
   private uploadFiles() {
-    const uploadUrl = 'file-server/new/practitioners_images';
-    this.fileUploadService.uploadFiles(this.imageFieldsFiles, uploadUrl)
+    this.fileUploadService.uploadFiles(this.imageFieldsFiles, this.imageFieldsUrls)
       .subscribe({
         next: (results) => {
           // set the image url to the field value
@@ -356,6 +360,7 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
             }
           });
           this.imageFieldsFiles.clear();
+          this.imageFieldsUrls.clear();
           this.submit();
         },
         error: (error) => {

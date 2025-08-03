@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
@@ -11,13 +11,17 @@ import { getToday } from 'src/app/shared/utils/dates';
 import { InvoiceObject } from '../../models/InvoiceModel';
 import { PaymentService } from '../../payment.service';
 import { InvoiceDetailsComponent } from '../invoice-details/invoice-details.component';
+import { InvoicePaymentDialogComponent } from '../invoice-payment-dialog/invoice-payment-dialog.component';
+import { DEFAULT_DIALOG_POSITION } from 'src/app/shared/utils/constants';
+import { TableLegendType } from 'src/app/shared/components/table/tableLegend.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-invoice-list',
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.scss']
 })
-export class InvoiceListComponent implements DataListComponentInterface<InvoiceObject>, OnInit, OnChanges {
+export class InvoiceListComponent implements DataListComponentInterface<InvoiceObject>, OnInit, OnChanges, OnDestroy {
   @Input() url: string = "";
   baseUrl: string = "";
 
@@ -28,12 +32,30 @@ export class InvoiceListComponent implements DataListComponentInterface<InvoiceO
   @Output() onSelectedItemsChange = new EventEmitter<InvoiceObject[]>();
   @Input() filterSubmitted: ((params: string) => void) = () => { };
   canDelete: boolean = false;
+  canSubmitPayment: boolean = false;
+  tableClassRules = {
+    'bg-light-green': (row: InvoiceObject) => row.status?.toLowerCase() === 'paid'
+  };
+
+  tableLegends: TableLegendType[] = [
+    { classrule: 'bg-light-green', label: 'Paid' }
+  ]
+  destroy$: Subject<boolean> = new Subject<boolean>();
   constructor(private authService: AuthService, private notify: NotifyService, public dialog: MatDialog,
     private paymentService: PaymentService,) {
-    this.canDelete = this.authService.currentUser?.permissions.includes("Delete_Payment_Invoices") || false
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   ngOnInit(): void {
+    this.authService.getUser().pipe(takeUntil(this.destroy$)).subscribe({
+      next: response => {
+        this.canDelete = response.permissions.includes("Delete_Payment_Invoices") || false;
+        this.canSubmitPayment = response.permissions.includes("Submit_Invoice_Payments") || false;
+      }
+    })
 
   }
 
@@ -51,7 +73,8 @@ export class InvoiceListComponent implements DataListComponentInterface<InvoiceO
   getActions = (object: InvoiceObject): DataActionsButton[] => {
     const actions: DataActionsButton[] = [
       { label: "View details", type: "button", onClick: (object: InvoiceObject) => this.viewInvoice(object) },
-      { label: "Delete", type: "button", onClick: (object: InvoiceObject) => this.delete(object) }
+      ...(this.canSubmitPayment && object.status == "Pending" ? [{ label: "Upload payment evidence", type: "button" as "button", onClick: (object: InvoiceObject) => this.submitPayment(object) }] : []),
+      ...(this.canDelete && object.status !== "Paid" ? [{ label: "Delete", type: "button" as "button", onClick: (object: InvoiceObject) => this.delete(object) }] : [])
     ];
 
     return actions;
@@ -66,6 +89,24 @@ export class InvoiceListComponent implements DataListComponentInterface<InvoiceO
         this.updateTimestamp();
       },
       error: error => { }
+    })
+  }
+
+  submitPayment(object: InvoiceObject) {
+    if (!this.canSubmitPayment) {
+      return;
+    }
+    const invoiceDialogRef = this.dialog.open(InvoicePaymentDialogComponent, {
+      data: object,
+      maxWidth: '90%',
+      minWidth: '400px',
+      maxHeight: '90%',
+      position: DEFAULT_DIALOG_POSITION
+    })
+    invoiceDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.updateTimestamp();
+      }
     })
   }
 

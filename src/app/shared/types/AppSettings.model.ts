@@ -46,9 +46,29 @@ export interface AppSettings {
   examinations: {
     filterFields: IFormGenerator[],
     defaultLetterTypes: { type: ExaminationLetterType, name: string, criteria: { field: string, value: string[] }[] }[]
+  },
+  payments: {
+    purposes: {
+      [key: string]: {
+        paymentMethods: string[],
+        defaultInvoiceItems: string[],
+        sourceTableName: string,
+        description: string,
+        licenseTypes: string[],
+        licenseCriteria: { field: string, value: string[] }[],
+        activityTypes: string[]
+      }
+    },
+    paymentMethods: {
+      [key: string]: {
+        description: string,
+        sourceTableName: string
+      }
+    }
   }
 
 }
+
 
 export type HousemanshipSettings = AppSettings['housemanship'];
 export type HousemanshipAvailabilityCategories = HousemanshipSettings['availabilityCategories'];

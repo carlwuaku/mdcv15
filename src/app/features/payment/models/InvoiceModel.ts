@@ -4,7 +4,7 @@ export interface InvoiceObject {
   invoice_number: string | null,
   uuid: string,
   unique_id: string,
-  name: string,
+  first_name: string,
   email: string,
   phone_number: string,
   amount: string,
@@ -17,7 +17,8 @@ export interface InvoiceObject {
   due_date: string,
   status: string,
   notes: string,
-  items: InvoiceItemObject[]
+  items: InvoiceItemObject[],
+  last_name: string
 }
 /**
  * 'invoice_number',

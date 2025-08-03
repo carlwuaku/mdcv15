@@ -81,18 +81,19 @@
         name="{{field.name}}"></textarea>
     </mat-form-field>
     <div *ngSwitchCase="'picture'" class="flex flex-col gap-1">
-      <label for="">{{field.label}}</label>
-      <app-file-uploader (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
-        (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+
+      <app-file-uploader [assetType]="field.assetType" (onFilesSelected)="onFileSelected($event, field)"
+        [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
     <!-- if it's only a label just show the label. this will be used to display some text that does not represent anything the user is suppposed to submit data for -->
     <div *ngSwitchCase="'label'" class="flex flex-col gap-1">
 
     </div>
     <div *ngSwitchCase="'file'" class="flex flex-col gap-1">
-      <label for="">{{field.label}}</label>
-      <app-file-uploader [accept]="field.file_types || '*/*'" (onFilesSelected)="onFileSelected($event, field)"
-        [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+
+      <app-file-uploader [assetType]="field.assetType" [accept]="field.file_types || '*/*'"
+        (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
+        (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
 
 

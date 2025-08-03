@@ -190,7 +190,9 @@
 
               <!-- Read-only Cell -->
               <ng-template #readOnlyCell>
-                <a *ngIf="isLink(element[column])" [href]="element[column]">Open link</a>
+                <a mat-stroked-button color="primary" *ngIf="isLink(element[column])" [href]="element[column]"
+                  target="_blank">Open
+                  link</a>
                 <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
                   *ngIf="isHtml(element[column])">View</button>
                 <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"

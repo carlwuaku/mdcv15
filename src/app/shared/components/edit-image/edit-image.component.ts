@@ -4,6 +4,7 @@ import { HttpService } from "src/app/core/services/http/http.service";
 import { NotifyService } from "src/app/core/services/notify/notify.service";
 import { take } from "rxjs";
 import { FileUploadResponse, FileUploadService } from "src/app/core/services/http/file-upload.service";
+import { FILE_UPLOAD_BASE_URL } from "../../utils/constants";
 
 @Component({
   selector: 'app-edit-image',
@@ -12,6 +13,8 @@ import { FileUploadResponse, FileUploadService } from "src/app/core/services/htt
 })
 export class EditImageComponent {
   images = new Map<string, File>();
+  imageFieldsUrls: Map<string, string> = new Map();
+  fileUploadBaseUrl: string = FILE_UPLOAD_BASE_URL;
   updateUrl: string = '';
   constructor(
     public dialogRef: MatDialogRef<EditImageComponent>,
@@ -30,6 +33,7 @@ export class EditImageComponent {
   onFileSelected(files: File[]) {
     if (files.length > 0) {
       this.images.set("Image", files[0]);
+      this.imageFieldsUrls.set("Image", `${this.fileUploadBaseUrl}/practitioners_images`)
     }
   }
 
@@ -46,8 +50,8 @@ export class EditImageComponent {
     }
 
 
-    const uploadUrl = 'file-server/new/practitioners_images';
-    this.fileUploadService.uploadFiles(this.images, uploadUrl)
+    const uploadUrls = new Map<string, string>();
+    this.fileUploadService.uploadFiles(this.images, this.imageFieldsUrls)
       .subscribe({
         next: (results) => {
           // we only expect one result
@@ -71,6 +75,7 @@ export class EditImageComponent {
       next: data => {
         this.notify.successNotification('Submitted successfully');
         this.images.clear();
+        this.imageFieldsUrls.clear();
         this.dialogRef.close(filePath)
       },
       error: error => {
