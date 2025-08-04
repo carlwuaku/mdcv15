@@ -11,6 +11,7 @@ import { GenerateInvoiceComponent } from './components/generate-invoice/generate
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
 import { InvoicePaymentDialogComponent } from './components/invoice-payment-dialog/invoice-payment-dialog.component';
+import { PaymentUploadsComponent } from './pages/payment-uploads/payment-uploads.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { InvoicePaymentDialogComponent } from './components/invoice-payment-dial
     GenerateInvoiceComponent,
     InvoiceListComponent,
     InvoiceDetailsComponent,
-    InvoicePaymentDialogComponent
+    InvoicePaymentDialogComponent,
+    PaymentUploadsComponent
   ],
   imports: [
     CommonModule,

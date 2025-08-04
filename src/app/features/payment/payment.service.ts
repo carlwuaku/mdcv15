@@ -36,4 +36,12 @@ export class PaymentService {
   deleteInvoice(uuid: string): Observable<{ message: string }> {
     return this.dbService.delete(`payment/invoices/${uuid}`)
   }
+
+  deletePaymentUpload(id: string): Observable<{ message: string }> {
+    return this.dbService.delete(`payment/payment-uploads/${id}`)
+  }
+
+  approvePaymentUpload(id: string): Observable<{ message: string }> {
+    return this.dbService.post(`payment/payment-uploads/${id}/approve`, {})
+  }
 }

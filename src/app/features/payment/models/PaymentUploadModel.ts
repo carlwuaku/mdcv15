@@ -1,6 +1,5 @@
-import { InvoiceItemObject } from "./InvoiceItem";
-
-export interface InvoiceObject {
+export interface PaymentUploadObject {
+  id: string,
   invoice_number: string | null,
   uuid: string,
   unique_id: string,
@@ -17,6 +16,8 @@ export interface InvoiceObject {
   due_date: string,
   status: string,
   notes: string,
-  items: InvoiceItemObject[],
-  last_name: string
+  last_name: string,
+  created_at: string,
+  file_path: string,
+  invoice_uuid: string
 }
