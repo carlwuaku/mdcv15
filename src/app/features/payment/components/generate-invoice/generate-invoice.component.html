@@ -1,0 +1,73 @@
+<span *ngIf="showButton">
+  <button *ngIf="paymentPurposes.length < 1" mat-stroked-button color="primary"
+    matTooltip="No payment purposes configured" disabled>Generate invoice
+  </button>
+
+  <button *ngIf="paymentPurposes.length === 1" mat-stroked-button color="primary"
+    (click)="openDialog(paymentPurposes[0])" [disabled]="objects.length  < 1">Generate invoice
+  </button>
+  <button *ngIf="paymentPurposes.length > 1" [disabled]="objects.length  < 1" mat-stroked-button color="primary"
+    [matMenuTriggerFor]="menu" aria-label="Create new invoices">
+    <mat-icon>expand_more</mat-icon> Menu
+  </button>
+  <mat-menu #menu="matMenu">
+    <button *ngFor="let purpose of paymentPurposes" (click)="openDialog(purpose)" mat-menu-item>
+      <span>{{ purpose }}</span>
+    </button>
+  </mat-menu>
+
+</span>
+
+
+
+<ng-template #invoiceDialog>
+  <div class="flex justify-between items-center">
+    <h2 mat-dialog-title>Generate a {{selectedPaymentPurpose}} payment invoice for the selected items</h2>
+    <button class="" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+
+
+  <mat-dialog-content class="flex flex-col gap-2">
+    <app-alert [type]="'info'">
+      This preview contains the invoice for the selected items. Below these, you can add additional fees. The additional
+      fees
+      will be added to each invoice. The due date will also apply to each invoice.</app-alert>
+    <app-mat-datepicker [label]="'Invoice date'" (onFinish)="setDueDate($event)"></app-mat-datepicker>
+    <app-loading *ngIf="loading"> </app-loading>
+
+    <div *ngIf="!loading">
+      <app-section-container *ngFor="let object of payersList" title="Default invoice for {{object.name}}"
+        childStyle=" overflow-auto">
+        <app-table [columnLabels]="columnLabels" [dataSource]="object.invoiceItemsTableDataSource"
+          [displayedColumns]="displayedColumns" [useVirtualScroll]="false"></app-table>
+      </app-section-container>
+    </div>
+
+
+    <p class="italic">You can add additional fees to this invoice
+    </p>
+    <div class="flex flex-col gap-1">
+      <label>Type the name of the fee and select it from the options to add</label>
+      <app-select-object [url]="'payment/fees'" [labelProperty]="'name' " [keyProperty]="''" [type]="'search'"
+        [selection_mode]=" 'single'" [autoSelectSingleSearchResult]="false" [emitObject]="true"
+        (selectionChanged)="onAdditionalFeeSelected($event)">
+      </app-select-object>
+    </div>
+
+
+    <app-section-container title="Invoice details" childStyle=" overflow-auto">
+      <app-table [useVirtualScroll]="false" [columnLabels]="columnLabels" [dataSource]="tableDataSource"
+        [displayedColumns]="displayedColumns" [editableColumns]="editableColumns"
+        [enableInlineEditing]="true"></app-table>
+    </app-section-container>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button [color]="'warn'" mat-dialog-close>Cancel</button>
+    <button mat-raised-button [color]="'primary'" (click)="submitInvoice()">Submit</button>
+  </mat-dialog-actions>
+
+
+</ng-template>

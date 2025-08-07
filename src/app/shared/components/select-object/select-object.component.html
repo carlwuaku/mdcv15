@@ -4,14 +4,20 @@
   <mat-label>{{fieldLabel}}</mat-label>
   <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()"
     [multiple]="selection_mode === 'multiple'">
-    <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
-      <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
 
-      <button color="warn" mat-flat-button (click)="clearSelection()">Clear</button>
+    <div class="px-2 py-1 sticky top-0 bg-white border-bottom-primary z-10">
+      <input type="text" class="flex-auto w-full px-3 border rounded" placeholder="Search list" [(ngModel)]="filterText"
+        (click)="$event.stopPropagation()">
+      <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
+        <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
+
+        <button color="warn" mat-flat-button (click)="clearSelection()">Clear</button>
+      </div>
     </div>
+
     <mat-option>{{selection_mode === 'multiple' ? 'Choose one or more':'Choose one'}} </mat-option>
     <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
-    <mat-option *ngFor="let object of objects" [value]="getValue(object)">{{
+    <mat-option *ngFor="let object of objects | filterObjects:filterText:filterProperties" [value]="getValue(object)">{{
       getLabel(object, labelProperty)}} </mat-option>
   </mat-select>
 </mat-form-field>
@@ -29,7 +35,7 @@
 </mat-form-field>
 
 
-<div *ngIf="type === 'search'">
+<!-- <div *ngIf="type === 'search'">
   <mat-form-field appearance="outline">
     <mat-label>{{fieldLabel}}</mat-label>
     <input matInput type="text" class="form-control" [(ngModel)]="search_param" (ngModelChange)="selectionMade()"
@@ -61,8 +67,66 @@
     </mat-card-content>
 
 
-    <!-- <p-autoComplete [(ngModel)]="selectedItem" [dropdown]="true" [field]="labelProperty" [suggestions]="objects"
-        (completeMethod)="search($event)"></p-autoComplete> -->
+  </mat-card>
+</div> -->
 
+<div *ngIf="type === 'search'">
+  <mat-form-field appearance="outline">
+    <mat-label>{{fieldLabel}}</mat-label>
+    <input matInput type="text" class="form-control" [matAutocomplete]="auto" [(ngModel)]="search_param"
+      (keyup.enter)="search()">
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onOptionSelected($event)"
+      [panelWidth]="'auto'">
+
+      <mat-option *ngFor="let object of objects; let i = index" [value]="object">
+        <div class="flex items-center justify-between w-full" *ngIf="selection_mode === 'multiple'">
+          <span>{{i+1 + ". " + getLabel(object, labelProperty)}}</span>
+          <mat-checkbox [checked]="isSelected(object)" (click)="$event.stopPropagation()"
+            (change)="toggleSelection(object, $event)">
+          </mat-checkbox>
+        </div>
+        <span *ngIf="selection_mode !== 'multiple'">
+          {{i+1 + ". " + getLabel(object, labelProperty)}}
+        </span>
+      </mat-option>
+
+      <mat-option *ngIf="objects.length === 0 && searchRan" disabled>
+        <span>No results found</span>
+      </mat-option>
+    </mat-autocomplete>
+
+    <button type="button" color="primary" mat-raised-button matSuffix (click)="search()">
+      <mat-icon>search</mat-icon>
+      Search
+    </button>
+  </mat-form-field>
+
+  <!-- Action buttons for multiple selection -->
+  <div class="flex justify-end mt-2" *ngIf="selection_mode === 'multiple' && objects.length > 0">
+    <button mat-raised-button color="primary" (click)="saveSearchSelection()" class="mr-2">
+      <mat-icon>check</mat-icon>
+      Done
+    </button>
+    <button mat-icon-button color="warn" (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Selected items display for multiple selection -->
+  <mat-card *ngIf="selection_mode === 'multiple' && selectedSearchItems.length > 0" class="mt-4">
+    <mat-card-header>
+      <mat-card-title class="text-sm">Selected Items ({{selectedSearchItems.length}})</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-chip-listbox class="mat-mdc-chip-set-stacked">
+        <mat-chip-row *ngFor="let item of selectedSearchItems; trackBy: trackByFn" (removed)="removeSelection(item)">
+          {{getLabel(item, labelProperty)}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-listbox>
+    </mat-card-content>
   </mat-card>
 </div>

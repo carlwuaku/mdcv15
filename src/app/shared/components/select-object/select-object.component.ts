@@ -21,9 +21,17 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   error: boolean = false;
   error_message: string = "";
   objects: any[] = []
+  filterText: string = "";
+  // Leave empty to search all properties
+  @Input() filterProperties: string[] = [];
+
+  // Example: for nested properties use dot notation
+  // filterProperties = ['user.name', 'user.email', 'details.description'];
+
   selectedItem: string | string[] = ""
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
+  @Input() emitObject: boolean = false;
 
   @Input() selection_mode: "single" | "singles" | "multiple" = "single";
   search_param: string = "";
@@ -35,6 +43,8 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   getLabel = getLabel;
   @Output() dataDownloaded = new EventEmitter();
   @Input() emitDownload: boolean = false;
+  @Input() autoSelectSingleSearchResult: boolean = false;
+
   constructor(private dbService: HttpService, private dateService: DateService) {
 
   }
@@ -52,6 +62,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     // this.getData()
   }
 
+  filterObjects() { }
 
 
   getData() {
@@ -86,7 +97,14 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   selectionMade() {
-    this.selectionChanged.emit(this.selectedItem);
+    if (this.emitObject) {
+      const object = this.objects.find((object: any) => object[this.keyProperty] === this.selectedItem);
+      this.selectionChanged.emit(object);
+    }
+    else {
+      this.selectionChanged.emit(this.selectedItem);
+    }
+
   }
 
 
@@ -102,8 +120,13 @@ export class SelectObjectComponent implements OnInit, OnChanges {
           if (this.initialValue) {
             this.selectedItem = this.initialValue
           }
-          if (this.objects.length === 1) {
-            this.selectionChanged.emit(this.objects[0][this.keyProperty] || this.objects[0]);
+          if (this.objects.length === 1 && this.autoSelectSingleSearchResult) {
+            if (this.emitObject) {
+              this.selectionChanged.emit(this.objects[0]);
+            }
+            else {
+              this.selectionChanged.emit(this.objects[0][this.keyProperty]);
+            }
           }
           this.isLoaded = true;
           this.error = false;
@@ -130,7 +153,12 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   singleItemSelected(object: any) {
-    this.selectionChanged.emit(object[this.keyProperty]);
+    if (this.emitObject) {
+      this.selectionChanged.emit(object);
+    }
+    else {
+      this.selectionChanged.emit(object[this.keyProperty]);
+    }
     this.objects = [];
     this.search_param = "";
   }
@@ -168,13 +196,68 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   selectAll() {
-    this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
-    this.selectionChanged.emit(this.selectedItem);
+    if (this.emitObject) {
+      this.selectionChanged.emit(this.objects);
+    }
+    else {
+      this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
+      this.selectionChanged.emit(this.selectedItem);
+    }
   }
 
   clearSelection() {
     this.selectedItem = [];
     this.selectionChanged.emit(this.selectedItem);
+  }
+
+  displayFn = (object: any): string => {
+    // Return empty string to keep input clear after selection
+    return '';
+  }
+
+  onOptionSelected(event: any): void {
+    const selectedObject = event.option.value;
+
+    if (this.selection_mode === 'multiple') {
+      this.toggleSelection(selectedObject, { checked: true });
+    } else {
+      this.singleItemSelected(selectedObject);
+    }
+
+    // Clear the input after selection to allow the autocomplete to close
+    setTimeout(() => {
+      this.search_param = '';
+    }, 0);
+  }
+
+  toggleSelection(object: any, event: any): void {
+    if (event.checked) {
+      if (!this.selectedSearchItems.includes(object)) {
+        this.selectedSearchItems.push(object);
+      }
+    } else {
+      this.removeSelection(object);
+    }
+  }
+
+  isSelected(object: any): boolean {
+    return this.selectedSearchItems.includes(object);
+  }
+
+  removeSelection(object: any): void {
+    const index = this.selectedSearchItems.indexOf(object);
+    if (index >= 0) {
+      this.selectedSearchItems.splice(index, 1);
+    }
+  }
+
+  clearSearch(): void {
+    this.search_param = '';
+    this.objects = [];
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.id || item; // Use unique identifier if available
   }
 
 

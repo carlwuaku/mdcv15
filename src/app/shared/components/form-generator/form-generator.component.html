@@ -64,15 +64,21 @@
     </div>
     <mat-form-field class="flex-auto" *ngSwitchCase="'select'" appearance="outline">
       <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
+        <ng-container *ngTemplateOutlet="selectFilter"></ng-container>
+
         <mat-option value="">Choose one</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+        <mat-option *ngFor="let option of field.options | filterObjects:filterText:filterProperties"
+          [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field class="flex-auto" multiple *ngSwitchCase="'multi-select'" appearance="outline">
       <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
+        <ng-container *ngTemplateOutlet="selectFilter"></ng-container>
+
         <mat-option value="">Choose one</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+        <mat-option *ngFor="let option of field.options | filterObjects:filterText:filterProperties"
+          [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
@@ -81,18 +87,19 @@
         name="{{field.name}}"></textarea>
     </mat-form-field>
     <div *ngSwitchCase="'picture'" class="flex flex-col gap-1">
-      <label for="">{{field.label}}</label>
-      <app-file-uploader (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
-        (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+
+      <app-file-uploader [assetType]="field.assetType" (onFilesSelected)="onFileSelected($event, field)"
+        [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
     <!-- if it's only a label just show the label. this will be used to display some text that does not represent anything the user is suppposed to submit data for -->
     <div *ngSwitchCase="'label'" class="flex flex-col gap-1">
 
     </div>
     <div *ngSwitchCase="'file'" class="flex flex-col gap-1">
-      <label for="">{{field.label}}</label>
-      <app-file-uploader [accept]="field.file_types || '*/*'" (onFilesSelected)="onFileSelected($event, field)"
-        [existingImage]="field.value" (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
+
+      <app-file-uploader [assetType]="field.assetType" [accept]="field.file_types || '*/*'"
+        (onFilesSelected)="onFileSelected($event, field)" [existingImage]="field.value"
+        (onUploadCompleted)="setFieldValue($event, field)"></app-file-uploader>
     </div>
 
 
@@ -166,4 +173,11 @@
 
 
   </ng-container>
+</ng-template>
+
+<ng-template #selectFilter>
+  <div class="px-2 py-1  border-bottom-primary sticky top-0 bg-white border-bottom-primary">
+    <input type="text" matInput class="flex-auto w-full px-3 border rounded" placeholder="Search list"
+      [(ngModel)]="filterText" (click)="$event.stopPropagation()">
+  </div>
 </ng-template>

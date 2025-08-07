@@ -94,10 +94,7 @@ export class FileUploaderComponent implements OnChanges {
     }
   }
 
-  // public onUpload(event: { originalEvent: HttpResponse<{ filePath: string, fullPath:string }> }) {
-  //   this.uploadedImage = event.originalEvent.body?.fullPath
-  //   this.onUploadCompleted.emit(event.originalEvent.body?.fullPath)
-  // }
+
 
   public remove(file: File) {
     this.selectedFiles = this.selectedFiles.filter(f => f !== file);

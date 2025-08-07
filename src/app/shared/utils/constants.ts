@@ -11,3 +11,5 @@ export const API_ACCOUNTS_PATH = 'api_accounts';
 export const API_PA_PATH = 'api_physician_assistant';
 export const API_PATH = 'api';
 export const API_TEMPLATES_PATH = 'templates';
+export const DEFAULT_DIALOG_POSITION = { top: '10%' };
+export const FILE_UPLOAD_BASE_URL = "file-server/new";

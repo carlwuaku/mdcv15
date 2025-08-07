@@ -9,6 +9,9 @@
       <app-renewal-list [licenseType]="licenseType" [licenseMode]="!!license" #renewalList
         (onSelectedItemsChange)="selectionChanged($event)" [url]="url">
         <div class="inline-flex gap-1 flex-wrap">
+          <app-generate-invoice [activityType]="'renewal'" [licenseType]="licenseType"
+            [objects]="selectedItems"></app-generate-invoice>
+          <span class="w-2"></span>
           <button mat-raised-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
             (click)="onPrint()">Print</button>
           <button mat-stroked-button [color]="'primary'" *ngIf="canPrint" [disabled]="selectedItems.length === 0"
@@ -29,7 +32,6 @@
           <button mat-stroked-button [color]="'primary'" *ngIf="canApprove" [disabled]="selectedItems.length === 0"
             (click)="updateValidPeriod()">Update start and expiry dates</button>
           <span class="w-2"></span>
-          <app-export-table [objects]="selectedItems"></app-export-table>
         </div>
       </app-renewal-list>
 

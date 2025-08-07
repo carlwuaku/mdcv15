@@ -14,6 +14,7 @@ export interface EditableColumn {
   options?: { value: any; label: string }[]; // For select type
   validator?: (value: any) => boolean;
   readonly?: boolean;
+  onChange?: (value: any, row: any) => void;
 }
 
 @Component({
@@ -45,7 +46,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   originalValues = new Map<any, any>();
   editableColumnMap = new Map<string, EditableColumn>();
   @Input() customClassLegends: TableLegendType[] = [];
-
+  @Input() useVirtualScroll: boolean = true;
   constructor() { }
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
@@ -214,6 +215,8 @@ export class TableComponent implements OnInit, AfterViewInit {
     }
 
     row[field] = newValue;
+    //run the onChange function
+    if (editableColumn?.onChange) { editableColumn.onChange(newValue, row); }
     this.onCellValueChange.emit({ row, field, oldValue, newValue });
   }
 

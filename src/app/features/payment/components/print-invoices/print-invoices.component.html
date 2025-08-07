@@ -1,0 +1,44 @@
+<button mat-stroked-button color="primary" (click)="openDialog()" [disabled]="objects.length  < 1">Print invoices
+</button>
+
+<ng-template #invoiceDialog>
+  <div class="flex">
+    <h2 mat-dialog-title>Select/enter message</h2>
+    <button class="self-end" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="flex flex-col gap-2">
+    <p class="italic">Select a template from the dropdown below to use or manually enter one.
+    </p>
+    <div class="flex flex-col gap-1">
+      <label> Template</label>
+      <app-select-object [emitObject]="true" [emitDownload]="false" [url]="'print-queue/templates'"
+        [labelProperty]="'template_name' " [keyProperty]="'template_name'" [type]="'select'"
+        [selection_mode]=" 'single'" (selectionChanged)="onTemplateChange($event)">
+      </app-select-object>
+    </div>
+
+    <div class="flex flex-row gap-2">
+      <app-section-container title="Selected invoices" childStyle="h-[600px] overflow-auto min-w-[300px]">
+        <mat-list>
+          <mat-list-item *ngFor="let object of objects">
+            <span matListItemTitle>{{object.first_name}} {{object.last_name}}</span>
+            <span matListItemLine>{{object.unique_id}} [{{object.description}}]</span>
+            <div mat-line></div>
+          </mat-list-item>
+        </mat-list>
+      </app-section-container>
+      <app-section-container title="Invoice template" childStyle="w-[600px] h-[600px] overflow-auto">
+        <div [innerHTML]="selectedTemplateContent"></div>
+      </app-section-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button [color]="'warn'" mat-dialog-close>Cancel</button>
+    <button mat-raised-button [color]="'primary'" (click)="getInvoicePrintouts()">Submit</button>
+  </mat-dialog-actions>
+
+
+</ng-template>

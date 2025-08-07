@@ -28,6 +28,7 @@ import { HousemanshipModule } from '../housemanship/housemanship.module';
 import { ExaminationsModule } from '../examinations/examinations.module';
 import { RenewalListComponent } from './components/renewal/renewal-list/renewal-list.component';
 import { SuperintendingHistoryComponent } from './components/renewal/superintending-history/superintending-history.component';
+import { PaymentModule } from "../payment/payment.module";
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { SuperintendingHistoryComponent } from './components/renewal/superintend
     SharedModule,
     CpdModule,
     HousemanshipModule,
-    ExaminationsModule
+    ExaminationsModule,
+    PaymentModule
   ],
   exports: [
     LicensesComponent,

@@ -11,6 +11,7 @@ import { FileUploadService } from 'src/app/core/services/http/file-upload.servic
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { ApplicationFormTemplateActionObject } from '../../application-forms/models/application-form-template-action.model';
+import { FILE_UPLOAD_BASE_URL } from 'src/app/shared/utils/constants';
 
 @Component({
   selector: 'app-template-form',
@@ -63,6 +64,8 @@ export class TemplateFormComponent implements OnInit {
   });
   loading: boolean = false;
   imageFieldsFiles: Map<string, File> = new Map();
+  imageFieldsUrls: Map<string, string> = new Map();
+  fileUploadBaseUrl: string = FILE_UPLOAD_BASE_URL;
   defaultApiCallActions: any[] = [];
   //the user can select the fields from some common templates. in this case the url to the form fields
   commonTemplateFields: (IFormGenerator[] | IFormGenerator)[] = [];
@@ -225,18 +228,19 @@ export class TemplateFormComponent implements OnInit {
   onFileSelected(files: File[]) {
     if (files.length > 0) {
       this.imageFieldsFiles.set('picture', files[0]);
+      this.imageFieldsUrls.set('picture', `${this.fileUploadBaseUrl}/applications`)
     }
   }
 
   private uploadFiles() {
-    const uploadUrl = 'file-server/new/applications';
-    this.fileUploadService.uploadFiles(this.imageFieldsFiles, uploadUrl)
+    this.fileUploadService.uploadFiles(this.imageFieldsFiles, this.imageFieldsUrls)
       .subscribe({
         next: (results) => {
           this.generalFormGroup.get("picture")?.setValue(results[0].response.fullPath);
           // set the image url to the field value
 
           this.imageFieldsFiles.clear();
+          this.imageFieldsUrls.clear();
           this.submit();
         },
         error: (error) => {

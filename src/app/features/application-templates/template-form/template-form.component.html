@@ -81,7 +81,8 @@
         [keyProperty]="'form_url'"></app-select-object>
       <form [formGroup]="dataFormGroup">
         <label for="">Use the controls below to add/arrange the form fields</label>
-        <app-form-editor [fields]="fields" (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
+        <app-form-editor [assetType]="'applications'" [fields]="fields"
+          (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
         <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
 
       </form>

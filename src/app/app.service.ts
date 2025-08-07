@@ -29,6 +29,10 @@ export class AppService {
     examinations: {
       filterFields: [],
       defaultLetterTypes: []
+    },
+    payments: {
+      purposes: {},
+      paymentMethods: {}
     }
   });
   constructor(

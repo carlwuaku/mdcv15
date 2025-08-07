@@ -1,0 +1,23 @@
+export interface PaymentUploadObject {
+  id: string,
+  invoice_number: string | null,
+  uuid: string,
+  unique_id: string,
+  first_name: string,
+  email: string,
+  phone_number: string,
+  amount: string,
+  application_id: string,
+  post_url: string | null,
+  redirect_url: string | null,
+  purpose: string,
+  year: string,
+  currency: string,
+  due_date: string,
+  status: string,
+  notes: string,
+  last_name: string,
+  created_at: string,
+  file_path: string,
+  invoice_uuid: string
+}

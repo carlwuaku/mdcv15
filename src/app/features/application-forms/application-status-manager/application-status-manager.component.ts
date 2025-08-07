@@ -46,7 +46,7 @@ export class ApplicationStatusManagerComponent implements OnChanges {
           // we're changing how permissions for statuses are checked. We're now checking the user's role against the allowedUserRoles array in the status object.
           //in future a permission will be created for each status and stored against the user's role in the role_permissions table and the user's permissions will be checked against the status permission
           this.authService.getUser().pipe(take(1)).subscribe(user => {
-            this.allStatuses = this.allStatuses.filter((status: ApplicationTemplateStageObject) => status.allowedUserRoles.includes(user.role_name));
+            this.allStatuses = this.allStatuses.filter((status: ApplicationTemplateStageObject) => status.allowedUserRoles?.includes(user.role_name));
           });
         }
         else {

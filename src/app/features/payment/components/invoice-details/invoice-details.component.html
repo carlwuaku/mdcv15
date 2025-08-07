@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Payment invoice</h2>
+<mat-dialog-content>
+  <div class="flex flex-col gap-2">
+
+    <p>
+      <b>Invoice:</b> {{invoice.application_id}}
+    </p>
+    <p>
+      <b>Unique Id:</b> {{invoice.unique_id}}
+    </p>
+    <p>
+      <b>Name:</b> {{invoice.first_name}} {{invoice.last_name}}
+    </p>
+    <p>
+      <b>Phone:</b> {{invoice.phone_number}}
+    </p>
+    <p class="text-xl text-right w-full font-bold text-black">
+      <b>Total:</b> {{invoice.amount}}
+    </p>
+    <app-table [useVirtualScroll]="false" [columnLabels]="columnLabels" [dataSource]="tableDataSource"
+      [displayedColumns]="displayedColumns" [enableInlineEditing]="true"></app-table>
+
+  </div>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" [mat-dialog-close]="false">Close</button>
+</mat-dialog-actions>
