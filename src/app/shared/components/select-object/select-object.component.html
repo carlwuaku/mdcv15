@@ -4,14 +4,20 @@
   <mat-label>{{fieldLabel}}</mat-label>
   <mat-select class="flex-auto" [(value)]="selectedItem" (selectionChange)="selectionMade()"
     [multiple]="selection_mode === 'multiple'">
-    <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
-      <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
 
-      <button color="warn" mat-flat-button (click)="clearSelection()">Clear</button>
+    <div class="px-2 py-1 sticky top-0 bg-white border-bottom-primary z-10">
+      <input type="text" class="flex-auto w-full px-3 border rounded" placeholder="Search list" [(ngModel)]="filterText"
+        (click)="$event.stopPropagation()">
+      <div class="flex gap-1 p-2" *ngIf="selection_mode === 'multiple'">
+        <button color="primary" mat-raised-button (click)="selectAll()">Select All</button>
+
+        <button color="warn" mat-flat-button (click)="clearSelection()">Clear</button>
+      </div>
     </div>
+
     <mat-option>{{selection_mode === 'multiple' ? 'Choose one or more':'Choose one'}} </mat-option>
     <!-- if simple array of strings or numbers, output the values. if objects, read the props -->
-    <mat-option *ngFor="let object of objects" [value]="getValue(object)">{{
+    <mat-option *ngFor="let object of objects | filterObjects:filterText:filterProperties" [value]="getValue(object)">{{
       getLabel(object, labelProperty)}} </mat-option>
   </mat-select>
 </mat-form-field>

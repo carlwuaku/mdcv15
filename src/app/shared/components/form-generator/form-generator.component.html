@@ -64,15 +64,21 @@
     </div>
     <mat-form-field class="flex-auto" *ngSwitchCase="'select'" appearance="outline">
       <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
+        <ng-container *ngTemplateOutlet="selectFilter"></ng-container>
+
         <mat-option value="">Choose one</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+        <mat-option *ngFor="let option of field.options | filterObjects:filterText:filterProperties"
+          [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field class="flex-auto" multiple *ngSwitchCase="'multi-select'" appearance="outline">
       <mat-select [required]="field.required" [(ngModel)]="field.value" name="{{field.name}}">
+        <ng-container *ngTemplateOutlet="selectFilter"></ng-container>
+
         <mat-option value="">Choose one</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">{{option.key}}</mat-option>
+        <mat-option *ngFor="let option of field.options | filterObjects:filterText:filterProperties"
+          [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
@@ -167,4 +173,11 @@
 
 
   </ng-container>
+</ng-template>
+
+<ng-template #selectFilter>
+  <div class="px-2 py-1  border-bottom-primary sticky top-0 bg-white border-bottom-primary">
+    <input type="text" matInput class="flex-auto w-full px-3 border rounded" placeholder="Search list"
+      [(ngModel)]="filterText" (click)="$event.stopPropagation()">
+  </div>
 </ng-template>

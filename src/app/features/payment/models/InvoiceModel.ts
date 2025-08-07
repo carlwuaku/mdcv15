@@ -18,5 +18,6 @@ export interface InvoiceObject {
   status: string,
   notes: string,
   items: InvoiceItemObject[],
-  last_name: string
+  last_name: string,
+  description: string
 }

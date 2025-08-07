@@ -19,7 +19,6 @@ import { Subject, take, takeUntil } from 'rxjs';
 export class GenerateInvoiceComponent implements OnInit, OnChanges, OnDestroy {
   @Input() uuids: string[] = [];
   @Input() objects: any[] = [];
-  @Input() exclusion_keys = ['id', 'created_by', 'modified_on', 'deleted', 'deleted_by', 'password_hash', 'last_ip'];
   @Input() templateId: string | null = null;
   @Input() showTemplateSelection: boolean = true;
   @Input() showExport: boolean = true;

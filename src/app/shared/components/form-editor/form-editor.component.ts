@@ -38,16 +38,16 @@ export class FormEditorComponent implements OnInit, OnChanges {
     "html",
     "json",
     "api"
-  ]
+  ];
   //track if the selected field has had its name set explicitly. we want to autogenerate the name if it is empty
   fieldNamesSet: Set<string> = new Set();
+  @Input() assetType: string = "documents";
   constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("Form Editor Changes", changes);
   }
 
 
@@ -65,6 +65,7 @@ export class FormEditorComponent implements OnInit, OnChanges {
       apiKeyProperty: "",
       apiLabelProperty: "",
       showOnly: false,
+      assetType: this.assetType
     });
     this.selectedItem = (this.fields[this.fields.length - 1] as IFormGenerator);
     if (type === "checkbox" || type === "radio" || type === "select") {

@@ -12,6 +12,7 @@ import { InvoiceListComponent } from './components/invoice-list/invoice-list.com
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
 import { InvoicePaymentDialogComponent } from './components/invoice-payment-dialog/invoice-payment-dialog.component';
 import { PaymentUploadsComponent } from './pages/payment-uploads/payment-uploads.component';
+import { PrintInvoicesComponent } from './components/print-invoices/print-invoices.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { PaymentUploadsComponent } from './pages/payment-uploads/payment-uploads
     InvoiceListComponent,
     InvoiceDetailsComponent,
     InvoicePaymentDialogComponent,
-    PaymentUploadsComponent
+    PaymentUploadsComponent,
+    PrintInvoicesComponent
   ],
   imports: [
     CommonModule,

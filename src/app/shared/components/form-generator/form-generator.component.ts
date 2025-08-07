@@ -66,6 +66,9 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
   private templateMap = new Map<string, TemplateRef<any>>();
   @Input() sendAsJson: boolean = false;
   @Input() layout: "vertical" | "horizontal" | "grid" = "vertical";
+  filterText: string = "";
+  // Leave empty to search all properties
+  @Input() filterProperties: string[] = [];
   constructor(private notify: NotifyService,
     private dbService: HttpService, private datePipe: DatePipe, private fileUploadService: FileUploadService) {
     this.formId = uuidv4();

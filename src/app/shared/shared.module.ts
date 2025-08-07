@@ -61,6 +61,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AlertComponent } from './components/alert/alert.component';
 import { UploadableCkeditorInputComponent } from './components/uploadable-ckeditor-input/uploadable-ckeditor-input.component';
 import { StringArrayInputComponent } from './components/string-array-input/string-array-input.component';
+import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -113,7 +114,8 @@ import { StringArrayInputComponent } from './components/string-array-input/strin
     EmailFormComponent,
     AlertComponent,
     UploadableCkeditorInputComponent,
-    StringArrayInputComponent
+    StringArrayInputComponent,
+    FilterObjectsPipe
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -181,7 +183,8 @@ import { StringArrayInputComponent } from './components/string-array-input/strin
     EmailFormComponent,
     AlertComponent,
     UploadableCkeditorInputComponent,
-    StringArrayInputComponent
+    StringArrayInputComponent,
+    FilterObjectsPipe
   ],
   providers: [
     ClipboardCopyDirective

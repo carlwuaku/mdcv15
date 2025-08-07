@@ -21,6 +21,13 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   error: boolean = false;
   error_message: string = "";
   objects: any[] = []
+  filterText: string = "";
+  // Leave empty to search all properties
+  @Input() filterProperties: string[] = [];
+
+  // Example: for nested properties use dot notation
+  // filterProperties = ['user.name', 'user.email', 'details.description'];
+
   selectedItem: string | string[] = ""
   @Input() timestamp: string = ""
   @Output() selectionChanged = new EventEmitter();
@@ -55,6 +62,7 @@ export class SelectObjectComponent implements OnInit, OnChanges {
     // this.getData()
   }
 
+  filterObjects() { }
 
 
   getData() {
@@ -89,7 +97,14 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   selectionMade() {
-    this.selectionChanged.emit(this.selectedItem);
+    if (this.emitObject) {
+      const object = this.objects.find((object: any) => object[this.keyProperty] === this.selectedItem);
+      this.selectionChanged.emit(object);
+    }
+    else {
+      this.selectionChanged.emit(this.selectedItem);
+    }
+
   }
 
 
@@ -181,8 +196,13 @@ export class SelectObjectComponent implements OnInit, OnChanges {
   }
 
   selectAll() {
-    this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
-    this.selectionChanged.emit(this.selectedItem);
+    if (this.emitObject) {
+      this.selectionChanged.emit(this.objects);
+    }
+    else {
+      this.selectedItem = this.objects.filter(object => object[this.keyProperty]).map((object: any) => object[this.keyProperty]);
+      this.selectionChanged.emit(this.selectedItem);
+    }
   }
 
   clearSelection() {

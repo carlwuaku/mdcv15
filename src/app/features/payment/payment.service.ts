@@ -44,4 +44,8 @@ export class PaymentService {
   approvePaymentUpload(id: string): Observable<{ message: string }> {
     return this.dbService.post(`payment/payment-uploads/${id}/approve`, {})
   }
+
+  getInvoicePrintouts(data: { uuids: string[], template_name: string }): Observable<{ data: string[], message: string }> {
+    return this.dbService.post(`payment/invoices/printout`, data)
+  }
 }

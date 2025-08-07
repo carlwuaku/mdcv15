@@ -108,6 +108,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+input {
+  color: var(--text-primary) !important;
+}
+
 // ================================
 // ENHANCED ANGULAR MATERIAL OVERRIDES
 // ================================
@@ -303,6 +307,10 @@ body {
   color: var(--text-primary) !important;
   box-shadow: var(--shadow-sm) !important;
   border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.border-bottom-primary {
+  border-bottom: 1px solid var(--primary-color);
 }
 
 // Enhanced Dialog Styling
