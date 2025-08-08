@@ -429,18 +429,119 @@
       </ng-container>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Colors</label>
-        <div class="space-y-2">
+        <label class="block text-sm font-medium mb-2">Colors</label>
+        <div class="space-y-4">
+
+          <!-- Text/Stroke Color -->
           <div>
-            <label class="block text-xs text-gray-600">Text/Fill</label>
-            <input type="color" [(ngModel)]="selectedEl.color"
-              (ngModelChange)="updateSelectedElement({color: selectedEl.color})" class="w-full h-8 border rounded" />
+            <label class="block text-xs text-gray-600 mb-2">Text/Stroke Color</label>
+            <div class="flex space-x-2">
+              <input type="color" [(ngModel)]="selectedEl.color"
+                (ngModelChange)="updateSelectedElement({color: selectedEl.color})"
+                class="w-12 h-8 border rounded cursor-pointer" />
+              <input type="text" [(ngModel)]="selectedEl.color"
+                (ngModelChange)="updateSelectedElement({color: selectedEl.color})"
+                class="flex-1 px-2 py-1 border rounded text-sm" placeholder="#000000" />
+            </div>
           </div>
+
+          <!-- Fill/Background Color -->
           <div>
-            <label class="block text-xs text-gray-600">Background</label>
-            <input type="color" [(ngModel)]="selectedEl.backgroundColor"
-              (ngModelChange)="updateSelectedElement({backgroundColor: selectedEl.backgroundColor})"
-              class="w-full h-8 border rounded" />
+            <label class="block text-xs text-gray-600 mb-2">Fill/Background Color</label>
+
+            <!-- Color Picker and Input -->
+            <div class="flex space-x-2 mb-2">
+              <input type="color" [value]="getBaseFillColor()"
+                (input)="updateFillColor($any($event.target).value, getCurrentOpacity())"
+                class="w-12 h-8 border rounded cursor-pointer"
+                [disabled]="isTransparentColor(selectedEl.backgroundColor)" />
+              <input type="text" [(ngModel)]="selectedEl.backgroundColor"
+                (ngModelChange)="updateSelectedElement({backgroundColor: selectedEl.backgroundColor})"
+                class="flex-1 px-2 py-1 border rounded text-sm" placeholder="transparent" />
+              <button type="button" (click)="setTransparentFill()"
+                class="px-3 py-1 text-xs border rounded hover:bg-gray-100" title="Set Transparent">
+                ∅
+              </button>
+            </div>
+
+            <!-- Opacity Control -->
+            <div *ngIf="!isTransparentColor(selectedEl.backgroundColor)" class="mb-2">
+              <label class="block text-xs text-gray-600 mb-1">
+                Opacity: {{Math.round(getCurrentOpacity() * 100)}}%
+              </label>
+              <input type="range" min="0" max="1" step="0.1" [value]="getCurrentOpacity()"
+                (input)="updateFillColor(getBaseFillColor(), parseFloat($any($event.target).value))" class="w-full" />
+            </div>
+
+            <!-- Color Presets -->
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">Quick Colors</label>
+              <div class="grid grid-cols-6 gap-1">
+                <button type="button" *ngFor="let preset of getFillColorPresets()"
+                  (click)="updateFillColor(preset.color)"
+                  class="w-8 h-6 border border-gray-300 rounded cursor-pointer hover:scale-110 transition-transform"
+                  [style.background-color]="preset.color === 'transparent' ? 'white' : preset.color"
+                  [class.border-2]="selectedEl.backgroundColor === preset.color"
+                  [class.border-blue-500]="selectedEl.backgroundColor === preset.color" [title]="preset.label">
+                  <span *ngIf="preset.color === 'transparent'" class="text-xs text-gray-400">∅</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Fill Preview -->
+            <div class="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600">
+              <strong>Preview:</strong> {{getFillPreview()}}
+            </div>
+
+            <!-- Element-Specific Fill Options -->
+            <div *ngIf="selectedEl.type === 'rect'" class="mt-2">
+              <label class="block text-xs text-gray-600 mb-1">Shape Presets</label>
+              <div class="grid grid-cols-2 gap-1">
+                <button
+                  (click)="updateSelectedElement({backgroundColor: 'transparent', borderWidth: 2, borderStyle: 'solid', borderColor: '#000000'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  Outline Only
+                </button>
+                <button
+                  (click)="updateSelectedElement({backgroundColor: '#FFFFFF', borderWidth: 1, borderStyle: 'solid', borderColor: '#000000'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  White Fill
+                </button>
+                <button
+                  (click)="updateSelectedElement({backgroundColor: '#F3F4F6', borderWidth: 0, borderStyle: 'none'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  Gray Fill
+                </button>
+                <button
+                  (click)="updateSelectedElement({backgroundColor: '#3B82F6', borderWidth: 0, borderStyle: 'none'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  Blue Fill
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="selectedEl.type === 'text'" class="mt-2">
+              <label class="block text-xs text-gray-600 mb-1">Text Background Presets</label>
+              <div class="grid grid-cols-2 gap-1">
+                <button type="button" (click)="updateSelectedElement({backgroundColor: 'transparent'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  No Background
+                </button>
+                <button type="button" (click)="updateFillColor('#FFFFFF', 0.9)"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  White Highlight
+                </button>
+                <button type="button" (click)="updateFillColor('#FFFF00', 0.3)"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  Yellow Highlight
+                </button>
+                <button type="button" (click)="updateSelectedElement({backgroundColor: '#000000', color: '#FFFFFF'})"
+                  class="px-2 py-1 text-xs border rounded hover:bg-gray-100">
+                  Reverse Text
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

@@ -74,6 +74,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
   orientation = 'portrait';
   canvasWidth = 800;
   canvasHeight = 600;
+  Math = Math;
+  parseFloat = parseFloat;
 
   ngOnInit() {
     this.updateCanvasDimensions();
@@ -502,8 +504,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
       fontStyle: computedStyle['fontStyle'] || 'normal',
       textDecoration: computedStyle['textDecoration'] || 'none',
       color: computedStyle['color'] || '#000000',
-      backgroundColor: computedStyle['backgroundColor'] || 'transparent',
-      // Enhanced border parsing
+      backgroundColor: this.parseBackgroundColor(computedStyle['backgroundColor'] || computedStyle['background']),
       borderWidth: this.parseBorderWidth(computedStyle['border'] || computedStyle['borderWidth']),
       borderColor: this.parseBorderColor(computedStyle['border'] || computedStyle['borderColor']),
       borderStyle: this.parseBorderStyle(computedStyle['border'] || computedStyle['borderStyle']),
@@ -623,6 +624,16 @@ export class TemplateDesignerComponent implements AfterViewInit {
       y = this.snapToGridFn(y);
     }
 
+    // Set appropriate default fills based on element type
+    let defaultFill = 'transparent';
+    if (type === 'rect') {
+      defaultFill = '#F3F4F6'; // Light gray for rectangles
+    } else if (type === 'text') {
+      defaultFill = 'transparent'; // Transparent for text by default
+    } else if (type === 'image') {
+      defaultFill = 'transparent'; // Transparent for images
+    }
+
     const newElement: TemplateElement = {
       id: Date.now(),
       type,
@@ -638,9 +649,9 @@ export class TemplateDesignerComponent implements AfterViewInit {
       textAlign: 'left',
       verticalAlign: 'middle',
       color: '#000000',
-      backgroundColor: type === 'rect' ? '#f0f0f0' : 'transparent',
-      borderWidth: type === 'rect' ? 1 : 0, // Default border for rectangles
-      borderColor: '#000000', // Default to black border
+      backgroundColor: defaultFill,
+      borderWidth: type === 'rect' ? 1 : 0,
+      borderColor: '#000000',
       borderStyle: 'solid',
       rotation: 0,
       zIndex: this.elements.length
@@ -1355,6 +1366,156 @@ ${elementsHTML}
     }
 
     return '#000000';
+  }
+
+  // Helper method to get fill color presets
+  getFillColorPresets(): Array<{ color: string, label: string }> {
+    return [
+      { color: 'transparent', label: 'Transparent' },
+      { color: '#FFFFFF', label: 'White' },
+      { color: '#000000', label: 'Black' },
+      { color: '#F3F4F6', label: 'Light Gray' },
+      { color: '#6B7280', label: 'Gray' },
+      { color: '#1F2937', label: 'Dark Gray' },
+      { color: '#EF4444', label: 'Red' },
+      { color: '#10B981', label: 'Green' },
+      { color: '#3B82F6', label: 'Blue' },
+      { color: '#F59E0B', label: 'Yellow' },
+      { color: '#8B5CF6', label: 'Purple' },
+      { color: '#F97316', label: 'Orange' }
+    ];
+  }
+
+  // Helper method to check if color is transparent
+  isTransparentColor(color: string): boolean {
+    return color === 'transparent' ||
+      color === 'rgba(0,0,0,0)' ||
+      color === 'rgba(0, 0, 0, 0)' ||
+      color === '';
+  }
+
+  // Helper method to get color opacity
+  getColorOpacity(color: string): number {
+    if (this.isTransparentColor(color)) return 0;
+
+    // Parse rgba values
+    const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (rgbaMatch) {
+      return rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+    }
+
+    return 1;
+  }
+
+  // Helper method to convert color to rgba with opacity
+  convertToRgba(color: string, opacity: number): string {
+    if (color === 'transparent' && opacity === 0) return 'transparent';
+
+    // Convert hex to rgba
+    if (color.startsWith('#')) {
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    // If already rgba, update opacity
+    const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (rgbaMatch) {
+      const r = rgbaMatch[1];
+      const g = rgbaMatch[2];
+      const b = rgbaMatch[3];
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    // Return as is for named colors
+    return color;
+  }
+
+  // Update fill color with opacity support
+  updateFillColor(color: string, opacity?: number) {
+    if (this.selectedEl) {
+      if (opacity !== undefined) {
+        const rgbaColor = this.convertToRgba(color, opacity);
+        this.updateSelectedElement({ backgroundColor: rgbaColor });
+      } else {
+        this.updateSelectedElement({ backgroundColor: color });
+      }
+    }
+  }
+
+  // Set transparent fill
+  setTransparentFill() {
+    if (this.selectedEl) {
+      this.updateSelectedElement({ backgroundColor: 'transparent' });
+    }
+  }
+
+  // Get fill color for display (without opacity)
+  getBaseFillColor(): string {
+    if (!this.selectedEl) return '#FFFFFF';
+
+    const color = this.selectedEl.backgroundColor;
+    if (this.isTransparentColor(color)) return '#FFFFFF';
+
+    // Convert rgba to hex for color picker
+    const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (rgbaMatch) {
+      const r = parseInt(rgbaMatch[1]);
+      const g = parseInt(rgbaMatch[2]);
+      const b = parseInt(rgbaMatch[3]);
+      return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+    }
+
+    return color;
+  }
+
+  // Get current opacity
+  getCurrentOpacity(): number {
+    if (!this.selectedEl) return 1;
+    return this.getColorOpacity(this.selectedEl.backgroundColor);
+  }
+
+  // Helper method to get fill preview text
+  getFillPreview(): string {
+    if (!this.selectedEl) return 'No Fill';
+
+    const color = this.selectedEl.backgroundColor;
+    if (this.isTransparentColor(color)) {
+      return 'Transparent';
+    }
+
+    const opacity = this.getColorOpacity(color);
+    if (opacity < 1) {
+      return `${color} (${Math.round(opacity * 100)}% opacity)`;
+    }
+
+    return color;
+  }
+
+  private parseBackgroundColor(bgValue: string): string {
+    if (!bgValue || bgValue === 'none' || bgValue === 'initial' || bgValue === 'inherit') {
+      return 'transparent';
+    }
+
+    // Handle transparent values
+    if (bgValue === 'transparent' || bgValue === 'rgba(0,0,0,0)') {
+      return 'transparent';
+    }
+
+    // Handle rgba/rgb values
+    if (bgValue.startsWith('rgb')) {
+      return bgValue;
+    }
+
+    // Handle hex values
+    if (bgValue.startsWith('#')) {
+      return bgValue;
+    }
+
+    // Handle named colors
+    return this.normalizeColor(bgValue);
   }
 
   getTemplateData(): TemplateData {
