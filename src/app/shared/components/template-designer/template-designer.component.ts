@@ -76,6 +76,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
   canvasHeight = 600;
   Math = Math;
   parseFloat = parseFloat;
+  parseInt = parseInt;
+  Array = Array;
 
   ngOnInit() {
     this.updateCanvasDimensions();
@@ -689,6 +691,10 @@ export class TemplateDesignerComponent implements AfterViewInit {
       this.elements = this.elements.filter(el => el.id !== this.selectedElement);
       this.selectedElement = null;
       this.alignmentGuides = { vertical: [], horizontal: [] };
+
+      // Normalize z-indexes after deletion to prevent gaps
+      this.normalizeZIndexes();
+
       this.emitTemplateChange();
     }
   }
@@ -710,7 +716,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
           id: Date.now(),
           x: newX,
           y: newY,
-          zIndex: this.elements.length
+          zIndex: this.getMaxZIndex() + 1 // Place duplicate on top
         };
 
         this.elements.push(newElement);
@@ -1097,6 +1103,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
     reader.readAsDataURL(file);
   }
 
+  // Keyboard shortcuts for layer management
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     const activeElement = document.activeElement;
@@ -1112,6 +1119,29 @@ export class TemplateDesignerComponent implements AfterViewInit {
     const element = this.elements.find(el => el.id === this.selectedElement);
     if (!element) return;
 
+    // Handle layer shortcuts with Ctrl/Cmd
+    if (event.ctrlKey || event.metaKey) {
+      switch (event.key) {
+        case ']':
+          this.bringForward();
+          event.preventDefault();
+          return;
+        case '[':
+          this.sendBackward();
+          event.preventDefault();
+          return;
+        case 'ArrowUp':
+          this.bringToFront();
+          event.preventDefault();
+          return;
+        case 'ArrowDown':
+          this.sendToBack();
+          event.preventDefault();
+          return;
+      }
+    }
+
+    // Existing keyboard movement code
     let step = this.keyboardStep;
     if (event.shiftKey) {
       step = this.gridSize;
@@ -1164,7 +1194,6 @@ export class TemplateDesignerComponent implements AfterViewInit {
       if (this.selectedElement) {
         this.updateElement(this.selectedElement, { x: newX, y: newY });
       }
-
       const tempElement = { ...element, x: newX, y: newY };
       const guides = this.calculateAlignmentGuides(tempElement);
       this.alignmentGuides = guides;
@@ -1516,6 +1545,182 @@ ${elementsHTML}
 
     // Handle named colors
     return this.normalizeColor(bgValue);
+  }
+
+  // Get all elements sorted by z-index for display
+  getElementsByZIndex(): TemplateElement[] {
+    return [...this.elements].sort((a, b) => a.zIndex - b.zIndex);
+  }
+
+  // Get the maximum z-index in use
+  getMaxZIndex(): number {
+    return this.elements.length > 0 ? Math.max(...this.elements.map(el => el.zIndex)) : 0;
+  }
+
+  // Get the minimum z-index in use
+  getMinZIndex(): number {
+    return this.elements.length > 0 ? Math.min(...this.elements.map(el => el.zIndex)) : 0;
+  }
+
+  // Move element to front (highest z-index)
+  bringToFront() {
+    if (this.selectedElement) {
+      const maxZ = this.getMaxZIndex();
+      this.updateElement(this.selectedElement, { zIndex: maxZ + 1 });
+    }
+  }
+
+  // Move element to back (lowest z-index)
+  sendToBack() {
+    if (this.selectedElement) {
+      const minZ = this.getMinZIndex();
+      this.updateElement(this.selectedElement, { zIndex: minZ - 1 });
+    }
+  }
+
+  // Move element forward one layer
+  bringForward() {
+    if (this.selectedElement) {
+      const currentElement = this.elements.find(el => el.id === this.selectedElement);
+      if (!currentElement) return;
+
+      // Find the element directly in front of this one
+      const elementsAbove = this.elements
+        .filter(el => el.zIndex > currentElement.zIndex)
+        .sort((a, b) => a.zIndex - b.zIndex);
+
+      if (elementsAbove.length > 0) {
+        const nextElement = elementsAbove[0];
+        // Swap z-index values
+        this.updateElement(this.selectedElement, { zIndex: nextElement.zIndex });
+        this.updateElement(nextElement.id, { zIndex: currentElement.zIndex });
+      }
+    }
+  }
+
+  // Move element backward one layer
+  sendBackward() {
+    if (this.selectedElement) {
+      const currentElement = this.elements.find(el => el.id === this.selectedElement);
+      if (!currentElement) return;
+
+      // Find the element directly behind this one
+      const elementsBelow = this.elements
+        .filter(el => el.zIndex < currentElement.zIndex)
+        .sort((a, b) => b.zIndex - a.zIndex);
+
+      if (elementsBelow.length > 0) {
+        const prevElement = elementsBelow[0];
+        // Swap z-index values
+        this.updateElement(this.selectedElement, { zIndex: prevElement.zIndex });
+        this.updateElement(prevElement.id, { zIndex: currentElement.zIndex });
+      }
+    }
+  }
+
+  // Set specific z-index
+  setZIndex(zIndex: number) {
+    if (this.selectedElement) {
+      this.updateElement(this.selectedElement, { zIndex });
+    }
+  }
+
+  // Get element's position in layer order (1-based)
+  getElementLayerPosition(elementId: number): number {
+    const sortedElements = this.getElementsByZIndex();
+    return sortedElements.findIndex(el => el.id === elementId) + 1;
+  }
+
+  // Get total number of layers
+  getTotalLayers(): number {
+    return this.elements.length;
+  }
+
+  // Normalize z-indexes to prevent gaps and ensure proper ordering
+  normalizeZIndexes() {
+    const sortedElements = this.getElementsByZIndex();
+    sortedElements.forEach((element, index) => {
+      this.updateElement(element.id, { zIndex: index });
+    });
+  }
+
+  // Move to specific layer position (1-based)
+  moveToLayer(position: number) {
+    if (!this.selectedElement || position < 1 || position > this.elements.length) return;
+
+    const currentElement = this.elements.find(el => el.id === this.selectedElement);
+    if (!currentElement) return;
+
+    // Get all other elements sorted by z-index
+    const otherElements = this.elements
+      .filter(el => el.id !== this.selectedElement)
+      .sort((a, b) => a.zIndex - b.zIndex);
+
+    // Insert current element at the desired position
+    const newOrder: TemplateElement[] = [];
+    for (let i = 0; i < this.elements.length; i++) {
+      if (i === position - 1) {
+        newOrder.push(currentElement);
+      } else {
+        const otherIndex = i < position - 1 ? i : i - 1;
+        if (otherElements[otherIndex]) {
+          newOrder.push(otherElements[otherIndex]);
+        }
+      }
+    }
+
+    // Update z-indexes based on new order
+    newOrder.forEach((element, index) => {
+      this.updateElement(element.id, { zIndex: index });
+    });
+  }
+
+  // Get layer information for display
+  getLayerInfo(): Array<{ element: TemplateElement, position: number, isSelected: boolean }> {
+    const sortedElements = this.getElementsByZIndex();
+    return sortedElements.map((element, index) => ({
+      element,
+      position: index + 1,
+      isSelected: this.selectedElement === element.id
+    })).reverse(); // Reverse to show front elements first
+  }
+
+  // Select element by clicking in layer panel
+  selectElementFromLayer(elementId: number) {
+    this.selectedElement = elementId;
+    this.alignmentGuides = { vertical: [], horizontal: [] };
+  }
+
+  canMoveUp(): boolean {
+    if (!this.selectedElement) return false;
+    const currentElement = this.elements.find(el => el.id === this.selectedElement);
+    if (!currentElement) return false;
+    return currentElement.zIndex < this.getMaxZIndex();
+  }
+
+  canMoveDown(): boolean {
+    if (!this.selectedElement) return false;
+    const currentElement = this.elements.find(el => el.id === this.selectedElement);
+    if (!currentElement) return false;
+    return currentElement.zIndex > this.getMinZIndex();
+  }
+
+
+  // Get element display name for layer panel
+  getElementDisplayName(element: TemplateElement): string {
+    switch (element.type) {
+      case 'text':
+        const content = element.content.length > 20
+          ? element.content.substring(0, 20) + '...'
+          : element.content;
+        return content || 'Text Element';
+      case 'rect':
+        return 'Rectangle';
+      case 'image':
+        return element.content ? 'Image' : 'Empty Image';
+      default:
+        return 'Element';
+    }
   }
 
   getTemplateData(): TemplateData {
