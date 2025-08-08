@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { FormGeneratorComponentInterface } from 'src/app/shared/types/FormGeneratorComponentInterface';
 import { PrintService } from '../../print.service';
+import { TemplateDesignerComponent } from 'src/app/shared/components/template-designer/template-designer.component';
 
 @Component({
   selector: 'app-create-print-template',
@@ -14,6 +15,8 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
   formUrl: string = "print-queue/templates";
   existingUrl: string = "print-queue/templates";
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('templateDesigner') templateDesigner!: TemplateDesignerComponent;
+  editor: string = "ckeditor";
   fields: IFormGenerator[] = [
     {
       label: "Template name",

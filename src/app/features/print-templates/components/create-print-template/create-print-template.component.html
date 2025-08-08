@@ -7,12 +7,18 @@
         <div class="flex flex-col gap-2">
           <p>You can upload a word document or enter the template below.</p>
 
-          <button mat-raised-button color="primary" type="button" (click)="triggerFileInput()">Select Word
-            Document</button>
+          <button mat-raised-button color="primary" type="button" (click)="triggerFileInput()">Select word
+            document</button>
 
           <input class="hidden" [accept]="" #fileInput type="file" (change)="uploadDocx($event)">
-          <app-ckeditor #editor [value]="field.value" [name]="field.name"
+          <mat-radio-group [(ngModel)]="editor" aria-label="Select an editor">
+            <mat-radio-button value="ckeditor">Use the letter editor</mat-radio-button>
+            <mat-radio-button value="template-designer">Use the html template editor</mat-radio-button>
+          </mat-radio-group>
+          <app-ckeditor *ngIf="editor === 'ckeditor'" #editor [value]="field.value" [name]="field.name"
             (valueChange)="setContent($event)"></app-ckeditor>
+          <app-template-designer #templateDesigner *ngIf="editor === 'template-designer'" [initialHtml]="field.value"
+            (htmlExport)="setContent($event)" #editor (valueChange)="setContent($event)"></app-template-designer>
         </div>
       </ng-template>
 
