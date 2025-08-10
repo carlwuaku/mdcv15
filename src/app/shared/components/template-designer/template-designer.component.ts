@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 export interface TemplateElement {
   id: number;
@@ -78,9 +79,25 @@ export class TemplateDesignerComponent implements AfterViewInit {
   parseFloat = parseFloat;
   parseInt = parseInt;
   Array = Array;
+  standardSizes: Record<string, { width: number, height: number }> = {
+    'A4': { width: 297, height: 210 },
+    'A3': { width: 420, height: 297 },
+    'A5': { width: 210, height: 148 },
+    'Letter': { width: 279, height: 216 },
+    'Legal': { width: 356, height: 216 },
+    'Tabloid': { width: 432, height: 279 }
+  };
+  //these are in pixels. the canvas size is these 2 multiplied by the scale
+  pageWidth = 297;
+  pageHeight = 210;
+  scale = 2.5;
+
+  constructor(private notify: NotifyService) {
+
+  }
 
   ngOnInit() {
-    this.updateCanvasDimensions();
+
 
     if (this.initialData) {
       this.loadTemplateData(this.initialData);
@@ -88,7 +105,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
       // this.loadFromComplexHtml(this.initialHtml);
       this.loadFromSimpleHtml(this.initialHtml);
     }
-
+    this.updateCanvasDimensions(this.pageWidth, this.pageHeight);
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
 
@@ -108,18 +125,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
     return this.elements.find(el => el.id === this.selectedElement);
   }
 
-  private updateCanvasDimensions() {
-    const sizes: Record<string, { width: number, height: number }> = {
-      'A4': { width: 297, height: 210 },
-      'A3': { width: 420, height: 297 },
-      'A5': { width: 210, height: 148 },
-      'Letter': { width: 279, height: 216 },
-      'Legal': { width: 356, height: 216 },
-      'Tabloid': { width: 432, height: 279 },
-      'Custom': { width: 800, height: 600 }
-    };
+  private updateCanvasDimensions(width: number, height: number) {
 
-    let { width, height } = sizes[this.pageSize];
 
     if (this.orientation === 'portrait') {
       [width, height] = [height, width];
@@ -131,6 +138,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
 
     this.repositionElementsOnResize();
   }
+
+
 
   private repositionElementsOnResize() {
     this.elements = this.elements.map(element => {
@@ -573,6 +582,9 @@ export class TemplateDesignerComponent implements AfterViewInit {
     this.canvasHeight = data.canvasHeight;
     this.pageSize = data.pageSize || 'A4';
     this.orientation = data.orientation || 'portrait';
+    const { width, height } = this.standardSizes[this.pageSize];
+    this.pageHeight = height;
+    this.pageWidth = width;
 
     if (data.settings) {
       this.gridSize = data.settings.gridSize;
@@ -736,13 +748,38 @@ export class TemplateDesignerComponent implements AfterViewInit {
   }
 
   onPageSizeChange() {
-    this.updateCanvasDimensions();
+    //make sure this is a valid size
+    if (!this.pageSize || !this.standardSizes[this.pageSize] || this.pageSize === 'Custom') {
+      //if not, treat it as custom
+      this.pageSize = 'Custom';
+      return;
+    }
+    let { width, height } = this.standardSizes[this.pageSize];
+    this.pageHeight = height;
+    this.pageWidth = width;
+    this.updateCanvasDimensions(this.pageWidth, this.pageHeight);
+    this.emitTemplateChange();
+  }
+
+  onCustomPageSizeChange(width: string, height: string) {
+    //make sure these are valid numbers
+    if (!width || width.trim().length < 1 || Number.isNaN(this.parseFloat(width))) {
+      this.notify.failNotification('Invalid width');
+      return;
+    }
+    if (!height || height.trim().length < 1 || Number.isNaN(this.parseFloat(height))) {
+      this.notify.failNotification('Invalid height');
+      return;
+    }
+    this.pageHeight = this.parseFloat(height);
+    this.pageWidth = this.parseFloat(width);
+    this.updateCanvasDimensions(this.pageWidth, this.pageHeight);
     this.emitTemplateChange();
   }
 
   setOrientation(orientation: 'landscape' | 'portrait') {
     this.orientation = orientation;
-    this.updateCanvasDimensions();
+    this.updateCanvasDimensions(this.pageWidth, this.pageHeight);
     this.emitTemplateChange();
   }
 
@@ -1218,10 +1255,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
       }
     };
 
-    console.log('Template Data:', JSON.stringify(templateData, null, 2));
 
     const html = this.generateHTML();
-    console.log('Generated HTML:', html);
 
     this.templateChange.emit(templateData);
     this.htmlExport.emit(html);
@@ -1744,5 +1779,6 @@ ${elementsHTML}
 
   private emitTemplateChange() {
     this.templateChange.emit(this.getTemplateData());
+    this.htmlExport.emit(this.getHtml());
   }
 }

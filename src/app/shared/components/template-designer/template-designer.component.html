@@ -1,4 +1,4 @@
-<div class="flex h-screen bg-gray-100" [class.select-none]="isDragging || isResizing">
+<div class="flex h-max bg-gray-100 w-full" [class.select-none]="isDragging || isResizing">
   <!-- Toolbar -->
   <div class="w-16 bg-gray-800 text-white flex flex-col items-center py-4 space-y-4 select-none">
     <button type="button" (click)="setTool('select')"
@@ -102,7 +102,7 @@
   </div>
 
   <!-- Canvas Area -->
-  <div class="flex-1 flex flex-col">
+  <div class="flex-1 flex flex-col overflow-auto">
     <!-- Canvas Header -->
     <div class="px-8 py-2 bg-gray-50 border-b border-gray-200">
       <div class="text-sm text-gray-600">
@@ -249,16 +249,17 @@
   </div>
 
   <!-- Properties Panel -->
-  <div class="w-80 bg-white border-l border-gray-300 p-4 overflow-y-auto">
+  <div class="min-w-80 bg-white border-l border-gray-300 p-4 overflow-y-auto max-h-[90vh]">
     <h3 class="text-lg font-semibold mb-4">Properties</h3>
 
     <!-- Page Settings -->
     <div class="mb-6 p-4 bg-gray-50 rounded-lg">
       <h4 class="font-medium mb-3">Page Settings</h4>
       <div class="space-y-3">
-        <div>
+        <div class="flex flex-col gap-1">
           <label class="block text-sm mb-1">Page Size</label>
-          <select (ngModelChange)="onPageSizeChange()" class="w-full px-2 py-1 border rounded text-sm">
+          <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()"
+            class="w-full px-2 py-1 border rounded text-sm">
             <option value="A4">A4 (297x210mm)</option>
             <option value="A3">A3 (420x297mm)</option>
             <option value="A5">A5 (210x148mm)</option>
@@ -267,6 +268,14 @@
             <option value="Tabloid">Tabloid (17x11")</option>
             <option value="Custom">Custom</option>
           </select>
+          <div class="flex gap-1" *ngIf="pageSize === 'Custom'">
+            <input type="number" #customPageWidth class="w-1/2 px-2 py-1 border rounded text-sm" placeholder="Width">
+            <input type="number" #customPageHeight class="w-1/2 px-2 py-1 border rounded text-sm" placeholder="Height">
+            <button type="button" (click)="onCustomPageSizeChange(customPageWidth.value, customPageHeight.value)"
+              class="px-3 py-2 text-sm rounded border bg-blue-500 text-white border-blue-500 hover:border-blue-600">
+              Set
+            </button>
+          </div>
         </div>
         <div>
           <label class="block text-sm mb-1">Orientation</label>
@@ -374,15 +383,15 @@
           <label class="block text-sm font-medium mb-1">Text Style</label>
           <div class="flex space-x-2">
             <button type="button" (click)="toggleTextStyle('fontWeight', 'bold', 'normal')"
-              [class]="'p-1 border rounded ' + (selectedEl.fontWeight === 'bold' ? 'bg-blue-100' : '')">
+              [class]="' w-[30px] p-1 border rounded ' + (selectedEl.fontWeight === 'bold' ? 'bg-blue-100' : '')">
               <strong>B</strong>
             </button>
             <button type="button" (click)="toggleTextStyle('fontStyle', 'italic', 'normal')"
-              [class]="'p-1 border rounded ' + (selectedEl.fontStyle === 'italic' ? 'bg-blue-100' : '')">
+              [class]="'w-[30px] p-1 border rounded ' + (selectedEl.fontStyle === 'italic' ? 'bg-blue-100' : '')">
               <em>I</em>
             </button>
             <button type="button" (click)="toggleTextStyle('textDecoration', 'underline', 'none')"
-              [class]="'p-1 border rounded ' + (selectedEl.textDecoration === 'underline' ? 'bg-blue-100' : '')">
+              [class]="'w-[30px] p-1 border rounded ' + (selectedEl.textDecoration === 'underline' ? 'bg-blue-100' : '')">
               <u>U</u>
             </button>
           </div>
@@ -393,7 +402,7 @@
           <div class="flex space-x-2">
             <button type="button" *ngFor="let align of ['left', 'center', 'right']"
               (click)="updateSelectedElement({textAlign: align})"
-              [class]="'p-1 border rounded ' + (selectedEl.textAlign === align ? 'bg-blue-100' : '')">
+              [class]="'w-[30px] p-1 border rounded ' + (selectedEl.textAlign === align ? 'bg-blue-100' : '')">
               {{align[0].toUpperCase()}}
             </button>
           </div>
@@ -404,7 +413,7 @@
           <div class="flex space-x-2">
             <button type="button" *ngFor="let align of ['top', 'middle', 'bottom']"
               (click)="updateSelectedElement({verticalAlign: align})"
-              [class]="'p-1 border rounded ' + (selectedEl.verticalAlign === align ? 'bg-blue-100' : '')">
+              [class]="'w-[30px] p-1 border rounded ' + (selectedEl.verticalAlign === align ? 'bg-blue-100' : '')">
               {{align[0].toUpperCase()}}
             </button>
           </div>
