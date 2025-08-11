@@ -80,17 +80,23 @@ export class TemplateDesignerComponent implements AfterViewInit {
   parseInt = parseInt;
   Array = Array;
   standardSizes: Record<string, { width: number, height: number }> = {
-    'A4': { width: 297, height: 210 },
-    'A3': { width: 420, height: 297 },
-    'A5': { width: 210, height: 148 },
-    'Letter': { width: 279, height: 216 },
-    'Legal': { width: 356, height: 216 },
-    'Tabloid': { width: 432, height: 279 }
+    'A4': { width: 210, height: 297 },      // Correct A4 portrait dimensions
+    'A3': { width: 297, height: 420 },
+    'A5': { width: 148, height: 210 },
+    'Letter': { width: 216, height: 279 },   // 8.5" x 11"
+    'Legal': { width: 216, height: 356 },    // 8.5" x 14"
+    'Tabloid': { width: 279, height: 432 }   // 11" x 17"
   };
-  //these are in pixels. the canvas size is these 2 multiplied by the scale
-  pageWidth = 297;
-  pageHeight = 210;
+  pageWidth = 210;   // mm
+  pageHeight = 297;  // mm
   scale = 2.5;
+
+  // Key fix: Use print DPI for canvas sizing so elements scale correctly for print
+  // 300 DPI = 11.811 pixels per mm (high quality print)
+  // 150 DPI = 5.906 pixels per mm (good quality print)
+  // 96 DPI = 3.78 pixels per mm (screen DPI)
+  printDPI = 150; // Use 150 DPI for good balance of quality and performance
+  mmToPixelRatio = this.printDPI / 25.4; // 25.4mm = 1 inch
 
   constructor(private notify: NotifyService) {
 
@@ -125,16 +131,32 @@ export class TemplateDesignerComponent implements AfterViewInit {
     return this.elements.find(el => el.id === this.selectedElement);
   }
 
+  // private updateCanvasDimensions(width: number, height: number) {
+
+
+  //   if (this.orientation === 'portrait') {
+  //     [width, height] = [height, width];
+  //   }
+
+  //   const scale = 2.5;
+  //   this.canvasWidth = Math.round(width * scale);
+  //   this.canvasHeight = Math.round(height * scale);
+
+  //   this.repositionElementsOnResize();
+  // }
+
   private updateCanvasDimensions(width: number, height: number) {
+    let actualWidth = width;
+    let actualHeight = height;
 
-
-    if (this.orientation === 'portrait') {
-      [width, height] = [height, width];
+    // Apply orientation
+    if (this.orientation === 'landscape') {
+      [actualWidth, actualHeight] = [actualHeight, actualWidth];
     }
 
-    const scale = 2.5;
-    this.canvasWidth = Math.round(width * scale);
-    this.canvasHeight = Math.round(height * scale);
+    // Convert mm to pixels using print DPI - this ensures elements are properly sized for print
+    this.canvasWidth = Math.round(actualWidth * this.mmToPixelRatio);
+    this.canvasHeight = Math.round(actualHeight * this.mmToPixelRatio);
 
     this.repositionElementsOnResize();
   }
@@ -593,12 +615,12 @@ export class TemplateDesignerComponent implements AfterViewInit {
     }
   }
 
-  getDimensionsDisplay(): string {
-    const scale = 2.5;
-    const realWidth = Math.round(this.canvasWidth / scale);
-    const realHeight = Math.round(this.canvasHeight / scale);
-    return `${realWidth}x${realHeight}mm`;
-  }
+  // getDimensionsDisplay(): string {
+  //   const scale = 2.5;
+  //   const realWidth = Math.round(this.canvasWidth / scale);
+  //   const realHeight = Math.round(this.canvasHeight / scale);
+  //   return `${realWidth}x${realHeight}mm`;
+  // }
 
   getVerticalAlignment(align: string): string {
     switch (align) {
@@ -1262,8 +1284,60 @@ export class TemplateDesignerComponent implements AfterViewInit {
     this.htmlExport.emit(html);
   }
 
+  //   generateHTML(): string {
+  //     const sortedElements = [...this.elements].sort((a, b) => a.zIndex - b.zIndex);
+
+  //     const elementsHTML = sortedElements.map(el => {
+  //       const styles = {
+  //         position: 'absolute',
+  //         left: `${el.x}px`,
+  //         top: `${el.y}px`,
+  //         width: `${el.width}px`,
+  //         height: `${el.height}px`,
+  //         fontSize: `${el.fontSize}px`,
+  //         fontWeight: el.fontWeight,
+  //         fontStyle: el.fontStyle,
+  //         textDecoration: el.textDecoration,
+  //         textAlign: el.textAlign,
+  //         color: el.color,
+  //         backgroundColor: el.backgroundColor,
+  //         border: el.borderWidth > 0 ? `${el.borderWidth}px ${el.borderStyle} ${el.borderColor}` : 'none',
+  //         transform: `rotate(${el.rotation}deg)`,
+  //         zIndex: el.zIndex.toString()
+  //       };
+
+  //       const styleString = Object.entries(styles)
+  //         .map(([key, value]) => `${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value}`)
+  //         .join('; ');
+
+  //       if (el.type === 'text') {
+  //         const flexAlign = el.verticalAlign === 'top' ? 'flex-start' :
+  //           el.verticalAlign === 'middle' ? 'center' : 'flex-end';
+  //         const justifyContent = el.textAlign === 'left' ? 'flex-start' :
+  //           el.textAlign === 'center' ? 'center' : 'flex-end';
+
+  //         return `<div style="${styleString}display: flex; align-items: ${flexAlign}; justify-content: ${justifyContent}; padding: 4px;">
+  // <div style="width: 100%; text-align: ${el.textAlign};">${el.content}</div>
+  // </div>`;
+  //       } else if (el.type === 'rect') {
+  //         return `<div style="${styleString}"></div>`;
+  //       } else if (el.type === 'image') {
+  //         return `<img src="${el.content || 'placeholder.jpg'}" style="${styleString}" alt="Template Image" />`;
+  //       }
+  //       return '';
+  //     }).join('\n');
+
+  //     return `<div style="position: relative; width: ${this.canvasWidth}px; height: ${this.canvasHeight}px; margin: 0 auto; background: white;">
+  // ${elementsHTML}
+  // </div>`;
+  //   }
+
   generateHTML(): string {
     const sortedElements = [...this.elements].sort((a, b) => a.zIndex - b.zIndex);
+
+    // Get actual page dimensions for print
+    const actualPageWidth = this.orientation === 'portrait' ? this.pageWidth : this.pageHeight;
+    const actualPageHeight = this.orientation === 'portrait' ? this.pageHeight : this.pageWidth;
 
     const elementsHTML = sortedElements.map(el => {
       const styles = {
@@ -1281,7 +1355,8 @@ export class TemplateDesignerComponent implements AfterViewInit {
         backgroundColor: el.backgroundColor,
         border: el.borderWidth > 0 ? `${el.borderWidth}px ${el.borderStyle} ${el.borderColor}` : 'none',
         transform: `rotate(${el.rotation}deg)`,
-        zIndex: el.zIndex.toString()
+        zIndex: el.zIndex.toString(),
+        boxSizing: 'border-box'
       };
 
       const styleString = Object.entries(styles)
@@ -1294,7 +1369,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
         const justifyContent = el.textAlign === 'left' ? 'flex-start' :
           el.textAlign === 'center' ? 'center' : 'flex-end';
 
-        return `<div style="${styleString}display: flex; align-items: ${flexAlign}; justify-content: ${justifyContent}; padding: 4px;">
+        return `<div style="${styleString} display: flex; align-items: ${flexAlign}; justify-content: ${justifyContent}; padding: 4px;">
 <div style="width: 100%; text-align: ${el.textAlign};">${el.content}</div>
 </div>`;
       } else if (el.type === 'rect') {
@@ -1305,9 +1380,44 @@ export class TemplateDesignerComponent implements AfterViewInit {
       return '';
     }).join('\n');
 
-    return `<div style="position: relative; width: ${this.canvasWidth}px; height: ${this.canvasHeight}px; margin: 0 auto; background: white;">
+    // Calculate the scale factor to convert from canvas pixels to actual print size
+    // const scaleFactor = 25.4 / this.printDPI; // Convert back to actual mm size
+
+    // Container inline styles for print compatibility
+    const containerStyles = [
+      'position: relative',
+      'background: white',
+      `width: ${this.canvasWidth}px`,
+      `height: ${this.canvasHeight}px`,
+      'margin: 0 auto',
+      'box-sizing: border-box',
+      'page-break-inside: avoid',
+      // Print-specific styles using CSS custom properties for media queries won't work inline
+
+    ].join('; ');
+
+    return `<div style="${containerStyles}" data-page-width="${actualPageWidth}" data-page-height="${actualPageHeight}" data-orientation="${this.orientation}" class="template-page">
 ${elementsHTML}
 </div>`;
+  }
+
+  // Helper method to get the scaling factor for print
+  private getPrintScaleFactor(): number {
+    // This scales the pixel-based design to millimeters for print
+    return 25.4 / this.printDPI; // Convert from print DPI back to actual size
+  }
+
+  // Updated display methods
+  getDimensionsDisplay(): string {
+    const actualWidth = this.orientation === 'portrait' ? this.pageWidth : this.pageHeight;
+    const actualHeight = this.orientation === 'portrait' ? this.pageHeight : this.pageWidth;
+    return `${actualWidth}x${actualHeight}mm`;
+  }
+
+  getCanvasInfo(): string {
+    const actualWidth = this.orientation === 'portrait' ? this.pageWidth : this.pageHeight;
+    const actualHeight = this.orientation === 'portrait' ? this.pageHeight : this.pageWidth;
+    return `${this.canvasWidth}x${this.canvasHeight}px → ${actualWidth}x${actualHeight}mm print`;
   }
 
   loadTemplate(data: TemplateData) {
