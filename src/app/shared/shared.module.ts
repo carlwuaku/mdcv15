@@ -62,6 +62,8 @@ import { AlertComponent } from './components/alert/alert.component';
 import { UploadableCkeditorInputComponent } from './components/uploadable-ckeditor-input/uploadable-ckeditor-input.component';
 import { StringArrayInputComponent } from './components/string-array-input/string-array-input.component';
 import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
+import { TemplateDesignerComponent } from './components/template-designer/template-designer.component';
+import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -115,7 +117,8 @@ import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
     AlertComponent,
     UploadableCkeditorInputComponent,
     StringArrayInputComponent,
-    FilterObjectsPipe
+    FilterObjectsPipe,
+    TemplateDesignerComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -130,7 +133,8 @@ import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
     NgChartsModule,
     ChartModule,
     RouterModule,
-    ScrollingModule
+    ScrollingModule,
+    CommonModule
 
   ],
   exports: [
@@ -184,7 +188,8 @@ import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
     AlertComponent,
     UploadableCkeditorInputComponent,
     StringArrayInputComponent,
-    FilterObjectsPipe
+    FilterObjectsPipe,
+    TemplateDesignerComponent
   ],
   providers: [
     ClipboardCopyDirective

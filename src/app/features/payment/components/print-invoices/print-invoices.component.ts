@@ -5,7 +5,7 @@ import { Template } from 'src/app/shared/components/print-table/Template.model';
 import { MatDialog } from '@angular/material/dialog';
 import { PaymentService } from '../../payment.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
-import { openHtmlInNewWindow } from 'src/app/shared/utils/helper';
+import { openHtmlInNewWindow, openPrintWindow } from 'src/app/shared/utils/helper';
 
 @Component({
   selector: 'app-print-invoices',
@@ -49,7 +49,7 @@ export class PrintInvoicesComponent {
       return
     }
     this.paymentService.getInvoicePrintouts({ uuids: this.objects.map(o => o.uuid), template_name: this.selectedTemplate }).subscribe(res => {
-      openHtmlInNewWindow(res.data.join('\n'));
+      openPrintWindow(res.data.join(''));
     })
   }
 }

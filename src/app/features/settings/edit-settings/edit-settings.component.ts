@@ -11,10 +11,11 @@ import Editor from 'ckeditor5-custom-build/build/ckeditor';
   templateUrl: './edit-settings.component.html',
   styleUrls: ['./edit-settings.component.scss']
 })
-export class EditSettingsComponent  implements OnInit{
+export class EditSettingsComponent implements OnInit {
   public Editor = Editor.Editor;
   arrayList: any[] = [];
-  jsonObject: {[key:string]:any} = {};
+  jsonObject: { [key: string]: any } = {};
+  editor: string = "ckeditor";
   // editorConfig:EditorConfig = {
 
   //   table: {
@@ -35,40 +36,40 @@ export class EditSettingsComponent  implements OnInit{
     @Inject(MAT_DIALOG_DATA) public setting: SettingsObject,
     private dbService: HttpService,
     private notify: NotifyService
-    ) {
+  ) {
 
-    }
+  }
   ngOnInit(): void {
-    if(this.setting.control_type === "list"){
-      if(typeof(this.setting.value) === "string"){
+    if (this.setting.control_type === "list") {
+      if (typeof (this.setting.value) === "string") {
         this.arrayList = this.setting.value.split(";");
       }
-      else if(Array.isArray(this.setting.value)){
+      else if (Array.isArray(this.setting.value)) {
         this.arrayList = this.setting.value;
       }
     }
-    else if(this.setting.type === "object"){
+    else if (this.setting.type === "object") {
       this.setting.control_type = "object";
-      if(typeof(this.setting.value) === "string"){
-        this.jsonObject =  JSON.parse(this.setting.value);
+      if (typeof (this.setting.value) === "string") {
+        this.jsonObject = JSON.parse(this.setting.value);
       }
-      else if(typeof this.setting.value === "object" && this.setting.value !== null){
+      else if (typeof this.setting.value === "object" && this.setting.value !== null) {
         this.jsonObject = this.setting.value;
       }
     }
   }
 
 
-    closeDialog(): void {
-      this.dialogRef.close(false);
+  closeDialog(): void {
+    this.dialogRef.close(false);
   }
 
-  setValue(args:any){
+  setValue(args: any) {
     this.setting.value = args;
   }
 
 
-  save(){
+  save() {
     this.notify.showLoading();
     const data = {
       "name": `${this.setting.class}.${this.setting.key}`,
@@ -84,6 +85,17 @@ export class EditSettingsComponent  implements OnInit{
       }
     });
 
+  }
+
+  setContent(event: any) {
+    this.setting.value = event;
+  }
+
+  getTemplateStringValue(setting: SettingsObject) {
+    if (typeof (setting.value) === "string") {
+      return setting.value;
+    }
+    return JSON.stringify(setting.value);
   }
 
 }
