@@ -1,6 +1,6 @@
 import { ExaminationLetterType } from "src/app/features/examinations/models/examination-letter.model";
 import { IFormGenerator } from "../components/form-generator/form-generator-interface";
-import { MenuItem, RenewalStageItems } from "../utils/data";
+import { DashboardItem, MenuItem, RenewalStageItems } from "../utils/data";
 
 
 export interface AppSettings {
@@ -10,7 +10,7 @@ export interface AppSettings {
   logo: string,
   recaptchaSiteKey: string,
   sidebarMenu: MenuItem[],
-  dashboardMenu: MenuItem[],
+  dashboardMenu: DashboardItem[],
   renewalBasicStatisticsFilterFields: IFormGenerator[],
   basicStatisticsFilterFields: IFormGenerator[],
   advancedStatisticsFilterFields: IFormGenerator[],

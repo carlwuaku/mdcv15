@@ -64,6 +64,7 @@ import { StringArrayInputComponent } from './components/string-array-input/strin
 import { FilterObjectsPipe } from './pipes/filter-objects.pipe';
 import { TemplateDesignerComponent } from './components/template-designer/template-designer.component';
 import { CommonModule } from '@angular/common';
+import { FilterByPermissionsPipe } from './pipes/filter-by-permissions.pipe';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -118,7 +119,8 @@ import { CommonModule } from '@angular/common';
     UploadableCkeditorInputComponent,
     StringArrayInputComponent,
     FilterObjectsPipe,
-    TemplateDesignerComponent
+    TemplateDesignerComponent,
+    FilterByPermissionsPipe
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -189,7 +191,8 @@ import { CommonModule } from '@angular/common';
     UploadableCkeditorInputComponent,
     StringArrayInputComponent,
     FilterObjectsPipe,
-    TemplateDesignerComponent
+    TemplateDesignerComponent,
+    FilterByPermissionsPipe
   ],
   providers: [
     ClipboardCopyDirective

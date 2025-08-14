@@ -1,14 +1,14 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { take } from 'rxjs';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import { take, shareReplay, catchError, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { API_ACCOUNTS_PATH, API_ADMIN_PATH, API_CPD_PATH, API_DOCTOR_PATH, API_INTERN_PATH } from '../../utils/constants';
 
 @Component({
   selector: 'app-api-count',
   templateUrl: './api-count.component.html',
   styleUrls: ['./api-count.component.scss']
 })
-export class ApiCountComponent implements OnInit, OnChanges {
+export class ApiCountComponent implements OnInit, OnChanges, OnDestroy {
   @Input() url: string = '';
   @Input() module: string = '';
   count: any = '...';
@@ -17,11 +17,16 @@ export class ApiCountComponent implements OnInit, OnChanges {
   @Input() property: string = 'count';
   //a type provided for use with the commonly used urls below
   @Input() type: string = '';
-  constructor(private httpService: HttpService) {
 
-  }
+  // Static cache to share across all component instances
+  private static cache = new Map<string, Observable<any>>();
+  // Subject to handle component destruction
+  private destroy$ = new Subject<void>();
+
+  constructor(private httpService: HttpService) { }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['url']) {
+    if (changes['url'] && changes['url'].currentValue !== changes['url'].previousValue) {
       this.getCount();
     }
   }
@@ -30,46 +35,54 @@ export class ApiCountComponent implements OnInit, OnChanges {
     this.getCount();
   }
 
-
-
-  getCount(): void {
-    this.loading = true;
-
-    this.httpService.get<any>(this.url || this.commonUrls[this.type]).pipe(take(1)).subscribe(data => {
-      this.loading = false;
-      this.count = data.data
-    })
+  ngOnDestroy(): void {
+    ApiCountComponent.clearCache()
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  //list of common urls that can be reused by specifying the type
-  commonUrls: { [key: string]: any } =
-    {
-      "doctorProvisionalRegistrationCount": `${API_INTERN_PATH}/getInternshipRegistrationsCount?type=Doctor`,
-      "paProvisionalRegistrationCount": `${API_INTERN_PATH}/getInternshipRegistrationsCount?type=Physician Assistant`,
-      "onlinePaymentsCount": `${API_ACCOUNTS_PATH}/getOnlinePaymentsCount`,
-      "doctorRelicensureApprovalCount": `${API_ADMIN_PATH}/getPendingRelicensureCount?type=doctor&status=Pending Approval`,
-      "doctorRelicensurePaymentCount": `${API_ADMIN_PATH}/getPendingRelicensureCount?type=doctor&status=Pending Payment`,
-      "paRelicensureApprovalCount": `${API_ADMIN_PATH}/getPendingRelicensureCount?type=PA&status=Pending Approval`,
-      "paRelicensurePaymentCount": `${API_ADMIN_PATH}/getPendingRelicensureCount?type=PA&status=Pending Payment`,
-      "doctorPermanentRegistrationCount": `${API_INTERN_PATH}/getPermanentRegistrationsCount?type=Doctor`,
-      "paPermanentRegistrationCount": `${API_INTERN_PATH}/getPermanentRegistrationsCount?type=Physician Assistant`,
-      "doctorTemporaryRegistrationsCount": `${API_INTERN_PATH}/getTemporaryRegistrationsCount?type=Doctor`,
-      "paTemporaryRegistrationCount": `${API_INTERN_PATH}/getTemporaryRegistrationsCount?type=Physician Assistant`,
-      "doctorHousemanship1Count": `${API_INTERN_PATH}/getHousemanshipApplicationsCount?type=Doctor&session=1`,
-      "paHousemanship1Count": `${API_INTERN_PATH}/getHousemanshipApplicationsCount?type=Physician Assistant&session=1`,
-      "doctorHousemanship2Count": `${API_INTERN_PATH}/getHousemanship2ApplicationsCount?type=Doctor`,
-      "portalCount": `${API_DOCTOR_PATH}/getNewDoctorEditsCount`,
-      "doctorExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Doctor&status=Pending Approval`,
-      "paExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Physician Assistant&status=Pending Approval`,
-      "doctorsMedicalExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Doctor&status=Pending Approval&category=Medical`,
-      "doctorsDentalExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Doctor&status=Pending Approval&category=Dental`,
-      "paMedicalExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Physician Assistant&status=Pending Approval&category=Medical`,
-      "paDentalExamRegistrationCount": `${API_INTERN_PATH}/getExaminationRegistrationsCount?type=Physician Assistant&status=Pending Approval&category=Dental`,
-      "examSpecialistRegistrationCount": `${API_INTERN_PATH}/getExaminationSpecialistRegistrationsCount?type=Doctor&status=Pending Approval`,
-      "examApplicationCount": `${API_INTERN_PATH}/getExaminationApplicationCount`,
-      "cpdPending": `${API_CPD_PATH}/getTempCpdAttendeesCounts`,
+  getCount(): void {
+    if (!this.url) {
+      this.count = 0;
+      return;
     }
 
+    this.loading = true;
 
+    // Check if we already have a cached observable for this URL
+    if (!ApiCountComponent.cache.has(this.url)) {
+      // Create and cache the observable
+      const request$ = this.httpService.get<any>(this.url).pipe(
+        shareReplay(1), // Cache the result and replay it for subsequent subscribers
+        catchError(error => {
+          console.error('API count error for URL:', this.url, error);
+          return of({ data: 0 }); // Return default structure on error
+        })
+      );
 
+      ApiCountComponent.cache.set(this.url, request$);
+    }
+
+    // Subscribe to the cached observable
+    ApiCountComponent.cache.get(this.url)!
+      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when component is destroyed
+      .subscribe(data => {
+        this.loading = false;
+        this.count = data.data || 0;
+      });
+  }
+
+  // Optional: Method to clear cache for specific URL or all URLs
+  static clearCache(url?: string): void {
+    if (url) {
+      ApiCountComponent.cache.delete(url);
+    } else {
+      ApiCountComponent.cache.clear();
+    }
+  }
+
+  // Optional: Method to get cache size (for debugging)
+  static getCacheSize(): number {
+    return ApiCountComponent.cache.size;
+  }
 }
