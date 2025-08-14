@@ -5,8 +5,46 @@
 
 
   <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <ng-container *ngFor="let item of menuItems">
-      <mat-card class="min-w-[300px] min-h-[100px]">
+    <ng-container *ngFor="let item of menuItems" class="min-w-[300px]">
+      <div>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="dashboard-panel">
+            <mat-panel-title>
+              <div class="flex  gap-1 items-start">
+                <div class="p-1 rounded-md shadow shadow-gray-500 bg-{{item.color}} flex items-center justify-center"
+                  *ngIf="item.icon" [ngClass]="{'bg-accent': !item.color}">
+                  <mat-icon class="text-[36px] w-[36px] h-[36px]  icon">{{item.icon}}</mat-icon>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-light  text-primary">{{item.title}}</h3>
+                  <p *ngIf="item.description" class="">{{item.description}}</p>
+                </div>
+
+              </div>
+            </mat-panel-title>
+
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <mat-list *ngIf="item.children">
+              <a mat-list-item class="border-b pl-0 pr-0 cursor-pointer hover:bg-gray-100" [routerLink]="link.url"
+                [queryParams]="link.urlParams" *ngFor="let link of item.children">
+                <div class="flex gap-1 items-center">
+                  <span class="inline-flex items-center text-pretty gap-1 flex-grow">
+                    {{ link.title }}
+                  </span>
+                  <span class="inline-flex justify-center badge shadow shadow-gray-500  bg-{{item.color}}"
+                    *ngIf="link.apiCountUrl">
+                    <app-api-count [url]="link.apiCountUrl"></app-api-count>
+                  </span>
+                </div>
+              </a>
+            </mat-list>
+          </ng-template>
+        </mat-expansion-panel>
+      </div>
+
+
+      <!-- <mat-card class="min-w-[300px] min-h-[100px]">
         <mat-card-content class="flex flex-col gap-1 ">
 
 
@@ -46,7 +84,7 @@
           </mat-list>
         </mat-card-content>
 
-      </mat-card>
+      </mat-card> -->
     </ng-container>
   </div>
 

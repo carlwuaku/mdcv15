@@ -28,7 +28,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.menuItems = data.dashboardMenu;
     });
-    this.authService.getUser().subscribe(data => {
+    this.authService.getUser().pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.user = data;
     });
   }

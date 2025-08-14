@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { AppService } from 'src/app/app.service';
-import { DashboardItem } from '../../utils/data';
+import { DashboardItem, MenuItem } from '../../utils/data';
 
 @Component({
   selector: 'app-search-widget',
@@ -10,7 +10,7 @@ import { DashboardItem } from '../../utils/data';
   styleUrls: ['./search-widget.component.scss']
 })
 export class SearchWidgetComponent implements OnInit, OnDestroy {
-  types: DashboardItem[] = [];
+  types: MenuItem[] = [];
   @Input() param: string = "";
   @Input() searchType: string = "";
   destroy$: Subject<boolean> = new Subject();

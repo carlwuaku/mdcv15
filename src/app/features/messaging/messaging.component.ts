@@ -8,14 +8,6 @@ import { DashboardItem } from 'src/app/shared/utils/data';
 })
 export class MessagingComponent {
   menuItems: DashboardItem[] = [
-    {
-      title: 'Pending Emails',
-      url: '/email_queue?status=pending',
-      icon: 'mail',
-      children: [],
-      description: "Manage pending emails",
-      apiCountUrl: "/email/queue-count/pending",
-      apiCountText: "Pending Emails"
-    }
+
   ]
 }
