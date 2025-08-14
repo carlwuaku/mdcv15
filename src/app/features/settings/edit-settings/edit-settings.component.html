@@ -14,7 +14,9 @@
         <mat-radio-button value="ckeditor">Use the letter editor</mat-radio-button>
         <mat-radio-button value="template-designer">Use the html template editor</mat-radio-button>
       </mat-radio-group>
-      <ckeditor [editor]="Editor" [(ngModel)]="setting.value"></ckeditor>
+      <!-- <ckeditor [editor]="Editor" [(ngModel)]="setting.value" *ngIf="editor === 'ckeditor'"></ckeditor> -->
+      <app-ckeditor [name]="'guidelines'" *ngIf="editor === 'ckeditor'" [value]="getTemplateStringValue(setting)"
+        (valueChange)="setContent($event)"></app-ckeditor>
       <app-template-designer #templateDesigner *ngIf="editor === 'template-designer'"
         [initialHtml]="getTemplateStringValue(setting)" (htmlExport)="setContent($event)"></app-template-designer>
     </div>
