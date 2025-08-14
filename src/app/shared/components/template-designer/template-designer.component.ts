@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, AfterContentInit } from '@angular/core';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 export interface TemplateElement {
@@ -49,7 +49,7 @@ export interface AlignmentGuide {
   templateUrl: './template-designer.component.html',
   styleUrls: ['./template-designer.component.scss']
 })
-export class TemplateDesignerComponent implements AfterViewInit {
+export class TemplateDesignerComponent implements AfterContentInit {
   @Input() initialHtml?: string;
   @Input() initialData?: TemplateData;
   @Output() templateChange = new EventEmitter<TemplateData>();
@@ -102,7 +102,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
 
   }
 
-  ngOnInit() {
+  ngAfterContentInit() {
 
 
     if (this.initialData) {
@@ -115,9 +115,7 @@ export class TemplateDesignerComponent implements AfterViewInit {
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
 
-  ngAfterViewInit() {
 
-  }
 
   ngOnDestroy() {
     document.removeEventListener('keydown', this.handleKeyDown.bind(this));
@@ -306,9 +304,12 @@ export class TemplateDesignerComponent implements AfterViewInit {
   private parseHtmlContent(html: string) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-    const container = doc.querySelector('div[style*="position: relative"]');
+    let container = doc.querySelector('div[style*="position: relative"]');
 
-    if (!container) return;
+    if (!container) {
+      //use the outermost div
+      container = doc.body.children.length > 0 ? doc.body.children[0] as HTMLElement : doc.body;
+    };
 
     const containerStyle = container.getAttribute('style') || '';
     const widthMatch = containerStyle.match(/width:\s*(\d+)px/);

@@ -14,6 +14,7 @@ export class AddGuestUserComponent {
   @Input() userType: string = "";
   @Input() usernameField: string = "username";
   @Input() usernameFieldLabel: string = "Username";
+  @Input() displayNameFields: string[] = ["name"];
   @ViewChild("addGuestUserDialog") addGuestUserDialog: TemplateRef<any> | null = null;
   formFields: IFormGenerator[] = [
     {
@@ -41,7 +42,7 @@ export class AddGuestUserComponent {
       this.notify.failNotification("No user type provided");
       return;
     }
-    if (!window.confirm("Are you sure you want to grant these users access to the public portal? If you want to continue you'll need to set their passwords individually.")) {
+    if (!window.confirm("Are you sure you want to grant these users access to the public portal?")) {
       return;
     }
     this.notify.showLoading();
@@ -51,7 +52,7 @@ export class AddGuestUserComponent {
         username: object[this.usernameField],
         email: object.email,
         phone: object.phone,
-        display_name: object.display_name || object[this.usernameField],
+        display_name: this.displayNameFields.map((field) => object[field]).join(" "),
         user_type: this.userType,
         profile_table: this.profileTableName,
         profile_table_uuid: object.uuid,
@@ -61,8 +62,17 @@ export class AddGuestUserComponent {
       next: (res) => {
         this.notify.hideLoading();
         const successCount = res.details.filter((item) => item.status === "success").length;
-        const errorCount = res.details.filter((item) => item.status === "error").length;
-
+        const errors = res.details.filter((item) => item.status === "error");
+        if (successCount > 0) {
+          this.notify.successNotification(`${successCount} user(s) added successfully`);
+        }
+        if (errors.length > 0) {
+          let message = "";
+          errors.forEach((error) => {
+            message += `${error.message}<br>`;
+          })
+          this.notify.warningAlertNotification(`${errors.length} user(s) accounts could not be created`, message);
+        }
       },
       error: (err) => {
         this.notify.hideLoading();
