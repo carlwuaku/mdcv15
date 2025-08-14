@@ -8,11 +8,11 @@ export interface MenuItem {
   children: DashboardItem[];
   active_children?: boolean;
   urlParams?: Params;
+  color?: string;
 }
 
 export interface DashboardItem extends MenuItem {
   apiCountUrl?: string;
-  color?: string;
   description?: string;
   apiCountText?: string;
   permissions: string[]
