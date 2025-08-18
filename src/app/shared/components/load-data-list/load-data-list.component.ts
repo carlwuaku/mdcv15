@@ -129,37 +129,23 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   ngOnInit(): void {
 
-    if (this.useResponseFilters) {
-      // this.ar.queryParams
-      //   .pipe(takeUntil(this.destroy$)).subscribe(params => {
-      //     this.queryParams = params;
-      //     const searchQuery = params['searchParam'];
-      //     //assign the param values to the filters
-      //     this.filters.forEach(filter => {
-      //       if (params[filter.name]) {
-      //         filter.value = params[filter.name];
-      //       }
-      //     })
-      //     if (searchQuery) {
-      //       this.searchParam = searchQuery;
-      //       this.search();
-      //     }
-      //   });
-    }
+    // if (this.useResponseFilters) {
+
+    // }
 
     // Add resize observer to check overflow on container size changes
-    if (typeof ResizeObserver !== 'undefined') {
-      const resizeObserver = new ResizeObserver(() => {
-        this.checkOverflow();
-      });
+    // if (typeof ResizeObserver !== 'undefined') {
+    //   const resizeObserver = new ResizeObserver(() => {
+    //     this.checkOverflow();
+    //   });
 
-      // Start observing after view init
-      setTimeout(() => {
-        if (this.filtersContainer) {
-          resizeObserver.observe(this.filtersContainer.nativeElement);
-        }
-      });
-    }
+    //   // Start observing after view init
+    //   setTimeout(() => {
+    //     if (this.filtersContainer) {
+    //       resizeObserver.observe(this.filtersContainer.nativeElement);
+    //     }
+    //   });
+    // }
   }
 
   ngAfterViewInit() {
@@ -167,7 +153,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.search();
     }
 
-    this.checkOverflow();
+    // this.checkOverflow();
     this.selection = this.table.selection;
     this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.onSelect.emit(data.source.selected)
@@ -495,12 +481,12 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     return value;
   }
 
-  checkOverflow() {
-    if (this.filtersContainer) {
-      const element = this.filtersContainer.nativeElement;
-      this.isOverflowing = element.scrollWidth > element.clientWidth;
-    }
-  }
+  // checkOverflow() {
+  //   if (this.filtersContainer) {
+  //     const element = this.filtersContainer.nativeElement;
+  //     this.isOverflowing = element.scrollWidth > element.clientWidth;
+  //   }
+  // }
 
   viewHtml(html: string) {
     openHtmlInNewWindow(html);

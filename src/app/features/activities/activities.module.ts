@@ -14,6 +14,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     ActivitiesRoutingModule,
     SharedModule
+  ],
+  exports: [
+    ActivitiesComponent
   ]
 })
 export class ActivitiesModule { }

@@ -26,4 +26,10 @@ export interface RenewalObject {
   print_template: string;
   online_print_template: string;
   in_print_queue: boolean;
+  name: string;
+  phone: string;
+  email: string;
+  region: string;
+  district: string;
+  country_of_practice: string;
 }
