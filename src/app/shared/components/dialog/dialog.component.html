@@ -1,14 +1,13 @@
-<h1 mat-dialog-title>{{ config.title }}</h1>
+<div mat-dialog-title>
+  <div class="flex gap-1 items-center">
+    <mat-icon inline *ngIf="config.icon">{{ config.icon}}</mat-icon> {{ config.title }}
+  </div>
+</div>
 
 <div mat-dialog-content>
-  <div class="flex gap-1 items-center">
-    <div *ngIf="config.icon" class="dialog-icon">
-      <mat-icon inline>{{ config.icon}}</mat-icon>
-    </div>
-    <div class="wrap-text">
-      <div mat-dialog-content [innerHTML]="config.message"></div>
-    </div>
-  </div>
+
+  <div class="wrap-text" mat-dialog-content [innerHTML]="config.message"></div>
+
 
 </div>
 

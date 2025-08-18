@@ -186,16 +186,22 @@ export class ManageRenewalsComponent implements OnInit, OnDestroy {
       next: response => {
         let successful = 0;
         let failed = 0;
+        const failDetails: string[] = [];
         response.data.forEach(element => {
           if (element.successful) {
             successful++
           }
           else {
-            failed++
+            failed++;
+            const name = this.selectedItems.find(item => item.uuid === element.id)?.name;
+            failDetails.push(`<div>${name} - ${element.message}</div>`);
           }
         });
+
         if (failed) {
           this.notify.failNotification(` ${failed} failed to be updated`);
+          this.notify.warningAlertNotification("Failed", failDetails.join("<br>"))
+
         }
         if (successful) {
           this.notify.successNotification(`${successful} updated successfully`);

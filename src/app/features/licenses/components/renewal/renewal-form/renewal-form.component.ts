@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
-import { getThisYear, getToday } from 'src/app/shared/utils/dates';
+import { getToday } from 'src/app/shared/utils/dates';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
-import { RenewalObject } from '../renewal.model';
 import { LicenseObject } from '../../../models/license_model';
 import { RenewalService } from '../../../renewal.service';
+import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
 
 @Component({
   selector: 'app-renewal-form',
@@ -39,6 +39,7 @@ export class RenewalFormComponent implements OnInit, OnDestroy {
   existingRenewal: any | null = null;
   licenseType: string | null = null;
   destroy$: Subject<boolean> = new Subject<boolean>();
+  @ViewChild('dataList') dataList!: LoadDataListComponent;
   constructor(private ar: ActivatedRoute, private router: Router,
     private dbService: HttpService, private notify: NotifyService, private renewalService: RenewalService) {
 
@@ -182,7 +183,7 @@ export class RenewalFormComponent implements OnInit, OnDestroy {
     this.renewalService.delete(object.last_renewal_uuid!).subscribe({
       next: response => {
         this.notify.successNotification(response.message);
-        this.updateTimestamp();
+        this.dataList.search();
       },
       error: error => { }
     })
@@ -192,7 +193,11 @@ export class RenewalFormComponent implements OnInit, OnDestroy {
   formSubmitted(args: boolean) {
     if (args) {
       this.selectedLicense = null;
-      this.router.navigate(['/licenses/renewal-form'])
+      this.router.navigate(['/licenses/renewal-form'], {
+        queryParams: {
+          license_type: this.licenseType
+        }
+      });
     }
   }
 

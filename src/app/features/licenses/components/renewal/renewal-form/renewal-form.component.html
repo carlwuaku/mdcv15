@@ -6,9 +6,10 @@
     <mat-card-content>
 
       <app-mat-datepicker [label]="'Date'" (onFinish)="onDateChanged($event)" [initialDate]="date"></app-mat-datepicker>
-      <app-load-data-list [timestamp]="ts" [showSelectionContainer]="false" [url]="licenseSearchUrl"
+      <app-load-data-list #dataList [timestamp]="ts" [showSelectionContainer]="false" [url]="licenseSearchUrl"
         [getActions]="getActions" [preload]="false" [rowSelection]="'single'" [searchParam]="licenseUuid"
-        [showExport]="false" [showInfo]="false" [showPagination]="false" [showFilterButton]="false" [showSort]="false">
+        [showExport]="false" [showInfo]="false" [showPagination]="false" [showFilterButton]="false" [showSort]="false"
+        [showTableTitle]="false">
       </app-load-data-list>
     </mat-card-content>
   </mat-card>

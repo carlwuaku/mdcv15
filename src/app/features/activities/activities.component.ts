@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-activities',
@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./activities.component.scss']
 })
 export class ActivitiesComponent {
-  baseUrl: string = "activities";
-  url: string = "activities";
+  @Input() baseUrl: string = "activities";
+  @Input() url: string = "activities";
   ts: string = "";
 }

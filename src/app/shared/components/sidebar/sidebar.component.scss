@@ -32,3 +32,13 @@
   overflow: visible !important;
   text-wrap-style: pretty;
 }
+
+.sidebar-parent {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.sidebar-container {
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+}
