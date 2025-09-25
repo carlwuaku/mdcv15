@@ -234,12 +234,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     // Show success message
     this.notify.successNotification('Login successful! Welcome back.');
+    this.router.navigate(['/dashboard']);
 
-    // Add slight delay for better UX
-    setTimeout(() => {
-      // Redirect to dashboard
-      this.router.navigate(['/dashboard']);
-    }, 500);
   }
 
   private handleLoginError(err: any): void {

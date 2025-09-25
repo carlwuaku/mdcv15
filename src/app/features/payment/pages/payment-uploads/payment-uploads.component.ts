@@ -20,8 +20,8 @@ export class PaymentUploadsComponent implements OnInit, OnDestroy, DataListCompo
   selectedItems: PaymentUploadObject[] = [];
   getActions = (object: PaymentUploadObject): DataActionsButton[] => {
     const actions: DataActionsButton[] = [
-      ...(this.can_approve && object.status == "Pending" ? [{ label: "Approve", type: "button" as "button", onClick: (object: PaymentUploadObject) => this.approve(object) }] : []),
-      ...(this.can_delete && object.status !== "Approved" ? [{ label: "Delete", type: "button" as "button", onClick: (object: PaymentUploadObject) => this.delete(object) }] : [])
+      ...(this.can_approve && object.file_status == "Pending" ? [{ label: "Approve", type: "button" as "button", onClick: (object: PaymentUploadObject) => this.approve(object) }] : []),
+      ...(this.can_delete && object.file_status !== "Approved" ? [{ label: "Delete", type: "button" as "button", onClick: (object: PaymentUploadObject) => this.delete(object) }] : [])
     ];
 
     return actions;
