@@ -11,6 +11,7 @@ import { HttpService } from "../services/http/http.service";
 export class AuthService {
   currentUser: User | null = null;
   isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  currentUser$ = new BehaviorSubject<User | null>(this.currentUser);
   constructor(private dbService: HttpService, private router: Router) {
 
   }
@@ -65,6 +66,7 @@ export class AuthService {
     return this.dbService.get<{ user: User, permissions: string[] }>("admin/profile").pipe(map(data => {
       this.currentUser = data.user;
       this.currentUser!.permissions = data.permissions
+      this.currentUser$.next(this.currentUser);
       return this.currentUser!;
     }));
   }

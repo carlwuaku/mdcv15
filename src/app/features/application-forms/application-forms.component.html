@@ -2,8 +2,9 @@
 
   <mat-card>
     <mat-card-content>
-      <app-load-data-list [hint]="hint" [filters]="filters" [timestamp]="ts" [url]="url" [getActions]="getActions"
-        (onSelect)="setSelectedApplications($event)" [useResponseFilters]="false" [showAllFilters]="true">
+      <app-load-data-list [hint]="hint" [filters]="filters" [showFilterButton]="false" [timestamp]="ts" [url]="url"
+        [getActions]="getActions" (onSelect)="setSelectedApplications($event)" [useResponseFilters]="false"
+        [showAllFilters]="true">
         <ng-template #selectionOptions>
           <div class="flex gap-1 items-center">
             <app-application-status-manager [selectedApplications]="selectedApplications" *ngIf="status && form_type"

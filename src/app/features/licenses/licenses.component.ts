@@ -37,19 +37,6 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.licenseType = ar.snapshot.params['type'];
   }
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.ar.queryParams
-        .pipe(takeUntil(this.destroy$)).subscribe(params => {
-
-
-        });
-    })
-  }
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-  ngOnInit(): void {
     combineLatest([
       this.ar.queryParams,
       this.ar.paramMap
@@ -62,7 +49,7 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
         this.appService.appSettings.pipe(take(1)).subscribe(data => {
           this.filters = data?.licenseTypes[this.licenseType]?.searchFormFields || [];
           this.filters.forEach(filter => {
-            filter.value = params.get(`child_${filter.name}`);
+            filter.value = queryParams[`child_${filter.name}`];
           });
           this.updateUrl();
           this.dataList?.getData(this.url);
@@ -70,6 +57,13 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
 
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+  ngOnInit(): void {
+
 
   }
 

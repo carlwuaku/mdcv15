@@ -230,11 +230,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
     // Store token and redirect
     localStorage.setItem(LOCAL_USER_TOKEN, response.token);
+    this.router.navigate(['/dashboard']);
     this.authService.isLoggedIn$.next(true);
 
     // Show success message
     this.notify.successNotification('Login successful! Welcome back.');
-    this.router.navigate(['/dashboard']);
+
 
   }
 
