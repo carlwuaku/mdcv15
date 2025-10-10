@@ -55,7 +55,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
     'deleted_by', 'password_hash', 'last_ip']
   showTable: boolean = false;
   @Input() displayedColumns: string[] = [];
-  sortColumns: string[] = [];
+  @Input() sortColumns: string[] = [];
   // @Input() actions: DataActionsButton[] = [];
   @Input() getActions: (row: any) => DataActionsButton[] = (row: any) => [];
   @Input() searchParam = "";
@@ -271,7 +271,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
 
           this.error = false;
           this.totalRows = response.total;
-          this.sortColumns = response.displayColumns;
+          this.sortColumns = response.sortColumns ?? response.displayColumns;
           this.displayedColumns = ['#'];
           if (this.rowSelection == 'multiple') {
             this.displayedColumns.push('select');

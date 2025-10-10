@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { HousemanshipService } from '../../housemanship.service';
 import { Subject, takeUntil } from 'rxjs';
+import { NotifyService } from 'src/app/core/services/notify/notify.service';
 
 @Component({
   selector: 'app-posting-form',
@@ -20,7 +21,7 @@ export class PostingFormComponent {
   extraFormData: { key: string; value: any; }[] = [];
   destroy$: Subject<boolean> = new Subject();
   id: string = "";
-  constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService) {
+  constructor(private ar: ActivatedRoute, private router: Router, private service: HousemanshipService, private notify: NotifyService) {
 
   }
 
@@ -75,10 +76,12 @@ export class PostingFormComponent {
     dbcall.subscribe(
       {
         next: data => {
+          this.notify.successNotification(data.message);
           this.router.navigate([`/housemanship/postings`]);
         },
         error: error => {
           console.error(error);
+          this.notify.failNotification(error.message);
         }
       }
     )

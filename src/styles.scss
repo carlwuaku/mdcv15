@@ -124,10 +124,7 @@ input {
   transition: all var(--transition-normal);
   background: var(--bg-primary);
 
-  &:hover {
-    // transform: translateY(-2px);
-    box-shadow: var(--shadow-xl) !important;
-  }
+
 
   .mat-mdc-card-header {
     padding: 1.5rem 1.5rem 1rem;

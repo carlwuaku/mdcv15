@@ -14,7 +14,7 @@ export interface PaymentUploadObject {
   year: string,
   currency: string,
   due_date: string,
-  status: string,
+  file_status: string,
   notes: string,
   last_name: string,
   created_at: string,

@@ -108,6 +108,19 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         apiKeyProperty: "template_name",
         apiLabelProperty: "template_name",
         apiType: "select"
+      },
+      {
+        label: "Online Print Template",
+        name: "online_print_template",
+        hint: "The template to use for printing by the license holder from the portal",
+        options: [],
+        type: "api",
+        value: "",
+        required: true,
+        api_url: "print-queue/templates",
+        apiKeyProperty: "template_name",
+        apiLabelProperty: "template_name",
+        apiType: "select"
       }
     ];
     this.dialog.open(DialogFormComponent, {
@@ -127,12 +140,13 @@ export class RenewalComponent implements OnInit, OnChanges, OnDestroy {
         return {
           uuid: item.uuid,
           print_template: data.find(field => field.name === "print_template")?.value,
+          online_print_template: data.find(field => field.name === "online_print_template")?.value,
           license_type: item.license_type,
           license_number: item.license_number,
           status: item.status
         }
       });
-      this.renewalService.updateBulkRenewals(renewalData, "").subscribe({
+      this.renewalService.updateBulkRenewals(renewalData, null).subscribe({
         next: (res) => {
           this.notify.successNotification(res.message);
           this.renewalList.reload();

@@ -78,9 +78,9 @@
 
       <app-section-container *ngIf="showSort" [title]="'Sort'">
         <div class="flex  gap-2">
-          <mat-form-field [appearance]="'outline'" subscriptSizing="dynamic" (ngModelChange)="sortChanged()">
+          <mat-form-field [appearance]="'outline'" subscriptSizing="dynamic">
             <mat-label>Sort By: </mat-label>
-            <mat-select [(ngModel)]="sortBy">
+            <mat-select [(ngModel)]="sortBy" (ngModelChange)="sortChanged()">
               <mat-option *ngFor="let column of sortColumns" [value]="column">{{getColumnLabel(column)}}</mat-option>
             </mat-select>
           </mat-form-field>

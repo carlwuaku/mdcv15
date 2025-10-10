@@ -44,7 +44,7 @@ export class RenewalService {
    * @param stage the stage to update the objects to. can be an empty string if you want each one to maintain its current stage
    * @returns Observable<{ message: string, data: { message: string, successful: boolean, id: string }[] }>
    */
-  updateBulkRenewals(data: Record<string, any>[], stage: string): Observable<{ message: string, data: { message: string, successful: boolean, id: string }[] }> {
+  updateBulkRenewals(data: Record<string, any>[], stage: string | null): Observable<{ message: string, data: { message: string, successful: boolean, id: string }[] }> {
     const formData: Record<string, any> = { data, status: stage };
 
     return this.dbService.put(`licenses/renewal`, formData)

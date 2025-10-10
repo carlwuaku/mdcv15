@@ -5,5 +5,6 @@ export interface ApiResponseObject<T> {
   displayColumns: string[];
   total: number;
   columnFilters: IFormGenerator[];
-  columnLabels: any,
+  columnLabels: any;
+  sortColumns: string[];
 }
