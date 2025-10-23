@@ -57,6 +57,8 @@ export class PostingApplicationFormComponent {
       if (!curr.name.includes('posting_application_detail')) { acc[curr.name] = curr.value; }
       return acc;
     }, {});
+    //get the tags
+    formData['tags'] = args.filter((field) => field.name === 'tags' && field.value).map((field) => field.label).join(', ');
     //get the posting_detail fields
     const postingDetails = args.filter((field) => field.name.includes('posting_application_detail'));
     //remove posting_detail from the name and put them in arrays based on the suffix number

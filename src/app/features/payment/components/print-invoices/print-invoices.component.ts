@@ -45,10 +45,11 @@ export class PrintInvoicesComponent {
 
   getInvoicePrintouts() {
     if (!this.selectedTemplate) {
-      this.notify.failNotification("Please select a template");
-      return
+      if (!window.confirm('No template selected. Do you want to use the system default template?')) {
+        return
+      }
     }
-    this.paymentService.getInvoicePrintouts({ uuids: this.objects.map(o => o.uuid), template_name: this.selectedTemplate }).subscribe(res => {
+    this.paymentService.getInvoicePrintouts({ uuids: this.objects.map(o => o.uuid), template_name: this.selectedTemplate || '' }).subscribe(res => {
       openPrintWindow(res.data.join(''));
     })
   }

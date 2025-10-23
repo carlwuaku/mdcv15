@@ -32,7 +32,8 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-            <app-cpd-list [providerUuid]="object.uuid"></app-cpd-list>
+            <app-cpd-list [url]="cpdListUrl" (filterChanged)="filterChanged($event)"
+              [providerUuid]="object.uuid"></app-cpd-list>
           </mat-card-content>
         </mat-card>
       </ng-template>

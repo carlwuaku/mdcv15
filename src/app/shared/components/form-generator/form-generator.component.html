@@ -108,7 +108,8 @@
     <app-ckeditor [value]="field.value" [name]="field.name" (valueChange)="setFieldValue($event, field)"
       *ngSwitchCase="'html'"></app-ckeditor>
 
-    <app-json-editor (valueChange)="setFieldValue($event, field)" *ngSwitchCase="'json'"></app-json-editor>
+    <app-json-editor [initialValue]="field.value" (valueChange)="setFieldValue($event, field)"
+      *ngSwitchCase="'json'"></app-json-editor>
     <div *ngSwitchCase="'api'">
       <!-- if it's a search, once a selection is made show the selected item and hide the selection thing till the user clears it -->
       <div *ngIf="field.value && field.apiType === 'search'">
