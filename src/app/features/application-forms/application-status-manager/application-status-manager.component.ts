@@ -39,8 +39,9 @@ export class ApplicationStatusManagerComponent implements OnChanges {
 
         //get all statuses except the current status, and get the allowed transitions for the current status
         const otherStatuses = response.data.filter((status: ApplicationTemplateStageObject) => status.name !== this.applicationStatus);
-        const currentStatus = response.data.find((status: ApplicationTemplateStageObject) => status.name === this.applicationStatus);
+        const currentStatus = response.data.find((status: ApplicationTemplateStageObject) => status.name.toLowerCase() === this.applicationStatus.toLowerCase());
         if (currentStatus) {
+
           this.allStatuses = otherStatuses.filter((status: ApplicationTemplateStageObject) => currentStatus.allowedTransitions.includes(status.name));
           //filter out and show only the statuses that have the current user's role in the allowed roles.
           // we're changing how permissions for statuses are checked. We're now checking the user's role against the allowedUserRoles array in the status object.

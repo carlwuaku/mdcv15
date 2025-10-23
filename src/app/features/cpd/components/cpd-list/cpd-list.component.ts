@@ -1,14 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AuthService } from 'src/app/core/auth/auth.service';
-import { DateService } from 'src/app/core/date/date.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { CpdService } from '../../cpd.service';
 import { CpdObject } from '../../models/cpd_model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { AppService } from 'src/app/app.service';
-import { Subject, take, takeUntil } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-cpd-list',
@@ -21,15 +19,16 @@ export class CpdListComponent implements OnInit, OnDestroy {
 
   baseUrl: string = `cpd/details`;
   year: string = "";
-  url: string = "";
+  @Input() url: string = "";
   @Input() ts: string = "";
   @Input() providerUuid: string = "";
   destroy$: Subject<boolean> = new Subject();
   filters: IFormGenerator[] = [];
   queryParams: { [key: string]: string } = {};
   selectedItems: CpdObject[] = [];
-  constructor(private cpdService: CpdService, private appService: AppService,
-    private notify: NotifyService, private authService: AuthService, private ar: ActivatedRoute, private router: Router) {
+  @Output() filterChanged = new EventEmitter<{ [key: string]: string }>();
+  constructor(private cpdService: CpdService,
+    private notify: NotifyService, private authService: AuthService) {
     if (this.authService.currentUser?.permissions.includes("Cpd.Content.Edit")) {
       this.can_edit = true;
     }
@@ -39,6 +38,7 @@ export class CpdListComponent implements OnInit, OnDestroy {
     const date = new Date();
     this.year = date.getFullYear().toString();
   }
+
 
 
   getActions = (object: CpdObject): DataActionsButton[] => {
@@ -62,21 +62,6 @@ export class CpdListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.ar.queryParams
-      .pipe(takeUntil(this.destroy$)).subscribe(params => {
-
-        this.queryParams = params;
-        this.appService.appSettings.pipe(take(1)).subscribe(data => {
-          this.filters = data?.cpdFilterFields;
-          this.filters.forEach(filter => {
-            filter.value = params[filter.name];
-          });
-          this.updateUrl();
-        })
-      });
-
-
-
   }
 
   updateUrl() {
@@ -108,7 +93,7 @@ export class CpdListComponent implements OnInit, OnDestroy {
       const [key, value] = param.split("=");
       paramsObject[key] = value;
     });
-    this.router.navigate(['cpd/list_cpd'], { queryParams: paramsObject });
+    this.filterChanged.emit(paramsObject);
 
   }
 

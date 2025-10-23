@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LicenseObject } from './models/license_model';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
@@ -11,12 +11,13 @@ import { AppService } from 'src/app/app.service';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { LoadDataListComponent } from 'src/app/shared/components/load-data-list/load-data-list.component';
+import { Q } from '@angular/cdk/keycodes';
 @Component({
   selector: 'app-licenses',
   templateUrl: './licenses.component.html',
   styleUrls: ['./licenses.component.scss']
 })
-export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LicensesComponent implements OnInit, OnDestroy, AfterContentInit {
 
   baseUrl: string = "licenses/details";
   @Input() url: string = "licenses/details";
@@ -30,13 +31,14 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('dataList') dataList!: LoadDataListComponent;
   queryParams: { [key: string]: string } = {};
   selectedItems: LicenseObject[] = [];
+  isFirstLoad: boolean = true;
   constructor(private dbService: HttpService, private notify: NotifyService,
     public dialog: MatDialog, private ar: ActivatedRoute, private appService: AppService,
     private router: Router) {
 
     this.licenseType = ar.snapshot.params['type'];
   }
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     combineLatest([
       this.ar.queryParams,
       this.ar.paramMap
@@ -52,7 +54,11 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
             filter.value = queryParams[`child_${filter.name}`];
           });
           this.updateUrl();
-          this.dataList?.getData(this.url);
+          if (!this.isFirstLoad) {
+            this.dataList?.getData(this.url);
+          }
+          this.isFirstLoad = false;
+
         })
 
       }
@@ -67,9 +73,6 @@ export class LicensesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  // onLicenseTypeChange(selectedValue: string) {
-  //   this.router.navigate(['licenses'], { queryParams: { licenseType: selectedValue } });
-  // }
 
   updateUrl() {
 

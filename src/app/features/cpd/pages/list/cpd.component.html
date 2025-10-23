@@ -2,7 +2,7 @@
 
   <mat-card>
     <mat-card-content>
-      <app-cpd-list></app-cpd-list>
+      <app-cpd-list [url]="cpdListUrl" (filterChanged)="filterChanged($event)"></app-cpd-list>
     </mat-card-content>
   </mat-card>
 </div>
