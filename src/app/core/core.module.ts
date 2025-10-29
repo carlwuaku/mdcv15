@@ -10,6 +10,7 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { RouterModule } from '@angular/router';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { EnableTwoFactorAuthenticationComponent } from './pages/enable-two-factor-authentication/enable-two-factor-authentication.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     LogoutComponent,
     SearchComponent,
     PageNotFoundComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    EnableTwoFactorAuthenticationComponent
   ],
   imports: [
     CommonModule,

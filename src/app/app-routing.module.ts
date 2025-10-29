@@ -8,6 +8,7 @@ import { UserResolver } from './core/resolvers/userResolver.service';
 import { SearchComponent } from './core/pages/search/search.component';
 import { PageNotFoundComponent } from './core/pages/page-not-found/page-not-found.component';
 import { ForgotPasswordComponent } from './core/pages/forgot-password/forgot-password.component';
+import { EnableTwoFactorAuthenticationComponent } from './core/pages/enable-two-factor-authentication/enable-two-factor-authentication.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'enable-two-factor-authentication/:uuid',
+    component: EnableTwoFactorAuthenticationComponent
   },
   {
     path: 'forgot-password',
