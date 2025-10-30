@@ -42,7 +42,7 @@
 
 .login-card-wrapper {
   width: 100%;
-  max-width: 450px;
+  // max-width: 450px;
   position: relative;
   z-index: 1;
 }
@@ -124,6 +124,9 @@
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
   animation: slideUp 0.8s ease-out 0.2s both;
+  max-width: 500px;
+  width: 90%;
+  margin: auto;
 
   mat-card-header {
     text-align: center;
@@ -487,6 +490,7 @@
   .login-card {
     border-radius: 16px;
 
+
     mat-card-header,
     mat-card-content,
     mat-card-footer {
@@ -513,10 +517,10 @@
   .form-container {
     gap: 16px;
 
-    // .two-factor-input {
-    //   font-size: 20px;
-    //   letter-spacing: 2px;
-    // }
+    .two-factor-input {
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
   }
 
   .button-container .login-button {

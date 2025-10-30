@@ -173,13 +173,15 @@ export class PostingApplicationsComponent implements OnInit, OnDestroy, AfterVie
       minHeight: '600px',
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== false) {
+      if (result !== false && result.successfulApplications.length > 0) {
         //prompt the user to send emails to the successful applications
         this.prepMessageComponent.objects = result.successfulApplications;
         this.prepMessageComponent.emailField = "email";
         this.prepMessageComponent.labelField = "first_name, last_name";
         this.prepMessageComponent.prepMailList();//uses the objects to get the emails
         this.prepMessageComponent.openDialog();
+        this.applicationsList.dataList.reload()
+
         // window.location.reload();//TODO: change this to a better way of refreshing the page
       }
     });

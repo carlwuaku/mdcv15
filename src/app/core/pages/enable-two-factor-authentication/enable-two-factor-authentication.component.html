@@ -1,0 +1,84 @@
+<div class="login-container">
+  <div class="login-card-wrapper">
+
+
+    <!-- Login Card -->
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>
+          Complete 2-Factor Authentication
+        </mat-card-title>
+        <mat-card-subtitle>
+          <span>Enter your authenticator code</span>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content *ngIf="!uuid" class="flex flex-col gap-2">
+        <div class="alert alert-error">
+          <mat-icon>error</mat-icon>
+          <span>Something went wrong, please try again.</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-content *ngIf="uuid" class="flex flex-col gap-2">
+        <!-- Error Messages -->
+        <div *ngIf="error" class="alert alert-error">
+          <mat-icon>error</mat-icon>
+          <span>{{error_message}}</span>
+        </div>
+
+        <div *ngIf="flash_message" class="alert alert-warning">
+          <mat-icon>warning</mat-icon>
+          <span>{{flash_message}}</span>
+        </div>
+
+        <!-- Regular Login Form -->
+        <form (ngSubmit)="submit2FA()" class="login-form">
+          <div class="form-container">
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>6-digit code</mat-label>
+              <input matInput [(ngModel)]="twoFactorCode" name="code" required
+                placeholder="Enter the authenticator code" [disabled]="hasExceededAttempts">
+              <mat-icon matPrefix>security</mat-icon>
+            </mat-form-field>
+
+            <!-- reCAPTCHA -->
+            <div *ngIf="recaptchaSiteKey" class="recaptcha-container">
+              <re-captcha (errored)="recaptchaError()" (resolved)="resolved($event)" type="image"
+                [siteKey]="recaptchaSiteKey">
+              </re-captcha>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="button-container">
+              <button mat-raised-button color="primary" type="submit" [disabled]="loading || hasExceededAttempts"
+                class="login-button">
+                <app-loading *ngIf="loading" diameter="20"></app-loading>
+                <span>Submit</span>
+              </button>
+
+              <div *ngIf="hasExceededAttempts" class="attempt-warning">
+                <mat-icon>warning</mat-icon>
+                <span>Too many failed attempts.</span>
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+
+      </mat-card-content>
+
+
+      <mat-card-footer>
+        <div class="footer-content">
+          <div class="copyright">
+            &copy; {{appName}} {{currentYear}}. All Rights Reserved.
+          </div>
+
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</div>
