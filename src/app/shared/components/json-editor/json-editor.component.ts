@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { isObject } from '../../utils/helper';
 
 @Component({
   selector: 'app-json-editor',
   templateUrl: './json-editor.component.html',
-  styleUrls: ['./json-editor.component.scss']
+  styleUrls: ['./json-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JsonEditorComponent implements OnChanges {
   isObject = isObject;
@@ -44,10 +45,21 @@ export class JsonEditorComponent implements OnChanges {
   }
 
   addProperty(key: string): void {
-    // Logic to add a new property to the JSON object
+    // Generate a unique property name
+    let newKey = 'newProperty';
+    let counter = 1;
+    while (this.jsonObject.hasOwnProperty(newKey)) {
+      newKey = `newProperty${counter}`;
+      counter++;
+    }
+    // Add the new property with an empty string value
+    this.jsonObject[newKey] = '';
   }
 
   editValue(key: string): void {
-    // Logic to edit the value of a property in the JSON object
+    // Trigger edit mode for the specified property
+    // The actual editing is handled by the inline-editor component
+    // This method can be used for additional logic like validation or logging
+    console.log(`Editing value for key: ${key}`);
   }
 }

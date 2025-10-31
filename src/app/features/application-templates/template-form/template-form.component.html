@@ -52,7 +52,7 @@
       <button mat-raised-button color="primary" matStepperNext>Next</button>
     </form>
   </mat-step>
-  <mat-step>
+  <mat-step [stepControl]="guidlinesFormGroup">
     <ng-template matStepLabel>Guidelines</ng-template>
     <form [formGroup]="guidlinesFormGroup">
       <label for="">(Optional) Type any instructions you want your users to read about the form before they fill it.
@@ -70,7 +70,7 @@
       </div>
     </form>
   </mat-step>
-  <mat-step>
+  <mat-step [stepControl]="dataFormGroup">
     <ng-template matStepLabel>Form Fields</ng-template>
     <div class="flex flex-col gap-1">
       <app-alert type="info">The form fields are the inputs that users will fill in the form. You can add, remove, and
@@ -84,6 +84,25 @@
         <app-form-editor [assetType]="'applications'" [fields]="fields"
           (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
         <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
+
+      </form>
+    </div>
+
+    <div class="flex gap-1  mt-1">
+      <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="criteriaFormGroup">
+    <ng-template matStepLabel>Criteria for availability</ng-template>
+    <div class="flex flex-col gap-1">
+      <app-alert type="info">These settings will control when the form is available for any user on the portal. If a
+        logged in user does not meet all the criteria, they will not see the form.</app-alert>
+
+      <form [formGroup]="criteriaFormGroup">
+        <app-json-editor [jsonObject]="criteria"
+          (valueChanged)="setFormField('criteria', 'criteria', $event)"></app-json-editor>
 
       </form>
     </div>

@@ -1,4 +1,5 @@
 import { IFormGenerator } from "src/app/shared/components/form-generator/form-generator-interface"
+import { Criteria } from "./Criteria.model"
 
 export interface ApplicationTemplateObject {
   uuid: string,
@@ -22,6 +23,7 @@ export interface ApplicationTemplateObject {
   initialStage: string,
   stages: string,
   finalStage: string,
+  criteria: Criteria<string>[]
 }
 
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormField, IFormGenerator, isFormField, isRow } from '../form-generator/form-generator-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsEditorComponent } from './options-editor/options-editor.component';
@@ -6,7 +6,8 @@ import { OptionsEditorComponent } from './options-editor/options-editor.componen
 @Component({
   selector: 'app-form-editor',
   templateUrl: './form-editor.component.html',
-  styleUrls: ['./form-editor.component.scss']
+  styleUrls: ['./form-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormEditorComponent implements OnInit, OnChanges {
   @Input() fields: (FormField | FormField[])[] = [];
@@ -109,9 +110,9 @@ export class FormEditorComponent implements OnInit, OnChanges {
     this.formChanged.emit(this.fields);
   }
 
-  deleteField(name: string) {
-    // Find the index of the field with the name passed in
-    const index = this.fields.findIndex((field) => isFormField(field) && field.name === name);
+  deleteField(field: FormField) {
+    // Get the index of the field
+    const index = this.fields.indexOf(field);
     // If the index is found
     if (index !== -1) {
       // Remove the field from the fields array

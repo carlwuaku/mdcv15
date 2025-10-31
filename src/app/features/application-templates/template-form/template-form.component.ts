@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { ApplicationFormTemplateActionObject } from '../../application-forms/models/application-form-template-action.model';
 import { FILE_UPLOAD_BASE_URL } from 'src/app/shared/utils/constants';
+import { Criteria } from 'src/app/shared/types/Criteria.model';
 
 @Component({
   selector: 'app-template-form',
@@ -61,6 +62,10 @@ export class TemplateFormComponent implements OnInit {
     stages: this.fb.array<ApplicationTemplateStageObject[]>([], Validators.required),
     initialStage: new FormControl("", Validators.required),
     finalStage: new FormControl("", Validators.required)
+  });
+  criteria: Criteria<string>[] = [{ field: "", value: [], operator: "equals" }];
+  criteriaFormGroup: FormGroup = new FormGroup({
+    criteria: this.fb.array<Criteria<string>[]>([])
   });
   loading: boolean = false;
   imageFieldsFiles: Map<string, File> = new Map();
@@ -214,6 +219,10 @@ export class TemplateFormComponent implements OnInit {
       case "footer":
         form = this.footerFormGroup;
         break;
+      case "criteria":
+        form = this.criteriaFormGroup;
+        value = JSON.stringify(value);
+        break;
       case "on_submit":
         form = this.onSubmitFormGroup;
         break;
@@ -313,6 +322,23 @@ export class TemplateFormComponent implements OnInit {
       } else {
         alert("The final stage is required. Please add at least one stage and then select the final stage");
         return;
+      }
+      if (this.criteriaFormGroup.valid) {
+        try {
+          let criteriaFormValues = this.criteriaFormGroup.get("criteria")?.value;
+          if (criteriaFormValues) {
+            let criteria = JSON.parse(criteriaFormValues);
+            //make sure each criteria has a field, operator, and value which is an array of strings
+            if (!Array.isArray(criteria) || criteria.some(c => !c.field || !c.operator || !c.value || !Array.isArray(c.value))) {
+              alert("The criteria needs to be a valid list");
+              return;
+            }
+            data.append("criteria", criteriaFormValues);
+          }
+        } catch (error) {
+          if (!window.confirm("The criteria is not valid, would you like to continue?")) return
+        }
+
       }
 
       // Process stages with enhanced action serialization
@@ -728,6 +754,7 @@ export class TemplateFormComponent implements OnInit {
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
         this.workflowFormGroup.get("initialStage")?.setValue(response.data.initialStage);
         this.workflowFormGroup.get("finalStage")?.setValue(response.data.finalStage);
+        this.criteriaFormGroup.get("criteria")?.setValue(response.data.criteria);
 
         const stagesData: ApplicationTemplateStageObject[] = JSON.parse(response.data.stages);
 

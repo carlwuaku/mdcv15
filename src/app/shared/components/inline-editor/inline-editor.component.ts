@@ -1,27 +1,28 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-inline-editor',
   templateUrl: './inline-editor.component.html',
-  styleUrls: ['./inline-editor.component.scss']
+  styleUrls: ['./inline-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InlineEditorComponent {
   @Input() text: any;
-  @Output() valueChanged:EventEmitter<any> = new EventEmitter();
+  @Output() valueChanged: EventEmitter<any> = new EventEmitter();
 
-  editMode:boolean = false;
-  newText:string = "";
+  editMode: boolean = false;
+  newText: string = "";
 
-  startEdit(){
+  startEdit() {
     this.newText = this.text;
     this.editMode = true;
   }
 
-  cancel(){
+  cancel() {
     this.editMode = false;
   }
 
-  save(){
+  save() {
     this.text = this.newText;
     this.editMode = false;
     this.valueChanged.emit(this.newText)

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -19,7 +19,8 @@ import { TableLegendType } from '../table/tableLegend.model';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
-  styleUrls: ['./load-data-list.component.scss']
+  styleUrls: ['./load-data-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 

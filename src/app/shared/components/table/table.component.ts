@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -20,7 +20,8 @@ export interface EditableColumn {
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+  styleUrls: ['./table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent implements OnInit, AfterViewInit {
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])

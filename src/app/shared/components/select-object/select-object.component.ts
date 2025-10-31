@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { take } from 'rxjs';
 import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';
@@ -8,7 +8,8 @@ import { getLabel } from '../../utils/helper';
 @Component({
   selector: 'app-select-object',
   templateUrl: './select-object.component.html',
-  styleUrls: ['./select-object.component.scss']
+  styleUrls: ['./select-object.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";
