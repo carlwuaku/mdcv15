@@ -6,8 +6,7 @@ import { OptionsEditorComponent } from './options-editor/options-editor.componen
 @Component({
   selector: 'app-form-editor',
   templateUrl: './form-editor.component.html',
-  styleUrls: ['./form-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./form-editor.component.scss']
 })
 export class FormEditorComponent implements OnInit, OnChanges {
   @Input() fields: (FormField | FormField[])[] = [];

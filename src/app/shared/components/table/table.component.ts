@@ -20,8 +20,7 @@ export interface EditableColumn {
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, AfterViewInit {
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([])

@@ -8,8 +8,7 @@ import { getLabel } from '../../utils/helper';
 @Component({
   selector: 'app-select-object',
   templateUrl: './select-object.component.html',
-  styleUrls: ['./select-object.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./select-object.component.scss']
 })
 export class SelectObjectComponent implements OnInit, OnChanges {
   @Input() url: string = "";

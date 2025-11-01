@@ -23,7 +23,7 @@ export interface ApplicationTemplateObject {
   initialStage: string,
   stages: string,
   finalStage: string,
-  criteria: Criteria<string>[]
+  criteria: string
 }
 
 

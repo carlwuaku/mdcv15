@@ -19,8 +19,7 @@ import { TableLegendType } from '../table/tableLegend.model';
 @Component({
   selector: 'app-load-data-list',
   templateUrl: './load-data-list.component.html',
-  styleUrls: ['./load-data-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./load-data-list.component.scss']
 })
 export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 

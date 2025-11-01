@@ -3,8 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 @Component({
   selector: 'app-inline-editor',
   templateUrl: './inline-editor.component.html',
-  styleUrls: ['./inline-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./inline-editor.component.scss']
 })
 export class InlineEditorComponent {
   @Input() text: any;

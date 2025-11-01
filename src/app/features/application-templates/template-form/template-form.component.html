@@ -101,7 +101,7 @@
         logged in user does not meet all the criteria, they will not see the form.</app-alert>
 
       <form [formGroup]="criteriaFormGroup">
-        <app-json-editor [jsonObject]="criteria"
+        <app-json-editor [jsonObject]="criteria" [schema]="initialCriteria" [isArray]="true"
           (valueChanged)="setFormField('criteria', 'criteria', $event)"></app-json-editor>
 
       </form>

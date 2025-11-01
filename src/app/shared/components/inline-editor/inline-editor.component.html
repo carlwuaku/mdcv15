@@ -1,5 +1,7 @@
-<span *ngIf="!editMode">{{text}}  <button mat-icon-button (click)="startEdit()"><mat-icon>edit</mat-icon>  </button> </span>
-<span *ngIf="editMode">
-  <input type="text" [(ngModel)]="newText"> <button mat-icon-button (click)="cancel()"><mat-icon>cancel</mat-icon>  </button>
-  <button mat-icon-button (click)="save()"><mat-icon>save</mat-icon>  </button>
+<span *ngIf="!editMode">{{text}} <button mat-icon-button class="border" (click)="startEdit()"><mat-icon>edit</mat-icon>
+  </button> </span>
+<span *ngIf="editMode" class="flex">
+  <input type="text" class="border p-1 " [(ngModel)]="newText"> <button mat-icon-button (click)="cancel()"
+    color="warn"><mat-icon>cancel</mat-icon> </button>
+  <button mat-icon-button (click)="save()" class="btn-success"><mat-icon>check</mat-icon> </button>
 </span>

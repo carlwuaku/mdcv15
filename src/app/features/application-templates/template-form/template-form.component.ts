@@ -65,8 +65,9 @@ export class TemplateFormComponent implements OnInit {
   });
   criteria: Criteria<string>[] = [{ field: "", value: [], operator: "equals" }];
   criteriaFormGroup: FormGroup = new FormGroup({
-    criteria: this.fb.array<Criteria<string>[]>([])
+    criteria: new FormControl(""),
   });
+  initialCriteria: Criteria<string> = { field: "", value: [], operator: "equals" };
   loading: boolean = false;
   imageFieldsFiles: Map<string, File> = new Map();
   imageFieldsUrls: Map<string, string> = new Map();
@@ -221,7 +222,7 @@ export class TemplateFormComponent implements OnInit {
         break;
       case "criteria":
         form = this.criteriaFormGroup;
-        value = JSON.stringify(value);
+        value = JSON.parse(JSON.stringify(value));
         break;
       case "on_submit":
         form = this.onSubmitFormGroup;
@@ -327,13 +328,12 @@ export class TemplateFormComponent implements OnInit {
         try {
           let criteriaFormValues = this.criteriaFormGroup.get("criteria")?.value;
           if (criteriaFormValues) {
-            let criteria = JSON.parse(criteriaFormValues);
             //make sure each criteria has a field, operator, and value which is an array of strings
-            if (!Array.isArray(criteria) || criteria.some(c => !c.field || !c.operator || !c.value || !Array.isArray(c.value))) {
+            if (!Array.isArray(criteriaFormValues) || criteriaFormValues.some(c => !c.field || !c.operator || !c.value || !Array.isArray(c.value))) {
               alert("The criteria needs to be a valid list");
               return;
             }
-            data.append("criteria", criteriaFormValues);
+            data.append("criteria", JSON.stringify(criteriaFormValues));
           }
         } catch (error) {
           if (!window.confirm("The criteria is not valid, would you like to continue?")) return
@@ -754,7 +754,12 @@ export class TemplateFormComponent implements OnInit {
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
         this.workflowFormGroup.get("initialStage")?.setValue(response.data.initialStage);
         this.workflowFormGroup.get("finalStage")?.setValue(response.data.finalStage);
-        this.criteriaFormGroup.get("criteria")?.setValue(response.data.criteria);
+        try {
+          this.criteria = response.data.criteria ? JSON.parse(response.data.criteria) : [];
+          this.criteriaFormGroup.get("criteria")?.setValue(this.criteria);
+        } catch (error) {
+          console.error(error);
+        }
 
         const stagesData: ApplicationTemplateStageObject[] = JSON.parse(response.data.stages);
 
