@@ -134,12 +134,21 @@
 
 
 
-  <div class="overflow-auto flex-auto max-h-[500px]">
-    <app-table #table [dataSource]="dataSource" [displayedColumns]="displayedColumns" [columnLabels]="columnLabels"
-      [rowSelection]="rowSelection" [specialClasses]="specialClasses" [customClassRules]="customClassRules"
-      [offset]="offset" [customClassLegends]="customClassLegends"></app-table>
-
-
+  <div class="table-scroll-wrapper overflow-auto flex-auto max-h-[500px]">
+    <app-table #table
+      [dataSource]="dataSource"
+      [displayedColumns]="displayedColumns"
+      [columnLabels]="columnLabels"
+      [rowSelection]="rowSelection"
+      [specialClasses]="specialClasses"
+      [customClassRules]="customClassRules"
+      [offset]="offset"
+      [customClassLegends]="customClassLegends"
+      [showFilter]="true"
+      [enableSorting]="true"
+      [stickyHeader]="true"
+      [stickyFirstColumn]="true">
+    </app-table>
   </div>
 </div>
 

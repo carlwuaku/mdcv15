@@ -12,6 +12,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AppService } from './app.service';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { SecureImageService } from './core/services/secure-image/secure-image.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -38,7 +39,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private analyticsService: AnalyticsService,
+    private secureImageService: SecureImageService,
     private authService: AuthService,
     private dbService: HttpService,
     private ar: ActivatedRoute,
@@ -102,6 +103,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.secureImageService.clearCache();
     //send user to login page
     this.router.navigate(['login']);
   }

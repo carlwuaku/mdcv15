@@ -119,7 +119,8 @@ export class UserFormComponent {
       options: [],
       type: "picture",
       value: "",
-      required: false
+      required: false,
+      assetType: "users",
     },
     {
       label: "Position",

@@ -16,6 +16,7 @@ import { getToday } from 'src/app/shared/utils/dates';
 })
 export class UsersComponent implements OnInit, OnDestroy {
   qrCodeUrl: string = "";
+  qrCodeSecret: string = "";
   authCode: string = "";
   @ViewChild('twoFaDialog') twoFaDialog!: TemplateRef<any>;
   destroy$: Subject<boolean> = new Subject();
@@ -149,6 +150,7 @@ export class UsersComponent implements OnInit, OnDestroy {
       data).subscribe({
         next: response => {
           this.qrCodeUrl = response.qr_code_url;
+          this.qrCodeSecret = response.secret;
           this.dialog.open(this.twoFaDialog).afterClosed().subscribe((data: string) => {
             if (!data) {
               this.authCode = "";

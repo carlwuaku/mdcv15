@@ -55,6 +55,7 @@ export class DetailsComponent {
 
   getExistingObject() {
     if (!this.id) return;
+    this.object = null;
     this.loading = true;
     this.errorLoadingData = false;
     this.notify.showLoading();

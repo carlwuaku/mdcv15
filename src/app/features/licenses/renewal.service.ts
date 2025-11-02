@@ -38,6 +38,10 @@ export class RenewalService {
     return this.dbService.get(`licenses/renewal-form-fields/${type}`)
   }
 
+  getRenewalFilterFields(type: string): Observable<{ data: IFormGenerator[] }> {
+    return this.dbService.get(`licenses/renewal-filters/${type}`)
+  }
+
   /**
    * updates multiple renewal records
    * @param data array of objects to update
