@@ -9,7 +9,7 @@ import { FeesObject } from '../../models/FeesModel';
 import { PaymentService } from '../../payment.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { AppService } from 'src/app/app.service';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject, take } from 'rxjs';
 
 @Component({
   selector: 'app-generate-invoice',
@@ -134,7 +134,7 @@ export class GenerateInvoiceComponent implements OnInit, OnChanges, OnDestroy {
 
 
   submitInvoice() {
-    if (!window.confirm(`Are you sure you want to submit these invoices? Please note that if there is an existing ${this.selectedPaymentPurpose} invoice for any of the licenses it will NOT be overwritten. To regenerate an invoice, pleae delete the existing one and generate a new one.`)) {
+    if (!window.confirm(`Are you sure you want to submit these invoices? Please note that if there is an existing ${this.selectedPaymentPurpose} invoice for any of the licenses it will NOT be overwritten. To regenerate an invoice, please delete the existing one and generate a new one.`)) {
       return;
     }
     if (!this.dueDate) {

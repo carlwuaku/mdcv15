@@ -26,7 +26,6 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
   printQueueQueryParams: { [key: string]: string } = {};
   constructor(private appService: AppService,
     private ar: ActivatedRoute, private router: Router, private changeDetectorRef: ChangeDetectorRef, private renewalService: RenewalService) {
-    this.licenseType = ar.snapshot.params['type'];
     this.basePrintQueueCountUrl
   }
   ngOnDestroy(): void {
@@ -42,11 +41,15 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(([queryParams, params]) => {
       this.queryParams = queryParams;
-      this.licenseType = params.get('type') ?? '';
+      const newLicenseType = params.get('type') ?? '';
+      const licenseTypeChanged = this.licenseType !== newLicenseType;
+
+      this.licenseType = newLicenseType;
       this.basePrintQueueCountUrl = `/licenses/renewal-count?in_print_queue=1&license_type=${this.licenseType}`;
       this.basePrintQueueUrl = `/licenses/renewal-print-queue/${this.licenseType}`
+
       if (this.licenseType) {
-        this.getMenuItems()
+        this.getMenuItems(licenseTypeChanged);
       }
 
     });
@@ -54,7 +57,7 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
 
   }
 
-  getMenuItems() {
+  getMenuItems(licenseTypeChanged: boolean = false) {
     this.menuItems = [];
     this.appService.appSettings.pipe(take(1)).subscribe(data => {
       const stages = data.licenseTypes[this.licenseType] ?
@@ -106,7 +109,14 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
         }
         this.printQueueQueryParams[`renewal_${key}`] = `${this.queryParams[key]}`;
       });
-      this.getFilterFields();
+
+      // Only call getFilterFields if the license type has changed
+      if (licenseTypeChanged) {
+        this.getFilterFields();
+      } else {
+        // Update existing filter field values with query params
+        this.updateFilterFieldValues();
+      }
 
       this.menuItems = menuItems;
       this.changeDetectorRef.detectChanges();
@@ -120,14 +130,18 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
   getFilterFields() {
     this.renewalService.getRenewalFilterFields(this.licenseType).pipe(take(1)).subscribe(data => {
       this.filterFields = data.data;
-      //assign the values of the queryParams to the filterFields
-      Object.keys(this.queryParams).forEach(key => {
-        const filterField = this.filterFields.find(field => field.name === key || field.name === `renewal_${key}`);
-        if (filterField) {
-          filterField.value = this.queryParams[key];
-        }
-      });
+      this.updateFilterFieldValues();
     })
+  }
+
+  updateFilterFieldValues() {
+    // Assign the values of the queryParams to the filterFields
+    Object.keys(this.queryParams).forEach(key => {
+      const filterField = this.filterFields.find(field => field.name === key || field.name === `renewal_${key}`);
+      if (filterField) {
+        filterField.value = this.queryParams[key];
+      }
+    });
   }
 
   filterSubmitted(params: string) {
