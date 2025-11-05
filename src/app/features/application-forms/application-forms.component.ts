@@ -83,7 +83,7 @@ export class ApplicationFormsComponent implements OnInit {
   getActions = (object: ApplicationFormObject): DataActionsButton[] => {
 
     const actions: DataActionsButton[] = [
-      { label: "View Details", type: "button", onClick: (object: ApplicationFormObject) => this.view(object) },
+      { label: "View Details", type: "link", link: `applications/details/`, linkProp: 'uuid' },
       { label: "Edit", type: "link", link: `applications/application/`, linkProp: 'uuid' },
       { label: "Delete", type: "button", onClick: (object: ApplicationFormObject) => this.delete(object) }
 

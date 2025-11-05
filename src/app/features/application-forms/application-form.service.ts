@@ -63,8 +63,8 @@ export class ApplicationFormService {
     return this.dbService.get(`applications/status/${formType}`)
   }
 
-  updateApplicationsStatus(form_type: string, applicationIds: string[], status: string): Observable<{ message: string }> {
-    const data = { form_type, applicationIds, status }
+  updateApplicationsStatus(form_type: string, applicationIds: string[], status: string, statusData: { name: string, value: string }[]): Observable<{ message: string }> {
+    const data = { form_type, applicationIds, status, statusData }
     return this.dbService.put(`applications/status`, data)
   }
 }

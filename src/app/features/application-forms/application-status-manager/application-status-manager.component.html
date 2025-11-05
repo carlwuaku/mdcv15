@@ -3,7 +3,7 @@
 <div class="flex gap-2 items-center">
   <span>Change status to: </span>
   <button [disabled]="selectedApplications.length < 1" mat-raised-button color="primary"
-    *ngFor="let status of allStatuses" (click)="submitStatus(status)">
+    *ngFor="let status of allStatuses" (click)="showDialog(status)">
     {{status.name}}
   </button>
 </div>

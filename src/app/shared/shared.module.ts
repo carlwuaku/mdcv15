@@ -66,6 +66,8 @@ import { TemplateDesignerComponent } from './components/template-designer/templa
 import { CommonModule } from '@angular/common';
 import { FilterByPermissionsPipe } from './pipes/filter-by-permissions.pipe';
 import { SecureImageComponent } from './components/secure-image/secure-image.component';
+import { ApplicationTimelineComponent } from './components/application-timeline/application-timeline.component';
+import { DataLoaderComponent } from './components/data-loader/data-loader.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -122,7 +124,9 @@ import { SecureImageComponent } from './components/secure-image/secure-image.com
     FilterObjectsPipe,
     TemplateDesignerComponent,
     FilterByPermissionsPipe,
-    SecureImageComponent
+    SecureImageComponent,
+    ApplicationTimelineComponent,
+    DataLoaderComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -195,7 +199,9 @@ import { SecureImageComponent } from './components/secure-image/secure-image.com
     FilterObjectsPipe,
     TemplateDesignerComponent,
     FilterByPermissionsPipe,
-    SecureImageComponent
+    SecureImageComponent,
+    ApplicationTimelineComponent,
+    DataLoaderComponent
   ],
   providers: [
     ClipboardCopyDirective

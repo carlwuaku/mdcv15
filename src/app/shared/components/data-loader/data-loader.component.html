@@ -1,0 +1,49 @@
+<!-- Loading State -->
+<ng-container *ngIf="loading && showInlineLoader">
+  <ng-container *ngIf="loadingTemplate; else defaultLoading">
+    <ng-container *ngTemplateOutlet="loadingTemplate"></ng-container>
+  </ng-container>
+  <ng-template #defaultLoading>
+    <div class="data-loader-state">
+      <app-loading></app-loading>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- Error State -->
+<ng-container *ngIf="error && !loading">
+  <ng-container *ngIf="errorTemplate; else defaultError">
+    <ng-container
+      *ngTemplateOutlet="errorTemplate; context: { $implicit: errorDetails, retry: retry.bind(this) }"></ng-container>
+  </ng-container>
+  <ng-template #defaultError>
+    <div class="data-loader-state data-loader-error">
+      <app-error-message>{{errorMessage}}</app-error-message>
+      <button *ngIf="retryable" mat-raised-button color="primary" (click)="retry()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- Empty State -->
+<ng-container *ngIf="isEmpty && !loading && !error">
+  <ng-container *ngIf="emptyTemplate; else defaultEmpty">
+    <ng-container *ngTemplateOutlet="emptyTemplate"></ng-container>
+  </ng-container>
+  <ng-template #defaultEmpty>
+    <div class="data-loader-state data-loader-empty">
+      <mat-icon class="empty-icon">inbox</mat-icon>
+      <p>{{ emptyStateMessage }}</p>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- Content State -->
+<ng-container *ngIf="data && !loading && !error && !isEmpty">
+  <ng-container *ngIf="contentTemplate">
+    <ng-container
+      *ngTemplateOutlet="contentTemplate; context: { $implicit: data, reload: reload.bind(this) }"></ng-container>
+  </ng-container>
+</ng-container>
