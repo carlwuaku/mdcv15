@@ -10,6 +10,14 @@
             field</mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" name="description" required></textarea>
+          <!-- <input matInput formControlName="description" name="description" required> -->
+          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('description')?.hasError('required')">Required
+            field</mat-error>
+        </mat-form-field>
+
         <div class="flex flex-col gap-1">
           <label>Cover Image</label>
           <p class="text-sm text-gray-400">This picture will be displayed as a cover image for users who would be

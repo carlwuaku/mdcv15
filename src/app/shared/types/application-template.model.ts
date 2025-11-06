@@ -4,6 +4,7 @@ import { Criteria } from "./Criteria.model"
 export interface ApplicationTemplateObject {
   uuid: string,
   form_name: string,
+  description: string,
   picture: string,
   available_externally: string,
   header: string,

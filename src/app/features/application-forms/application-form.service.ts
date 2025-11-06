@@ -67,4 +67,30 @@ export class ApplicationFormService {
     const data = { form_type, applicationIds, status, statusData }
     return this.dbService.put(`applications/status`, data)
   }
+
+  /**
+   * Get basic statistics reports for applications
+   * @param data Filter data including fields array
+   * @returns Observable with statistics data
+   */
+  filterBasicReports(data: any): Observable<{ data: any }> {
+    return this.dbService.post(`applications/reports/basic-statistics`, data);
+  }
+
+  /**
+   * Get count of applications with filters
+   * @param data Filter parameters
+   * @returns Observable with count
+   */
+  getFilteredCount(data: any): Observable<{ data: number }> {
+    return this.dbService.post(`applications/count`, data);
+  }
+
+  /**
+   * Get available report and filter fields
+   * @returns Observable with report fields configuration
+   */
+  getReportFields(): Observable<{ data: { reportFields: any[], filterFields: any[] } }> {
+    return this.dbService.get(`applications/reports/fields`);
+  }
 }

@@ -35,6 +35,7 @@ export class TemplateFormComponent implements OnInit {
   extraFormData: { key: string, value: any }[] = [];
   generalFormGroup = new FormGroup({
     form_name: new FormControl("", Validators.required),
+    description: new FormControl("", Validators.required),
     picture: new FormControl(""),
     available_externally: new FormControl(""),
     open_date: new FormControl("", Validators.required),
@@ -270,6 +271,9 @@ export class TemplateFormComponent implements OnInit {
     if (this.generalFormGroup.valid) {
       if (this.generalFormGroup.get("form_name")?.value) {
         data.append("form_name", this.generalFormGroup.get("form_name")!.value!);
+      }
+      if (this.generalFormGroup.get("description")?.value) {
+        data.append("description", this.generalFormGroup.get("description")!.value!);
       }
       if (this.generalFormGroup.get("picture")?.value) {
         data.append("picture", this.generalFormGroup.get("picture")!.value!);
@@ -742,6 +746,7 @@ export class TemplateFormComponent implements OnInit {
         this.on_submit_message = response.data.on_submit_message;
 
         this.generalFormGroup.get("form_name")?.setValue(response.data.form_name);
+        this.generalFormGroup.get("description")?.setValue(response.data.description);
         this.generalFormGroup.get("picture")?.setValue(response.data.picture);
         this.generalFormGroup.get("available_externally")?.setValue(response.data.available_externally);
         this.generalFormGroup.get("open_date")?.setValue(response.data.open_date);

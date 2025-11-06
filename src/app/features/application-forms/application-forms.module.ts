@@ -9,6 +9,7 @@ import { SelectFormTypeComponent } from './select-form-type/select-form-type.com
 import { ApplicationTemplatesModule } from '../application-templates/application-templates.module';
 import { ApplicationStatusManagerComponent } from './application-status-manager/application-status-manager.component';
 import { ApplicationDetailsComponent } from './pages/application-details/application-details.component';
+import { ApplicationReportsComponent } from './components/reports/reports.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ApplicationDetailsComponent } from './pages/application-details/applica
     ManageFormComponent,
     SelectFormTypeComponent,
     ApplicationStatusManagerComponent,
-    ApplicationDetailsComponent
+    ApplicationDetailsComponent,
+    ApplicationReportsComponent
   ],
   imports: [
     CommonModule,
