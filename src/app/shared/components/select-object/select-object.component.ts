@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { take } from 'rxjs';
 import { DateService } from 'src/app/core/date/date.service';
 import { HttpService } from 'src/app/core/services/http/http.service';

@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
 import { ApplicationFormTemplateActionObject } from '../../application-forms/models/application-form-template-action.model';
 import { FILE_UPLOAD_BASE_URL } from 'src/app/shared/utils/constants';
+import { Criteria } from 'src/app/shared/types/Criteria.model';
 
 @Component({
   selector: 'app-template-form',
@@ -34,6 +35,7 @@ export class TemplateFormComponent implements OnInit {
   extraFormData: { key: string, value: any }[] = [];
   generalFormGroup = new FormGroup({
     form_name: new FormControl("", Validators.required),
+    description: new FormControl("", Validators.required),
     picture: new FormControl(""),
     available_externally: new FormControl(""),
     open_date: new FormControl("", Validators.required),
@@ -62,6 +64,11 @@ export class TemplateFormComponent implements OnInit {
     initialStage: new FormControl("", Validators.required),
     finalStage: new FormControl("", Validators.required)
   });
+  criteria: Criteria<string>[] = [{ field: "", value: [], operator: "equals" }];
+  criteriaFormGroup: FormGroup = new FormGroup({
+    criteria: new FormControl(""),
+  });
+  initialCriteria: Criteria<string> = { field: "", value: [], operator: "equals" };
   loading: boolean = false;
   imageFieldsFiles: Map<string, File> = new Map();
   imageFieldsUrls: Map<string, string> = new Map();
@@ -214,6 +221,10 @@ export class TemplateFormComponent implements OnInit {
       case "footer":
         form = this.footerFormGroup;
         break;
+      case "criteria":
+        form = this.criteriaFormGroup;
+        value = JSON.parse(JSON.stringify(value));
+        break;
       case "on_submit":
         form = this.onSubmitFormGroup;
         break;
@@ -260,6 +271,9 @@ export class TemplateFormComponent implements OnInit {
     if (this.generalFormGroup.valid) {
       if (this.generalFormGroup.get("form_name")?.value) {
         data.append("form_name", this.generalFormGroup.get("form_name")!.value!);
+      }
+      if (this.generalFormGroup.get("description")?.value) {
+        data.append("description", this.generalFormGroup.get("description")!.value!);
       }
       if (this.generalFormGroup.get("picture")?.value) {
         data.append("picture", this.generalFormGroup.get("picture")!.value!);
@@ -313,6 +327,22 @@ export class TemplateFormComponent implements OnInit {
       } else {
         alert("The final stage is required. Please add at least one stage and then select the final stage");
         return;
+      }
+      if (this.criteriaFormGroup.valid) {
+        try {
+          let criteriaFormValues = this.criteriaFormGroup.get("criteria")?.value;
+          if (criteriaFormValues) {
+            //make sure each criteria has a field, operator, and value which is an array of strings
+            if (!Array.isArray(criteriaFormValues) || criteriaFormValues.some(c => !c.field || !c.operator || !c.value || !Array.isArray(c.value))) {
+              alert("The criteria needs to be a valid list");
+              return;
+            }
+            data.append("criteria", JSON.stringify(criteriaFormValues));
+          }
+        } catch (error) {
+          if (!window.confirm("The criteria is not valid, would you like to continue?")) return
+        }
+
       }
 
       // Process stages with enhanced action serialization
@@ -394,6 +424,7 @@ export class TemplateFormComponent implements OnInit {
       name: ['', Validators.required],
       description: [''],
       allowedTransitions: [[]],
+      requiredData: [[]],
       actions: this.fb.array([])
     });
 
@@ -716,6 +747,7 @@ export class TemplateFormComponent implements OnInit {
         this.on_submit_message = response.data.on_submit_message;
 
         this.generalFormGroup.get("form_name")?.setValue(response.data.form_name);
+        this.generalFormGroup.get("description")?.setValue(response.data.description);
         this.generalFormGroup.get("picture")?.setValue(response.data.picture);
         this.generalFormGroup.get("available_externally")?.setValue(response.data.available_externally);
         this.generalFormGroup.get("open_date")?.setValue(response.data.open_date);
@@ -728,6 +760,12 @@ export class TemplateFormComponent implements OnInit {
         this.onSubmitFormGroup.get("on_submit_message")?.setValue(response.data.on_submit_message);
         this.workflowFormGroup.get("initialStage")?.setValue(response.data.initialStage);
         this.workflowFormGroup.get("finalStage")?.setValue(response.data.finalStage);
+        try {
+          this.criteria = response.data.criteria ? JSON.parse(response.data.criteria) : [];
+          this.criteriaFormGroup.get("criteria")?.setValue(this.criteria);
+        } catch (error) {
+          console.error(error);
+        }
 
         const stagesData: ApplicationTemplateStageObject[] = JSON.parse(response.data.stages);
 
@@ -738,6 +776,7 @@ export class TemplateFormComponent implements OnInit {
             description: [stage.description],
             allowedTransitions: [stage.allowedTransitions],
             allowedUserRoles: [stage.allowedUserRoles],
+            requiredData: [stage.requiredData || []],
             actions: this.fb.array([])
           });
 

@@ -62,49 +62,93 @@ export class ApplicationStatusManagerComponent implements OnChanges {
       }
     })
   }
-  showDialog(status: ApplicationTemplateStageObject) {
-    const fields: IFormGenerator[] = [];
-    status.actions.forEach(action => {
-      if (action.type === "email") {
+  public showDialog(status: ApplicationTemplateStageObject) {
+    if (!window.confirm(`Are you sure you want to change the status of the selected applications to ${status.name}?`)) {
+      return;
+    }
+    /**
+     *  'notes' => $this->request->getVar('notes'),
+                'comments' => $this->request->getVar('comments'),
+                'attachments' => $this->request->getVar('attachments'),
+                'reviewer_comments' => $this->request->getVar('reviewer_comments'),
+
+     */
+    const fields: IFormGenerator[] = [
+      {
+        name: "notes",
+        value: "",
+        type: "textarea",
+        label: "Notes (for internal use)",
+        hint: "",
+        options: [],
+        required: false
+      },
+      {
+        name: "comments",
+        value: "",
+        type: "textarea",
+        label: "Comments (to be displayed to the applicant)",
+        hint: "",
+        options: [],
+        required: false
+      },
+      {
+        name: "attachments",
+        value: "",
+        type: "file",
+        label: "Attachments",
+        hint: "Any relevant documents",
+        options: [],
+        required: false,
+        assetType: "documents"
+      }
+    ];
+
+    // Add required data fields dynamically from the stage configuration
+    if (status.requiredData && Array.isArray(status.requiredData)) {
+      status.requiredData.forEach((fieldName: string) => {
         fields.push({
-          name: action.config.template,
-          value: action.config.template,
-          type: "text",
-          label: action.config.template,
-          hint: action.config.subject,
+          name: fieldName,
+          value: "",
+          type: "textarea",
+          label: fieldName.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+          hint: `Please provide ${fieldName}`,
           options: [],
           required: true
-        })
-      }
-    })
-    //if the status has a config, get the config and show it in the dialog
+        });
+      });
+    }
     this.dialog.open(DialogFormComponent, {
       data: {
         fields,
-        title: "",
-        formType: "filter"
+        title: "Provide the following data",
+        formType: "emit"
       },
       height: '90vh',
       width: '90vw'
-    }).afterClosed().subscribe((data: IFormGenerator[]) => {
+    }).afterClosed().subscribe((data: IFormGenerator[] | false) => {
       //get an object of the name and value of the fields
-      const formData = data.reduce((acc: Record<string, any>, curr) => {
-        acc[curr.name] = curr.value;
+      if (!data) {
+        return;
+      }
+      const statusData = data.reduce((acc: { name: string, value: string }[], curr) => {
+        acc.push({ name: curr.name, value: curr.value })
         return acc;
-      }, {});
-      // this.submitFinish(object, decision, formData);
+      }, []);
+      this.submitStatus(status, statusData);
 
     })
   }
-  submitStatus(status: ApplicationTemplateStageObject) {
+  private submitStatus(status: ApplicationTemplateStageObject, statusData: { name: string, value: string }[] = []) {
     if (!window.confirm(`Are you sure you want to change the status of the selected applications to ${status.name}?`)) {
       return;
     }
     this.notify.showLoading();
-    this.service.updateApplicationsStatus(this.formType, this.selectedApplications.map(app => app.uuid), status.name).subscribe({
+    this.service.updateApplicationsStatus(this.formType, this.selectedApplications.map(app => app.uuid), status.name, statusData).subscribe({
       next: response => {
         this.notify.successNotification(response.message)
         this.selectedApplications = [];
+        this.statusChanged.emit(true)
       },
       error: error => {
 

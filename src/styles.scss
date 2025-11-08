@@ -1160,6 +1160,19 @@ input {
   }
 }
 
+.mat-mdc-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border: thin solid var(--mat-sys-primary);
+  background-color: var(--mat-sys-surface);
+}
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+  padding: 4px 16px;
+}
+
 @import "primeicons/primeicons.css";
 @import 'utilities';
 // Keep all your existing specific styles for IDs, print styles, etc.

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -46,10 +46,18 @@ export class TableComponent implements OnInit, AfterViewInit {
   originalValues = new Map<any, any>();
   editableColumnMap = new Map<string, EditableColumn>();
   @Input() customClassLegends: TableLegendType[] = [];
-  @Input() useVirtualScroll: boolean = true;
+  @Input() useVirtualScroll: boolean = false;
+  @Input() showFilter: boolean = false;
+  @Input() enableSorting: boolean = true;
+  @Input() stickyHeader: boolean = false;
+  @Input() stickyFirstColumn: boolean = false;
+  filterValue: string = '';
+
   constructor() { }
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    if (this.enableSorting) {
+      this.dataSource.sort = this.sort;
+    }
     this.fieldTemplates.forEach(item => {
       this.templateMap.set(item.fieldName, item.template);
     });
@@ -228,5 +236,22 @@ export class TableComponent implements OnInit, AfterViewInit {
   getSelectOptions(field: string): { value: any; label: string }[] {
     const config = this.editableColumnMap.get(field);
     return config?.options || [];
+  }
+
+  // Filter functionality
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.filterValue = filterValue;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    // Clear selection when filter is applied
+    if (this.dataSource.filteredData.length === 0) {
+      this.selection.clear();
+    }
+  }
+
+  clearFilter(): void {
+    this.filterValue = '';
+    this.dataSource.filter = '';
   }
 }

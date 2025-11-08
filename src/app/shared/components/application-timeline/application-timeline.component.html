@@ -1,0 +1,197 @@
+<div class="application-timeline">
+  <!-- Header -->
+  <div class="timeline-header">
+    <h3>Application Timeline</h3>
+    <button mat-icon-button (click)="refresh()" [disabled]="loading" matTooltip="Refresh timeline">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="timeline-loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading timeline...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="timeline-error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="loadTimeline()">Retry</button>
+  </div>
+
+  <!-- Timeline Entries -->
+  <div *ngIf="!loading && !error" class="timeline-content">
+    <div *ngIf="timelineEntries.length === 0" class="timeline-empty">
+      <mat-icon>timeline</mat-icon>
+      <p>No timeline entries yet</p>
+    </div>
+
+    <div *ngIf="timelineEntries.length > 0" class="timeline-list">
+      <div *ngFor="let entry of timelineEntries; let last = last" class="timeline-entry">
+        <!-- Timeline Connector -->
+        <div class="timeline-connector">
+          <div class="timeline-dot" [ngClass]="getStatusClass(entry.to_status)">
+            <mat-icon>{{ getStatusIcon(entry.to_status) }}</mat-icon>
+          </div>
+          <div *ngIf="!last" class="timeline-line"></div>
+        </div>
+
+        <!-- Timeline Content -->
+        <div class="timeline-entry-content">
+          <div class="entry-card">
+            <!-- Header -->
+            <div class="entry-header">
+              <div class="entry-status">
+                <span *ngIf="entry.from_status" class="from-status">{{ entry.from_status }}</span>
+                <mat-icon *ngIf="entry.from_status">arrow_forward</mat-icon>
+                <span class="to-status" [ngClass]="getStatusClass(entry.to_status)">{{ entry.to_status }}</span>
+              </div>
+              <div class="entry-meta">
+                <span class="entry-time" [matTooltip]="formatDate(entry.created_at)">
+                  {{ formatRelativeTime(entry.created_at) }}({{entry.created_at}})
+                </span>
+              </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="entry-user" *ngIf="entry.username">
+              <mat-icon>person</mat-icon>
+              <span>{{ entry.username }}</span>
+              <span *ngIf="entry.user_email" class="user-email">({{ entry.user_email }})</span>
+            </div>
+
+            <!-- Notes -->
+            <div class="entry-notes" *ngIf="entry.notes">
+              <mat-icon>note</mat-icon>
+              <span>{{ entry.notes }}</span>
+            </div>
+
+            <!-- Compact View Summary -->
+            <div *ngIf="viewMode === 'compact' && hasActionsResults(entry)" class="entry-summary">
+              <span class="summary-text">
+                {{ entry.actions_results?.actions?.length }} action(s) executed
+              </span>
+            </div>
+
+            <!-- Full View Details -->
+            <div *ngIf="viewMode === 'full'" class="entry-details">
+              <!-- Submitted Data -->
+              <div *ngIf="hasSubmittedData(entry)" class="submitted-data">
+                <div class="section-header" (click)="toggleExpand(entry.id)">
+                  <mat-icon>{{ isExpanded(entry.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
+                  <span>Submitted Data</span>
+                </div>
+                <div *ngIf="isExpanded(entry.id)" class="section-content">
+                  <div *ngFor="let item of entry.submitted_data" class="data-item">
+                    <strong>{{ item.name }}:</strong>
+                    <span>{{ item.value }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions Executed -->
+              <mat-accordion *ngIf="entry.actions_executed && entry.actions_executed.length > 0"
+                class="actions-section">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>settings</mat-icon>
+                      <span>Actions Executed ({{ entry.actions_executed.length }})</span>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div class="actions-list">
+                    <div *ngFor="let action of entry.actions_executed; let i = index" class="action-item">
+                      <div class="action-number">{{ i + 1 }}</div>
+                      <mat-icon>{{ getActionIcon(action.type) }}</mat-icon>
+                      <span class="action-type">{{ action.type }}</span>
+                      <div *ngIf="action.config" class="action-details">
+                        <pre>{{ action.config | json }}</pre>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+
+              <!-- Action Results -->
+              <mat-accordion *ngIf="hasActionsResults(entry)" class="results-section">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>check_circle</mat-icon>
+                      <span>Action Results ({{ entry.actions_results!.actions?.length }})</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <span class="results-summary">
+                        {{ getSuccessCount(entry.actions_results) }} succeeded,
+                        {{ getFailureCount(entry.actions_results) }} failed
+                      </span>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="results-list">
+                    <mat-accordion class="nested-accordion">
+                      <mat-expansion-panel *ngFor="let result of entry.actions_results!.actions; let i = index"
+                        [ngClass]="result.success ? 'result-success' : 'result-error'">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            <div class="result-title">
+                              <div class="result-number">{{ i + 1 }}</div>
+                              <mat-icon class="result-icon">{{ result.success ? 'check_circle' : 'error' }}</mat-icon>
+                              <span class="result-action-type">{{ result.action_type }}</span>
+                            </div>
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            <span class="result-status">{{ result.success ? 'Success' : 'Failed' }}</span>
+                            <span class="result-time">{{ formatRelativeTime(result.timestamp) }}</span>
+                          </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="result-content">
+                          <div *ngIf="result.error" class="result-error-message">
+                            <mat-icon>warning</mat-icon>
+                            <div class="error-details">
+                              <strong>Error:</strong>
+                              <span>{{ result.error }}</span>
+                            </div>
+                          </div>
+                          <div *ngIf="result.result && !result.error" class="result-details">
+                            <strong>Result:</strong>
+                            <pre>{{ result.result | json }}</pre>
+                          </div>
+                          <div class="result-meta">
+                            <div class="meta-item">
+                              <mat-icon>schedule</mat-icon>
+                              <span>{{ formatDate(result.timestamp) }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+
+              <!-- Audit Info -->
+              <div *ngIf="entry.ip_address || entry.user_agent" class="audit-info">
+                <div class="audit-item" *ngIf="entry.ip_address">
+                  <mat-icon>computer</mat-icon>
+                  <span>IP: {{ entry.ip_address }}</span>
+                </div>
+                <div class="audit-item" *ngIf="entry.user_agent">
+                  <mat-icon>devices</mat-icon>
+                  <span class="user-agent">{{ entry.user_agent }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load More -->
+    <div *ngIf="timelineEntries.length < total" class="timeline-footer">
+      <button mat-button color="primary" (click)="loadMore()" [disabled]="loading">
+        Load More ({{ timelineEntries.length }} of {{ total }})
+      </button>
+    </div>
+  </div>
+</div>

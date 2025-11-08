@@ -10,6 +10,14 @@
             field</mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" name="description" required></textarea>
+          <!-- <input matInput formControlName="description" name="description" required> -->
+          <mat-error *ngIf="generalFormGroup && generalFormGroup.get('description')?.hasError('required')">Required
+            field</mat-error>
+        </mat-form-field>
+
         <div class="flex flex-col gap-1">
           <label>Cover Image</label>
           <p class="text-sm text-gray-400">This picture will be displayed as a cover image for users who would be
@@ -52,7 +60,7 @@
       <button mat-raised-button color="primary" matStepperNext>Next</button>
     </form>
   </mat-step>
-  <mat-step>
+  <mat-step [stepControl]="guidlinesFormGroup">
     <ng-template matStepLabel>Guidelines</ng-template>
     <form [formGroup]="guidlinesFormGroup">
       <label for="">(Optional) Type any instructions you want your users to read about the form before they fill it.
@@ -70,7 +78,7 @@
       </div>
     </form>
   </mat-step>
-  <mat-step>
+  <mat-step [stepControl]="dataFormGroup">
     <ng-template matStepLabel>Form Fields</ng-template>
     <div class="flex flex-col gap-1">
       <app-alert type="info">The form fields are the inputs that users will fill in the form. You can add, remove, and
@@ -84,6 +92,25 @@
         <app-form-editor [assetType]="'applications'" [fields]="fields"
           (formChanged)="setFormField('data', 'data', $event)"></app-form-editor>
         <mat-error *ngIf="dataFormGroup && dataFormGroup.get('data')?.hasError('required')">Required field</mat-error>
+
+      </form>
+    </div>
+
+    <div class="flex gap-1  mt-1">
+      <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="criteriaFormGroup">
+    <ng-template matStepLabel>Criteria for availability</ng-template>
+    <div class="flex flex-col gap-1">
+      <app-alert type="info">These settings will control when the form is available for any user on the portal. If a
+        logged in user does not meet all the criteria, they will not see the form.</app-alert>
+
+      <form [formGroup]="criteriaFormGroup">
+        <app-json-editor [jsonObject]="criteria" [schema]="initialCriteria" [isArray]="true"
+          (valueChanged)="setFormField('criteria', 'criteria', $event)"></app-json-editor>
 
       </form>
     </div>
@@ -192,6 +219,21 @@
                 <app-select-object (selectionChanged)="setRoles($event, i)" [url]="'admin/roles'"
                   [keyProperty]="'role_name'" [initialValue]="stage.get('allowedUserRoles')?.value"
                   [labelProperty]="'role_name'" [type]="'select'" [selection_mode]="'multiple'"></app-select-object>
+              </div>
+
+              <!-- Required Data Fields -->
+              <div class="flex flex-col gap-1">
+                <label for="">Required Data Fields</label>
+                <p class="text-sm text-gray-500">
+                  Add field names that users must provide when moving an application to this stage.
+                  These will appear as required fields in the status update dialog.
+                </p>
+                <app-string-array-input
+                  [items]="stage.get('requiredData')?.value || []"
+                  [label]="'Required Data Field'"
+                  [placeholder]="'e.g., license_number, approval_date'"
+                  (valueChanged)="stage.get('requiredData')?.setValue($event)">
+                </app-string-array-input>
               </div>
 
 

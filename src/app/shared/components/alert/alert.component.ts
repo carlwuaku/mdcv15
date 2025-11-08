@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, AfterContentInit } from '@angular/core';
 
-export type AlertType = 'info' | 'success' | 'warning' | 'error';
+export type AlertType = 'info' | 'success' | 'warning' | 'error' | 'danger';
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
@@ -25,5 +25,21 @@ export class AlertComponent implements AfterContentInit {
   dismiss() {
     this.visible = false;
     this.dismissed.emit();
+  }
+  icon() {
+    switch (this.type) {
+      case 'info':
+        return 'info';
+      case 'success':
+        return 'check_circle';
+      case 'warning':
+        return 'warning';
+      case 'danger':
+        return 'error';
+      case 'error':
+        return 'error';
+      default:
+        return 'info';
+    }
   }
 }

@@ -29,6 +29,15 @@ export class PaymentService {
     return this.dbService.post(`payment/invoices/preset`, data)
   }
 
+  /**
+   * Submits a generic invoice.
+   * @param data An object containing the due date, invoice items, unique id, purpose, and payment options.
+   * @returns An observable containing the message.
+   */
+  submitGenericInvoice(data: { due_date: string, items: InvoiceItemObject[], unique_id: string, purpose: string, paymentOptions: string[], description: string }): Observable<{ message: string }> {
+    return this.dbService.post(`payment/invoices`, data)
+  }
+
   getInvoice(uuid: string): Observable<{ data: InvoiceObject }> {
     return this.dbService.get(`payment/invoices/${uuid}`)
   }

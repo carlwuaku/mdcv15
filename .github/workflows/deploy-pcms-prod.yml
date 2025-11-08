@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
 
-name: Deploy To Pharmacy Council PCMS UAT via FTP
+name: Deploy To Pharmacy Council PCMS PROD via FTP - INACTIVE
 jobs:
   web-deploy:
     name: 🎉 Deploy

@@ -20,12 +20,10 @@ export class MatDatepickerComponent implements OnChanges {
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialDate'] && this.initialDate) {
-      console.log(this.initialDate, 'initialDate')
       this.date = new Date(this.initialDate);
     }
   }
   onDateChange(event: any) {
-    console.log(event.value)
 
     this.onFinish.emit(this.formatDate(event.value));
     //format the date to be in the format yyyy-mm-dd
@@ -33,5 +31,9 @@ export class MatDatepickerComponent implements OnChanges {
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
+  }
+
+  clear() {
+    this.date = undefined
   }
 }

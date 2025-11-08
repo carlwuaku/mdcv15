@@ -1,8 +1,10 @@
 import { IFormGenerator } from "src/app/shared/components/form-generator/form-generator-interface"
+import { Criteria } from "./Criteria.model"
 
 export interface ApplicationTemplateObject {
   uuid: string,
   form_name: string,
+  description: string,
   picture: string,
   available_externally: string,
   header: string,
@@ -22,6 +24,7 @@ export interface ApplicationTemplateObject {
   initialStage: string,
   stages: string,
   finalStage: string,
+  criteria: string
 }
 
 
@@ -30,5 +33,6 @@ export interface ApplicationTemplateStageObject {
   description: string,
   allowedTransitions: string[],
   allowedUserRoles: string[],
-  actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[]
+  actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[],
+  requiredData?: string[]
 }

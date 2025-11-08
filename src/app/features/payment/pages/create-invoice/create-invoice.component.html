@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-1"><mat-card>
+    <mat-card-content>
+      <div *ngIf="!selectedLicense" class="flex flex-col gap-1">
+        <label>Search for practitioner/license using their name, phone, email or license number</label>
+        <app-select-object [embedSearchResults]="false" [type]="'search'" [url]="'licenses/details'"
+          selection_mode="single" (selectionChanged)="onLicenseSelected($event)"
+          [emitObject]="true"></app-select-object>
+      </div>
+
+      <div *ngIf="selectedLicense">
+        <div class="flex gap-1">
+          {{selectedLicense.name}} ({{selectedLicense.license_number}}) <button mat-icon-button color="warn"
+            (click)="selectedLicense = null"><mat-icon>close</mat-icon></button>
+        </div>
+      </div>
+
+
+    </mat-card-content>
+
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      <div class="flex flex-col gap-1">
+
+        <app-mat-datepicker #datePicker [label]="'Invoice date'" (onFinish)="setDueDate($event)"></app-mat-datepicker>
+        <mat-divider></mat-divider>
+        <mat-form-field appearance="outline">
+          <mat-label>Description of the invoice</mat-label>
+          <input matInput placeholder="Description" [(ngModel)]="description" name="description" />
+
+        </mat-form-field>
+        <div class="flex flex-col gap-1">
+          <label>Type the name of the fee and select it from the options to add</label>
+          <app-select-object [url]="'payment/fees'" [labelProperty]="'name' " [keyProperty]="''" [type]="'search'"
+            [selection_mode]=" 'single'" [autoSelectSingleSearchResult]="false" [emitObject]="true"
+            (selectionChanged)="onAdditionalFeeSelected($event)">
+          </app-select-object>
+        </div>
+
+
+        <app-section-container title="Invoice details" childStyle=" overflow-auto">
+          <app-table [useVirtualScroll]="false" [columnLabels]="columnLabels" [dataSource]="tableDataSource"
+            [displayedColumns]="displayedColumns" [editableColumns]="editableColumns"
+            [enableInlineEditing]="true"></app-table>
+        </app-section-container>
+      </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-raised-button [color]="'primary'" (click)="submitInvoice()">Submit</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

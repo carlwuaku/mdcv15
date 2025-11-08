@@ -4,6 +4,7 @@ import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { AppService } from 'src/app/app.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { RenewalStageItems } from 'src/app/shared/utils/data';
+import { RenewalService } from '../../../renewal.service';
 
 @Component({
   selector: 'app-renewal-dashboard',
@@ -24,8 +25,7 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
   printQueueUrl = "/licenses/renewal-print-queue";
   printQueueQueryParams: { [key: string]: string } = {};
   constructor(private appService: AppService,
-    private ar: ActivatedRoute, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
-    this.licenseType = ar.snapshot.params['type'];
+    private ar: ActivatedRoute, private router: Router, private changeDetectorRef: ChangeDetectorRef, private renewalService: RenewalService) {
     this.basePrintQueueCountUrl
   }
   ngOnDestroy(): void {
@@ -41,11 +41,15 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(([queryParams, params]) => {
       this.queryParams = queryParams;
-      this.licenseType = params.get('type') ?? '';
+      const newLicenseType = params.get('type') ?? '';
+      const licenseTypeChanged = this.licenseType !== newLicenseType;
+
+      this.licenseType = newLicenseType;
       this.basePrintQueueCountUrl = `/licenses/renewal-count?in_print_queue=1&license_type=${this.licenseType}`;
       this.basePrintQueueUrl = `/licenses/renewal-print-queue/${this.licenseType}`
+
       if (this.licenseType) {
-        this.getMenuItems()
+        this.getMenuItems(licenseTypeChanged);
       }
 
     });
@@ -53,7 +57,7 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
 
   }
 
-  getMenuItems() {
+  getMenuItems(licenseTypeChanged: boolean = false) {
     this.menuItems = [];
     this.appService.appSettings.pipe(take(1)).subscribe(data => {
       const stages = data.licenseTypes[this.licenseType] ?
@@ -66,8 +70,8 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
           const apiCountUrlParamsArray = apiCountUrlParams.split("&").map(param => param.split("=")[0]);
           Object.keys(this.queryParams).forEach(key => {
             if (!apiCountUrlParamsArray.includes(key)) {
-              if (!apiCountUrlParamsArray.includes(`child_${key}`)) {
-                item.apiCountUrl += `&child_${key}=${this.queryParams[key]}`;
+              if (!apiCountUrlParamsArray.includes(`renewal_${key}`)) {
+                item.apiCountUrl += `&renewal_${key}=${this.queryParams[key]}`;
               }
             }
           });
@@ -78,8 +82,8 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
         }
         Object.keys(this.queryParams).forEach(key => {
           if (!urlParamsArray.includes(key)) {
-            if (!urlParamsArray.includes(`child_${key}`)) {
-              item.urlParams![`child_${key}`] = this.queryParams[key];
+            if (!urlParamsArray.includes(`renewal_${key}`)) {
+              item.urlParams![`renewal_${key}`] = this.queryParams[key];
             }
           }
         });
@@ -98,21 +102,22 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
 
       Object.keys(this.queryParams).forEach(key => {
         if (!printQueueCountUrlParamsArray.includes(key)) {
-          if (!printQueueCountUrlParamsArray.includes(`child_${key}`)) {
+          if (!printQueueCountUrlParamsArray.includes(`renewal_${key}`)) {
             this.printQueueCountUrl += this.printQueueCountUrl.includes("?") ? `&` : `?`;
-            this.printQueueCountUrl += `child_${key}=${this.queryParams[key]}`
+            this.printQueueCountUrl += `renewal_${key}=${this.queryParams[key]}`
           }
         }
-        this.printQueueQueryParams[`child_${key}`] = `${this.queryParams[key]}`;
+        this.printQueueQueryParams[`renewal_${key}`] = `${this.queryParams[key]}`;
       });
-      this.filterFields = data.licenseTypes[this.licenseType].renewalFilterFields;
-      //assign the values of the queryParams to the filterFields
-      Object.keys(this.queryParams).forEach(key => {
-        const filterField = this.filterFields.find(field => field.name === key || field.name === `child_${key}`);
-        if (filterField) {
-          filterField.value = this.queryParams[key];
-        }
-      });
+
+      // Only call getFilterFields if the license type has changed
+      if (licenseTypeChanged) {
+        this.getFilterFields();
+      } else {
+        // Update existing filter field values with query params
+        this.updateFilterFieldValues();
+      }
+
       this.menuItems = menuItems;
       this.changeDetectorRef.detectChanges();
     });
@@ -120,6 +125,23 @@ export class RenewalDashboardComponent implements OnInit, OnDestroy {
 
   onLicenseTypeChange(selectedValue: string) {
     this.router.navigate(['licenses/renewal-dashboard'], { queryParams: { license_type: selectedValue } });
+  }
+
+  getFilterFields() {
+    this.renewalService.getRenewalFilterFields(this.licenseType).pipe(take(1)).subscribe(data => {
+      this.filterFields = data.data;
+      this.updateFilterFieldValues();
+    })
+  }
+
+  updateFilterFieldValues() {
+    // Assign the values of the queryParams to the filterFields
+    Object.keys(this.queryParams).forEach(key => {
+      const filterField = this.filterFields.find(field => field.name === key || field.name === `renewal_${key}`);
+      if (filterField) {
+        filterField.value = this.queryParams[key];
+      }
+    });
   }
 
   filterSubmitted(params: string) {

@@ -1,0 +1,28 @@
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+  <mat-tab label="Details">
+    <ng-template matTabContent>
+      <mat-card>
+        <mat-card-content>
+          <app-data-loader [fetchData]="loadData">
+
+            <ng-template #content let-application>
+              <app-key-value-display [object]="application"></app-key-value-display>
+            </ng-template>
+          </app-data-loader>
+
+        </mat-card-content>
+      </mat-card>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Timeline">
+    <ng-template matTabContent>
+      <mat-card>
+        <mat-card-content>
+          <app-application-timeline [applicationUuid]="id" [viewMode]="'full'" [isPortal]="false">
+          </app-application-timeline>
+        </mat-card-content>
+      </mat-card>
+    </ng-template>
+  </mat-tab>
+
+</mat-tab-group>
