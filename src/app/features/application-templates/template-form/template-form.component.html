@@ -221,6 +221,21 @@
                   [labelProperty]="'role_name'" [type]="'select'" [selection_mode]="'multiple'"></app-select-object>
               </div>
 
+              <!-- Required Data Fields -->
+              <div class="flex flex-col gap-1">
+                <label for="">Required Data Fields</label>
+                <p class="text-sm text-gray-500">
+                  Add field names that users must provide when moving an application to this stage.
+                  These will appear as required fields in the status update dialog.
+                </p>
+                <app-string-array-input
+                  [items]="stage.get('requiredData')?.value || []"
+                  [label]="'Required Data Field'"
+                  [placeholder]="'e.g., license_number, approval_date'"
+                  (valueChanged)="stage.get('requiredData')?.setValue($event)">
+                </app-string-array-input>
+              </div>
+
 
               <!-- Actions -->
               <div class="flex flex-col gap-2 p-1" formArrayName="actions">

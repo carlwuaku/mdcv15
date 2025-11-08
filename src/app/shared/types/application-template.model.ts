@@ -33,5 +33,6 @@ export interface ApplicationTemplateStageObject {
   description: string,
   allowedTransitions: string[],
   allowedUserRoles: string[],
-  actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[]
+  actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[],
+  requiredData?: string[]
 }

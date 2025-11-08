@@ -10,7 +10,7 @@ export interface ApplicationTimelineEntry {
   stage_data: ApplicationStageData | null;
   actions_executed: ApplicationActionExecuted[] | null;
   actions_results: ApplicationActionsResults | null;
-  submitted_data: { key: string, value: any }[] | null;
+  submitted_data: { name: string, value: any }[] | null;
   notes: string | null;
   ip_address: string | null;
   user_agent: string | null;

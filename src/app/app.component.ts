@@ -13,6 +13,7 @@ import { AppService } from './app.service';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { SecureImageService } from './core/services/secure-image/secure-image.service';
+import { NotifyService } from './core/services/notify/notify.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private secureImageService: SecureImageService,
     private authService: AuthService,
-    private dbService: HttpService,
+    private notify: NotifyService,
     private ar: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef, private media: MediaMatcher, private appService: AppService) {
     this.authService.checkLogin();
@@ -60,6 +61,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.notify.showLoading();
     this.authService.isLoggedIn$.subscribe(data => {
       if (data === this.isLoggedIn) return
       this.isLoggedIn = data;
@@ -67,6 +69,8 @@ export class AppComponent implements OnInit {
         this.authService.getUser().subscribe(data => {
           this.user = data;
         });
+        //get the app settings
+        this.appService.refreshAppSettings();
       }
     });
     this.mobileQuery = this.media.matchMedia('(max-width: 600px)');

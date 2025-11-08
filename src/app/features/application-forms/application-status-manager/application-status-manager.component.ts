@@ -78,7 +78,7 @@ export class ApplicationStatusManagerComponent implements OnChanges {
         name: "notes",
         value: "",
         type: "textarea",
-        label: "Notes",
+        label: "Notes (for internal use)",
         hint: "",
         options: [],
         required: false
@@ -87,16 +87,7 @@ export class ApplicationStatusManagerComponent implements OnChanges {
         name: "comments",
         value: "",
         type: "textarea",
-        label: "Comments",
-        hint: "",
-        options: [],
-        required: false
-      },
-      {
-        name: "reviewer_comments",
-        value: "",
-        type: "textarea",
-        label: "Reviewer Comments",
+        label: "Comments (to be displayed to the applicant)",
         hint: "",
         options: [],
         required: false
@@ -106,27 +97,27 @@ export class ApplicationStatusManagerComponent implements OnChanges {
         value: "",
         type: "file",
         label: "Attachments",
-        hint: "",
+        hint: "Any relevant documents",
         options: [],
         required: false,
         assetType: "documents"
       }
     ];
-    //TODO: add required data to each status stage
-    // status.actions.forEach(action => {
-    //   if (action.type === "email") {
-    //     fields.push({
-    //       name: action.config.template,
-    //       value: action.config.template,
-    //       type: "text",
-    //       label: action.config.template,
-    //       hint: action.config.subject,
-    //       options: [],
-    //       required: true
-    //     })
-    //   }
-    // })
-    //if the status has a config, get the config and show it in the dialog
+
+    // Add required data fields dynamically from the stage configuration
+    if (status.requiredData && Array.isArray(status.requiredData)) {
+      status.requiredData.forEach((fieldName: string) => {
+        fields.push({
+          name: fieldName,
+          value: "",
+          type: "textarea",
+          label: fieldName.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+          hint: `Please provide ${fieldName}`,
+          options: [],
+          required: true
+        });
+      });
+    }
     this.dialog.open(DialogFormComponent, {
       data: {
         fields,
@@ -135,8 +126,11 @@ export class ApplicationStatusManagerComponent implements OnChanges {
       },
       height: '90vh',
       width: '90vw'
-    }).afterClosed().subscribe((data: IFormGenerator[]) => {
+    }).afterClosed().subscribe((data: IFormGenerator[] | false) => {
       //get an object of the name and value of the fields
+      if (!data) {
+        return;
+      }
       const statusData = data.reduce((acc: { name: string, value: string }[], curr) => {
         acc.push({ name: curr.name, value: curr.value })
         return acc;

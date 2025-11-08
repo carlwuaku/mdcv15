@@ -83,7 +83,7 @@
           [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'">
+    <mat-form-field class="flex-auto" *ngSwitchCase="'textarea'" appearance="outline">
 
       <textarea class="flex-auto" [required]="field.required" matInput [(ngModel)]="field.value"
         name="{{field.name}}"></textarea>

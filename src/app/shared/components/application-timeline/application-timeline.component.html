@@ -84,7 +84,7 @@
                 </div>
                 <div *ngIf="isExpanded(entry.id)" class="section-content">
                   <div *ngFor="let item of entry.submitted_data" class="data-item">
-                    <strong>{{ item.key }}:</strong>
+                    <strong>{{ item.name }}:</strong>
                     <span>{{ item.value }}</span>
                   </div>
                 </div>

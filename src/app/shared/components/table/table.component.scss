@@ -1,81 +1,45 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-
-th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.filter-container {
-  padding: 16px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
-
-  .filter-field {
-    width: 100%;
-    max-width: 500px;
-  }
-}
-
-.table-wrapper {
+// Table cell borders and hover effects
+table {
+  border-collapse: collapse;
   width: 100%;
 
-  table {
-    width: 100%;
+  th,
+  td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 16px;
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    border-bottom: 2px solid #d0d0d0;
+  }
+
+  tr.mat-mdc-row {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
   }
 }
 
-.edit-field {
-  margin: 2px;
+.status-Pending {
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 14px;
+  background-color: #ffc107;
+  color: black;
+  font-weight: bold;
 }
 
-// Sticky first column styling
-.first-column-sticky {
-  position: sticky !important;
-  left: 0;
-  z-index: 10;
-  background-color: white;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
-}
-
-// Make sure header cells have higher z-index when both sticky header and column are enabled
-.mat-mdc-header-cell.first-column-sticky {
-  z-index: 100 !important;
-  background-color: white;
-}
-
-// Sticky header row styling
-.mat-mdc-header-row {
-  background-color: white;
-
-  .mat-mdc-header-cell {
-    background-color: white;
-  }
-}
-
-// Ensure proper background colors for cells
-.mat-mdc-cell,
-.mat-mdc-header-cell {
-  &.first-column-sticky {
-    background-color: white;
-  }
-}
-
-// For striped rows, maintain background color on sticky columns
-tr.mat-mdc-row:nth-child(even) {
-  .first-column-sticky {
-    background-color: #fafafa;
-  }
-}
-
-tr.mat-mdc-row:hover {
-  .first-column-sticky {
-    background-color: rgba(0, 0, 0, 0.04);
-  }
+.status-Approved,
+.status-Paid {
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 14px;
+  background-color: #e8f5e9;
+  color: black;
+  font-weight: bold;
 }

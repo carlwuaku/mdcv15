@@ -37,6 +37,9 @@ export class AppService {
   });
   constructor(
     private dbService: HttpService) {
+    this.refreshAppSettings();
+  }
+  refreshAppSettings() {
     this.dbService.get<AppSettings>(API_PATH + '/app-settings').subscribe({
       next: (response) => {
         this.appSettings.next(response)

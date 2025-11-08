@@ -424,6 +424,7 @@ export class TemplateFormComponent implements OnInit {
       name: ['', Validators.required],
       description: [''],
       allowedTransitions: [[]],
+      requiredData: [[]],
       actions: this.fb.array([])
     });
 
@@ -775,6 +776,7 @@ export class TemplateFormComponent implements OnInit {
             description: [stage.description],
             allowedTransitions: [stage.allowedTransitions],
             allowedUserRoles: [stage.allowedUserRoles],
+            requiredData: [stage.requiredData || []],
             actions: this.fb.array([])
           });
 

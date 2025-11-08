@@ -1,12 +1,18 @@
 <div mat-dialog-title>
-  <h1 [innerHTML]="title"></h1>
+  <div class="flex justify-between items-center">
+    <h1 [innerHTML]="title"></h1>
+    <button submitButton mat-icon-button color="warn" type="button" [mat-dialog-close]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
 </div>
 <div mat-dialog-content>
   <app-form-generator *ngIf="formType === 'filter' || formType === 'emit' || url" [url]="url" [fields]="fields"
     [formType]="formType" (emitFields)="formSubmitted($event)" (onSubmit)="formSubmitted($event)" [id]="id">
-    <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
+    <!-- <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
       Cancel
-    </button>
+    </button> -->
   </app-form-generator>
 
 </div>
