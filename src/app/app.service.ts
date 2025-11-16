@@ -19,6 +19,7 @@ export class AppService {
     renewalBasicStatisticsFilterFields: [],
     basicStatisticsFilterFields: [],
     advancedStatisticsFilterFields: [],
+    basicStatisticsFields: [],
     searchTypes: [],
     licenseTypes: {},
     cpdFilterFields: [],

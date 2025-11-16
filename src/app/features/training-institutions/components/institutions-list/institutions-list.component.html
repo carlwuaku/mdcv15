@@ -1,0 +1,22 @@
+<div class="container-fluid">
+  <div class="row mb-3">
+    <div class="col-12">
+      <h2>Training Institutions</h2>
+    </div>
+  </div>
+
+
+
+  <mat-card>
+    <mat-card-content>
+      <app-load-data-list [url]="url" [timestamp]="ts" [getActions]="getActions" (onSelect)="setSelectedItems($event)"
+        [showAllFilters]="true" [showSearch]="false">
+        <ng-template #selectionOptions>
+          <div class="flex gap-1 items-center">
+            <app-export-table [objects]="selectedItems"></app-export-table>
+          </div>
+        </ng-template>
+      </app-load-data-list>
+    </mat-card-content>
+  </mat-card>
+</div>

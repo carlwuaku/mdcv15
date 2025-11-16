@@ -9,6 +9,7 @@ import { SearchComponent } from './core/pages/search/search.component';
 import { PageNotFoundComponent } from './core/pages/page-not-found/page-not-found.component';
 import { ForgotPasswordComponent } from './core/pages/forgot-password/forgot-password.component';
 import { EnableTwoFactorAuthenticationComponent } from './core/pages/enable-two-factor-authentication/enable-two-factor-authentication.component';
+import { InstitutionsListComponent } from './features/training-institutions/components/institutions-list/institutions-list.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,12 @@ const routes: Routes = [
     data: { title: 'Dashboard' },
     resolve: { userData: UserResolver },
     component: DashboardComponent, canActivate: [authGuard]
+  },
+  {
+    path: 'training',
+    data: { title: 'Dashboard' },
+    resolve: { userData: UserResolver },
+    component: InstitutionsListComponent, canActivate: [authGuard]
   },
   {
     path: 'login',
@@ -54,7 +61,8 @@ const routes: Routes = [
   { path: 'print-templates', resolve: { userData: UserResolver }, data: { title: 'Templates' }, loadChildren: () => import('./features/print-templates/print-templates.module').then(m => m.PrintTemplatesModule) },
   { path: 'housemanship', resolve: { userData: UserResolver }, data: { title: 'Housemanship' }, loadChildren: () => import('./features/housemanship/housemanship.module').then(m => m.HousemanshipModule) },
   { path: 'examinations', resolve: { userData: UserResolver }, data: { title: 'Examinations' }, loadChildren: () => import('./features/examinations/examinations.module').then(m => m.ExaminationsModule) },
-  { path: 'payment', loadChildren: () => import('./features/payment/payment.module').then(m => m.PaymentModule) },
+  { path: 'payment', resolve: { userData: UserResolver }, data: { title: 'Payments' }, loadChildren: () => import('./features/payment/payment.module').then(m => m.PaymentModule) },
+  { path: 'training-institutions', resolve: { userData: UserResolver }, data: { title: 'Training Institutions' }, loadChildren: () => import('./features/training-institutions/training-institutions.module').then(m => m.TrainingInstitutionsModule) },
   {
     path: '**',
     component: PageNotFoundComponent

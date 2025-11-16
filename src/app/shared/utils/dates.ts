@@ -244,6 +244,10 @@ export function getMonthsNoPad(): Month[] {
   return months;
 }
 
+export function getMonthsAsKeyValueObjects(): { key: string, value: string }[] {
+  return getMonthsNoPad().map(month => ({ key: month.name, value: month.id }))
+}
+
 /**
  * get the number of years past from the given date
  * @param dateString the date of birth

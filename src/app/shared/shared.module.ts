@@ -68,6 +68,8 @@ import { FilterByPermissionsPipe } from './pipes/filter-by-permissions.pipe';
 import { SecureImageComponent } from './components/secure-image/secure-image.component';
 import { ApplicationTimelineComponent } from './components/application-timeline/application-timeline.component';
 import { DataLoaderComponent } from './components/data-loader/data-loader.component';
+import { RemoveUnderscorePipe } from './pipes/remove-underscore.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -126,7 +128,9 @@ import { DataLoaderComponent } from './components/data-loader/data-loader.compon
     FilterByPermissionsPipe,
     SecureImageComponent,
     ApplicationTimelineComponent,
-    DataLoaderComponent
+    DataLoaderComponent,
+    RemoveUnderscorePipe,
+    CapitalizePipe
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -201,7 +205,9 @@ import { DataLoaderComponent } from './components/data-loader/data-loader.compon
     FilterByPermissionsPipe,
     SecureImageComponent,
     ApplicationTimelineComponent,
-    DataLoaderComponent
+    DataLoaderComponent,
+    RemoveUnderscorePipe,
+    CapitalizePipe
   ],
   providers: [
     ClipboardCopyDirective
