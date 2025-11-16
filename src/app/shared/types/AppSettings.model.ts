@@ -14,6 +14,7 @@ export interface AppSettings {
   renewalBasicStatisticsFilterFields: IFormGenerator[],
   basicStatisticsFilterFields: IFormGenerator[],
   advancedStatisticsFilterFields: IFormGenerator[],
+  basicStatisticsFields: BasicStatisticField[],
   searchTypes: MenuItem[],
   licenseTypes: {
     [key: string]: {
