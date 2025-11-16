@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <div class="row mb-3">
+    <div class="col-12">
+      <h2>{{ title }}</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <app-form-generator *ngIf="loaded" [fields]="fields" [url]="formUrl" [existingObjectUrl]="existingUrl"
+        [extraData]="extraFormData" (onSubmit)="formSubmitted($event)" [id]="uuid">
+      </app-form-generator>
+    </div>
+  </div>
+</div>

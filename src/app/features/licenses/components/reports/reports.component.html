@@ -6,6 +6,9 @@
       <app-loading *ngIf="basicReportsLoading"></app-loading>
     </div>
     <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{licenseType | removeUnderscore | titlecase}}</mat-card-title>
+      </mat-card-header>
       <mat-card-content class="flex flex-col gap-2">
         <app-section-container [title]="'Filters'">
           <app-form-generator [fields]="basicReportsFilters" [formType]="'emit'"

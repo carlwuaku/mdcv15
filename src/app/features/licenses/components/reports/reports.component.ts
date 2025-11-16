@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LicensesService } from '../../licenses.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -30,33 +30,40 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit(): void {
-    this.ar.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+    combineLatest([
+      this.ar.queryParams,
+      this.ar.paramMap
+    ]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([queryParams, params]) => {
 
-      this.queryParams = params;
-      if (this.licenseType) {
-        // this.getBasicReports();
-        // this.getTotal();
-        this.appService.appSettings.pipe(take(1)).subscribe(data => {
-          this.basicReportsFilters = [...data?.basicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields];
-          this.availableFields = data?.licenseTypes[this.licenseType]?.basicStatisticsFields ?? [];
-          this.selectedField = [this.availableFields[0]?.name];
-          this.childFilterNames = data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields.map((filter) => filter.name);
-          //populate the filters with the query param values
-          this.basicReportsFilters.map((filter: IFormGenerator) => {
-            if (this.queryParams[filter.name] || this.queryParams[`child_${filter.name}`]) {
-              const value = this.queryParams[filter.name] ? this.queryParams[filter.name] : this.queryParams[`child_${filter.name}`];
-              if (filter.selection_mode === 'multiple') {
-                filter.value = value.split(',');
-              }
-              else {
-                filter.value = value;
-              }
+      this.licenseType = params.get('type')!;
+      this.queryParams = queryParams;
+      this.appService.appSettings.pipe(take(1)).subscribe(data => {
+        this.basicReportsFilters = [...data?.basicStatisticsFilterFields, ...data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields];
+        this.availableFields = data?.licenseTypes[this.licenseType]?.basicStatisticsFields ?? [];
+        if (data?.basicStatisticsFields) {
+          this.availableFields = [...data?.basicStatisticsFields, ...data?.licenseTypes[this.licenseType]?.basicStatisticsFields];
+        }
+        this.selectedField = [this.availableFields[0]?.name];
+        this.childFilterNames = data?.licenseTypes[this.licenseType]?.basicStatisticsFilterFields.map((filter) => filter.name);
+        //populate the filters with the query param values
+        this.basicReportsFilters.map((filter: IFormGenerator) => {
+          if (this.queryParams[filter.name] || this.queryParams[`child_${filter.name}`]) {
+            const value = this.queryParams[filter.name] ? this.queryParams[filter.name] : this.queryParams[`child_${filter.name}`];
+            if (filter.selection_mode === 'multiple') {
+              filter.value = value.split(',');
+            }
+            else {
+              filter.value = value;
             }
           }
-          );
-        })
-      }
+        }
+        );
+      })
     });
+
+
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);

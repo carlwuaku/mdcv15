@@ -51,6 +51,7 @@ export class DataLoaderComponent<T = any> implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Extract ID from route params
     this.ar.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      console.log(params.get(this.idParamName));
       this.id = params.get(this.idParamName);
       if (this.autoLoad && this.id) {
         this.loadData();
