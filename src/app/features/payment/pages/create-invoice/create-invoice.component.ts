@@ -5,14 +5,12 @@ import { LicenseObject } from 'src/app/features/licenses/models/license_model';
 import { EditableColumn } from 'src/app/shared/components/table/table.component';
 import { getLabel, matchesCriteria } from 'src/app/shared/utils/helper';
 import { FeesObject } from '../../models/FeesModel';
-import { InvoiceItemObject } from '../../models/InvoiceItem';
+import { InvoiceItemObject, InvoiceItemTableObject } from '../../models/InvoiceItem';
 import { AppService } from 'src/app/app.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { PaymentService } from '../../payment.service';
-import { Role } from 'src/app/features/admin/models/roles.model';
 import { DataActionsButton } from 'src/app/shared/components/load-data-list/data-actions-button.interface';
 import { MatDatepickerComponent } from 'src/app/shared/material-components/mat-datepicker/mat-datepicker.component';
-type InvoiceItemTableObject = InvoiceItemObject & { actions: DataActionsButton[] };
 @Component({
   selector: 'app-create-invoice',
   templateUrl: './create-invoice.component.html',
@@ -155,6 +153,24 @@ export class CreateInvoiceComponent implements OnInit, OnDestroy {
       }
     })
   }
+  itemQuantityChanged(event: {
+    row: InvoiceItemTableObject;
+    field: string;
+    oldValue: string;
+    newValue: string;
+  }) {
+    if (!event || !event.row || !event.row.name || !event.newValue.trim()) {
+      return
+    }
+    this.additionalFees.forEach((fee) => {
+      if (fee.name === event.row.name) {
+        fee.quantity = parseFloat(event.newValue);
+        fee.line_total = fee.quantity * fee.unit_price;
+      }
+    })
+    this.setAdditionalFeesTableDataSource();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

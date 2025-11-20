@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, Template
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { getLabel, matchesCriteria } from 'src/app/shared/utils/helper';
-import { InvoiceItemObject } from '../../models/InvoiceItem';
+import { InvoiceItemObject, InvoiceItemTableObject } from '../../models/InvoiceItem';
 import { MatTableDataSource } from '@angular/material/table';
 import { EditableColumn } from 'src/app/shared/components/table/table.component';
 import { FeesObject } from '../../models/FeesModel';
@@ -154,5 +154,23 @@ export class GenerateInvoiceComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  itemQuantityChanged(event: {
+    row: InvoiceItemTableObject;
+    field: string;
+    oldValue: string;
+    newValue: string;
+  }) {
+    if (!event || !event.row || !event.row.name || !event.newValue.trim()) {
+      return
+    }
+    this.additionalFees.forEach((fee) => {
+      if (fee.name === event.row.name) {
+        fee.quantity = parseFloat(event.newValue);
+        fee.line_total = fee.quantity * fee.unit_price;
+      }
+    })
+    this.setAdditionalFeesTableDataSource();
   }
 }

@@ -22,7 +22,8 @@
     <mat-card-content>
       <div class="flex flex-col gap-1">
 
-        <app-mat-datepicker #datePicker [label]="'Invoice date'" (onFinish)="setDueDate($event)"></app-mat-datepicker>
+        <app-mat-datepicker #datePicker [label]="'Invoice payment deadline date'"
+          (onFinish)="setDueDate($event)"></app-mat-datepicker>
         <mat-divider></mat-divider>
         <mat-form-field appearance="outline">
           <mat-label>Description of the invoice</mat-label>
@@ -40,8 +41,8 @@
 
         <app-section-container title="Invoice details" childStyle=" overflow-auto">
           <app-table [useVirtualScroll]="false" [columnLabels]="columnLabels" [dataSource]="tableDataSource"
-            [displayedColumns]="displayedColumns" [editableColumns]="editableColumns"
-            [enableInlineEditing]="true"></app-table>
+            [displayedColumns]="displayedColumns" [editableColumns]="editableColumns" [enableInlineEditing]="true"
+            (onCellValueChange)="itemQuantityChanged($event)"></app-table>
         </app-section-container>
       </div>
     </mat-card-content>

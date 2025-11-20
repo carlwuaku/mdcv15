@@ -42,9 +42,8 @@
     <ng-content select="[submitButton]"></ng-content>
     <button type="button" *ngIf="showResetButton" mat-stroked-button color="warn"
       (click)="resetForm()">{{resetButtonText}}</button>
-
     <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="primary"
-      [disabled]="!isFilterFormValid()">{{submitButtonText}}</button>
+      [disabled]="submitting || !isFilterFormValid()">{{submitting ? 'Submitting...' : submitButtonText}}</button>
 
   </div>
 </form>

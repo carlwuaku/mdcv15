@@ -7,6 +7,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { FieldTemplateDirective } from '../form-generator/form-generator.component';
 import { TableLegendType } from './tableLegend.model';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogKeyValueDisplayComponent } from '../dialog-key-value-display/dialog-key-value-display.component';
 
 export interface EditableColumn {
   field: string;
@@ -53,7 +55,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Input() stickyFirstColumn: boolean = false;
   filterValue: string = '';
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
   ngAfterViewInit(): void {
     if (this.enableSorting) {
       this.dataSource.sort = this.sort;
@@ -139,6 +141,29 @@ export class TableComponent implements OnInit, AfterViewInit {
     // htmlStructure.test(str);
   }
 
+  isImage(content: string | null): boolean {
+    // Check if the content is an image URL or a base64-encoded image
+    if (typeof content !== 'string') {
+      return false
+    }
+    return !content ? false : content.startsWith('data:image/') || (this.isLink(content) && (content.endsWith('.png') || content.endsWith('.jpg') || content.endsWith('.jpeg')));
+  }
+
+  isJson(content: string): boolean {
+    try {
+      if (content == null || typeof content !== 'string') {
+        return false;
+      }
+
+      const parsed = JSON.parse(content);
+
+      // Only return true if it's an object or array
+      return typeof parsed === 'object' && parsed !== null;
+    } catch (e) {
+      return false;
+    }
+  }
+
   getRowClasses(row: any) {
     const classes: { [key: string]: boolean } = {
       'strikethrough': row.deleted_at
@@ -154,6 +179,12 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   viewHtml(html: string) {
     openHtmlInNewWindow(html);
+  }
+
+  viewJson(json: string, title: string) {
+    this.dialog.open(DialogKeyValueDisplayComponent, {
+      data: { object: JSON.parse(json), title: replaceSpaceWithUnderscore(title) }
+    })
   }
 
   public clearSelection() {

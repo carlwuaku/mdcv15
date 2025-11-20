@@ -160,7 +160,7 @@
                     class="edit-field">
                     <input matInput [value]="element[column]" #inputRef
                       (blur)="onCellEdit(element, column, inputRef.value)"
-                      (keyup.enter)="onCellEdit(element, column, inputRef.value)">
+                      (keyup)="onCellEdit(element, column, inputRef.value)">
                   </mat-form-field>
 
                   <!-- Number Input -->
@@ -168,7 +168,7 @@
                     class="edit-field">
                     <input matInput type="number" [value]="element[column]" #numInputRef
                       (blur)="onCellEdit(element, column, numInputRef.value)"
-                      (keyup.enter)="onCellEdit(element, column, numInputRef.value)">
+                      (keyup)="onCellEdit(element, column, numInputRef.value)">
                   </mat-form-field>
 
                   <!-- Select Dropdown -->
@@ -200,15 +200,20 @@
 
               <!-- Read-only Cell -->
               <ng-template #readOnlyCell>
-                <a mat-stroked-button color="primary" *ngIf="isLink(element[column])" [href]="element[column]"
-                  target="_blank">Open
-                  link</a>
-                <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
-                  *ngIf="isHtml(element[column])">View</button>
-                <div *ngIf="!isLink(element[column]) && !isHtml(element[column])" class="truncate ellipsis"
-                  [innerHTML]="element[column]"
-                  [class]="getColumnClass(column+'-'+ replaceSpaceWithUnderscore(element[column]))">
-                </div>
+                <span *ngIf="isImage(element[column]); else notImage" [ngTemplateOutlet]="imageTemplate"></span>
+                <ng-template #notImage>
+                  <a mat-stroked-button color="primary" *ngIf="isLink(element[column])" [href]="element[column]"
+                    target="_blank">Open
+                    link</a>
+                  <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
+                    *ngIf="isHtml(element[column])">View</button>
+                  <button mat-flat-button color="primary" (click)="viewJson(element[column], column)"
+                    *ngIf="isJson(element[column])">View</button>
+                  <div *ngIf="!isLink(element[column]) && !isHtml(element[column]) && !isJson(element[column])"
+                    class="truncate ellipsis" [innerHTML]="element[column]"
+                    [class]="getColumnClass(column+'-'+ replaceSpaceWithUnderscore(element[column]))">
+                  </div>
+                </ng-template>
               </ng-template>
             </ng-container>
           </span>

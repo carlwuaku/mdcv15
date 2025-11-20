@@ -1,3 +1,5 @@
+import { DataActionsButton } from "src/app/shared/components/load-data-list/data-actions-button.interface";
+
 export interface InvoiceItemObject {
   id: string;
   name: string;
@@ -6,3 +8,4 @@ export interface InvoiceItemObject {
   unit_price: number;
   line_total: number;
 }
+export type InvoiceItemTableObject = InvoiceItemObject & { actions: DataActionsButton[] };
