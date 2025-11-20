@@ -70,6 +70,7 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
 
   // Leave empty to search all properties
   @Input() filterProperties: string[] = [];
+  submitting: boolean = false;
   constructor(private notify: NotifyService,
     private dbService: HttpService, private datePipe: DatePipe, private fileUploadService: FileUploadService) {
     this.formId = uuidv4();
@@ -247,6 +248,7 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
         data.append(item.key, item.value)
       }
     });
+
     let dbCall = this.dbService.post<any>(this.url, data)
     if (this.id) {
       if (this.sendAsJson) {
@@ -257,19 +259,19 @@ export class FormGeneratorComponent implements OnInit, OnChanges, AfterContentIn
       }
       dbCall = this.dbService.put<any>(this.url, data);
     }
-
+    this.submitting = true;
 
     dbCall.pipe(take(1)).subscribe({
       next: data => {
         this.notify.successNotification('Submitted successfully');
         this.onSubmit.emit(true)
-
+        this.submitting = false;
 
       },
       error: error => {
         this.notify.hideLoading();
         // this.notify.noConnectionNotification();
-
+        this.submitting = false;
         console.log(error);
 
       }

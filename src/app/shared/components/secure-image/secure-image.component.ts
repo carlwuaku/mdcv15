@@ -26,6 +26,13 @@ export class SecureImageComponent implements OnInit, OnDestroy {
   constructor(private secureImageService: SecureImageService) { }
 
   ngOnInit(): void {
+    //if file path does not contain file-server, it's not a secure image
+    if (!this.filename?.includes('file-server')) {
+      this.imageUrl = this.filename;
+      this.error = true;
+      this.loading = false;
+      return;
+    }
     if (!this.imageType) {
       //check if the filename is a path. if it is, then the last part of the path is the filename and last but one is the imageType
       //http://localhost:8080/file-server/image-render/applications/1762017079_f95807b21b7ffe5dc134.jpg

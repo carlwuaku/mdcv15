@@ -117,3 +117,17 @@ export function findFormField(fields: (IFormGenerator | IFormGenerator[])[], nam
   }
   return undefined;
 }
+
+export function reorderFormFields(fields: (IFormGenerator | IFormGenerator[])[], keys: string[]) {
+  // re-order the fields so that the keys, if they exist in the field names, have their corresponding fields moved to the top of the list in the same order
+  const orderedFields: (IFormGenerator | IFormGenerator[])[] = [];
+  for (const key of keys) {
+    const field = findFormField(fields, key);
+    if (field) {
+      orderedFields.push(field);
+      fields.splice(fields.indexOf(field), 1);
+    }
+  }
+  orderedFields.push(...fields);
+  return orderedFields;
+}

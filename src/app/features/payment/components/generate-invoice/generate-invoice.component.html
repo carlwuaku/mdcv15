@@ -60,8 +60,8 @@
 
     <app-section-container title="Invoice details" childStyle=" overflow-auto">
       <app-table [useVirtualScroll]="false" [columnLabels]="columnLabels" [dataSource]="tableDataSource"
-        [displayedColumns]="displayedColumns" [editableColumns]="editableColumns"
-        [enableInlineEditing]="true"></app-table>
+        [displayedColumns]="displayedColumns" [editableColumns]="editableColumns" [enableInlineEditing]="true"
+        (onCellValueChange)="itemQuantityChanged($event)"></app-table>
     </app-section-container>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
