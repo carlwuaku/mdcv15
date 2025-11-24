@@ -13,15 +13,17 @@ export class DialogFormComponent {
   title: string = "";
   url: string = "";
   id: string = "";
+  extraData: { key: string, value: any }[] = [];
   constructor(
     public dialogRef: MatDialogRef<DialogFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { fields: IFormGenerator[], formType: "submit" | "filter" | "emit", title: string, url?: string, id?: string }) {
+    @Inject(MAT_DIALOG_DATA) public data: { fields: IFormGenerator[], formType: "submit" | "filter" | "emit", title: string, url?: string, id?: string, extraData?: { key: string, value: any }[] }) {
 
     this.formType = data.formType;
     this.fields = data.fields;
     this.title = data.title;
     this.url = data.url || "";
     this.id = data.id || "";
+    this.extraData = data.extraData || [];
   }
 
   ngOnInit() {

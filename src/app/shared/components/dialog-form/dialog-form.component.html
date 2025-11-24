@@ -9,7 +9,8 @@
 </div>
 <div mat-dialog-content>
   <app-form-generator *ngIf="formType === 'filter' || formType === 'emit' || url" [url]="url" [fields]="fields"
-    [formType]="formType" (emitFields)="formSubmitted($event)" (onSubmit)="formSubmitted($event)" [id]="id">
+    [formType]="formType" (emitFields)="formSubmitted($event)" (onSubmit)="formSubmitted($event)" [id]="id"
+    [extraData]="extraData">
     <!-- <button submitButton mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
       Cancel
     </button> -->
