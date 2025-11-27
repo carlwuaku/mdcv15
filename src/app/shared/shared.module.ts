@@ -70,6 +70,7 @@ import { ApplicationTimelineComponent } from './components/application-timeline/
 import { DataLoaderComponent } from './components/data-loader/data-loader.component';
 import { RemoveUnderscorePipe } from './pipes/remove-underscore.pipe';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { JsonStringifyPipe } from './components/json-stringify.pipe';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -130,7 +131,8 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
     ApplicationTimelineComponent,
     DataLoaderComponent,
     RemoveUnderscorePipe,
-    CapitalizePipe
+    CapitalizePipe,
+    JsonStringifyPipe
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -207,7 +209,8 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
     ApplicationTimelineComponent,
     DataLoaderComponent,
     RemoveUnderscorePipe,
-    CapitalizePipe
+    CapitalizePipe,
+    JsonStringifyPipe
   ],
   providers: [
     ClipboardCopyDirective

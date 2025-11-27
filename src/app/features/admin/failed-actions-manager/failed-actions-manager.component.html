@@ -1,0 +1,169 @@
+<div class="failed-actions-manager">
+  <div class="header">
+    <div class="title-section">
+      <h2>Failed Actions Manager</h2>
+      <p class="subtitle">Monitor and retry failed application form actions</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="cleanup()">
+      <mat-icon>delete_sweep</mat-icon>
+      Cleanup Old Resolved
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-cards">
+    <mat-card class="stat-card failed">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>error</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.failed }}</div>
+          <div class="stat-label">Failed</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card retrying">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>refresh</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.retrying }}</div>
+          <div class="stat-label">Retrying</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card resolved">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.resolved }}</div>
+          <div class="stat-label">Resolved</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card total">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>view_list</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.total }}</div>
+          <div class="stat-label">Total</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Data List -->
+  <app-load-data-list
+    [url]="url"
+    [columnLabels]="columnLabels"
+    [getActions]="getActions"
+    [specialClasses]="specialClasses"
+    [preload]="true"
+    [showDeleted]="true"
+    [limit]="20"
+    tableTitle="Failed Actions">
+  </app-load-data-list>
+
+  <!-- Details Sidebar -->
+  <div class="details-sidebar" [class.open]="showDetails" *ngIf="selectedAction">
+    <div class="sidebar-header">
+      <h3>Action Details</h3>
+      <button mat-icon-button (click)="closeDetails()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Basic Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-row">
+            <strong>ID:</strong>
+            <span>{{ selectedAction.id }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Application UUID:</strong>
+            <span>{{ selectedAction.application_uuid || 'N/A' }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Status:</strong>
+            <span class="status-badge" [ngClass]="selectedAction.status">{{ selectedAction.status }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Retry Count:</strong>
+            <span>{{ selectedAction.retry_count }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Created:</strong>
+            <span>{{ selectedAction.created_at | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="selectedAction.last_retry_at">
+            <strong>Last Retry:</strong>
+            <span>{{ selectedAction.last_retry_at | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="selectedAction.resolved_at">
+            <strong>Resolved:</strong>
+            <span>{{ selectedAction.resolved_at | date:'medium' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Error Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-section">
+            <strong>Error Message:</strong>
+            <pre class="code-block">{{ selectedAction.error_message }}</pre>
+          </div>
+          <div class="detail-section" *ngIf="selectedAction.error_trace">
+            <strong>Stack Trace:</strong>
+            <pre class="code-block trace">{{ selectedAction.error_trace }}</pre>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Action Configuration</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="code-block">{{ formatJson(selectedAction.action_config) }}</pre>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Action Data</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="code-block">{{ formatJson(selectedAction.action_data) }}</pre>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="sidebar-actions">
+        <button mat-raised-button color="accent" (click)="retryAction(selectedAction)"
+          [disabled]="selectedAction.status === 'resolved'">
+          <mat-icon>refresh</mat-icon>
+          Retry Action
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteAction(selectedAction); closeDetails()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
