@@ -29,6 +29,14 @@ export interface IFormGenerator {
   placeholder?: string;
   file_types?: string; //comma separated. e.g. "jpg,png" used when type is 'file'. specifies the allowed file types
   assetType?: string;
+  maxFileSize?: number;
+  useBase64ForFiles?: boolean;
+  jsonType?: "object" | "array";
+  jsonSchema?: any;
+  jsonArrayCount?: number;
+  jsonEditorMode?: "visual" | "text";
+  jsonAllowAddingItems?: boolean;
+  allowKeysEditing?: boolean;
 }
 
 export class FormField implements IFormGenerator {
@@ -58,6 +66,14 @@ export class FormField implements IFormGenerator {
   customTemplate?: string; //an ng-template to be used to render the field. it should update the value of the field when the template changes
   placeholder?: string;
   assetType?: string | undefined;
+  maxFileSize?: number;
+  useBase64ForFiles?: boolean | undefined;
+  jsonType?: 'object' | 'array' | undefined;
+  jsonSchema?: any;
+  jsonArrayCount?: number;
+  jsonEditorMode?: "visual" | "text" = "visual";
+  jsonAllowAddingItems?: boolean | undefined;
+  jsonallowKeysEditing?: boolean | undefined;
   constructor(type: string) {
     this.type = type;
     this.key = uuidv4();
