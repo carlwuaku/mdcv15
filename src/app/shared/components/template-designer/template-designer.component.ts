@@ -98,6 +98,12 @@ export class TemplateDesignerComponent implements AfterContentInit {
   printDPI = 150; // Use 150 DPI for good balance of quality and performance
   mmToPixelRatio = this.printDPI / 25.4; // 25.4mm = 1 inch
 
+  // Zoom functionality
+  zoomLevel = 1;
+  minZoom = 0.1;
+  maxZoom = 5;
+  zoomStep = 0.1;
+
   constructor(private notify: NotifyService) {
 
   }
@@ -113,6 +119,11 @@ export class TemplateDesignerComponent implements AfterContentInit {
     }
     this.updateCanvasDimensions(this.pageWidth, this.pageHeight);
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+    // Set default zoom to fit screen after canvas is rendered
+    setTimeout(() => {
+      this.fitToScreen();
+    }, 100);
   }
 
 
@@ -813,8 +824,8 @@ export class TemplateDesignerComponent implements AfterContentInit {
       this.isDragging = true;
       const rect = this.canvasRef.nativeElement.getBoundingClientRect();
       this.dragStart = {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
+        x: (event.clientX - rect.left) / this.zoomLevel,
+        y: (event.clientY - rect.top) / this.zoomLevel
       };
     }
   }
@@ -825,8 +836,8 @@ export class TemplateDesignerComponent implements AfterContentInit {
     this.resizeHandle = handle;
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     this.dragStart = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      x: (event.clientX - rect.left) / this.zoomLevel,
+      y: (event.clientY - rect.top) / this.zoomLevel
     };
   }
 
@@ -834,8 +845,8 @@ export class TemplateDesignerComponent implements AfterContentInit {
     if (this.tool !== 'select') return;
 
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    const currentX = event.clientX - rect.left;
-    const currentY = event.clientY - rect.top;
+    const currentX = (event.clientX - rect.left) / this.zoomLevel;
+    const currentY = (event.clientY - rect.top) / this.zoomLevel;
 
     if (this.isResizing && this.selectedElement && this.resizeHandle) {
       this.handleResize(currentX, currentY);
@@ -979,8 +990,8 @@ export class TemplateDesignerComponent implements AfterContentInit {
 
   private createElementAtPosition(event: MouseEvent) {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
+    let x = (event.clientX - rect.left) / this.zoomLevel;
+    let y = (event.clientY - rect.top) / this.zoomLevel;
 
     if (this.snapToGrid) {
       x = this.snapToGridFn(x - 50) + 50;
@@ -1174,6 +1185,36 @@ export class TemplateDesignerComponent implements AfterContentInit {
     );
 
     if (isEditingText) return;
+
+    // Print shortcut (Ctrl+P)
+    if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
+      this.printTemplate();
+      event.preventDefault();
+      return;
+    }
+
+    // Zoom shortcuts (work globally, not just when element is selected)
+    if (event.key === '+' || event.key === '=') {
+      this.zoomIn();
+      event.preventDefault();
+      return;
+    }
+    if (event.key === '-' || event.key === '_') {
+      this.zoomOut();
+      event.preventDefault();
+      return;
+    }
+    if (event.key === '0') {
+      this.resetZoom();
+      event.preventDefault();
+      return;
+    }
+    if (event.key === 'f' || event.key === 'F') {
+      this.fitToScreen();
+      event.preventDefault();
+      return;
+    }
+
     if (!this.selectedElement) return;
 
     const element = this.elements.find(el => el.id === this.selectedElement);
@@ -1891,5 +1932,138 @@ ${elementsHTML}
   private emitTemplateChange() {
     this.templateChange.emit(this.getTemplateData());
     this.htmlExport.emit(this.getHtml());
+  }
+
+  // Zoom methods
+  zoomIn() {
+    const newZoom = Math.min(this.zoomLevel + this.zoomStep, this.maxZoom);
+    this.setZoomLevel(newZoom);
+  }
+
+  zoomOut() {
+    const newZoom = Math.max(this.zoomLevel - this.zoomStep, this.minZoom);
+    this.setZoomLevel(newZoom);
+  }
+
+  resetZoom() {
+    this.setZoomLevel(1);
+  }
+
+  fitToScreen() {
+    if (!this.canvasRef) return;
+
+    // Get the wrapper div (parent of canvas)
+    const wrapper = this.canvasRef.nativeElement.parentElement;
+    if (!wrapper) return;
+
+    // Get the scrollable container (parent of wrapper)
+    const container = wrapper.parentElement;
+    if (!container) return;
+
+    const containerWidth = container.clientWidth - 64; // Subtract padding
+    const containerHeight = container.clientHeight - 64;
+
+    const scaleX = containerWidth / this.canvasWidth;
+    const scaleY = containerHeight / this.canvasHeight;
+
+    const optimalZoom = Math.min(scaleX, scaleY, this.maxZoom);
+    this.setZoomLevel(Math.max(optimalZoom, this.minZoom));
+  }
+
+  setZoomLevel(level: number) {
+    this.zoomLevel = Math.max(this.minZoom, Math.min(level, this.maxZoom));
+  }
+
+  getZoomPercentage(): number {
+    return Math.round(this.zoomLevel * 100);
+  }
+
+  // Print functionality
+  printTemplate() {
+    // Create a temporary container for printing
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      this.notify.failNotification('Please allow popups to print the template');
+      return;
+    }
+
+    // Get actual page dimensions
+    const actualPageWidth = this.orientation === 'portrait' ? this.pageWidth : this.pageHeight;
+    const actualPageHeight = this.orientation === 'portrait' ? this.pageHeight : this.pageWidth;
+
+    // Generate the HTML content
+    const htmlContent = this.generateHTML();
+
+    // Create print styles
+    const printStyles = `
+      <style>
+        @page {
+          size: ${actualPageWidth}mm ${actualPageHeight}mm;
+          margin: 0;
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          background: white;
+        }
+
+        .template-page {
+          width: ${this.canvasWidth}px;
+          height: ${this.canvasHeight}px;
+          position: relative;
+          background: white;
+          page-break-inside: avoid;
+        }
+
+        @media print {
+          body {
+            margin: 0;
+            padding: 0;
+          }
+
+          .template-page {
+            width: ${this.canvasWidth}px !important;
+            height: ${this.canvasHeight}px !important;
+          }
+        }
+      </style>
+    `;
+
+    // Build the complete HTML document
+    const fullHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Print Template</title>
+          ${printStyles}
+        </head>
+        <body>
+          ${htmlContent}
+        </body>
+      </html>
+    `;
+
+    // Write to the print window
+    printWindow.document.write(fullHtml);
+    printWindow.document.close();
+
+    // Wait for images to load before printing
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+        // Close the window after printing (user can cancel)
+        printWindow.onafterprint = () => {
+          printWindow.close();
+        };
+      }, 250);
+    };
   }
 }

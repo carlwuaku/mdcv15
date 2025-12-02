@@ -63,7 +63,23 @@
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>
-
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Institution Users</h3>
+                <button mat-raised-button color="primary" (click)="openCreateUserDialog()">
+                  <mat-icon>add</mat-icon>
+                  Create User
+                </button>
+              </div>
+              <app-load-data-list
+                [url]="usersListUrl"
+                [timestamp]="usersTimestamp"
+                [getActions]="getUserActions"
+                [showExport]="false"
+                [showPrint]="false"
+                tableTitle="Users">
+              </app-load-data-list>
+            </div>
           </mat-card-content>
         </mat-card>
       </ng-template>

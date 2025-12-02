@@ -500,6 +500,11 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Transform origin */
+.origin-top-left {
+  transform-origin: top left;
+}
+
 /* Special hover effects for borders */
 .hover\:border-gray-300:hover {
   border-color: rgb(209 213 219);

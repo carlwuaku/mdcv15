@@ -6,7 +6,7 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
 import { IFormGenerator } from 'src/app/shared/components/form-generator/form-generator-interface';
 import { ApplicationTemplatesService } from '../application-templates.service';
-import { ApplicationTemplateStageObject } from '../../../shared/types/application-template.model';
+import { ApplicationTemplateStageObject, InvoiceItem } from '../../../shared/types/application-template.model';
 import { FileUploadService } from 'src/app/core/services/http/file-upload.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormComponent } from 'src/app/shared/components/dialog-form/dialog-form.component';
@@ -441,17 +441,23 @@ export class TemplateFormComponent implements OnInit {
       config_type: ['api_call', Validators.required], // Default to API call
       config: this.fb.group({
         // Email configs
-        template: [''],
-        subject: [''],
-        admin_email: [''],
+        template: '',
+        subject: '',
+        admin_email: '',
 
         // API call configs
-        endpoint: [''],
-        method: ['GET'],
-        auth_token: [''],
+        endpoint: '',
+        method: 'GET',
+        auth_token: '',
         headers: this.fb.array([]),
         body_mapping: this.fb.array([]),
-        query_params: this.fb.array([])
+        query_params: this.fb.array([]),
+
+        // Payment/Invoice configs
+        payment_invoice_items: this.fb.array([]),
+        payment_purpose: ['application-fee'],
+        payment_description: ['Invoice for {{first_name}} {{last_name}}'],
+        payment_due_date_days: [30, Validators.min(1)],
       })
     });
 
@@ -650,6 +656,41 @@ export class TemplateFormComponent implements OnInit {
   }
 
   /**
+   * Get invoice items FormArray for a specific action
+   */
+  getInvoiceItemsArray(stageIndex: number, actionIndex: number): FormArray {
+    const action = this.getActions(stageIndex).at(actionIndex);
+    let itemsArray = action.get('config.payment_invoice_items') as FormArray;
+
+    if (!itemsArray) {
+      itemsArray = this.fb.array([]);
+      const configGroup = action.get('config') as FormGroup;
+      configGroup.addControl('payment_invoice_items', itemsArray);
+    }
+
+    return itemsArray;
+  }
+
+  /**
+   * Add a new invoice item
+   */
+  addInvoiceItem(stageIndex: number, actionIndex: number) {
+    const itemGroup = this.fb.group({
+      service_code: ['', Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]]
+    });
+
+    this.getInvoiceItemsArray(stageIndex, actionIndex).push(itemGroup);
+  }
+
+  /**
+   * Remove an invoice item
+   */
+  removeInvoiceItem(stageIndex: number, actionIndex: number, itemIndex: number) {
+    this.getInvoiceItemsArray(stageIndex, actionIndex).removeAt(itemIndex);
+  }
+
+  /**
    * Build API configuration object for submission
    */
   private buildApiConfig(config: any): any {
@@ -797,7 +838,15 @@ export class TemplateFormComponent implements OnInit {
                 // Complex configs as FormArrays
                 headers: this.fb.array([]),
                 body_mapping: this.fb.array([]),
-                query_params: this.fb.array([])
+                query_params: this.fb.array([]),
+
+                // Payment/Invoice configs
+                payment_invoice_items: this.fb.array([]),
+                payment_purpose: [action.config.payment_purpose || 'application-fee'],
+                payment_description: [action.config.payment_description || 'Invoice for {{first_name}} {{last_name}}'],
+                payment_due_date_days: [action.config.payment_due_date_days || 30, Validators.min(1)]
+
+
               })
             });
 
@@ -852,6 +901,17 @@ transform_type
                   param_name: [paramName],
                   form_field: [action.config.query_params[paramName].replace('@', '')],
                   default_value: ['']
+                }));
+              });
+            }
+
+            // Load payment invoice items if they exist
+            if (action.config.payment_invoice_items && Array.isArray(action.config.payment_invoice_items)) {
+              const invoiceItemsArray = actionGroup.get('config.payment_invoice_items') as FormArray;
+              action.config.payment_invoice_items.forEach((item: InvoiceItem) => {
+                invoiceItemsArray.push(this.fb.group({
+                  service_code: [item.service_code || '', Validators.required],
+                  quantity: [item.quantity || 1, [Validators.required, Validators.min(1)]]
                 }));
               });
             }

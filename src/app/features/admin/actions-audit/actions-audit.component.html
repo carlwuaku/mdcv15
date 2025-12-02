@@ -1,0 +1,168 @@
+<div class="actions-audit">
+  <div class="header">
+    <div class="title-section">
+      <h2>Actions Audit Trail</h2>
+      <p class="subtitle">Monitor successful action executions and performance metrics</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="cleanup()">
+      <mat-icon>delete_sweep</mat-icon>
+      Cleanup Old Records
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-cards">
+    <mat-card class="stat-card total">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.total | number }}</div>
+          <div class="stat-label">Total Actions</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card performance">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>speed</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.avg_execution_time_ms | number:'1.0-0' }}ms</div>
+          <div class="stat-label">Avg Execution Time</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card types">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>category</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.by_type.length }}</div>
+          <div class="stat-label">Action Types</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card recent">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.daily_stats.length }}</div>
+          <div class="stat-label">Active Days (30d)</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Top Action Types -->
+  <mat-card class="top-types-card" *ngIf="stats.by_type.length > 0">
+    <mat-card-header>
+      <mat-card-title>Top Action Types</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="types-list">
+        <div class="type-item" *ngFor="let type of getTopActionTypes()">
+          <span class="type-name">{{ type.action_type }}</span>
+          <span class="type-count">{{ type.count | number }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Data List -->
+  <app-load-data-list
+    [url]="url"
+    [columnLabels]="columnLabels"
+    [getActions]="getActions"
+    [specialClasses]="specialClasses"
+    [preload]="true"
+    [showDeleted]="true"
+    [limit]="100"
+    tableTitle="Action Audit Records">
+  </app-load-data-list>
+
+  <!-- Details Sidebar -->
+  <div class="details-sidebar" [class.open]="showDetails" *ngIf="selectedAudit">
+    <div class="sidebar-header">
+      <h3>Audit Record Details</h3>
+      <button mat-icon-button (click)="closeDetails()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Basic Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-row">
+            <strong>ID:</strong>
+            <span>{{ selectedAudit.id }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Application UUID:</strong>
+            <span>{{ selectedAudit.application_uuid || 'N/A' }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Action Type:</strong>
+            <span class="action-type-badge">{{ selectedAudit.action_type }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Execution Time:</strong>
+            <span>{{ selectedAudit.execution_time_ms }}ms</span>
+          </div>
+          <div class="detail-row">
+            <strong>Triggered By:</strong>
+            <span>{{ selectedAudit.triggered_by || 'System' }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Created:</strong>
+            <span>{{ selectedAudit.created_at | date:'medium' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Action Configuration</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="code-block">{{ formatJson(selectedAudit.action_config) }}</pre>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Action Data</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="code-block">{{ formatJson(selectedAudit.action_data) }}</pre>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card *ngIf="selectedAudit.action_result">
+        <mat-card-header>
+          <mat-card-title>Action Result</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="code-block">{{ formatJson(selectedAudit.action_result) }}</pre>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="sidebar-actions">
+        <button mat-raised-button color="warn" (click)="deleteAudit(selectedAudit); closeDetails()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

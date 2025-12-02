@@ -33,6 +33,9 @@ export interface ApplicationTemplateStageObject {
   description: string,
   allowedTransitions: string[],
   allowedUserRoles: string[],
-  actions: { type: string, config: { template: string, subject: string, endpoint: string, method: string, recipient_field: string } }[],
+  actions: { type: string, config: ApplicationTemplateStageActionConfig }[],
   requiredData?: string[]
 }
+
+export type ApplicationTemplateStageActionConfig = { template: string, subject: string, admin_email: string, endpoint: string, method: string, recipient_field: string, auth_token: string, headers: any[], body_mapping: any[], query_params: any[], payment_invoice_items: InvoiceItem[], payment_purpose: string, payment_description: string, payment_due_date_days: number }
+export type InvoiceItem = { service_code: string, quantity: number }

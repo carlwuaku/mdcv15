@@ -1,0 +1,183 @@
+<div class="app-settings-manager">
+  <div class="header">
+    <h2>Application Settings Manager</h2>
+    <p class="subtitle">Manage runtime overrides for application settings</p>
+    <button mat-raised-button color="primary" (click)="clearCache()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      Clear Cache
+    </button>
+  </div>
+
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Create/Edit Setting Override</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="form-container">
+        <!-- Key Selection -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Setting Key</mat-label>
+          <input matInput [(ngModel)]="searchTerm" (ngModelChange)="filterKeys()"
+            placeholder="Search for a setting key..." [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onKeySelected($event.option.value)">
+            <mat-option *ngFor="let key of filteredKeys" [value]="key.key">
+              {{ key.key }} <span class="key-type">({{ key.type }})</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div *ngIf="selectedKey" class="selected-key-info">
+          <p><strong>Selected Key:</strong> {{ selectedKey }}</p>
+          <p><strong>File Value:</strong>
+            <code>{{ formatValue((getNestedValue(fileSettings, selectedKey)) | jsonStringify, selectedValueType) }}</code>
+          </p>
+          <p *ngIf="currentOverride"><strong>Current Override ID:</strong> {{ currentOverride.id }}</p>
+        </div>
+
+        <!-- Value Type -->
+        <mat-form-field appearance="outline" class="full-width" *ngIf="selectedKey">
+          <mat-label>Value Type</mat-label>
+          <mat-select [(ngModel)]="selectedValueType">
+            <mat-option value="string">String</mat-option>
+            <mat-option value="number">Number</mat-option>
+            <mat-option value="boolean">Boolean</mat-option>
+            <mat-option value="array">Array (JSON)</mat-option>
+            <mat-option value="object">Object (JSON)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Merge Strategy (only for arrays and objects) -->
+        <mat-form-field appearance="outline" class="full-width" *ngIf="selectedKey && (selectedValueType === 'array' || selectedValueType === 'object')">
+          <mat-label>Merge Strategy</mat-label>
+          <mat-select [(ngModel)]="selectedMergeStrategy">
+            <mat-option value="replace">Replace - Completely override the file value</mat-option>
+            <mat-option value="merge">Merge - Combine with file value (removes duplicates for arrays)</mat-option>
+            <mat-option value="append">Append - Add items to the end</mat-option>
+            <mat-option value="prepend">Prepend - Add items to the beginning</mat-option>
+          </mat-select>
+          <mat-hint>How should this override be combined with the file value?</mat-hint>
+        </mat-form-field>
+
+        <!-- Value Input -->
+        <div *ngIf="selectedKey">
+          <!-- String/Number -->
+          <mat-form-field appearance="outline" class="full-width"
+            *ngIf="selectedValueType === 'string' || selectedValueType === 'number'">
+            <mat-label>New Value</mat-label>
+            <input matInput [(ngModel)]="newValue" [type]="selectedValueType === 'number' ? 'number' : 'text'">
+          </mat-form-field>
+
+          <!-- Boolean -->
+          <mat-slide-toggle *ngIf="selectedValueType === 'boolean'" [(ngModel)]="newValue">
+            {{ newValue ? 'True' : 'False' }}
+          </mat-slide-toggle>
+
+          <!-- Array/Object -->
+          <mat-form-field appearance="outline" class="full-width"
+            *ngIf="selectedValueType === 'array' || selectedValueType === 'object'">
+            <mat-label>JSON Value</mat-label>
+            <textarea matInput [(ngModel)]="newValue" rows="10" placeholder='{"key": "value"}'></textarea>
+            <mat-hint>Enter valid JSON</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="full-width" *ngIf="selectedKey">
+          <mat-label>Description (Optional)</mat-label>
+          <textarea matInput [(ngModel)]="description" rows="2" placeholder="Why is this override needed?"></textarea>
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div class="form-actions" *ngIf="selectedKey">
+          <button mat-raised-button color="primary" (click)="saveOverride()" [disabled]="loading">
+            <mat-icon>save</mat-icon>
+            {{ currentOverride ? 'Update' : 'Create' }} Override
+          </button>
+          <button mat-stroked-button (click)="resetForm()" [disabled]="loading">
+            <mat-icon>clear</mat-icon>
+            Reset
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Existing Overrides Table -->
+  <mat-card class="overrides-table-card">
+    <mat-card-header>
+      <mat-card-title>Existing Overrides</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="overrides" class="mat-elevation-z8">
+
+        <!-- Key Column -->
+        <ng-container matColumnDef="setting_key">
+          <th mat-header-cell *matHeaderCellDef>Setting Key</th>
+          <td mat-cell *matCellDef="let element">{{ element.setting_key }}</td>
+        </ng-container>
+
+        <!-- Value Column -->
+        <ng-container matColumnDef="setting_value">
+          <th mat-header-cell *matHeaderCellDef>Value</th>
+          <td mat-cell *matCellDef="let element">
+            <code class="value-preview">{{ formatValue(element.setting_value, element.value_type) }}</code>
+          </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="value_type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="type-badge">{{ element.value_type }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Merge Strategy Column -->
+        <ng-container matColumnDef="merge_strategy">
+          <th mat-header-cell *matHeaderCellDef>Merge Strategy</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="merge-badge" *ngIf="element.value_type === 'array' || element.value_type === 'object'">
+              {{ element.merge_strategy || 'replace' }}
+            </span>
+            <span *ngIf="element.value_type !== 'array' && element.value_type !== 'object'" class="not-applicable">N/A</span>
+          </td>
+        </ng-container>
+
+        <!-- Updated At Column -->
+        <ng-container matColumnDef="updated_at">
+          <th mat-header-cell *matHeaderCellDef>Last Updated</th>
+          <td mat-cell *matCellDef="let element">{{ element.updated_at | date:'short' }}</td>
+        </ng-container>
+
+        <!-- Active Column -->
+        <ng-container matColumnDef="is_active">
+          <th mat-header-cell *matHeaderCellDef>Active</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-slide-toggle [checked]="element.is_active" (change)="toggleActive(element)" [disabled]="loading">
+            </mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="editOverride(element)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteOverride(element)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="overrides.length === 0" class="no-data">
+        <p>No overrides configured yet. Create one above to get started.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

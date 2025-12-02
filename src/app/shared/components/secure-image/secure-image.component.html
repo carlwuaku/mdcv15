@@ -6,8 +6,8 @@
   </div>
 
   <!-- Image loaded -->
-  <img *ngIf="!loading && imageUrl" [src]="imageUrl" [alt]="alt" [width]="width" [height]="height" [class]="cssClass"
-    (error)="onImageError()" />
+  <img *ngIf="!loading && imageUrl  && !error" [src]="imageUrl" [alt]="alt" [width]="width" [height]="height"
+    [class]="cssClass" (error)="onImageError()" />
 
   <!-- Error state -->
   <div *ngIf="!loading && error && !fallbackImage" class="error-placeholder">

@@ -107,7 +107,6 @@ export class CreatePrintTemplateComponent implements OnInit, FormGeneratorCompon
 
   setContent(event: any) {
     this.fields.find(field => field.name === 'template_content')!.value = event;
-    console.log('html got')
   }
 
   setRoles(event: any, index: number) {

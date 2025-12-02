@@ -228,9 +228,7 @@
                   Add field names that users must provide when moving an application to this stage.
                   These will appear as required fields in the status update dialog.
                 </p>
-                <app-string-array-input
-                  [items]="stage.get('requiredData')?.value || []"
-                  [label]="'Required Data Field'"
+                <app-string-array-input [items]="stage.get('requiredData')?.value || []" [label]="'Required Data Field'"
                   [placeholder]="'e.g., license_number, approval_date'"
                   (valueChanged)="stage.get('requiredData')?.setValue($event)">
                 </app-string-array-input>
@@ -500,6 +498,66 @@
                         <mat-label>Email Template</mat-label>
                         <textarea matInput formControlName="template"></textarea>
                       </mat-form-field>
+                    </div>
+
+                    <!-- Payment/Invoice Config -->
+                    <div *ngIf="action.get('config_type')?.value === 'payment'" class="flex flex-col gap-3">
+                      <p class="text-sm text-gray-600">
+                        Configure invoice items to be created. The payer details (email, phone, name, unique_id) will be
+                        taken from the form data.
+                      </p>
+
+                      <!-- Invoice Description -->
+                      <mat-form-field appearance="outline">
+                        <mat-label>Invoice Description Template</mat-label>
+                        <input matInput formControlName="payment_description">
+                        <mat-hint>Use [field_name] for dynamic values from form</mat-hint>
+                      </mat-form-field>
+
+                      <!-- Purpose -->
+                      <mat-form-field appearance="outline">
+                        <mat-label>Payment Purpose</mat-label>
+                        <input matInput formControlName="payment_purpose" placeholder="application-fee">
+                        <mat-hint>A short identifier for this payment type</mat-hint>
+                      </mat-form-field>
+
+                      <!-- Due Date Days -->
+                      <mat-form-field appearance="outline">
+                        <mat-label>Due Date (days from now)</mat-label>
+                        <input matInput type="number" formControlName="payment_due_date_days" placeholder="30">
+                        <mat-hint>Number of days until the invoice is due</mat-hint>
+                      </mat-form-field>
+
+                      <!-- Invoice Items -->
+                      <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>Invoice Items</mat-panel-title>
+                          <mat-panel-description>Define the fees to include in the invoice</mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="invoice-items-config">
+                          <div formArrayName="payment_invoice_items" class="flex flex-col gap-2">
+                            <div *ngFor="let item of getInvoiceItemsArray(i, j).controls; let k=index"
+                              [formGroupName]="k" class="grid grid-cols-3 gap-2 items-center">
+                              <mat-form-field appearance="outline">
+                                <mat-label>Service Code</mat-label>
+                                <input matInput formControlName="service_code" placeholder="e.g., REG-FEE-001">
+                                <mat-hint>The fee service code from the fees table</mat-hint>
+                              </mat-form-field>
+                              <mat-form-field appearance="outline">
+                                <mat-label>Quantity</mat-label>
+                                <input matInput type="number" formControlName="quantity" min="1">
+                              </mat-form-field>
+                              <button mat-icon-button color="warn" (click)="removeInvoiceItem(i, j, k)">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <button mat-stroked-button color="primary" (click)="addInvoiceItem(i, j)">
+                            <mat-icon>add</mat-icon> Add Invoice Item
+                          </button>
+                        </div>
+                      </mat-expansion-panel>
                     </div>
                   </div>
 
