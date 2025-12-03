@@ -202,9 +202,13 @@
               <ng-template #readOnlyCell>
                 <span *ngIf="isImage(element[column]); else notImage" [ngTemplateOutlet]="imageTemplate"></span>
                 <ng-template #notImage>
-                  <a mat-stroked-button color="primary" *ngIf="isLink(element[column])" [href]="element[column]"
-                    target="_blank">Open
-                    link</a>
+                  <button mat-stroked-button color="primary" *ngIf="isLink(element[column])"
+                    (click)="openSecureLink(element[column])"
+                    [disabled]="isLinkLoading(element[column])">
+                    <mat-icon *ngIf="isLinkLoading(element[column])">hourglass_empty</mat-icon>
+                    <span *ngIf="!isLinkLoading(element[column])">Open link</span>
+                    <span *ngIf="isLinkLoading(element[column])">Loading...</span>
+                  </button>
                   <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
                     *ngIf="isHtml(element[column])">View</button>
                   <button mat-flat-button color="primary" (click)="viewJson(element[column], column)"

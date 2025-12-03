@@ -9,6 +9,7 @@ import { FieldTemplateDirective } from '../form-generator/form-generator.compone
 import { TableLegendType } from './tableLegend.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKeyValueDisplayComponent } from '../dialog-key-value-display/dialog-key-value-display.component';
+import { SecureImageService } from 'src/app/core/services/secure-image/secure-image.service';
 
 export interface EditableColumn {
   field: string;
@@ -55,7 +56,14 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Input() stickyFirstColumn: boolean = false;
   filterValue: string = '';
 
-  constructor(private dialog: MatDialog) { }
+  // Track loading state and cached secure links
+  loadingLinks = new Map<string, boolean>();
+  cachedSecureLinks = new Map<string, string>();
+
+  constructor(
+    private dialog: MatDialog,
+    private secureImageService: SecureImageService
+  ) { }
   ngAfterViewInit(): void {
     if (this.enableSorting) {
       this.dataSource.sort = this.sort;
@@ -284,5 +292,67 @@ export class TableComponent implements OnInit, AfterViewInit {
   clearFilter(): void {
     this.filterValue = '';
     this.dataSource.filter = '';
+  }
+
+  openSecureLink(url: string): void {
+    // Check if URL contains 'file-server' - if so, get signed URL
+    if (!url.includes('file-server')) {
+      // Not a secure link, open directly
+      window.open(url, '_blank');
+      return;
+    }
+
+    // Check if we already have a cached secure link
+    const cachedLink = this.cachedSecureLinks.get(url);
+    if (cachedLink) {
+      window.open(cachedLink, '_blank');
+      return;
+    }
+
+    // Check if already loading
+    if (this.loadingLinks.get(url)) {
+      return;
+    }
+
+    // Parse the URL to extract imageType and filename
+    // Expected format: http://localhost:8080/file-server/image-render/applications/filename.jpg
+    const parts = url.split('/');
+    const fileServerIndex = parts.findIndex(part => part === 'file-server');
+
+    if (fileServerIndex === -1 || parts.length < fileServerIndex + 3) {
+      console.error('Invalid file-server URL format:', url);
+      window.open(url, '_blank');
+      return;
+    }
+
+    const imageType = parts[fileServerIndex + 2]; // e.g., 'applications'
+    const filename = parts[fileServerIndex + 3]; // e.g., 'filename.jpg'
+
+    // Set loading state
+    this.loadingLinks.set(url, true);
+
+    // Get signed URL and open in new tab
+    this.secureImageService.getSignedUrl(imageType, filename)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (signedUrl) => {
+          this.loadingLinks.set(url, false);
+          if (signedUrl) {
+            // Cache the secure link
+            this.cachedSecureLinks.set(url, signedUrl);
+            window.open(signedUrl, '_blank');
+          } else {
+            console.error('Failed to get signed URL for:', url);
+          }
+        },
+        error: (err) => {
+          this.loadingLinks.set(url, false);
+          console.error('Error getting signed URL:', err);
+        }
+      });
+  }
+
+  isLinkLoading(url: string): boolean {
+    return this.loadingLinks.get(url) || false;
   }
 }
