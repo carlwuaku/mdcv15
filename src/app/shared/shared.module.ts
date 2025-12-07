@@ -71,6 +71,13 @@ import { DataLoaderComponent } from './components/data-loader/data-loader.compon
 import { RemoveUnderscorePipe } from './pipes/remove-underscore.pipe';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { JsonStringifyPipe } from './components/json-stringify.pipe';
+import { IsLinkPipe } from './pipes/table/is-link.pipe';
+import { IsHtmlPipe } from './pipes/table/is-html.pipe';
+import { IsJsonPipe } from './pipes/table/is-json.pipe';
+import { IsImagePipe } from './pipes/table/is-image.pipe';
+import { ColumnLabelPipe } from './pipes/table/column-label.pipe';
+import { ColumnClassPipe } from './pipes/table/column-class.pipe';
+import { IsLinkLoadingPipe } from './pipes/table/is-link-loading.pipe';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -132,7 +139,14 @@ import { JsonStringifyPipe } from './components/json-stringify.pipe';
     DataLoaderComponent,
     RemoveUnderscorePipe,
     CapitalizePipe,
-    JsonStringifyPipe
+    JsonStringifyPipe,
+    IsLinkPipe,
+    IsHtmlPipe,
+    IsJsonPipe,
+    IsImagePipe,
+    ColumnLabelPipe,
+    ColumnClassPipe,
+    IsLinkLoadingPipe
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -210,7 +224,14 @@ import { JsonStringifyPipe } from './components/json-stringify.pipe';
     DataLoaderComponent,
     RemoveUnderscorePipe,
     CapitalizePipe,
-    JsonStringifyPipe
+    JsonStringifyPipe,
+    IsLinkPipe,
+    IsHtmlPipe,
+    IsJsonPipe,
+    IsImagePipe,
+    ColumnLabelPipe,
+    ColumnClassPipe,
+    IsLinkLoadingPipe
   ],
   providers: [
     ClipboardCopyDirective

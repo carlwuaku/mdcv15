@@ -49,7 +49,7 @@
         </span>
         <span *ngSwitchDefault>
           <th mat-header-cell *matHeaderCellDef [attr.mat-sort-header]="enableSorting ? '' : null">
-            {{getColumnLabel(column)}}
+            {{column | columnLabel:columnLabels}}
           </th>
         </span>
       </span>
@@ -200,22 +200,22 @@
 
               <!-- Read-only Cell -->
               <ng-template #readOnlyCell>
-                <span *ngIf="isImage(element[column]); else notImage" [ngTemplateOutlet]="imageTemplate"></span>
+                <span *ngIf="element[column] | isImage; else notImage" [ngTemplateOutlet]="imageTemplate"></span>
                 <ng-template #notImage>
-                  <button mat-stroked-button color="primary" *ngIf="isLink(element[column])"
+                  <button mat-stroked-button color="primary" *ngIf="element[column] | isLink"
                     (click)="openSecureLink(element[column])"
-                    [disabled]="isLinkLoading(element[column])">
-                    <mat-icon *ngIf="isLinkLoading(element[column])">hourglass_empty</mat-icon>
-                    <span *ngIf="!isLinkLoading(element[column])">Open link</span>
-                    <span *ngIf="isLinkLoading(element[column])">Loading...</span>
+                    [disabled]="element[column] | isLinkLoading:loadingLinks">
+                    <mat-icon *ngIf="element[column] | isLinkLoading:loadingLinks">hourglass_empty</mat-icon>
+                    <span *ngIf="!(element[column] | isLinkLoading:loadingLinks)">Open link</span>
+                    <span *ngIf="element[column] | isLinkLoading:loadingLinks">Loading...</span>
                   </button>
                   <button mat-flat-button color="primary" (click)="viewHtml(element[column])"
-                    *ngIf="isHtml(element[column])">View</button>
+                    *ngIf="element[column] | isHtml">View</button>
                   <button mat-flat-button color="primary" (click)="viewJson(element[column], column)"
-                    *ngIf="isJson(element[column])">View</button>
-                  <div *ngIf="!isLink(element[column]) && !isHtml(element[column]) && !isJson(element[column])"
+                    *ngIf="element[column] | isJson">View</button>
+                  <div *ngIf="!(element[column] | isLink) && !(element[column] | isHtml) && !(element[column] | isJson)"
                     class="truncate ellipsis" [innerHTML]="element[column]"
-                    [class]="getColumnClass(column+'-'+ replaceSpaceWithUnderscore(element[column]))">
+                    [class]="(column+'-'+ replaceSpaceWithUnderscore(element[column])) | columnClass:specialClasses">
                   </div>
                 </ng-template>
               </ng-template>

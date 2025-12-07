@@ -63,6 +63,7 @@ const routes: Routes = [
   { path: 'examinations', resolve: { userData: UserResolver }, data: { title: 'Examinations' }, loadChildren: () => import('./features/examinations/examinations.module').then(m => m.ExaminationsModule) },
   { path: 'payment', resolve: { userData: UserResolver }, data: { title: 'Payments' }, loadChildren: () => import('./features/payment/payment.module').then(m => m.PaymentModule) },
   { path: 'training-institutions', resolve: { userData: UserResolver }, data: { title: 'Training Institutions' }, loadChildren: () => import('./features/training-institutions/training-institutions.module').then(m => m.TrainingInstitutionsModule) },
+  { path: 'apimanagement', resolve: { userData: UserResolver }, data: { title: 'API Management' }, loadChildren: () => import('./features/apimanagement/apimanagement.module').then(m => m.ApiManagementModule) },
   {
     path: '**',
     component: PageNotFoundComponent

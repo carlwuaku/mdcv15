@@ -1,0 +1,191 @@
+<div class="flex flex-col gap-2" *ngIf="!isLoading && !errorLoadingData && apiKey">
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-bold">{{ apiKey.name }}</h2>
+    <div class="flex gap-2">
+      <button mat-raised-button color="primary" (click)="editKey()">
+        <mat-icon>edit</mat-icon> Edit
+      </button>
+      <button mat-raised-button color="warn" (click)="revokeKey()" *ngIf="apiKey.status === 'active'">
+        <mat-icon>block</mat-icon> Revoke
+      </button>
+      <button mat-raised-button (click)="rotateKey()" *ngIf="apiKey.status === 'active'">
+        <mat-icon>refresh</mat-icon> Rotate Credentials
+      </button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-tab-group (selectedTabChange)="onTabChange($event.index)">
+        <!-- Overview Tab -->
+        <mat-tab label="Overview">
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <h3 class="font-semibold text-gray-600">Institution</h3>
+                <p>{{ apiKey.institution_name || 'N/A' }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Status</h3>
+                <p><span class="status-badge">{{ apiKey.status }}</span></p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Key ID</h3>
+                <p class="font-mono">{{ apiKey.key_id }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Secret (Last 4)</h3>
+                <p class="font-mono">****{{ apiKey.last_4_secret }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Rate Limit (Per Minute)</h3>
+                <p>{{ apiKey.rate_limit_per_minute || 'Unlimited' }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Rate Limit (Per Day)</h3>
+                <p>{{ apiKey.rate_limit_per_day || 'Unlimited' }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Last Used</h3>
+                <p>{{ apiKey.last_used_at || 'Never' }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Expires At</h3>
+                <p>{{ apiKey.expires_at || 'Never' }}</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-600">Created At</h3>
+                <p>{{ apiKey.created_at }}</p>
+              </div>
+              <div *ngIf="apiKey.revoked_at">
+                <h3 class="font-semibold text-gray-600">Revoked At</h3>
+                <p>{{ apiKey.revoked_at }}</p>
+              </div>
+              <div *ngIf="apiKey.revocation_reason" class="col-span-2">
+                <h3 class="font-semibold text-gray-600">Revocation Reason</h3>
+                <p>{{ apiKey.revocation_reason }}</p>
+              </div>
+            </div>
+
+            <div class="mt-4" *ngIf="apiKey.permissions && apiKey.permissions.length > 0">
+              <h3 class="font-semibold text-gray-600 mb-2">Permissions</h3>
+              <div class="flex flex-wrap gap-2">
+                <span *ngFor="let permission of apiKey.permissions" class="badge">{{ permission }}</span>
+              </div>
+            </div>
+
+            <div class="mt-4" *ngIf="apiKey.metadata">
+              <h3 class="font-semibold text-gray-600 mb-2">Metadata</h3>
+              <pre class="bg-gray-100 p-2 rounded">{{ apiKey.metadata | json }}</pre>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Statistics Tab -->
+        <mat-tab label="Statistics">
+          <div class="p-4" *ngIf="stats">
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              <mat-card>
+                <mat-card-content>
+                  <h3 class="text-gray-600">Total Requests</h3>
+                  <p class="text-3xl font-bold">{{ stats.total_requests }}</p>
+                </mat-card-content>
+              </mat-card>
+              <mat-card>
+                <mat-card-content>
+                  <h3 class="text-gray-600">Successful Requests</h3>
+                  <p class="text-3xl font-bold text-green-600">{{ stats.successful_requests }}</p>
+                </mat-card-content>
+              </mat-card>
+              <mat-card>
+                <mat-card-content>
+                  <h3 class="text-gray-600">Failed Requests</h3>
+                  <p class="text-3xl font-bold text-red-600">{{ stats.failed_requests }}</p>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <div *ngIf="stats.requests_by_endpoint && stats.requests_by_endpoint.length > 0">
+              <h3 class="font-semibold mb-2">Requests by Endpoint</h3>
+              <table class="w-full">
+                <thead>
+                  <tr>
+                    <th class="text-left">Endpoint</th>
+                    <th class="text-right">Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of stats.requests_by_endpoint">
+                    <td>{{ item.endpoint }}</td>
+                    <td class="text-right">{{ item.count }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Activity Logs Tab -->
+        <mat-tab label="Activity Logs">
+          <div class="p-4">
+            <div *ngIf="logs && logs.length > 0">
+              <table class="w-full">
+                <thead>
+                  <tr>
+                    <th class="text-left">Timestamp</th>
+                    <th class="text-left">Endpoint</th>
+                    <th class="text-left">Method</th>
+                    <th class="text-left">Status</th>
+                    <th class="text-left">IP Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let log of logs">
+                    <td>{{ log.created_at }}</td>
+                    <td>{{ log.endpoint }}</td>
+                    <td>{{ log.method }}</td>
+                    <td><span [class]="log.status_code >= 200 && log.status_code < 300 ? 'text-green-600' : 'text-red-600'">{{ log.status_code }}</span></td>
+                    <td>{{ log.ip_address }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p *ngIf="!logs || logs.length === 0">No activity logs found</p>
+          </div>
+        </mat-tab>
+
+        <!-- Documentation Tab -->
+        <mat-tab label="Documentation">
+          <div class="p-4" *ngIf="documentation">
+            <div class="mb-4">
+              <h3 class="font-semibold mb-2">Authentication</h3>
+              <pre class="bg-gray-100 p-2 rounded">{{ documentation.authentication }}</pre>
+            </div>
+
+            <div *ngIf="documentation.endpoints && documentation.endpoints.length > 0">
+              <h3 class="font-semibold mb-2">Available Endpoints</h3>
+              <div *ngFor="let endpoint of documentation.endpoints" class="mb-4 border-b pb-4">
+                <h4 class="font-semibold">
+                  <span class="badge">{{ endpoint.method }}</span> {{ endpoint.path }}
+                </h4>
+                <p class="text-gray-600">{{ endpoint.description }}</p>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="isLoading" class="flex justify-center items-center p-8">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="errorLoadingData && !isLoading" class="p-4">
+  <mat-card>
+    <mat-card-content>
+      <p class="text-red-600">Failed to load API key details. Please try again.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,43 @@
+.badge {
+  @apply inline-block px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800;
+}
+
+.status-badge {
+  @apply inline-block px-2 py-1 text-xs font-semibold rounded;
+
+  &:contains('active') {
+    @apply bg-green-100 text-green-800;
+  }
+
+  &:contains('revoked') {
+    @apply bg-red-100 text-red-800;
+  }
+
+  &:contains('expired') {
+    @apply bg-gray-100 text-gray-800;
+  }
+}
+
+table {
+  thead {
+    @apply bg-gray-50;
+
+    th {
+      @apply p-2 font-semibold;
+    }
+  }
+
+  tbody {
+    tr {
+      @apply border-b;
+
+      &:hover {
+        @apply bg-gray-50;
+      }
+
+      td {
+        @apply p-2;
+      }
+    }
+  }
+}

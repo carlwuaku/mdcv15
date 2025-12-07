@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
+import { openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
@@ -110,67 +110,6 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
 
-  getColumnClass(columnAndValue: string): string {
-    return this.specialClasses[columnAndValue] || columnAndValue;
-  }
-
-  getColumnLabel(column: string): string {
-    if (this.columnLabels && this.columnLabels[column]) {
-      return this.columnLabels[column];
-    }
-
-    return getLabelFromKey(column, false);
-  }
-
-
-  isLink(content: string | null): boolean {
-    return content && typeof content === 'string' ? content.startsWith('http') || content.startsWith('www') : false;
-  }
-
-  isHtml(content: string): boolean {
-    const containsHtmlTagsRegex = /<[a-z][\s\S]*>/i;
-
-    // Method 2: More complete HTML tag regex
-    const htmlRegex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
-
-    // Method 3: Check for common HTML tags or entities
-    const commonHtmlElements = /<(html|body|div|span|h[1-6]|p|br|table|tr|td|ul|ol|li|a|img)[^>]*>|&[a-z]+;/i;
-
-    // Method 4: Check for doctype declaration
-    const docType = /<!DOCTYPE html>/i;
-
-    // Method 5: Check for specific HTML structure elements
-    const htmlStructure = /<html[^>]*>[\s\S]*<\/html>/i;
-
-    return htmlRegex.test(content);
-    // containsHtmlTagsRegex.test(str)  ||
-    // commonHtmlElements.test(str) ||
-    // docType.test(str) ||
-    // htmlStructure.test(str);
-  }
-
-  isImage(content: string | null): boolean {
-    // Check if the content is an image URL or a base64-encoded image
-    if (typeof content !== 'string') {
-      return false
-    }
-    return !content ? false : content.startsWith('data:image/') || (this.isLink(content) && (content.endsWith('.png') || content.endsWith('.jpg') || content.endsWith('.jpeg')));
-  }
-
-  isJson(content: string): boolean {
-    try {
-      if (content == null || typeof content !== 'string') {
-        return false;
-      }
-
-      const parsed = JSON.parse(content);
-
-      // Only return true if it's an object or array
-      return typeof parsed === 'object' && parsed !== null;
-    } catch (e) {
-      return false;
-    }
-  }
 
   getRowClasses(row: any) {
     const classes: { [key: string]: boolean } = {
@@ -352,7 +291,4 @@ export class TableComponent implements OnInit, AfterViewInit {
       });
   }
 
-  isLinkLoading(url: string): boolean {
-    return this.loadingLinks.get(url) || false;
-  }
 }
