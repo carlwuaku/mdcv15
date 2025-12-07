@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
-import { take, shareReplay, catchError, takeUntil } from 'rxjs/operators';
+import { shareReplay, catchError, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
@@ -22,11 +22,15 @@ export class ApiCountComponent implements OnInit, OnChanges, OnDestroy {
   private static cache = new Map<string, Observable<any>>();
   // Subject to handle component destruction
   private destroy$ = new Subject<void>();
+  // Subject to cancel ongoing requests when URL changes
+  private cancelRequest$ = new Subject<void>();
 
   constructor(private httpService: HttpService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['url'] && changes['url'].currentValue !== changes['url'].previousValue) {
+      // Cancel any ongoing request for the previous URL
+      this.cancelRequest$.next();
       this.getCount();
     }
   }
@@ -36,7 +40,11 @@ export class ApiCountComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ApiCountComponent.clearCache()
+    // Cancel any ongoing requests
+    this.cancelRequest$.next();
+    this.cancelRequest$.complete();
+
+    // Signal component destruction
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -53,6 +61,7 @@ export class ApiCountComponent implements OnInit, OnChanges, OnDestroy {
     if (!ApiCountComponent.cache.has(this.url)) {
       // Create and cache the observable
       const request$ = this.httpService.get<any>(this.url).pipe(
+        takeUntil(this.destroy$), // Cancel request when component is destroyed
         shareReplay(1), // Cache the result and replay it for subsequent subscribers
         catchError(error => {
           console.error('API count error for URL:', this.url, error);
@@ -65,10 +74,19 @@ export class ApiCountComponent implements OnInit, OnChanges, OnDestroy {
 
     // Subscribe to the cached observable
     ApiCountComponent.cache.get(this.url)!
-      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when component is destroyed
-      .subscribe(data => {
-        this.loading = false;
-        this.count = data.data || 0;
+      .pipe(
+        takeUntil(this.cancelRequest$), // Cancel this specific subscription
+        takeUntil(this.destroy$) // Also cancel when component is destroyed
+      )
+      .subscribe({
+        next: (data) => {
+          this.loading = false;
+          this.count = data.data || 0;
+        },
+        error: () => {
+          this.loading = false;
+          this.count = 0;
+        }
       });
   }
 

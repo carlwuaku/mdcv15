@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { getLabelFromKey, openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
+import { openHtmlInNewWindow, replaceSpaceWithUnderscore } from '../../utils/helper';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
@@ -9,6 +9,7 @@ import { FieldTemplateDirective } from '../form-generator/form-generator.compone
 import { TableLegendType } from './tableLegend.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogKeyValueDisplayComponent } from '../dialog-key-value-display/dialog-key-value-display.component';
+import { SecureImageService } from 'src/app/core/services/secure-image/secure-image.service';
 
 export interface EditableColumn {
   field: string;
@@ -55,7 +56,14 @@ export class TableComponent implements OnInit, AfterViewInit {
   @Input() stickyFirstColumn: boolean = false;
   filterValue: string = '';
 
-  constructor(private dialog: MatDialog) { }
+  // Track loading state and cached secure links
+  loadingLinks = new Map<string, boolean>();
+  cachedSecureLinks = new Map<string, string>();
+
+  constructor(
+    private dialog: MatDialog,
+    private secureImageService: SecureImageService
+  ) { }
   ngAfterViewInit(): void {
     if (this.enableSorting) {
       this.dataSource.sort = this.sort;
@@ -102,67 +110,6 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
 
-  getColumnClass(columnAndValue: string): string {
-    return this.specialClasses[columnAndValue] || columnAndValue;
-  }
-
-  getColumnLabel(column: string): string {
-    if (this.columnLabels && this.columnLabels[column]) {
-      return this.columnLabels[column];
-    }
-
-    return getLabelFromKey(column, false);
-  }
-
-
-  isLink(content: string | null): boolean {
-    return content && typeof content === 'string' ? content.startsWith('http') || content.startsWith('www') : false;
-  }
-
-  isHtml(content: string): boolean {
-    const containsHtmlTagsRegex = /<[a-z][\s\S]*>/i;
-
-    // Method 2: More complete HTML tag regex
-    const htmlRegex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
-
-    // Method 3: Check for common HTML tags or entities
-    const commonHtmlElements = /<(html|body|div|span|h[1-6]|p|br|table|tr|td|ul|ol|li|a|img)[^>]*>|&[a-z]+;/i;
-
-    // Method 4: Check for doctype declaration
-    const docType = /<!DOCTYPE html>/i;
-
-    // Method 5: Check for specific HTML structure elements
-    const htmlStructure = /<html[^>]*>[\s\S]*<\/html>/i;
-
-    return htmlRegex.test(content);
-    // containsHtmlTagsRegex.test(str)  ||
-    // commonHtmlElements.test(str) ||
-    // docType.test(str) ||
-    // htmlStructure.test(str);
-  }
-
-  isImage(content: string | null): boolean {
-    // Check if the content is an image URL or a base64-encoded image
-    if (typeof content !== 'string') {
-      return false
-    }
-    return !content ? false : content.startsWith('data:image/') || (this.isLink(content) && (content.endsWith('.png') || content.endsWith('.jpg') || content.endsWith('.jpeg')));
-  }
-
-  isJson(content: string): boolean {
-    try {
-      if (content == null || typeof content !== 'string') {
-        return false;
-      }
-
-      const parsed = JSON.parse(content);
-
-      // Only return true if it's an object or array
-      return typeof parsed === 'object' && parsed !== null;
-    } catch (e) {
-      return false;
-    }
-  }
 
   getRowClasses(row: any) {
     const classes: { [key: string]: boolean } = {
@@ -285,4 +232,63 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.filterValue = '';
     this.dataSource.filter = '';
   }
+
+  openSecureLink(url: string): void {
+    // Check if URL contains 'file-server' - if so, get signed URL
+    if (!url.includes('file-server')) {
+      // Not a secure link, open directly
+      window.open(url, '_blank');
+      return;
+    }
+
+    // Check if we already have a cached secure link
+    const cachedLink = this.cachedSecureLinks.get(url);
+    if (cachedLink) {
+      window.open(cachedLink, '_blank');
+      return;
+    }
+
+    // Check if already loading
+    if (this.loadingLinks.get(url)) {
+      return;
+    }
+
+    // Parse the URL to extract imageType and filename
+    // Expected format: http://localhost:8080/file-server/image-render/applications/filename.jpg
+    const parts = url.split('/');
+    const fileServerIndex = parts.findIndex(part => part === 'file-server');
+
+    if (fileServerIndex === -1 || parts.length < fileServerIndex + 3) {
+      console.error('Invalid file-server URL format:', url);
+      window.open(url, '_blank');
+      return;
+    }
+
+    const imageType = parts[fileServerIndex + 2]; // e.g., 'applications'
+    const filename = parts[fileServerIndex + 3]; // e.g., 'filename.jpg'
+
+    // Set loading state
+    this.loadingLinks.set(url, true);
+
+    // Get signed URL and open in new tab
+    this.secureImageService.getSignedUrl(imageType, filename)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (signedUrl) => {
+          this.loadingLinks.set(url, false);
+          if (signedUrl) {
+            // Cache the secure link
+            this.cachedSecureLinks.set(url, signedUrl);
+            window.open(signedUrl, '_blank');
+          } else {
+            console.error('Failed to get signed URL for:', url);
+          }
+        },
+        error: (err) => {
+          this.loadingLinks.set(url, false);
+          console.error('Error getting signed URL:', err);
+        }
+      });
+  }
+
 }

@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-1">
+  <a class="self-start" mat-raised-button color="primary" routerLink="/apimanagement/api-keys-form">
+    <mat-icon>add</mat-icon> Generate API Key
+  </a>
+  <mat-card>
+    <mat-card-content>
+      <app-load-data-list
+        [url]="url"
+        [timestamp]="ts"
+        [getActions]="getActions"
+        [specialClasses]="specialClasses"
+        (onSelect)="setSelectedItems($event)">
+        <ng-template #selectionOptions>
+          <div class="flex gap-1 items-center">
+            <app-export-table [objects]="selectedItems"></app-export-table>
+          </div>
+        </ng-template>
+      </app-load-data-list>
+    </mat-card-content>
+  </mat-card>
+</div>
