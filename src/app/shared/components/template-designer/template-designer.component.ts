@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, AfterContentInit } from '@angular/core';
 import { NotifyService } from 'src/app/core/services/notify/notify.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MediaSelectorComponent } from '../media-selector/media-selector.component';
 
 export interface TemplateElement {
   id: number;
@@ -104,7 +106,10 @@ export class TemplateDesignerComponent implements AfterContentInit {
   maxZoom = 5;
   zoomStep = 0.1;
 
-  constructor(private notify: NotifyService) {
+  constructor(
+    private notify: NotifyService,
+    private dialog: MatDialog
+  ) {
 
   }
 
@@ -1135,6 +1140,31 @@ export class TemplateDesignerComponent implements AfterContentInit {
       this.uploadingImage = this.selectedEl.id;
       this.fileInputRef.nativeElement.click();
     }
+  }
+
+  /**
+   * Open media library to select an image for the selected element
+   */
+  openMediaLibrary() {
+    if (!this.selectedEl || this.selectedEl.type !== 'image') {
+      this.notify.failNotification('Please select an image element first');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(MediaSelectorComponent, {
+      width: '900px',
+      data: {
+        title: 'Select Image from Media Library',
+        allowedTypes: ['image/'],
+        multiple: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: string) => {
+      if (result && this.selectedEl) {
+        this.updateElement(this.selectedEl.id, { content: result });
+      }
+    });
   }
 
   handleFileInputChange(event: Event) {

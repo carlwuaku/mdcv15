@@ -14,6 +14,7 @@ import { NavigationEnd, Router } from '@angular/router';
 
 export class SidebarComponent implements OnInit {
   current_url: string = "/dashboard";
+  current_full_url: string = "/dashboard"; // Store full URL with query params
 
   menuItems: MenuItem[] = []
 
@@ -29,6 +30,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
+        this.current_full_url = event.url; // Store full URL with query params
         this.current_url = event.url.split('?')[0]
       }
     });
@@ -43,14 +45,24 @@ export class SidebarComponent implements OnInit {
 
   isActiveChild(menuItem: MenuItem) {
     const main = menuItem.url.split('?')[0];
-    //if the main url ends with applications, check the query params for 'form_type'. if form_type is present and matches the form_type param in the menuItem, then return true
-    if (main.endsWith('applications') && menuItem.urlParams && menuItem.urlParams['form_type']) {
-      const urlParams = new URLSearchParams(this.current_url.split('?')[1]);
-      const formType = urlParams.get('form_type');
-      if (formType && menuItem.urlParams && menuItem.urlParams['form_type']) {
-        return formType === menuItem.urlParams['form_type'];
+
+    // If the main URL ends with 'applications', check if form_type matches
+    if (main.endsWith('applications')) {
+      const urlParams = new URLSearchParams(this.current_full_url.split('?')[1]);
+      const currentFormType = urlParams.get('form_type');
+      const menuFormType = menuItem.urlParams?.['form_type'];
+
+      // If menu item has a form_type, only match if it equals the current form_type
+      if (menuFormType) {
+        return this.current_url === main && currentFormType === menuFormType;
+      }
+
+      // If menu item has no form_type but current URL does, don't match
+      if (currentFormType) {
+        return false;
       }
     }
+
     return this.current_url === main
   }
 }

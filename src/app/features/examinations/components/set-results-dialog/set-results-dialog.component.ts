@@ -23,7 +23,7 @@ export class SetResultsDialogComponent implements OnInit {
   columnLabels: { [key: string]: string } = {
     license_number: 'Intern Code',
   }
-  validResults = ['Pass', 'Fail', 'Absent'];
+  validResults = ['Pass', 'Fail', 'Absent', 'Deferred', 'Cancelled'];
   editableColumns: EditableColumn[] = [
     { field: 'result', type: 'select', options: this.validResults.map(result => ({ value: result, label: result })), validator: (value) => value.length > 0 }
   ];

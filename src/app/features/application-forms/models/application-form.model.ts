@@ -1,3 +1,5 @@
+import { IFormGenerator } from "src/app/shared/components/form-generator/form-generator-interface"
+
 export interface ApplicationFormObject {
   uuid: string,
   practitioner_type: string,
@@ -13,7 +15,8 @@ export interface ApplicationFormObject {
   email: string,
   phone: string,
   qr_code: string
-  actions?: any[]
+  actions?: any[],
+  template: IFormGenerator[]
 }
 
 export interface ApplicationTypeCounts {
