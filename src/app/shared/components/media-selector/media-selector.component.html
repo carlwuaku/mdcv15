@@ -1,0 +1,104 @@
+<div class="media-selector-dialog">
+  <h2 mat-dialog-title>{{ config.title }}</h2>
+
+  <mat-dialog-content>
+    <!-- Search and Filter Bar -->
+    <div class="toolbar">
+      <mat-form-field class="search-field" appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Search by filename...">
+        <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="loading">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>File Type</mat-label>
+        <mat-select [(ngModel)]="fileTypeFilter" (selectionChange)="onFileTypeFilterChange()">
+          <mat-option value="">All Types</mat-option>
+          <mat-option value="image/">Images</mat-option>
+          <mat-option value="application/pdf">PDF</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Upload Button -->
+      <button mat-raised-button color="primary" (click)="fileInput.click()" [disabled]="uploading || loading">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload New
+      </button>
+      <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)"
+        accept="image/*,application/pdf">
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading media...</p>
+    </div>
+
+    <!-- Uploading Indicator -->
+    <div *ngIf="uploading" class="uploading-container">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>Uploading file...</p>
+    </div>
+
+    <!-- Media Grid -->
+    <div *ngIf="!loading" class="media-grid">
+      <div *ngFor="let item of filteredItems" class="media-item" [class.selected]="isSelected(item)"
+        (click)="selectItem(item)">
+        <!-- Image Preview -->
+        <div class="media-preview" *ngIf="isImage(item.file_type)">
+          <img [src]="item.file_url" [alt]="item.original_filename">
+          <div class="overlay">
+            <mat-icon *ngIf="isSelected(item)" class="check-icon">check_circle</mat-icon>
+          </div>
+        </div>
+
+        <!-- File Icon for Non-Images -->
+        <div class="media-preview file-icon-preview" *ngIf="!isImage(item.file_type)">
+          <mat-icon class="large-icon">{{ getFileIcon(item.file_type) }}</mat-icon>
+          <div class="overlay">
+            <mat-icon *ngIf="isSelected(item)" class="check-icon">check_circle</mat-icon>
+          </div>
+        </div>
+
+        <!-- Media Info -->
+        <div class="media-info">
+          <div class="filename" [title]="item.original_filename">
+            {{ item.original_filename }}
+          </div>
+          <div class="file-size">{{ formatFileSize(item.file_size) }}</div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredItems.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">photo_library</mat-icon>
+        <p>No media items found</p>
+        <button mat-raised-button color="primary" (click)="fileInput.click()">
+          <mat-icon>cloud_upload</mat-icon>
+          Upload Your First File
+        </button>
+      </div>
+    </div>
+
+    <!-- Load More Button -->
+    <div *ngIf="hasMore() && !loading" class="load-more-container">
+      <button mat-stroked-button (click)="loadMore()">
+        Load More ({{ total - offset - limit }} remaining)
+      </button>
+    </div>
+
+    <!-- Selected Count -->
+    <div *ngIf="selectedItems.length > 0" class="selected-count">
+      {{ selectedItems.length }} item(s) selected
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onConfirm()" [disabled]="selectedItems.length === 0">
+      Select
+    </button>
+  </mat-dialog-actions>
+</div>

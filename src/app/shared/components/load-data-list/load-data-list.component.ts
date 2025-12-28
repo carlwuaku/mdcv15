@@ -96,7 +96,7 @@ export class LoadDataListComponent implements OnInit, AfterViewInit, OnDestroy, 
   urlFilterKeys: string[] = [];
   @Input() customClassRules: { [key: string]: (row: any) => boolean } = {};
 
-  @Input() showAllFilters: boolean = false;
+  @Input() showAllFilters: boolean = true;
   @Input() onFilterSubmitted: ((params: string) => void) | ((params: IFormGenerator[]) => void) = () => { };
   @Input() filterFormType: "filter" | "emit" = "filter";
   queryParams: { [key: string]: string } = {};

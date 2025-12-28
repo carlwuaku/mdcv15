@@ -78,6 +78,8 @@ import { IsImagePipe } from './pipes/table/is-image.pipe';
 import { ColumnLabelPipe } from './pipes/table/column-label.pipe';
 import { ColumnClassPipe } from './pipes/table/column-class.pipe';
 import { IsLinkLoadingPipe } from './pipes/table/is-link-loading.pipe';
+import { MediaSelectorComponent } from './components/media-selector/media-selector.component';
+import { MediaLibraryComponent } from './components/media-library/media-library.component';
 @NgModule({
   declarations: [
     LoxamDatePipe,
@@ -146,7 +148,9 @@ import { IsLinkLoadingPipe } from './pipes/table/is-link-loading.pipe';
     IsImagePipe,
     ColumnLabelPipe,
     ColumnClassPipe,
-    IsLinkLoadingPipe
+    IsLinkLoadingPipe,
+    MediaSelectorComponent,
+    MediaLibraryComponent
   ],
   imports: [
     PrimeNgUiComponentsModule,
@@ -231,7 +235,9 @@ import { IsLinkLoadingPipe } from './pipes/table/is-link-loading.pipe';
     IsImagePipe,
     ColumnLabelPipe,
     ColumnClassPipe,
-    IsLinkLoadingPipe
+    IsLinkLoadingPipe,
+    MediaSelectorComponent,
+    MediaLibraryComponent
   ],
   providers: [
     ClipboardCopyDirective

@@ -48,8 +48,8 @@ export class ExaminationService {
     return this.dbService.get<ApiResponseObject<ExaminationRegistrationObject[]>>('examinations/registrations' + (filters ? `?${filters}` : '')).pipe(take(1));
   }
 
-  getExaminationResultCounts(id: string): Observable<{ not_set: number, fail: number, pass: number, absent: number, total: number }> {
-    return this.dbService.get<{ not_set: number, fail: number, pass: number, absent: number, total: number }>(`examinations/registrations/${id}/result-count`).pipe(take(1));
+  getExaminationResultCounts(id: string): Observable<{ not_set: number, fail: number, pass: number, absent: number, deferred: number, cancelled: number, total: number }> {
+    return this.dbService.get<{ not_set: number, fail: number, pass: number, absent: number, deferred: number, cancelled: number, total: number }>(`examinations/registrations/${id}/result-count`).pipe(take(1));
   }
 
   getCandidateLetter(uuid: string, letterType: "registration" | "result"): Observable<string> {

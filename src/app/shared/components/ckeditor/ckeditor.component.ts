@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { EditorConfig } from '@ckeditor/ckeditor5-core';
+import { MatDialog } from '@angular/material/dialog';
+import { MediaSelectorComponent } from '../media-selector/media-selector.component';
 
 @Component({
   selector: 'app-ckeditor',
@@ -12,6 +14,8 @@ export class CkeditorComponent {
   @Input() name: string = "";
   @Input() value: string = '';
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+
+  private editorInstance: any;
 
   // Configuration to preserve HTML structure and styling
   public config: EditorConfig = {
@@ -28,7 +32,10 @@ export class CkeditorComponent {
     }
   };
 
+  constructor(private dialog: MatDialog) {}
+
   onReady(editor: any) {
+    this.editorInstance = editor;
     editor.editing.view.change((writer: any) => {
       writer.setStyle('height', '300px', editor.editing.view.document.getRoot());
     });
@@ -36,5 +43,28 @@ export class CkeditorComponent {
 
   valueChanged() {
     this.valueChange.emit(this.value);
+  }
+
+  /**
+   * Open media library selector and insert selected image into editor
+   */
+  openMediaLibrary() {
+    const dialogRef = this.dialog.open(MediaSelectorComponent, {
+      width: '900px',
+      data: {
+        title: 'Select Image from Media Library',
+        allowedTypes: ['image/'],
+        multiple: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: string) => {
+      if (result && this.editorInstance) {
+        // Insert image at current cursor position
+        const viewFragment = this.editorInstance.data.processor.toView(`<img src="${result}" alt="Media Library Image" />`);
+        const modelFragment = this.editorInstance.data.toModel(viewFragment);
+        this.editorInstance.model.insertContent(modelFragment);
+      }
+    });
   }
 }

@@ -119,6 +119,32 @@
     </mat-tab>
     <mat-tab>
       <ng-template matTabLabel>
+        <div>Result deferred list <span class="badge badge-primary">{{deferredCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Deferred'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <div>Result cancelled list <span class="badge badge-primary">{{cancelledCount}}</span> </div>
+      </ng-template>
+      <ng-template matTabContent>
+        <mat-card>
+          <mat-card-content>
+            <app-pass-fail-list [urlFilters]="'exam_id='+object.id+'&result=Cancelled'" [examination]="object"
+              (onRegistrationDeleted)="registrationDeleted()"></app-pass-fail-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
         <div>All candidates <span class="badge badge-primary">{{totalCount}}</span> </div>
       </ng-template>
       <ng-template matTabContent>

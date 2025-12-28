@@ -27,6 +27,8 @@ export class ExaminationDetailsComponent implements OnInit {
   failedCount: number = 0;
   passedCount: number = 0;
   absentCount: number = 0;
+  deferredCount: number = 0;
+  cancelledCount: number = 0;
   totalCount: number = 0;
   applicationsCount: number = 0;
 
@@ -72,6 +74,8 @@ export class ExaminationDetailsComponent implements OnInit {
         this.failedCount = data.fail || 0;
         this.passedCount = data.pass || 0;
         this.absentCount = data.absent || 0;
+        this.deferredCount = data.deferred || 0;
+        this.cancelledCount = data.cancelled || 0;
         this.totalCount = data.total;
       },
       error: error => {

@@ -52,6 +52,7 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
     //if no letters are provided, initialize with the default types from app settings
     if (!this.id) {
       this.appService.appSettings.pipe(takeUntil(this.destroy$)).subscribe(settings => {
+        debugger;
         if (settings?.examinations?.defaultLetterTypes) {
           this.letters = settings.examinations.defaultLetterTypes.map(letterType => {
             const letterObject: ExaminationLetterObject = {
@@ -71,6 +72,7 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
 
 
           });
+          this.initialLetters = this.letters;
           this.extraFormData.push({ key: 'letters', value: this.letters });
         }
       });
@@ -166,7 +168,6 @@ export class ExaminationFormComponent implements OnInit, FormGeneratorComponentI
   }
 
   setLetters(exam: ExaminationObject) {
-    console.log("Setting letters for exam:", exam);
     this.letters = exam.letters || [];
     this.initialLetters = exam.letters || [];
   }

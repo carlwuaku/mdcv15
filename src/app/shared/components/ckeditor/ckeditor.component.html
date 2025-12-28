@@ -1,2 +1,9 @@
-<ckeditor [editor]="Editor" [config]="config" [(ngModel)]="value" (ready)="onReady($event)" (change)="valueChanged()">
-</ckeditor>
+<div class="ckeditor-wrapper">
+  <div class="ckeditor-toolbar-extra">
+    <button mat-icon-button (click)="openMediaLibrary()" matTooltip="Insert image from Media Library" type="button">
+      <mat-icon>photo_library</mat-icon>
+    </button>
+  </div>
+  <ckeditor [editor]="Editor" [config]="config" [(ngModel)]="value" (ready)="onReady($event)" (change)="valueChanged()">
+  </ckeditor>
+</div>

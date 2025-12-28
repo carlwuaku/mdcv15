@@ -29,6 +29,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectComponent } from './mat-select/mat-select.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 const modules = [
   MatDialogModule,
@@ -58,7 +59,8 @@ const modules = [
   MatSlideToggleModule,
   MatRadioModule,
   MatSelectModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatButtonToggleModule
 ];
 @NgModule({
   declarations: [

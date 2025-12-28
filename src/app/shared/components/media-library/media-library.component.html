@@ -1,0 +1,190 @@
+<div class="media-library-container">
+  <div class="header">
+    <h2>Media Library</h2>
+    <div class="stats" *ngIf="stats">
+      <span class="stat-item">
+        <mat-icon>photo_library</mat-icon>
+        {{ stats.total_files }} files
+      </span>
+      <span class="stat-item">
+        <mat-icon>storage</mat-icon>
+        {{ stats.total_size_mb }} MB
+      </span>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <mat-form-field class="search-field" appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Search by filename...">
+      <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="loading">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field class="filter-field" appearance="outline">
+      <mat-label>File Type</mat-label>
+      <mat-select [(ngModel)]="fileTypeFilter" (selectionChange)="onFileTypeFilterChange()">
+        <mat-option value="">All Types</mat-option>
+        <mat-option value="image/">Images</mat-option>
+        <mat-option value="application/pdf">PDF</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="toolbar-actions">
+      <!-- View Mode Toggle -->
+      <mat-button-toggle-group [value]="viewMode" (change)="setViewMode($event.value)">
+        <mat-button-toggle value="grid">
+          <mat-icon>grid_view</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <!-- Upload Button -->
+      <button mat-raised-button color="primary" (click)="fileInput.click()" [disabled]="uploading || loading">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload
+      </button>
+      <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)"
+        accept="image/*,application/pdf">
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading media...</p>
+  </div>
+
+  <!-- Uploading Indicator -->
+  <div *ngIf="uploading" class="uploading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Uploading file...</p>
+  </div>
+
+  <!-- Grid View -->
+  <div *ngIf="!loading && viewMode === 'grid'" class="media-grid">
+    <div *ngFor="let item of mediaItems" class="media-item">
+      <!-- Image Preview -->
+      <div class="media-preview" *ngIf="isImage(item.file_type)">
+        <img [src]="item.file_url" [alt]="item.original_filename">
+      </div>
+
+      <!-- File Icon for Non-Images -->
+      <div class="media-preview file-icon-preview" *ngIf="!isImage(item.file_type)">
+        <mat-icon class="large-icon">{{ getFileIcon(item.file_type) }}</mat-icon>
+      </div>
+
+      <!-- Media Info -->
+      <div class="media-info">
+        <div class="filename" [title]="item.original_filename">
+          {{ item.original_filename }}
+        </div>
+        <div class="file-size">{{ formatFileSize(item.file_size) }}</div>
+        <div class="file-date">{{ formatDate(item.created_at) }}</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="media-actions">
+        <button mat-icon-button (click)="copyUrl(item)" matTooltip="Copy URL">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <a mat-icon-button [href]="item.file_url" target="_blank" matTooltip="View">
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+        <button mat-icon-button color="warn" (click)="deleteItem(item)" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="mediaItems.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">photo_library</mat-icon>
+      <p>No media items found</p>
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload Your First File
+      </button>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div *ngIf="!loading && viewMode === 'list'" class="media-list">
+    <table mat-table [dataSource]="mediaItems" class="media-table">
+      <!-- Preview Column -->
+      <ng-container matColumnDef="preview">
+        <th mat-header-cell *matHeaderCellDef>Preview</th>
+        <td mat-cell *matCellDef="let item">
+          <div class="list-preview">
+            <img *ngIf="isImage(item.file_type)" [src]="item.file_url" [alt]="item.original_filename">
+            <mat-icon *ngIf="!isImage(item.file_type)">{{ getFileIcon(item.file_type) }}</mat-icon>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Filename Column -->
+      <ng-container matColumnDef="filename">
+        <th mat-header-cell *matHeaderCellDef>Filename</th>
+        <td mat-cell *matCellDef="let item">{{ item.original_filename }}</td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let item">{{ item.file_extension.toUpperCase() }}</td>
+      </ng-container>
+
+      <!-- Size Column -->
+      <ng-container matColumnDef="size">
+        <th mat-header-cell *matHeaderCellDef>Size</th>
+        <td mat-cell *matCellDef="let item">{{ formatFileSize(item.file_size) }}</td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Uploaded</th>
+        <td mat-cell *matCellDef="let item">{{ formatDate(item.created_at) }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let item">
+          <button mat-icon-button (click)="copyUrl(item)" matTooltip="Copy URL">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <a mat-icon-button [href]="item.file_url" target="_blank" matTooltip="View">
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+          <button mat-icon-button color="warn" (click)="deleteItem(item)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['preview', 'filename', 'type', 'size', 'date', 'actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['preview', 'filename', 'type', 'size', 'date', 'actions'];"></tr>
+    </table>
+
+    <!-- Empty State for List View -->
+    <div *ngIf="mediaItems.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">photo_library</mat-icon>
+      <p>No media items found</p>
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload Your First File
+      </button>
+    </div>
+  </div>
+
+  <!-- Load More Button -->
+  <div *ngIf="hasMore() && !loading" class="load-more-container">
+    <button mat-stroked-button (click)="loadMore()">
+      Load More ({{ total - offset - limit }} remaining)
+    </button>
+  </div>
+</div>

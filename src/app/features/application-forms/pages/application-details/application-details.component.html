@@ -3,10 +3,18 @@
     <ng-template matTabContent>
       <mat-card>
         <mat-card-content>
-          <app-data-loader [fetchData]="loadData">
+          <app-data-loader [fetchData]="loadData" (dataLoaded)="setData($event)">
 
             <ng-template #content let-application>
-              <app-key-value-display [object]="application"></app-key-value-display>
+              <app-form-generator *ngIf="formTemplate" #form [fields]="formTemplate" mode="view"></app-form-generator>
+
+              <div class="flex flex-col gap-1" *ngIf="!formTemplate">
+                <app-json-display [value]="application" [objectType]="'object'"></app-json-display>
+                <p>
+                  <!-- <span class="form-label">{{ item.key }}:</span> <br> <span>{{ item.value }}</span> -->
+                </p>
+
+              </div>
             </ng-template>
           </app-data-loader>
 
